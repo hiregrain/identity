@@ -132,6 +132,64 @@ protocol now recorded in `plans/ORDER.md`):
   the AWS-vs-GCP mini-litigation awaits explicit go. Until ruled,
   foundation tasks stay provider-neutral and provisioning is gated.
 
+## 014 — Severity-gated safety marker; supersedes 013's enrollment token (2026-08-17)
+
+Founder ruling after `research/12` (deletion vs. reputation evasion).
+Supersedes the universal contentless enrollment token in entry 013.
+Entry 009(a)'s original instinct — no retention by default — is restored
+and refined.
+
+**Legal correction on the record.** The argument that carried 013's
+universal token was wrong in a specific way: **GDPR Art. 17(3) contains
+no fraud exemption** — the list is closed at five items. Recital 47
+establishes fraud prevention as an Art. 6(1)(f) *legal basis for
+processing*, not an erasure carve-out; post-erasure retention must win on
+necessity at Art. 17(1) with the burden on the controller. Hashing does
+not rescue it: *EDPS v SRB* (C-413/23 P) protects only a recipient that
+cannot re-identify, and retaining the salt in order to match is what
+makes the token personal data.
+
+**Two findings aimed at 013's design.** AEPD fined Goldcar €80,000 over a
+customer blacklist, reasoning that the retained flag "does not refer with
+certainty to a fraud committed by the claimant" — which is definitionally
+true of a universal contentless token. CNIL authorises exclusion
+registers for a single controller but **expressly excludes mutualised
+(cross-party) sharing**, which is this ledger's architecture. California
+§1798.105(d)(2), PH NPC Advisory 2021-01 §10(B)(2), and India DPDP
+§17(1)(a)/(c) all name fraud and physical safety in statutory text;
+**performance appears nowhere**.
+
+**The ruling.**
+- **Default: nothing survives deletion.** Voluntary exits and
+  performance-based exits leave no token, no hash, no marker.
+- **Exception: a severity-gated safety/fraud marker**, with all of:
+  filed by the **party that made the finding** (a party act, not a ledger
+  act — which is also what defeats the delete-before-the-finding race,
+  since the party holds its own records and can file after the fact);
+  keyed to the **document identifier only** (industry convergence — no
+  platform uses device or IP as a match key); **no payload**; an
+  evidential floor (Cifas standard: "could confidently report to the
+  police"); a **fixed expiry clock**, not retention discretion; **joint
+  controllership** with the filing party, with challenges routed to that
+  party; **review, never denial**, on a match; disclosed at collection.
+  Scope discipline follows the Uber/Lyft Industry Sharing Safety Program:
+  the most critical safety/fraud categories only, never a general
+  exclusion list.
+- Re-registration mechanics from 013 survive unchanged where they do not
+  depend on the token: a tombstoned ledger id is **never reissued** (spine
+  signatures reference it forever); a re-registration is a new id;
+  matching triggers steward review, never an automatic block.
+
+**Escalations recorded, outside this decision.** (1) "Delete means gone"
+cannot be a global invariant — Seattle's deactivation ordinance and India
+DPDP Rule 8(3) create retention *obligations* in tension with R2; counsel
+brief 1 must carry this before the worker agreement is drafted. (2) The
+reputational exposure attaches to the **product**, not the policy: a
+cross-employer worker record carrying any exclusion flag is structurally
+a blacklist (UK Consulting Association precedent) and will be read that
+way regardless of scoping. Founder-level strategic risk, not a schema
+question.
+
 ## 013 — Person-identity grilling rulings; supersedes 009(a) (2026-08-17)
 
 Founder rulings from the person-identity grilling. Entry 009(a) (no

@@ -68,3 +68,43 @@ Counsel should treat everything below as our position to be confirmed or correct
 ## Internal research corpus available to counsel on request
 
 `research/01-regulatory-perimeter.md` (FCRA/GDPR/PH DPA perimeter, with full source list), `research/07-synthesis.md`, `research/08-kyc-regulatory-triggers.md` (India DPDP notes), `design/ledger-design-0.1.md` (architecture), `design/stack-litigation/d1-verdict.md` and `docket-rulings-0.1.md` (ratified rulings and trigger definitions).
+
+
+---
+
+## ADDENDUM (2026-08-17) — post-erasure retention and retention *obligations*
+
+Added after `research/12`. Three questions supplement those above.
+
+**Q-A1. Post-erasure safety markers.** We propose retaining, after a
+worker deletes their profile, a single severity-gated marker: a hash of a
+verified document identifier, a closed-enum safety/fraud category, filing
+party, filing date, fixed expiry, challenge state — no payload, no
+narrative. Filed only by the party that made the finding, on attestation
+that it "could confidently report to the police." On a re-registration
+match it triggers human review, never automatic denial. Is this
+defensible under GDPR Art. 17(1) necessity (noting Art. 17(3) contains no
+fraud exemption and Recital 47 is a legal-basis statement only), CCPA
+§1798.105(d)(2), PH NPC Advisory 2021-01 §10(B)(2), and India DPDP
+§17(1)(a)/(c)? Specifically: (i) does joint controllership with the
+filing party improve or worsen our position; (ii) does the AEPD Goldcar
+decision (€80,000; flag "does not refer with certainty to a fraud
+committed by the claimant") distinguish our evidential floor; (iii) does
+CNIL's exclusion of *mutualised* registers bar a cross-party marker
+outright, and if so does joint controllership or a Cifas-style structure
+cure it; (iv) what maximum expiry is defensible per jurisdiction.
+
+**Q-A2. Retention obligations in tension with the deletion right.**
+Seattle's app-based worker deactivation ordinance and India DPDP Rule
+8(3) appear to *require* retention of records our product promises to
+erase. Enumerate, for our target jurisdictions, every regime that
+mandates retention of worker records, for how long, and how that
+reconciles with a product commitment to whole-profile deletion. This must
+resolve before the worker agreement is finalised — the agreement cannot
+promise unconditional erasure if law forbids it.
+
+**Q-A3. Blacklist characterisation risk.** Independent of data-protection
+compliance: does a cross-employer worker record carrying any exclusion or
+safety marker risk characterisation as an unlawful blacklist under UK,
+EU, US, or PH law (cf. the UK Consulting Association enforcement)? What
+structural features most reduce that risk?
