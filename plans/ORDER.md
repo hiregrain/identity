@@ -82,6 +82,13 @@ Merging is a human act. **Never squash** — evidence cites SHAs.
 `<task-id> — <task H1 verbatim>`; migrations `NNNN-<kebab-noun-phrase>`
 naming what exists after. Naming friction is a scope alarm.
 
+**Grill-before-ready (this repo's addition):** promoting a layer to
+`ready` requires a founder grilling session on that layer's design tree —
+frontier questions with recommendations, jargon explained, rounds until
+empty — recorded as a decisions-log entry. Task files are authored only
+after the layer's grilling closes. First instance: decision 011
+(foundation + trust-kernel).
+
 **The executive loop:** one executive session reads the computed queue,
 claims and dispatches to fresh-context implementers (one per task,
 parallel only on disjoint frontiers), dispatches clean verifiers, batches
@@ -95,10 +102,11 @@ rather than one discovery at a time.
 
 | Gate | Blocks | Owner state |
 |---|---|---|
-| T1 spike ruling (pre-committed rule in `t1-spike.md`) | `trust-kernel` task authoring in its final language; nothing else | open — harness can start on "run T1" |
+| T1 spike ruling (pre-committed rule in `t1-spike.md`) | — | **discharged (decision 012)** — Go stands; switch-triggers carry forward as the guard |
 | Counsel brief 4 → final worker-agreement terms | the first real worker; `durability-and-launch` AC-DL3 config. Not the build | open, long lead — send the brief |
-| Decisions 011/012 ratification (invariant ledger chrome; epistemic mark system) | `marks-and-embeds` going `ready`; `worker-surface` AC-WS4 as written | open — drafted, awaiting the word |
-| Cloud accounts + KMS + WORM buckets provisioned (two clouds, separate account for object-lock) | `trust-kernel` checkpoint tasks; `foundation` infra tasks | open — needs founder-held billing |
+| Chrome/marks rulings (invariant ledger chrome; epistemic mark system) | `marks-and-embeds` going `ready`; `worker-surface` AC-WS4 as written | open — drafted in session, awaiting ratification |
+| **Cloud provider ruling** (AWS vs. GCP mini-litigation, decision 011 open item) | real provisioning; nothing local | open — litigation starts on founder go |
+| Cloud accounts + KMS + WORM buckets provisioned (two clouds, separate account for object-lock) | `trust-kernel` checkpoint tasks against real infra; local/CI work is ungated (software-key provider per decision 011) | open — follows the provider ruling; founder-held billing |
 | Persona/Sumsub DPAs signed (retention/destruction schedules per research/09) | live verification in `verification`; sandbox/stub work is ungated | open |
 | PR merges (merge gate 3) | every task's completion | standing |
 | Witnessed-log witness contract | nothing until the registry deadline nears (D3); listed so it is not discovered late | open, deferred |

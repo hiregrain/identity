@@ -2,7 +2,6 @@
 id: trust-kernel
 type: layer
 status: ready
-gated_by: plans/t1-spike.md
 milestone: v1
 depends_on: [foundation]
 binds:

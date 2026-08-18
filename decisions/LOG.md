@@ -101,3 +101,60 @@ vendor pilots Sumsub (global primary) + Persona (US primary), India-native
 rail at India launch; KYB for party vetting is manual registry checks +
 notarized UBO self-attestation at current volume. OPEN (not yet ruled):
 formalizing the no-money-movement red line at the entity level.
+
+## 011 — Foundation/trust-kernel grilling rulings (2026-08-17)
+
+Founder rulings from the first per-layer grilling (the grill-before-ready
+protocol now recorded in `plans/ORDER.md`):
+
+- **Code lives in this repo** beside plans/model/decisions (Dispatch
+  pattern) — the plan gate only self-enforces when code and plans share CI.
+- **Physical spine/payload split from day one**: two databases (global
+  spine + `payload-us`) from the first migration, so the residency seam is
+  real from hour zero.
+- **No standing staging environment** — founder override of the
+  recommendation; add later if needed. Consequence accepted: D1 game-day
+  drills (durability-and-launch) run on ephemeral environments spun up for
+  the drill and torn down after, not a standing copy.
+- **Key custody in development**: software keys for local/CI through a
+  provider interface; real KMS in production; outside opinion sought as
+  needed.
+- **Root-key ceremony: the founder is the sole keyholder for now.**
+  Third-party keyholder revisited at the witnessed-log / first-external-
+  party milestone (the registry gate already forces that review).
+- **T1 authorized**, run as a supervised operation: a supervising agent
+  orchestrates implementer subagents under differing tech-stack
+  instructions; the first operations are manually overseen.
+- **The two TLA+ specs stand** (merge/unmerge concurrency; deletion vs.
+  read path), with executable property-based suites as the recorded
+  fallback if agent competence measured in T1 argues for it.
+- **OPEN: cloud provider.** The founder ruled it deserves full treatment;
+  the AWS-vs-GCP mini-litigation awaits explicit go. Until ruled,
+  foundation tasks stay provider-neutral and provisioning is gated.
+
+## 012 — T1 gate discharged; D2 (Go core) stands (2026-08-17)
+
+Founder ruling. The T1 spike ran tasks 1–3 across a 10-cell matrix
+(2 languages × {Fable, Opus, Sonnet}), blind-first-submission protocol,
+every artifact independently re-judged: **10/10 cells green on first
+submission, zero defect separation by language or model tier**, including
+deliberately Go-hostile canonicalization terrain and cheap-model cells.
+Evidence: `log/2026-08-17-t1-interim-results.md`.
+
+The gate is discharged on this interim evidence by founder ruling — the
+pre-committed rule was defect-rate-based and showed no separation; the
+undischarged discriminator tasks (state machines, folds,
+underspecification) tested ergonomics the rule would not have flipped on.
+Recorded honestly: T1 found *no evidence against* Go, not affirmative
+confirmation; the D2 verdict's switch-triggers (agent-defect-rate
+inversion, bounded kernel-port exits, FIPS mandate) **carry forward as the
+ongoing guard during real kernel development**, which supersedes synthetic
+evaluation. Consequences: `trust-kernel` ungated, task files authored in
+Go. The T1 scratch artifacts were lost to temp-directory cleanup after
+measurement; the seven normative contract-ambiguity resolutions survive
+verbatim in `contract/CONTRACT.md` and vector regeneration is a
+deliverable of `trust-kernel/01` (lesson recorded: spike artifacts worth
+keeping go in the repo, not the scratchpad). Secondary finding for the
+executive loop: model tier showed no reliability cliff under the
+blind-first + differential-self-test discipline — routine kernel-adjacent
+tasks may dispatch to cheaper models.
