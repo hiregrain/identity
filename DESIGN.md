@@ -6,9 +6,10 @@ else in this file is settled by founder decision during the 2026-08-17/18 design
 sessions unless marked otherwise.
 
 Companion documents: `THESIS.md` (what the business is and where the seam sits),
-`design/01-banned-patterns.md` (the negative space — read it before proposing
-anything), `design/03-design-perspectives.md` (the research-grounded argument),
-`design/04-signature-element-brainstorm.md` (the candidate record).
+`imprint/README.md` (the imprint's geometry system, generator and open items — the
+source of truth for §2), `design/01-banned-patterns.md` (the negative space — read it
+before proposing anything), `design/03-design-perspectives.md` (the research-grounded
+argument), `design/04-signature-element-brainstorm.md` (the candidate record).
 
 Gaps are marked **[GAP]** and collected in §13.
 
@@ -57,43 +58,58 @@ The three-question test for any proposed element is in
 
 ---
 
-## 2. The imprint — settled
+## 2. The imprint — geometry recorded in `imprint/`
 
 A per-person figure computed from the verified record. Unique to the person,
-recomputable from the ledger, and impossible to style richer than the record
-earns.
+recomputable from the ledger, and impossible to style richer than the record earns.
+A **different object from the mark** (§3): the mark is invariant and carries no data.
 
-**Construction** (preserve this — the generator is scratch and will be lost):
+**The geometry system, the channel set, the provenance states, the concurrency rule,
+the decisions and the open items now live in [`imprint/README.md`](imprint/README.md),
+alongside a runnable generator (`imprint/imprint.py`, standard library only) and
+reference renders for every state (`imprint/examples/`).** That folder is the source of
+truth; this section is the summary.
 
-    r(t) = R + a · sin(k·t + phi + delta_i) · (1 + eps · sin(t + phi))
+**Construction.** `r(t) = R + a · L(t) · sin(7·t + π/2 + delta_i)`, with
+`delta_i = i · (2π/7) / n_curves`. The phase sweep across **one lobe period** is what
+produces guilloché — a full 2π sweep gives a diamond mesh, and radial offsets give
+parallel contour lines. Both destroy it.
 
-    band          one chapter (a job or engagement); bands accrete outward,
-                  earliest innermost, and never reorder
-    R, a          from tenure — band radial thickness is duration, linear
-    k             lobe count = verified skills in that chapter, capped at 5
-    phi           from the chapter's start month, phi = 2*pi*m/12
-    eps           one-fold asymmetry keyed to the start date; this is what makes
-                  the figure irregular, and irregularity is both the aesthetic
-                  and the legal differentiator
-    delta_i       i * (2*pi/k) / n_curves — sweeps one full lobe period across
-                  the pass count. THIS is what produces the woven interference;
-                  without it the figure reads as thin concentric loops
-    n_curves      pass count, from attestations, log-capped
-    identity core two tight eccentric loops at centre, inked at signup
+**Channels.** Strand = one engagement · radial position = cumulative *engaged* time ·
+width = duration · **lobe angle = which of seven responsibility dimensions, permanently
+registered** · **lobe depth = level attained** · thread density = corroboration tier ·
+plain-versus-lobed = whether anything about the work is attested · core = a person.
 
-**States within the figure:** fully attested chapters are drawn with the full
-weave; partially verified chapters plainer; self-reported items appear as a
-detached dotted hairline outside the figure, never woven in; superseded material
-is struck and kept.
+**Not drawn, deliberately:** slope, time-to-competence, complexity routed, outcome
+trajectory, `work_kind`, `volume`, resource magnitude. All measured, all stored, all
+belonging to the record and the analytics layer where they can be labelled.
 
-**Growth:** the canvas grows during roughly the first year, then holds fixed, so
-career length never makes one person's figure larger than another's.
+**Two constraints that are not negotiable.** The canvas is fixed, because a footprint
+that grows with career length is an age proxy and an age proxy on a hiring surface is a
+discrimination exposure. And radius is cumulative engaged time rather than calendar
+time, so employment gaps take no space and stay invisible — a deliberate refusal, not an
+oversight, and not to be "improved" later.
 
-**Slope** is legible as the relationship between consecutive bands — a rising
-record opens outward, a flat one repeats. Do not reintroduce the lobe and sweep
-caps that flattened this; they were removed deliberately.
+**Superseded, self-asserted and unattested.** Superseded material is removed, not struck;
+the ledger keeps it, the figure shows current truth. A chapter with no attested
+dimensions has no lobes and draws as a plain ring — dotted when self-asserted, solid when
+employment is verified. That plainness carries meaning and must never be decorated.
 
----
+**Changed from the earlier draft**, and superseding it: `k` is no longer a variable
+(seven fixed slots, one per dimension); `phi` no longer encodes start month (angle
+carries dimension identity, which is worth more); `eps` is dropped (it would bend lobes
+that must stay registered, and the real profile supplies uniqueness); pass count derives
+from a pitch rule rather than directly from attestation count; and the figure is
+recomputed rather than accreted.
+
+**Slope is not drawn.** §2 of the earlier draft claimed slope reads as the relation
+between consecutive bands. Slope is employer-side analytics, not worker-facing, and the
+two statements contradicted. Entry and exit levels are recorded per dimension so slope is
+computable — it is simply not in the figure.
+
+**Open items** — including the missing angular anchor, the axis-set versioning problem,
+and the fact that the level anchors are unvalidated — are enumerated in
+[`imprint/README.md`](imprint/README.md) §7 and must not be treated as settled.
 
 ## 3. The verification mark — NOT DECIDED
 
