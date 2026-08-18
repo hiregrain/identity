@@ -2,9 +2,9 @@
 id: person-identity/01
 type: task
 status: ready
-depends_on: [foundation/04]
+depends_on: [foundation/04, foundation/07]
 migrations: [0010-person-core]
-binds: [decisions/LOG.md#013]
+binds: [decisions/LOG.md#013, decisions/LOG.md#017]
 evidence: []
 verified_by: null
 ---
@@ -32,6 +32,11 @@ an opaque permanent `ledger_person_id` out.
   reputation, velocity) — the real anti-Sybil control; v1 records signals
   and thresholds, escalation policy lands with the anti-fraud work.
 - IDs are never reissued or recycled, including after deletion.
+- **"Instantly" is defined, because signup writes both planes** (decision
+  017): the id is issued and returned at **spine commit**; the payload row
+  follows through the outbox. The account is usable immediately; anything
+  requiring payload waits on the acknowledgment watermark. Without this
+  stated, "issued instantly" is three different claims.
 
 ## Acceptance
 

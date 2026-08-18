@@ -6,33 +6,53 @@ milestone: v1
 depends_on: [foundation]
 binds:
   - decisions/LOG.md#005
+  - decisions/LOG.md#012
+  - decisions/LOG.md#015
+  - decisions/LOG.md#016
+  - decisions/LOG.md#017
+  - decisions/LOG.md#019
   - model/attestation-interface.md
   - design/stack-litigation/d3-verdict.md
   - design/stack-litigation/d4-verdict.md
-acceptance: [AC-TK1, AC-TK2, AC-TK3, AC-TK4, AC-TK5]
+acceptance: [AC-TK1, AC-TK2, AC-TK3, AC-TK4, AC-TK5, AC-TK6, AC-TK7]
 evidence: []
 verified_by: null
 ---
 
 # trust-kernel
 
-The <~3k-line frozen core: everything that touches signatures, chains, and
-checkpoints. Two-human review on every change; golden vectors; fuzzing;
-differential tests against an independently-authored reference model; the
-two TLA+ specs (merge/unmerge under concurrent ingestion; deletion vs. the
-read path). Language is Go per D2, contingent on the T1 spike's
-pre-committed rule.
+The <~3k-line frozen core: the **primitives** that touch signatures,
+chains, and checkpoints — canonicalization, sign/verify, chain
+append/verify, tree construction and proofs. Orchestration around them
+(scheduler, publisher, reconciliation, per-party root assembly) lives in a
+kernel-adjacent package under ordinary review, so the expensive discipline
+stays concentrated where a subtle bug is unrecoverable (decision 019).
+Two-human review on every frozen-core change, enforced by host branch
+protection rather than CODEOWNERS alone; golden vectors; fuzzing;
+differential tests against an independently-authored reference model
+(`trust-kernel/06`); the two TLA+ specs. Language is Go per D2; the T1 gate
+is discharged (decision 012).
 
 Scope: canonical serialization (the cross-language test vectors are a
-contract deliverable); Ed25519/JWS sign + verify with `kid` resolution
-against the party registry; KMS-only key custody for ledger keys (offline
-root, online issuing keys, documented ceremony); per-stream (per-subject,
-per-party) hash chains; Merkle checkpoint construction with ≤5-minute
-KMS-signed checkpoints to compliance-mode WORM object lock in a separate
-account, mirrored to a second cloud — **launch-blocking per D3**; inclusion
-receipts; the key-event append-only log and the
-compromise-vs-backdating verification rule (valid iff key active at signing
-time AND ledger timestamp predates any compromise report).
+contract deliverable); Ed25519/JWS sign + verify where the **key identifier
+is a signed payload field**, since contract rule 3 freezes the protected
+header to 15 exact bytes, and the signing function takes **no key
+parameter** so a non-operator key is unexpressible (decision 019); key
+custody behind the provider interface — software for local/CI, KMS in
+production (decision 011) — with the offline-root ceremony a founder gate;
+hash chains over **every governing event**: per-subject and per-party
+attestations, registry and party lifecycle, key events, privileged operator
+actions, and deletion journal entries, with **chain membership fixed at
+write time and never re-keyed by a merge**; Merkle checkpoint construction
+with ≤5-minute KMS-signed checkpoints each **naming its predecessor**, a
+**continuous reconciliation job**, per-party issuance roots, anchoring at
+spine commit while receipts fire at acknowledgment; WORM publishing to a
+dedicated compliance-mode account mirrored to a second cloud
+(`trust-kernel/07`, founder-gated) — **launch-blocking per D3**; the
+key-event append-only log and the compromise-vs-backdating verification
+rule (valid iff key active at signing time AND ledger timestamp predates any
+compromise report). Inclusion *proofs* are a kernel API here; inclusion
+*receipts* are issued by `ingestion`.
 
 Acceptance:
 - AC-TK1 (mechanical): golden-vector suite passes byte-identically in the
@@ -43,5 +63,13 @@ Acceptance:
   deliberate attempt to overwrite one fails at the storage layer.
 - AC-TK4: both TLA+ specs check; the conformance tests derived from them
   pass against the implementation.
-- AC-TK5: no code path outside the kernel can produce a signature; no code
-  path anywhere can invoke a registry-grade party key (D4).
+- AC-TK5: no code path outside the kernel can produce a signature, and **no
+  non-operator party key is invokable anywhere** — amended from "no
+  registry-grade party key at all", which decisions 015/016 superseded by
+  giving the operator a single registry self-entry it signs with. Enforced
+  by the signing function having no key parameter, not by a runtime check.
+- AC-TK6 (mechanical): every governing event type is chained and covered by
+  a checkpoint; a mutation in any of them is detected. A merge moves no
+  record between chains.
+- AC-TK7 (mechanical): the reference model and the kernel agree byte-for-byte
+  over fuzzed input, and each checkpoint's predecessor link verifies.

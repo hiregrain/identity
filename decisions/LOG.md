@@ -297,3 +297,614 @@ keeping go in the repo, not the scratchpad). Secondary finding for the
 executive loop: model tier showed no reliability cliff under the
 blind-first + differential-self-test discipline — routine kernel-adjacent
 tasks may dispatch to cheaper models.
+
+## 015 — Party-registry grilling rulings; D4 confirmed with an operator carve-out (2026-08-18)
+
+Founder rulings from the party-registry grilling (grill-before-ready,
+`plans/ORDER.md`). Third per-layer grilling after 011 (foundation +
+trust-kernel) and 013/014 (person-identity).
+
+**D4 confirmed, not reversed.** The round surfaced an apparent founder
+answer that the ledger could sign on a partner's behalf; on restatement
+the founder ruled **partner-held keys stand**. External parties hold
+their own registry-grade signing keys; the ledger ships the installer
+that provisions the key inside the partner's own environment; **no code
+path signs as a partner**. The dispositive reasoning in
+`design/stack-litigation/d4-verdict.md` §II(a) — that the ledger is never
+a disinterested third party in a dispute about its own record, so
+"who could have produced this signature?" must answer *only the partner*
+— is reaffirmed as the controlling argument. Recorded because the
+question was put and answered, not assumed.
+
+**Amendment to the D4 invariant (narrow).** D4 §2 read "no tier in which
+the operator can invoke a registry-grade party key." The operator signs
+`ledger_invalidated` records and checkpoints, and those signatures must
+verify through the same registry lookup as any other. The invariant is
+restated: **no code path invokes a registry-grade key other than the
+operator's own**, with the operator holding a single self-entry
+(`custody_model: ledger_kms`) enforced unique by a partial index — one
+row, structurally. The alternative (operator keys in a table outside the
+registry) was rejected: it duplicates key-lifecycle machinery and hides
+the operator's own rotations from the public status history, which is the
+part of the transparency posture that costs most if absent.
+
+**Verification vendors are listed but keyless.** Decision 010's "only
+signed pass/fail is stored" is resolved: the **ledger** signs
+verification attestations, recording the vendor as `evidence_source`.
+Vendors hold registry entries (so accreditation re-checks and status
+machinery reach them) with `custody_model: none`. Rationale: no
+realistic KYC vendor will run the ledger's signing SDK, and requiring it
+would block the `verification` layer on an integration the ledger does
+not control. The claim as signed is also the truthful one — *the ledger
+obtained this result from that vendor*.
+
+**Vetting tier and capability are orthogonal.** `vetting_tier`
+(`internal | external_probationary | external_standard | vendor`) drives
+internal trust weighting only. Capabilities — `may_attest(scope)`,
+`may_request_packet`, `may_file_safety_marker` — are **granted
+individually as append-only events**, revocable, never implied by tier.
+Safety-marker filing additionally **requires a signed addendum on file**,
+referenced by the grant record: decision 014 attaches joint
+controllership and routes worker challenges to the filing party, and a
+party cannot be handed that obligation without accepting it. Given the
+AEPD/CNIL exposure, "which parties could file, and since when" must be
+answerable from a grant log rather than reconstructed from historical
+tier membership.
+
+**Lifecycle gains `withdrawn`.** `pending → active → suspended | revoked
+| withdrawn`. `withdrawn` is an ended relationship with no finding
+against the party; `revoked` retains its meaning. Without the split, a
+partner that simply shut down is marked on a public status page as though
+the ledger caught it at something.
+
+**Suspension reasons are a closed category list, no free text.** Bare
+"suspended" invites readers to assume the worst of every record that
+party ever wrote; a specific reason is a defamation surface. Broad
+categories from a fixed enum. **No free-text column adjacent to
+suspension anywhere** — a text box eventually gets typed into and read
+back in a deposition.
+
+**Party principals are not ledger entities.** Partner console logins are
+`party_users`: WebAuthn-bound auth records scoped to a party, carrying no
+`ledger_person_id` and no path to one. Decision 007's two-entity rule is
+untouched — a console login is not a ledger entity. The founder noted the
+same human may separately hold a worker record; therefore **duplicate
+detection is barred from linking `party_users` to persons**, enforced, not
+merely unimplemented.
+
+**Activation gates are computed, never stored.** Two limbs, both required
+at transition and re-asserted by a check: (1) the witnessed transparency
+log exists and is accepting, queried live from the kernel — no cached
+boolean, which is one UPDATE away from being flipped under deadline
+pressure; (2) the conditional liability-shield instrument
+(`design/ledger-design-0.1.md` §3.1) is executed and recorded as a
+precondition row. The **1M-attestation limb of decision 005 is a build
+deadline for the log, not a second route to activation** — recorded
+explicitly so it is not later read as an escape hatch.
+
+**Countersignature cadence: monthly**, or at each registry event, per
+`d4-verdict.md` §5. `plans/party-registry/LAYER.md` said quarterly; that
+was drift and is corrected. Monthly bounds the "the party never noticed"
+window to 30 days, matching the 30–90-day key validity window rather
+than cutting across it.
+
+**Probation caps: declared here, enforced at ingestion, never cached.**
+Default cap ≈10× the party's stated expected volume, reviewed at 90 days.
+**Accreditation re-checked every 90 days** and on any registry event —
+one scheduled job shared with the key-renewal rhythm. Falling off an
+external allowlist **flags a human and freezes new writes; it never
+auto-suspends** (name changes and data errors in external registries are
+common enough that automation would take legitimate parties offline).
+**Public per-party status pages live at plain, guessable URLs** — the
+transparency claim is void if checking a party's standing requires
+asking us.
+
+**Layer boundary, as a rule rather than a list:** code that runs on
+ledger infrastructure belongs to `party-registry`; code shipped to a
+partner belongs to `integration-surface`; signing and canonicalization
+logic belongs to `trust-kernel` and is packaged by others, written once.
+Stated as a rule so the next boundary question resolves without a ruling.
+
+**Recorded as an executive judgment call, not a founder ruling:**
+`ledger_invalidated` **authority** (which registry state permits it)
+lives in `party-registry`; the **mechanism** lives in `ingestion`, which
+already owns supersession-authority enforcement (AC-I3). Surfaced to the
+founder, who left it as scoped.
+
+Consequences: `party-registry` promoted to `ready` with seven task files;
+`person-identity/07`'s dangling `party-registry/01` dependency is
+discharged; party core lands as migration `0009` (the one free slot below
+`0014-safety-markers`, which references `filing_party_id`).
+
+## 016 — party-registry engineering review; twelve hardening rulings (2026-08-18)
+
+Founder rulings from `/plan-eng-review` over the seven task files authored
+under decision 015, scoped to the files plus their dependency seams into
+`foundation`, `trust-kernel`, `ingestion`, and `person-identity`. Outside
+voice: Codex, high reasoning effort, sixteen findings, most sustained.
+Recorded because several rulings amend 015 and one amends the D4 verdict's
+open enforcement question.
+
+**Found by the seam review.**
+- **Spine readable-column exemption, narrow and documented.** A party's
+  legal name is text on a plane whose lint forbids readable columns
+  (foundation/04). Granted by column, in `0009-party-core`, citing the
+  reason: the ban protects *person* data across residency boundaries, and a
+  party's name is public by construction. The exemption licenses nothing
+  else, and a test asserts the lint still fails on any other readable spine
+  column.
+- **Party principals are erasable; their actions are not.** A party admin is
+  a natural person with erasure rights, and the reason worker records are
+  append-only — attestations must survive to stay verifiable — does not
+  apply to a console login. Actions carry an opaque `actor_id` that outlives
+  the principal row. Requires a table-scoped exemption under foundation/03's
+  documented license. **This is a gap in decision 015, not merely in a task
+  file**: 015 settled that principals are not ledger entities and never
+  addressed that they remain data subjects.
+- **Per-party issuance root, added to the kernel surface.** Task 07 assumed
+  a per-party Merkle root that no task in the graph produced;
+  `trust-kernel/04` builds one global tree over stream heads. A party must
+  countersign something it can recompute from its own records — signing the
+  global root would attest to the ledger's arithmetic instead. Recorded as
+  an extension `trust-kernel`'s own grilling round did not anticipate.
+- **`person-identity/07` corrected.** Written before 015 created
+  `may_file_safety_marker`, its acceptance said only "the filing party."
+  Now binds 015, requires a live grant, and tests that a fully vetted
+  `external_standard` party without the grant is refused — tier confers
+  nothing.
+- **Ingestion halt is derived, not stored.** A party is halted exactly when
+  no key's validity window covers now. No `halted` column exists, matching
+  the computed-not-stored rule 015 set for the activation gate.
+- **Transactional projections on the write path.** Status, name, freeze, and
+  capability reads on ingestion's hot path resolve against projections
+  written in the same transaction as their events. Not a cache: no staleness
+  window, nothing to invalidate — which satisfies 015's no-cached-copy
+  ruling rather than working around it.
+
+**Found by the outside voice.**
+- **Key-loss recovery ceremony, written now.** ACME renewal assumes the
+  current key still signs, so missed expiry, cloud lockout, or admin
+  compromise had no path. Recovery is **re-registration**: fresh key,
+  ordinary proof-of-possession challenge, operator review, registry event.
+  No privileged bypass is created — an unwritten ceremony is not an absent
+  one, it is one improvised under pressure in the single place where
+  improvisation destroys the D4 argument.
+- **The D3 deadline clock starts at `pending`.** Gating activation alone
+  left "park the party in `pending` forever" as a silent bypass, converting
+  a launch-blocking obligation into an aspiration. Both limbs are tracked;
+  crossing either without a witnessed log requires a **signed governance
+  event** naming who accepted the slip. Slipping stays possible; silence
+  does not.
+- **Read-time status derives from evidence source, not only signer.** Under
+  015 the ledger signs verification attestations with the vendor as
+  `evidence_source`. Signer-only status would flag *the operator* on every
+  verification record when a vendor is suspended, and leave the vendor's
+  results rendering clean. Both inputs now feed the computation.
+- **Freeze is an orthogonal condition, not a lifecycle state.** A frozen
+  party stays `active`, carries valid history, and is under no finding
+  (015). Adding `frozen` to the enum would render it as a mild suspension —
+  precisely what 015 forbids.
+- **Legal name is an append-only rename event.** "What was this party called
+  when it signed that record" is the question a dispute asks; prior names
+  render on the public status page so a party cannot shed a suspension
+  history by rebranding.
+- **Countersignature enforcement: graduated, never silent.** D4 left
+  advisory-versus-mandatory open; the task files had quietly chosen advisory
+  forever. First miss notifies and queues; consecutive misses escalate to a
+  registry event and review, which may apply the freeze. **This closes D4's
+  open enforcement question.**
+- **The party-visible issuance feed ships in v1** as `party-registry/08`.
+  D4 adopted it as a control separate from the countersignature, and the two
+  are not substitutes: the root says a record is wrong, the feed says which.
+- **Unlinkability restated and structurally enforced.** The prior wording
+  ("no person-identifying column") contradicted its own tests and the
+  erasure ruling above — an admin login needs an email. The invariant is: no
+  foreign key to a person, no shared identifier, and **no role that can read
+  both `party_users` and the person tables**, with the pair in separate
+  schemas and a lint on cross-schema queries. Intent is not enforcement.
+- **Instrument and addendum references are validated, not merely present.**
+  A non-null pointer is satisfiable by garbage. Both the liability-shield
+  instrument and the safety-marker addendum now check party identity,
+  version, execution, effective date, revocation, and applicability, each
+  refusal tested independently.
+- **The no-party-key rule is a structural boundary, with a regression
+  test.** A non-operator `kid` is unrepresentable at the signing boundary;
+  the test proves the boundary has not widened. Partial disagreement with
+  the outside voice recorded: it proposed replacing the test with the
+  boundary — the boundary is the control, the test is the alarm, and both
+  are kept.
+- **Operator uniqueness needs three constraints, not one.** A partial unique
+  index on `is_operator` proves only "at most one operator." Added: a check
+  binding `is_operator ⇔ custody_model = 'ledger_kms'` in both directions,
+  and a seeded existence invariant.
+- **The free-text ban is scoped to reason and detail fields** adjacent to
+  adverse lifecycle events, not to text being reachable at all — the name
+  exemption above made the original wording unsatisfiable.
+- **Countersignature acceptance proves the protocol against a harness, not
+  the shipped kit.** "A partner runs one install and it works" is
+  `integration-surface` AC-IS1; this layer cannot assert it without
+  depending on a layer that depends on it.
+
+Consequences: eight task files in `party-registry` (08 added);
+`person-identity/07` amended; `party-registry/08` declares a dependency on
+`ingestion/01`, which is not yet authored — a known dangling reference of
+the same class as 07's, discharged when `ingestion` is decomposed.
+
+## 017 — foundation engineering review; layer re-decomposed 6 → 9 tasks (2026-08-18)
+
+Founder rulings from `/plan-eng-review` over `foundation`. Outside voice:
+Codex, high reasoning effort, 33 findings; 9 more from the seam pass. The
+volume was the finding: roughly a third were not defects in what the tasks
+said but concerns **no task covered**, which is a different failure from
+party-registry's (decision 016, all patches). Founder ruled the layer is
+**re-decomposed rather than patched** — the missing concerns become tasks
+with their own acceptance criteria and verifiers, because a missing rule for
+what happens when a two-database write half-fails costs every layer that
+writes, while a missing acceptance criterion costs one PR.
+
+**Cross-plane write consistency: spine-first transactional outbox**
+(`foundation/07`, new). There is no shared transaction across two physical
+databases (decision 011), so every spine+payload write could commit one side
+and lose the other, and nothing said what happens next. The spine write and
+an outbox row commit together — the spine is the ordering authority, so its
+commit is what "recorded" means — then a worker applies payload
+idempotently, a reconciler surfaces stragglers, and acknowledgment waits for
+both planes. **No compensation path**: the spine is append-only, so
+"undoing" a spine write means writing a retraction, which would put an
+infrastructure hiccup permanently into the record a dispute reads. Retry
+forward only. FDW/dblink banned, which is what makes foundation/04's
+"no cross-plane SQL joins" structural rather than aspirational. This is also
+what makes `ingestion`'s acknowledgment watermark keepable.
+
+**DEK ownership: subject-scoped, single owner.** A payload row about a
+person is encrypted under **that person's key alone**, even when it records
+an attestation another party wrote; rows concerning more than one person are
+keyed to the subject and **never dual-wrapped**. Deleting the person makes
+the row unreadable to everyone, the issuing party included. Grounded in
+decision 014, whose reasoning already depends on parties holding their own
+work records outside the ledger. A dual wrap would leave a readable copy of
+a deleted person's record — the structure 014 rejected on AEPD and CNIL
+reasoning. Consequence for the partner agreement: it must state plainly that
+the ledger-side copy does not survive the subject's deletion.
+
+**Deletion mechanics** (`foundation/08`, new). Three gaps closed at once.
+(1) **Backups defeated deletion and nothing addressed it** — a backup holds
+the wrapped key, so a restore resurrects a deleted person. Ruling: bounded,
+stated backup retention plus a **mandatory restore-time deletion replay**
+that gates traffic; a restored system that has not replayed does not serve.
+The per-person-managed-key alternative (destruction global the instant it
+happens, no window at all) was preferred in principle and rejected on
+practicality: per-key cost and quota limits are unverifiable before the
+cloud ruling and worker-scale volume is where they bite. The residual window
+is **disclosed**, and a check fails if the number in worker-facing copy
+drifts from the number in config. (2) **Scheduled physical purge** of
+shredded rows, with the purge role the only role holding DELETE on payload
+tables — this is also the concrete rule replacing foundation/04's
+placeholder exemption "where deletion requires it." (3) **Crypto-shredding
+is recorded as a documented legal position, not a mechanical proof**, citing
+014's *EDPS v SRB* analysis: the ledger cannot re-identify, and that is the
+load-bearing fact.
+
+**One shared migration numbering sequence across both chains.** Task 06
+checked "collisions and gaps across both chains" while task 04 created two
+independent chains — two different models, both asserted. Ruling: numbers
+are globally unique across spine and payload; each chain has gaps where the
+other's fall. Only a shared sequence can express a cross-plane ordering
+constraint, and the constraint is live rather than hypothetical:
+`0014-safety-markers` references the party table created in
+`0009-party-core`. A new `checks/migration-order.mjs` enforces it —
+collisions and gaps do not catch reference ordering.
+
+**AC-F3 narrowed to what it can prove, with the rest made explicit.** The
+criterion claimed no spine column holds readable personal data and enforced
+it with a type lint. A lint blocks a `text` column; it cannot prove an
+opaque `bytea` or an id does not encode a name, and it says nothing about
+the harder direction — stable ids, timestamps, and issuer patterns identify
+people by **correlation** with zero readable columns present. Ruling: an
+**exhaustive allow-list** of permitted spine types (the term
+"readable-content type" was never defined, so implementers would have
+invented the boundary), a **written justification** in-migration for
+anything outside it reviewed by a human, and the correlation risk as its own
+deliverable — `foundation/09`, the **spine linkage threat model**, new, a
+document task with no code, because every layer above adds spine columns and
+needs something to review them against.
+
+**Append-only had holes; the claim is now scoped and the boundaries are
+operational.** The unqualified "cannot UPDATE or DELETE any table" would
+have gone false the moment the first exemption landed, and a test trained to
+ignore exceptions is worse than no test — the exemption list is now
+enumerated in the test. Beyond the grant: serving processes hold no owner or
+migration credentials, and **SECURITY DEFINER recording functions may only
+INSERT** (asserted by inspecting bodies) — `ingestion` writes through them
+by design, which was a legitimate path around the restriction. Default-
+privilege inheritance is proven across both databases, multiple schemas, and
+a second owner role, because Postgres default privileges are per granting
+role and per schema and a single-schema test proved far less than claimed.
+The inherited derived/cache exemption clause is **dropped** — imported from
+Dispatch before this repo has derived/cache semantics, it was an unused
+escape hatch.
+
+**Smaller rulings applied.** Typegen output is **namespaced per plane** so a
+payload type cannot satisfy a spine-typed parameter — accidental cross-plane
+type reuse violates the split in application code while every database check
+passes. CI is a **dependency graph, not a linear slogan**: metadata checks
+(frontmatter, plan graph, numbering, ordering, decisions) run before any
+database boots. Red-path CI acceptance uses **excluded fixtures**, not
+genuinely broken committed files, which would make the tree permanently red.
+`make check` **never requires cloud credentials** — local Docker and managed
+D1 were conflated. The DEK registry's derived state is specified: at most
+one active DEK per person by constraint, one documented resolution rule,
+idempotent destruction. `destroy(person)` is defined for **merged
+identities** (every id in the alias closure) and under concurrency (fail
+closed, never partial plaintext). Encryption evidence is **stronger than a
+dump grep**, which only proves one planted literal is absent. The provider
+invariant is corrected: **business logic is provider-agnostic; operational
+code may know** — observability and incident response legitimately need to.
+The **KMS verification gap** created by decision 011's no-staging ruling is
+named and mitigated with a provider conformance suite the real KMS must pass
+in an ephemeral environment before first production use. Layer `binds`
+extended to 011, 012, 016, 017; acceptance extended with AC-F5 through
+AC-F7, since AC-F1..F4 omitted envelope encryption entirely and the layer
+could have been marked accepted with DEK plumbing broken.
+
+**Applied without an explicit ruling, flagged for reversal:** managed
+Postgres provisioning removed from foundation's scope, on the grounds that
+no task performs it and ORDER.md already lists it as a founder gate. The
+founder had dismissed this question in an earlier round; it is applied here
+because the outside voice raised it independently and the re-decomposition
+ruling covered patches. Reversible on request.
+
+**Still open, not decided:** the general schema-separation posture decision
+016 requires for `party_users` (a table-scoped erasure exemption landed in
+foundation/03; the role/schema boundary that makes the unlinkability claim
+enforceable did not), and whether the payload database or the
+`residency_region` column is authoritative for residency.
+
+Consequences: `foundation` is 9 tasks; migrations `0020-cross-plane-outbox`
+and `0021-deletion-journal` added; `checks/migration-order.mjs` added to
+`foundation/06`; layer stays `ready`.
+
+## 018 — foundation review: three deferred items closed (2026-08-18)
+
+Closes the items decision 017 recorded as open or applied-without-ruling.
+
+- **Provisioning stays out of foundation's scope.** Founder confirmed the
+  change 017 flagged for reversal. No foundation task provisions anything
+  and none can before the cloud ruling, so the scope line described work
+  nobody held; ORDER.md's founder-gate table is the single place it lives.
+  `make check` requiring no cloud credentials is now an acceptance
+  criterion rather than an assumption.
+- **Schema boundaries become a general posture in `foundation/03`.** Named
+  schemas, per-schema role grants, a declared list of incompatible schema
+  pairs, and a lint failing any query touching both members of a pair.
+  Decision 016's `party_users`-versus-persons boundary is its first user
+  and `party-registry/04` now depends on `foundation/03` accordingly.
+  Chosen over a one-off grant because a second boundary is likely
+  (verification evidence, safety markers) and when the mechanism is
+  schemas plus grants, the general version costs almost nothing more —
+  while a second one-off would give one invariant two expressions and the
+  cross-schema lint would be written twice.
+- **The payload database is authoritative for residency; the column is a
+  checked assertion.** Two records of one fact needed a governing rule. The
+  column stays because it is what survives a dump or restore, which is
+  precisely when the database name is lost, and a check now fails any row
+  whose `residency_region` disagrees with the database holding it. Dropping
+  the column was rejected — it would make a separated payload dump
+  unidentifiable and reverse AC-F4. Demoting the database to a naming
+  convention was rejected as undoing decision 011's physical seam.
+
+## 019 — trust-kernel engineering review; 5 → 7 tasks (2026-08-18)
+
+Founder rulings from `/plan-eng-review` over `trust-kernel`. Outside voice:
+Codex, high reasoning effort, 12 findings, all sustained; 7 more from the
+seam pass. This layer was authored before decisions 015–018, so several of
+its statements had gone stale rather than being wrong when written.
+
+**The key identifier moves into the signed payload.** The layer and design
+§3.2 both said `kid` is a JWS header field; `contract/CONTRACT.md` rule 3
+freezes the protected header to **the exact 15 bytes** `{"alg":"EdDSA"}`,
+compared byte-for-byte. There is nowhere in the header for it. Ruling: the
+key identifier is a **signed payload field**, which places key identity
+inside the signed bytes — nobody can change which key a record claims
+without breaking the signature. Amending the contract to admit a two-field
+header was rejected: it invalidates every golden vector and the byte-
+exactness is deliberate (seven ambiguity resolutions were recorded to reach
+it). An unprotected header was rejected outright — unsigned key identity is
+the substitution attack the registry lookup exists to prevent.
+**Consequence requiring separate action:** `model/attestation-interface.md`
+(schema_version 0.2, ratified in decision 006) must carry the field. Not
+amended here; flagged as an interface change needing its own ratification.
+
+**Signing takes no key parameter.** `sign(kid, bytes)` made "no non-operator
+key is invokable" a runtime string check — the exact regression decision 016
+wanted structurally prevented. Ruling: `sign(bytes)` returns the signature
+plus the key identifier used; key selection and rotation are internal to the
+operator provider. With no key parameter, the wrong key is **unexpressible
+rather than rejected**. A typed-handle variant was rejected as a
+handle-producing function one careless addition away from producing a handle
+for anything, and as a parameter whose only valid value is always the same.
+
+**Chains cover every governing event, not only attestations.** D3's anchored
+contents are broader than the attestation record, and **D4's dispositive
+argument depends on registry manipulation being visible in the log** — which
+is false if registry events are unchained. Added streams: registry and party
+lifecycle events, key events, privileged operator actions, deletion journal
+entries. An audited-but-unanchored operator action is alterable by the
+operator, and the operator is the party a dispute distrusts.
+
+**Chain membership is fixed at write time and never re-keyed.** "Chain
+integrity holds on every stream" was untestable because nothing said what a
+subject chain is keyed to after a merge. Ruling: a record stays forever in
+the chain keyed to the `ledger_person_id` live when it was written; merge
+adds alias resolution *above* the chains and moves nothing. Re-keying the
+absorbed chain was rejected because it rewrites records already hashed into
+published checkpoints, breaking every existing inclusion proof and
+contradicting the append-only foundation. A single chain over the alias
+closure was rejected because chain identity would then depend on merge
+state, making verification time-dependent and unmerge a chain split. Cost
+accepted: a merged person's history is a multi-chain walk combined at the
+resolution layer; unmerge is trivially correct in exchange.
+
+**Anchoring and acknowledgment are two different moments, stated.** A spine
+row whose payload apply is still in flight (decision 017's outbox) **is
+anchored** — coupling the ≤5-minute cadence to a background worker would let
+a retry loop stall a launch-blocking commitment. The signed receipt to a
+party fires on the acknowledgment watermark instead. Anchoring proves
+ordering; acknowledgment proves durability. Anchoring only acknowledged
+records was rejected on the cadence-coupling ground; issuing receipts at
+spine commit was rejected as reversing decision 017's acknowledgment rule.
+
+**D3's checkpoint requirements were mostly unwritten, and the layer split on
+the cloud-ruling line.** `trust-kernel/04` specified the tree and a local
+WORM stand-in; D3 also requires each checkpoint to **name its predecessor**,
+a **continuous reconciliation job**, signed receipts at ingest, a dedicated
+compliance-mode object-lock account, and a second-cloud mirror — so AC-TK3
+could not be met by what the task described. Predecessor chaining and
+reconciliation are pure logic and stay in `04` (the predecessor is a format
+decision: deferring it means the first checkpoints are written in a format
+that must change). The real publisher, mirror, and anchoring drill become
+**`trust-kernel/07`**, founder-gated on the cloud ruling. Noted for that
+ruling: D3's text names AWS compliance-mode Object Lock specifically, so a
+GCP outcome must address the equivalent control and any capability gap
+explicitly rather than silently.
+
+**The independently-authored reference model becomes `trust-kernel/06`.** The
+layer promised it and AC-TK1 referenced it; no task created it. Golden
+vectors cannot substitute — **the vectors are generated by the implementation
+they test**, so a contract misreading baked into the generator produces
+vectors that agree with the bug. The task is dispatched with explicit
+instruction not to read `core/kernel/`: independence is enforced by
+assignment, because one author writing both shares the misreading twice.
+Folding it into `01` was rejected for that reason.
+
+**The 3k line budget holds; orchestration moves out.** The budget bounds what
+gets two-human review, fuzzing, and formal specs — it does not measure the
+layer. Frozen core: canonicalization, sign/verify, chain append/verify, tree
+construction and proofs. Kernel-adjacent, ordinary review: scheduler,
+publisher, reconciliation, per-party root assembly. Raising the cap was
+rejected because strict review over a two-thirds larger surface becomes
+perfunctory, and a budget that moves when inconvenient is not a budget.
+
+**Corrections applied.** AC-TK5 narrowed to **non-operator** party keys
+(decisions 015/016 gave the operator a self-entry it signs with; the old
+absolute wording was false). Layer and task `binds` extended to 012, 015,
+016, 017, 019. `0007-stream-heads` re-licensed as a **named, role-scoped**
+exemption — decision 017 dropped foundation/03's blanket derived/cache
+clause, so the table can no longer claim it; foundation/03's exemption list
+now names it alongside `party_users` erasure and the payload purge role.
+Layer no longer claims inclusion *receipts* (kernel provides proofs;
+`ingestion` issues receipts) and no longer says "KMS-only" custody, which
+contradicted decision 011's software provider for local/CI. Two-human review
+acceptance now checks the **host branch-protection policy** — CODEOWNERS
+requests reviewers, it does not require them, and a synthetic PR in local CI
+cannot prove a rule living in the host's settings. The **per-party issuance
+root relocated** from `party-registry/07` to `trust-kernel/04` under decision
+015's boundary rule; party-registry consumes the API. `trust-kernel/05`'s
+dependencies corrected: Spec B models deletion, purge, restore replay, and
+alias-closure key destruction, so it can no longer depend on
+`trust-kernel/03` alone — it now declares `foundation/08`,
+`person-identity/06`, and `consent-and-deletion/01`, and its invariants gain
+decision 017's surface (alias-closure key destruction, purge never partially
+observable, an unreplayed restore cannot serve a read).
+
+Consequences: `trust-kernel` is 7 tasks; AC-TK6 and AC-TK7 added;
+`foundation/03`'s exemption list extended; `party-registry/07` amended;
+`model/attestation-interface.md` needs a key-identifier field, tracked as an
+open interface amendment.
+
+## 020 — person-identity engineering review (2026-08-18)
+
+Founder rulings from `/plan-eng-review` over `person-identity`, the last
+decomposed layer. Outside voice: Codex, high reasoning effort, 16 findings.
+This layer was authored before decisions 015–019, so most of its defects were
+staleness rather than error at authoring.
+
+**The safety-marker match key must be a keyed hash.** `person-identity/07`
+said `document_identifier_hash` and stopped. Document identifiers are
+**low-entropy and follow published per-country formats**, so a plain hash is
+enumerable: generate every valid number for a jurisdiction, hash each,
+compare. The marker table would become a de-anonymizable list of who has
+been flagged — the structure the AEPD fined Goldcar over, and exactly the
+re-identification capability decision 014's *EDPS v SRB* analysis identifies
+as what makes a value personal data. Ruling: keyed hash with **the key in
+the key management service, never in the database**, plus the parts that
+were missing entirely — issuer and document-type canonicalization (one
+document written two ways must yield one key, or matching does not work),
+a key-rotation and re-derivation story with a stated window, a collision
+policy, and a written brute-force analysis against the weakest
+jurisdiction's format. A stored salt was rejected: a salt sitting beside the
+data does nothing against an attacker holding the table.
+
+**The recovery freeze had a time bomb.** A deletion requested during the
+7-day freeze was to execute automatically at expiry. So an attacker
+recovers the account, requests deletion, waits a week, and the system
+destroys the record for them — the exact attack the freeze exists to stop,
+merely delayed, and the task's own outside check would have passed. Ruling:
+the queued deletion **requires fresh authenticated confirmation after
+expiry**. A legitimate owner is never permanently blocked, which was the
+reason for queueing rather than rejecting; an attacker who has lost access
+by day seven cannot finish. Notifications at request, at expiry, and before
+execution.
+
+**One-time-code sessions get step-up on a closed sensitive set.** The code
+path is first-class by design, but nothing said what such a session may do.
+If it can enroll a passkey, change channels, create grants, request a
+packet, or start a deletion, then AC-PI2 is performative — an attacker never
+needs the hardened recovery path when ordinary login reaches everything.
+Ruling: those five operations require a session whose assurance **matches
+the account's derived level**, reusing the concept recovery already uses
+rather than running two systems with a gap between them. Credential
+enrollment is on the list deliberately: it is the takeover primitive, since
+it converts a temporary session into permanent access. Everything else stays
+frictionless from a code session.
+
+**AC-PI4 was false and is split into four cases.** It promised a clean
+cold-start with "no linkage artifact" after deletion; decision 014 creates a
+usable-but-restricted account on a live marker match plus internal linkage
+and a steward flag. New criteria: unmarked deletion (truly clean), live
+marker (restricted pending review, never denial), **expired marker (clean,
+marker inert)** — the case where an expiry bug would otherwise hide forever —
+and prior-merge history. The layer's "never fresh-start prevention" line and
+its `decisions/LOG.md#009` binding are both corrected; 009(a) was superseded
+twice over.
+
+**The merge event appends to both subject chains.** It was recorded only in
+the survivor's chain, leaving the absorbed identity's chain with no evidence
+of the event that changed its resolution. Decision 019 made chain membership
+permanent, which makes this final: a merge absent from the absorbed chain
+would never be recorded there. An auditor walking either chain alone must
+see a complete story. Unmerge likewise appends to both.
+
+**Names get explicit generous bounds.** "No length cap" is not an
+implementable instruction — a column, a rendered packet, a search index, and
+an abuse check on worker-submittable free text each need a bound, and absent
+one the first oversized input decides the behavior in whichever component
+fails first. The model's principle was that no *cultural structure* is
+imposed, not that no limit exists. Bounds are stated with reasoning at the
+schema site, and over-length input is **rejected loudly, never truncated
+silently** — silent truncation being the precise harm the model exists to
+prevent.
+
+**Corrections applied.** Layer `binds` moved from `#009` alone to 013, 014,
+016, 017, 019, 020. `person-identity/01` gains `foundation/07` (signup
+writes both planes) and defines "instantly" as spine commit, with payload
+following through the outbox — three different claims were hiding in one
+word. `person-identity/06`'s "permanent alias table" with a flipped pointer
+becomes **append-only alias events plus a named, role-scoped projection
+exemption**, since decision 017 removed the blanket derived/cache license.
+`06` also gains the deletion-under-merge obligation: it owns the alias
+closure, so it owns proving the deletion subsystem receives the correct one
+under a merge-or-unmerge racing a deletion. `07`'s `challenge_state` becomes
+**append-only challenge events** — a mutable field on an append-only marker
+row is a contradiction — and marker filings and steward approvals join the
+chained and anchored governing-event set from decision 019. `07`'s raw-dump
+deletion assertion is replaced by decision 017's full evidence set.
+
+**Recorded disagreement with the outside voice.** It called tasks declaring
+dependencies on unauthored layers "fake readiness." Rejected: `plans/ORDER.md`
+computes blocked from `depends_on` and never stores it, so `ready` with an
+unmet dependency is the model working, not a defect. The dangling references
+are tracked and discharge when those layers are decomposed.
+
+Consequences: `person-identity` stays 7 tasks; AC-PI4 replaced by AC-PI4a–d;
+AC-PI5 added.

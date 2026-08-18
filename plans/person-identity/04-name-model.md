@@ -4,7 +4,7 @@ type: task
 status: ready
 depends_on: [person-identity/01]
 migrations: [0011-names]
-binds: [decisions/LOG.md#013, research/13-name-standards.md]
+binds: [decisions/LOG.md#013, decisions/LOG.md#020, research/13-name-standards.md]
 evidence: []
 verified_by: null
 ---
@@ -44,6 +44,17 @@ Every read specifies a purpose and a point in time.
   (`IDE | ABC | SYL` — the CJK ideographic/romanized/phonetic mechanism).
   Invariant: when both `text` and parts are present, `text` contains
   nothing absent from a part.
+- **Length bounds, explicit** (decision 020). "No length cap" is not an
+  implementable instruction — a column, a rendered packet, a search index,
+  and an abuse check on a worker-submittable free-text field each need a
+  bound, and absent one, the first oversized input decides the behavior in
+  whichever component fails first. The model's principle was that no
+  *cultural structure* is imposed, not that no limit exists. Bound the
+  authoritative `text` and each decomposed part well above any documented
+  real-world name, record the chosen numbers and the reasoning at the schema
+  site, and **reject over-length input loudly as a validation error the
+  worker sees — never truncate silently**, since silent truncation is
+  precisely the harm this model exists to prevent.
 - Cultural structure as extensions, never core columns:
   `fathers_family` / `mothers_family` (the Spanish/Portuguese two-surname
   case AND the PhilSys maternal middle name — same mechanism, no
@@ -85,11 +96,13 @@ Every read specifies a purpose and a point in time.
   mutated; the prior name matches but is absent from an employer render.
 - AC: a CJK name with ideographic + romanized + phonetic entries renders
   correctly per purpose.
+- AC (mechanical): input exceeding the stated bound is rejected with a
+  worker-visible error; no path truncates silently.
 
 ## Outside check
 
 Verifier runs a fixture set: Indonesian mononym (incl. two-word), CJK
 with three representations, Spanish paternal+maternal, Filipino with
 maternal middle name, Tamil patronymic, post-transition change,
-MRZ-vs-VIZ disagreement, and a 39-char boundary name. All eight behave
-per criteria.
+MRZ-vs-VIZ disagreement, a 39-char boundary name, and one input just over
+the stated bound. All nine behave per criteria.
