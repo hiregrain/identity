@@ -1,7 +1,7 @@
 ---
 id: person-identity
 type: layer
-status: draft
+status: ready
 milestone: v1
 depends_on: [foundation]
 binds:

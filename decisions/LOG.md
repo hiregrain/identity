@@ -132,6 +132,87 @@ protocol now recorded in `plans/ORDER.md`):
   the AWS-vs-GCP mini-litigation awaits explicit go. Until ruled,
   foundation tasks stay provider-neutral and provisioning is gated.
 
+## 013 — Person-identity grilling rulings; supersedes 009(a) (2026-08-17)
+
+Founder rulings from the person-identity grilling. Entry 009(a) (no
+identity evidence retained across deletion) is **superseded** by the
+enrollment-token ruling below.
+
+**Signup and authentication.**
+- **Email-primary signup**, verified control of one contact channel;
+  phone optional. Rationale: `research/11` found phone raises attacker
+  cost only ~$0.10–0.50/account (SMS-PVA services run on malware-infected
+  real handsets; 200+ major services' OTPs intercepted in a 12-month
+  academic study), buys almost no uniqueness in target markets (India
+  ~1.88 SIMs/person; PH 18% multi-SIM), and email is materially cheaper
+  at scale. Industry pattern (Airbnb, Login.gov, CLEAR, ID.me) is
+  email-or-phone; phone-mandatory platforms gate at payout, not signup —
+  matching the founder's point that KYC lands at task completion/payout.
+  **The real anti-Sybil control is risk scoring** (VOIP line-type,
+  carrier reputation, velocity), not channel possession.
+  Recorded exception: PH SIMs are government-ID-bound under RA 11934, so
+  a verified PH mobile is a higher-assurance signal and is captured as
+  such rather than flattened.
+- Minimum to create an identity: one verified contact channel. No name,
+  no date of birth, nothing else.
+- **Passkeys preferred, one-time codes an always-available equal path.**
+- **Recovery must re-clear the account's derived assurance level**, plus
+  a **7-day post-recovery freeze** on deletion and grant changes with
+  notification to every channel on file (defeats takeover-then-destroy).
+
+**Names** (three strictly separated layers, per `research/11`; vendor
+practice is NOT the standard to copy — three of six major IDV vendors
+corrupt mononyms): worker-owned free-text `display_name`; immutable
+per-verification `document_name` in ICAO 9303 vocabulary
+(primary/secondary identifier, mononym flag, raw MRZ + raw visual zone,
+native script + ISO code, source); derived regenerable `name_index` for
+fuzzy matching (transliterations alongside originals, never phonetic
+hashing of non-Latin, candidates only — never auto-merge). Name changes
+are appends with use-type and validity periods; prior names are
+queryable for matching but withheld from employer-visible views at the
+query layer. PhilID middle name (mother's maiden surname) gets its own
+field, never initialized; Aadhaar-style single strings are UNSPLIT.
+
+**Duplicates and merges.**
+- Detection runs at signup **and continuously**; signals include contact
+  data, biographic data, document identifiers, IP and device. IP/device
+  are triage evidence only, never identity proof (grain prior art:
+  cafés, offices, VPNs, shared households produce false matches).
+- Workers may **report their own duplicates** (pull). Suspected
+  duplicates are **never proactively surfaced** to a worker — founder
+  ruling; proactive disclosure leaks the existence of a matching account
+  and teaches detection thresholds.
+- No automatic merge touches attested history. **Two stewards** required
+  where both records carry verified attestations; one otherwise.
+- Concurrent multi-accounting: **flag for steward review only** — no
+  visible enforcement, no automatic consequence.
+
+**Deletion and re-registration (supersedes 009a).**
+- **You can delete your record; you do not get a second identity.**
+- A **universal, contentless enrollment token** survives every deletion:
+  a one-way hash of verified document identifiers (primary strength),
+  plus phone/email if present (weak). It carries **no outcome tag, no
+  cause label, no reputation content** — this is what keeps it lawful
+  (fraud prevention is the named legitimate interest; retaining a
+  judgment about a person is not) and simple (no cause classification, no
+  adjudication surface, no race condition where a bad actor deletes
+  before a finding lands).
+- **Never expires**, until counsel says otherwise.
+- Re-registration matching a token: **new ledger ID, internally linked**
+  — a tombstoned ID is never reissued (spine signatures reference it
+  forever). First re-registration: usable, flagged for review. Repeat
+  velocity: created but **restricted** (no verification, attestations, or
+  grants) pending steward decision. **No automatic hard block** —
+  matching after erasure is defensible fraud prevention; denying service
+  on it is the sharpest legal exposure, and a contentless token cannot
+  distinguish fraud from a change of mind.
+- **Disclosed plainly at deletion**, not buried: the record is
+  unrecoverable, and the identity remains known — re-signup with the same
+  documents will be recognized and may require review.
+- Open: `research/12` (deletion vs. reputation evasion) is in flight and
+  counsel brief 1 carries the retention/restriction question. A contrary
+  finding gets its own entry.
+
 ## 012 — T1 gate discharged; D2 (Go core) stands (2026-08-17)
 
 Founder ruling. The T1 spike ran tasks 1–3 across a 10-cell matrix
