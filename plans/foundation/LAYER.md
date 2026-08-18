@@ -2,7 +2,7 @@
 id: foundation
 type: layer
 status: ready
-milestone: v1
+milestone: first-product
 depends_on: []
 binds:
   - decisions/LOG.md#005
@@ -50,8 +50,8 @@ Acceptance:
 - AC-F3: no spine column may use a type outside the explicit spine
   allow-list, and any allow-listed exception carries a written
   justification — enforced by the schema lint. The lint does not claim to
-  prove opaque columns are free of personal data; `foundation/09` covers
-  that.
+  prove opaque columns are free of personal data; `foundation/04`'s
+  correlation checklist and human review cover that.
 - AC-F4: every payload table carries `residency_region` NOT NULL.
 - AC-F5 (mechanical): a spine+payload write interrupted between planes is
   completed by retry with no duplicate and no silent backlog; nothing is

@@ -2,7 +2,7 @@
 id: self-asserted-record
 type: layer
 status: draft
-milestone: v1
+milestone: first-product
 depends_on: [person-identity]
 binds:
   - design/ledger-design-0.1.md#2.2

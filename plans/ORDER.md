@@ -25,10 +25,10 @@ plans/
   trust-kernel/ … durability-and-launch/
 ```
 
-Sixteen layers: `foundation`, `trust-kernel`, `party-registry`,
+Seventeen layers: `foundation`, `trust-kernel`, `party-registry`,
 `ingestion`, `person-identity`, `verification`, `self-asserted-record`,
 `consent-and-deletion`, `worker-surface`, `peer-references`,
-`prior-packet`, `marks-and-embeds`, `integration-surface`,
+`prior-packet`, `marks-and-embeds`, `analytics`, `integration-surface`,
 `operator-console`, `public-web`, `durability-and-launch`. Their current
 status and dependencies live in their own frontmatter, nowhere else.
 
@@ -45,6 +45,14 @@ resume import), verifies, controls and can delete their record; a
 registered party reads a prior packet under grant and writes an
 attestation back; the record renders with correct marks; the D1/D3 launch
 obligations (decision 005) are in force.
+
+**Milestone `first-product`** = the shortest path to something sold:
+`foundation`, `trust-kernel`, `person-identity`, `self-asserted-record`,
+`analytics`. A worker signs up, imports a resume, and a partner buys a read on
+their history and trajectory. It deliberately excludes `verification`, so the
+first thing sold runs on unverified self-asserted history plus whatever
+references have arrived — which is what `THESIS.md` §5 says, stated as a
+boundary rather than a sentence. `v1` remains the attestation round trip.
 
 ## The execution protocol
 
@@ -118,6 +126,12 @@ rather than one discovery at a time.
 | Money-movement entity red line (decisions/LOG.md 010, open item) | nothing in v1 — the ledger holds no funds. Listed because the first vertical payment feature proposal must hit this gate, not discover it | open |
 | Work-authorization rollout jurisdictions (decision 008 sets the shape; which jurisdictions ship in v1 is unruled) | `verification` work-authorization tasks only | open |
 | grain retrofit sequencing (research/10 migration list) | nothing in v1 — grain attaches through `integration-surface` when ruled | open |
+| **The confidence threshold** below which analytics returns insufficient data, and whether it is published (decision 022 open item) | `analytics` going `ready` | open |
+| **The run-record pseudonym** — it cannot be the `ledger_person_id`, which decisions 013/020 make permanent and spine-referenced (decision 026) | `analytics` going `ready` | open |
+| **The run-record spine/payload fork** — inside the subject's DEK it dies at deletion and breaches AI Act Art. 19; outside it, it survives readable (decision 026) | `analytics`, and a `foundation` task nobody owns | open |
+| **Worker-facing job suggestions.** 42 U.S.C. §2000e(c) defines an employment agency as one who procures "for employees opportunities to work for an employer" — the suggestion surface is that definition, and it would make Grain a covered entity rather than a vendor (`research/14` §1.2) | the suggestion surface; `THESIS.md` §8's matching position | open — founder, and it inverts the earlier reasoning |
+| **Antitrust.** A cross-employer performance register is a labour-market information exchange under the Jan 2025 DOJ/FTC guidelines, where third-party intermediation is expressly not a defence (`research/13` §6.6) | nothing in code; the thesis's risk section | open — founder, unscoped |
+| **Is R2 regional?** India DPDP Rule 8(3) compels one year of retention surviving account deletion from ~May 2027 (`research/14` §2) | the deletion promise, `consent-and-deletion` copy, and the India rail | open — counsel, long lead |
 
 ## Work that has no layer
 
@@ -126,6 +140,15 @@ rather than one discovery at a time.
 - **Dispatch conformance** — the ratification notice
   (`handoff/ratification-notice-for-dispatch.md`) is Dispatch-repo work,
   tracked there, not here.
+- **The slope disclosure text** — the three failure modes carried on every
+  trajectory output (decision 022). Product copy with a correctness
+  obligation; drafted nowhere, owned by `analytics`.
+- **The Article 22 brief, rescoped.** `THESIS.md` §10 lists it as never
+  scoped. In the UK the article no longer exists in that form: DUAA 2025 s.80
+  replaced it with Arts. 22A–22D, in force 5 February 2026, and Art. 22C
+  requires inform, representations, human intervention, and contest. The
+  brief's question is now who owes that duty — Grain or the deployer
+  (`research/14` §3).
 - **Counsel briefs 1–3** — inform design; block nothing in code. Brief 2
   (salted commitments) must return before checkpoints go *public* —
   private WORM anchoring is ungated.

@@ -1,7 +1,7 @@
 ---
 id: foundation/09
 type: task
-status: ready
+status: abandoned
 depends_on: [foundation/04]
 migrations: []
 binds: [decisions/LOG.md#017, research/06]
@@ -10,6 +10,12 @@ verified_by: null
 ---
 
 # Spine linkage threat model
+
+> **ABANDONED 2026-08-18.** Cut on founder ruling. The correlation questions
+> this task existed to ask move into `foundation/04` as a reviewer checklist
+> applied when a spine column is added, rather than a standing document that is
+> stale the week after it lands. The reasoning below is retained because the
+> checklist is derived from it.
 
 ## Objective
 

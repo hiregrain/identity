@@ -2,7 +2,7 @@
 id: person-identity
 type: layer
 status: ready
-milestone: v1
+milestone: first-product
 depends_on: [foundation]
 binds:
   - design/ledger-design-0.1.md#1

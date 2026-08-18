@@ -1,5 +1,10 @@
 # Founder Thesis: Universal Talent Infrastructure
 
+> **STALE, 2026-08-18.** Superseded by `THESIS.md` on every point where the
+> two differ — notably the position that commodity assessments are bought
+> rather than built, and the framing of the verticals as the primary object.
+> Retained as a dated record of founder thinking, not as guidance.
+>
 > **Evidence, never a requirement.** This file records the founder's strategy
 > thinking as shared on its date — the why behind this repo, not a spec.
 > Copied verbatim from the Dispatch repo

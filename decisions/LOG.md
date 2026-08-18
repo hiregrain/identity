@@ -908,3 +908,227 @@ are tracked and discharge when those layers are decomposed.
 
 Consequences: `person-identity` stays 7 tasks; AC-PI4 replaced by AC-PI4a–d;
 AC-PI5 added.
+
+## 021 — THESIS.md adopted as the identity layer's topline vision (2026-08-18)
+
+Founder rulings from the thesis grilling. `THESIS.md` rewritten the same day;
+prior draft's self-description was wrong and is superseded.
+
+- **Authority.** The thesis is the topline vision for the identity layer.
+  Where a plan disagrees with it the plan is flagged, and usually the plan
+  changes. It does not silently override ratified mechanics — a conflict with
+  `model/attestation-interface.md` or `contract/CONTRACT.md` is a defect
+  resolved by a decision entry, not by whichever file was written last.
+- **The draft header claiming it "supersedes nothing" is struck.** It was
+  attempting to encode drafting immaturity and instead encoded a false
+  authority ordering.
+- **Scope is the identity layer.** Dispatch holds its own thesis, aligned.
+  Identity is the platform; adjacent businesses are secondary to it.
+- **`handoff/founder-thesis.md` is stale**, marked as such in its own header,
+  and superseded on every point where the two differ — notably its placement
+  of commodity assessments on the buy-don't-build list, and its framing of the
+  four verticals as the primary object.
+- **Correction of record.** The prior draft cited three rulings dated
+  2026-08-18 that this log does not contain (worker analytics visibility, EU
+  high-risk status, outcome facts). None had been recorded. The EU material is
+  a research conclusion and is now labelled as one; the remainder are ruled in
+  entries 022–024 or left explicitly open.
+
+## 022 — Analytics is the first product; grading rulings (2026-08-18)
+
+Supersedes the draft thesis position that an independent measurement
+instrument is a precondition for selling grading.
+
+- **Analytics on work history and trajectory ships from day one** and is
+  likely the first thing sold. It runs on partially verified history.
+- **Input set**: work history at whatever verification level exists; skills
+  assessment results where any exist; performance in Grain's courses or
+  others'; structured references (entry 023); and observable meta-signals —
+  average tenure in role, described responsibility, seniority.
+- **Every input is weighted by provenance class.** A self-asserted history and
+  a party-attested one never carry equal weight.
+- **Party quality scores do not feed grading.** They are incomparable by
+  construction; grading on them would launder other employers' judgments.
+  They persist so the issuing party can read back its own judgments and so a
+  reader can see that evaluation occurred.
+- **Confidence gating.** Early output is weak and says so. Below a threshold
+  the product returns insufficient data and suggests an assessment rather than
+  producing a number. **OPEN: the threshold itself**, and whether it is
+  published.
+- **Slope ships with its limits disclosed** — the three known failure modes
+  (routing flattens raw grades while ability rises; frozen difficulty priors
+  read promotions as decline; grader drift tracks the trend being measured)
+  are stated on the face of every trajectory output. The fixed instrument is
+  hardening, not a gate.
+- **Assessment is demoted** from "the instrument" to one candidate instrument
+  and a likely second product. Identity depends on neither it nor placement.
+- **Run records are retained.** Requesting party, timestamp, input references,
+  instrument and model versions, output; held for the compliance period,
+  reachable by regulator and audit, and by no read path touching ranking or a
+  worker's packet. Nothing derived becomes a fact about the person, which
+  keeps the `plans/foundation/06-checks-port.md` ban intact.
+- **Workers do not see when analytics are run on them.** They see raw work
+  history and facts. Recorded as a deliberate cost and the largest departure
+  from the worker-ownership story.
+- **Worker-facing job-match suggestions** are permitted in principle — ranking
+  roles for a person, never candidates for a partner, and no Grain-computed
+  ranking is transmitted to a partner. Longer-term surface: build
+  compatibility, do not build first. **OPEN: employer-side matching.**
+
+## 023 — Structured references and attester trust (2026-08-18)
+
+New day-one mechanism, absent from the interface and every plan.
+
+- **Candidates solicit references** from people who managed them. Grain
+  designs the form and the fields; responses are structured throughout with
+  **no free response**, because free text adds noise to every downstream use.
+- **A reference is tied to a real person profile** and carries its own
+  provenance.
+- **Attester trust is tracked over time.** Veracity **events** are stored as
+  facts — this attestation was found falsified, this one corroborated — and
+  the trust weight is **derived at read time** from those events. Storing the
+  events rather than a computed score is what keeps this compatible with the
+  interface rule that derived estimates never enter as fact.
+- **Blast radius.** The weight's primary effect is to down-weight the
+  provenance of what that person attests, then and in future. It may
+  eventually surface in secondary scores; never a primary one.
+- **OPEN, and a counsel item: what survives profile deletion.** The mechanism
+  requires falsification history to outlive a deletion, or falsification is
+  erasable by re-registering. That collides with R2 (entry 003) and with entry
+  013. Candidate shapes considered and not ruled: a minimal veracity record
+  keyed to a salted identity commitment, or nothing surviving about the person
+  at all with only the counterparty's own flagged attestations persisting.
+  Until ruled, this mechanism is not buildable.
+
+## 024 — Record-layer and posture rulings (2026-08-18)
+
+- **The record layer is free to everyone, permanently** — candidates and
+  employers alike. The compiled data is the asset, not access to it. Consistent
+  with entry 002's "no economics embedded": the thesis states the layer is free
+  and carries no pricing.
+- **Visibility is worker-controlled.** Private by default; the worker consents
+  to sharing with a specific party, may publish a public record, and may use
+  the record to apply for work. "Universal" describes the right to hold a
+  record, not default readability of its contents.
+- **Write incentive: embedded in the partner's workflow.** Attesting must be a
+  byproduct of work the partner already does. Contractual reciprocity is the
+  backstop; Grain's own verticals seed the graph meanwhile. Nothing is designed
+  yet.
+- **Nobody re-inks the mark** — third-party embeds and Grain's own verticals
+  alike. Supersedes the draft thesis's asymmetry, which justified Grain's own
+  re-inking by ownership and thereby undercut the neutrality argument it sits
+  beside.
+- **EU posture: build with the constraints in mind, do not build for the EU
+  market first.** Same posture for worker-facing job suggestions.
+- **Neutrality is contractual, not structural.** Grain both holds the record
+  and operates verticals on it, so neutrality rests on contract, published
+  rules and audit rather than corporate separation. Stated as the weaker
+  guarantee it is. **OPEN: the trigger** at which structural separation becomes
+  necessary.
+- **Not ruled, carried forward:** whether "has listed references" is scored as
+  capability or reported as record completeness. Omitted from the §5 input list
+  pending a ruling.
+
+## 025 — Attester trust withdrawn; decision 023 superseded (2026-08-18)
+
+Supersedes entry 023 in full. 023 is restated here rather than partially
+amended, because a supersession that leaves half an entry standing is what
+misreads an append-only log.
+
+**Attester trust is withdrawn.** 023 required a person's falsification history
+to outlive their profile deletion, so that a manager who falsified a reference
+would be trusted less across the network afterwards. Entry 014 had already
+ruled against exactly this shape and the reasoning was not revisited when 023
+was written: default is that nothing survives deletion, and **performance-based
+exits leave no token, no hash, no marker**. Attester trust does not fit 014's
+severity-gated carve-out on four counts — the marker is keyed to a document
+identifier with no payload, carries a fixed expiry, requires an evidential floor
+of "could confidently report to the police", and produces **review, never
+denial**, whereas attester trust produces automatic network-wide down-weighting
+with no expiry. 014's own escalation #2 anticipated the structure: a
+cross-employer record carrying an exclusion flag is a blacklist and will be read
+as one.
+
+`research/13` closes the remaining argument. **AEPD PS-00176-2024 (Iberia
+Cards)** fined a controller that retained precisely the minimal link needed to
+recognise a returning applicant and used it against them — an Article 6(1)
+infringement, with no fraud and no safety involved.
+
+**Consequences.**
+- `peer-references` keeps its Sybil apparatus — reciprocity caps, velocity
+  limits, device/IP clustering, verified-anchor weighting, `excluded` grading,
+  the shadow/promotion gate — which already addresses the abuse case that
+  motivated attester trust. It loses veracity events and read-time trust
+  derivation.
+- Serious falsification routes to entry 014's existing safety marker. Below that
+  bar, evidence of a bad reference is deletable by either party. Accepted.
+- `operator-console` AC-OC4 returns to its pre-023 wording; the conflict it was
+  provisionally reworded around no longer exists.
+- The `foundation/06` schema-grep addition for trust scores stays. It costs
+  nothing and the failure it catches is now unlicensed rather than merely
+  bounded.
+
+**Restated and still binding from 023: the reference form.** Candidates solicit
+references from people who managed them. **Grain designs the form and the
+fields**; responses are structured throughout with **no free-response field**,
+because free text adds noise to every downstream use and is unusable as an
+analytics input. A reference is tied to a real person profile and carries its
+own provenance.
+
+## 026 — Analytics run records hold the run, never the output (2026-08-18)
+
+Supersedes the run-record ruling in entry 022. The rest of 022 stands.
+
+022 ruled that an analytics run record retains "requesting party, timestamp,
+input attestation refs, instrument and model versions, and **the output**" for
+"the compliance period". `research/13` and `research/14` establish that the
+output may not lawfully be retained about a person who has deleted, and that no
+regime surveyed requires it.
+
+**The AI Act does not compel it.** Art. 12(1) is a design duty — the system
+"shall technically allow for" logging — not a retention duty. Art. 12(3) is the
+only provision itemising log content, including input data, and it applies only
+to Annex III point 1(a) biometric identification. Grain is Annex III point 4, so
+**no minimum log content is prescribed at all**. Art. 19 is the sole retention
+duty: a six-month floor, risk-based, expressly subordinated — "unless provided
+otherwise in the applicable Union or national law, **in particular in Union law
+on the protection of personal data**". A provision that yields to the GDPR
+cannot be the Art. 17(3)(b) legal obligation that displaces a GDPR right. Art.
+17(3)(b)'s "to the extent that", Art. 6(3) with Recital 41, and *Digi* (C-77/21)
+and *SS SIA* (C-175/20) each independently confine it further.
+
+**No other regime asks for it either.** Colorado SB 26-189 §6-1-1702(4) imposes
+a three-year retention duty directly on Grain as developer, but over **system
+version identifiers, changelogs, and deployer notices** — system artifacts, not
+person records. California 11 CCR §7101(e) says expressly that a business is not
+required to retain personal information to fulfil a consumer request; §7155(c)'s
+five-year duty covers risk assessments about the processing. US federal
+recordkeeping binds the employer, not the vendor.
+
+**The ruling.** A run record holds the **requesting party, the timestamp, the
+instrument and model versions, and the input references** — and **not the
+output**, and nothing else attributable to a person. It is reachable by
+regulator and by audit and by no read path that touches ranking or a worker's
+packet. Retention is six months minimum per Art. 19, with the period stated as a
+number rather than as "the compliance period", which resolved to four different
+periods across the regimes surveyed.
+
+**Two open items this creates.**
+- **OPEN: the pseudonym.** Pseudonymised run records work only if the pseudonym
+  is not the `ledger_person_id` — entries 013 and 020 make tombstoned ids
+  permanent and referenced in spine signatures forever, which is a retained
+  means of singling out (EDPB Guidelines 01/2025). What identifier a run record
+  carries is undesigned.
+- **OPEN: the architectural fork.** Under `foundation/05` a run record either
+  sits inside the subject's DEK envelope, dying at deletion and breaching Art.
+  19, or outside it, surviving readable and unlawful. It must be split
+  spine-side and payload-side, and no task owns that.
+
+**Recorded, not ruled.** Two findings from `research/13` and `research/14` that
+belong to the founder and are not decided here: worker-facing job suggestions
+match 42 U.S.C. §2000e(c)'s definition of an employment agency — "to procure for
+employees opportunities to work for an employer" — which would make Grain a
+covered entity in its own right rather than a vendor supplying documentation to
+one; and a cross-employer performance register is a labour-market information
+exchange under the January 2025 DOJ/FTC guidelines, where third-party
+intermediation is expressly not a defence. Both are in `ORDER.md`'s gate table.

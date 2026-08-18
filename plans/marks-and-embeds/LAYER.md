@@ -6,8 +6,9 @@ milestone: v1
 depends_on: [prior-packet, worker-surface]
 binds:
   - design/ledger-design-0.1.md#7
+  - decisions/LOG.md#024
   - model/attestation-interface.md
-acceptance: [AC-ME1, AC-ME2, AC-ME3, AC-ME4]
+acceptance: [AC-ME1, AC-ME2, AC-ME3, AC-ME4, AC-ME5]
 evidence: []
 verified_by: null
 ---
@@ -28,7 +29,11 @@ non-SDK surfaces, static glyph assets with conformance rules for the long
 tail; **every mark resolves** to a grant-scoped verification page on the
 ledger origin (QR for print) — an unresolvable mark is counterfeit by
 definition; entry-point components ("Continue with [ledger] ID") themable
-per published guidelines; trust-bearing flows (verify, consent, dispute,
+per published guidelines; **nobody re-inks the mark** — third-party embeds
+and Grain's own verticals alike (decision 024), so no surface may restyle,
+recolor, relabel, or re-render a mark, and the prohibition is symmetric
+because an ownership-based exemption is exactly what erodes the neutrality
+the mark carries; trust-bearing flows (verify, consent, dispute,
 record) exclusively in invariant ledger chrome on ledger origin, light/dark
 only; the surface-conformance annex drafted as the checkable companion to
 the party agreement; no mark may encode work-authorization, nationality, or
@@ -44,3 +49,7 @@ Acceptance:
   state is never encoded in color alone.
 - AC-ME4: the conformance annex's rules are each expressed as an automated
   check a party's integration can run.
+- AC-ME5 (mechanical): the no-re-ink rule is enforced identically for a
+  Grain-operated surface and a third-party surface — the conformance suite
+  contains no first-party exemption, asserted by running it against a
+  Grain vertical's own integration.

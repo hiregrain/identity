@@ -33,10 +33,23 @@ naming convention.
   than described. "Readable-content type" was never defined, which left
   implementers to invent the boundary: the allow-list is the definition.
 - **Any spine column outside the allow-list requires a written
-  justification in its migration**, reviewed by a human against
-  `foundation/09`'s linkage threat model. The lint cannot prove an opaque
-  `bytea` or an id does not encode personal data (decision 017) — the
+  justification in its migration**, reviewed by a human. The lint cannot prove
+  an opaque `bytea` or an id does not encode personal data (decision 017) — the
   justification requirement covers exactly the case the lint is blind to.
+- **The correlation checklist** (replaces the cut `foundation/09`). The lint
+  reasons per column; identification happens across columns, so the reviewer
+  asks all five and the migration records the answers:
+  1. Does the column's **ordering** leak anything — enrollment time, sequence,
+     volume?
+  2. Does its **timestamp granularity** expose an activity pattern?
+  3. Can it be **joined against a known external roster** — a party's employee
+     list, a public directory — using issuer id plus timing?
+  4. Is any **commitment or salt reused** across streams, so two rows can be
+     linked that should not be?
+  5. What can an adversary holding a **partial external dataset** learn by
+     joining it against this column?
+  A recorded "this risk is accepted, because —" is a valid answer. An
+  unexamined one is not.
 - `0004-payload-us-bootstrap`: the payload database's base conventions —
   `residency_region` NOT NULL on every table (enforced by the lint, seeded
   `'us'`), payload rows keyed by spine object ID.
@@ -64,7 +77,8 @@ naming convention.
   adding a column of a type outside the spine allow-list fails CI via the
   lint, and a column outside the allow-list without a justification comment
   also fails. The criterion no longer claims to prove that opaque columns
-  carry no personal data — `foundation/09` and human review cover that.
+  carry no personal data — the correlation checklist and human review cover
+  that.
 - AC (mechanical): the two planes are separate databases, not schemas —
   proven by showing a transaction cannot span them and that each has its
   own role set.

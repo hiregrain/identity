@@ -34,9 +34,12 @@ execution queue is computed, never hand-maintained (plans/ORDER.md).
   constraint is live today (`0014-safety-markers` references
   `0009-party-core`).
 - Schema-grep check (Dispatch AC-04.3 pattern): no fact-table column may
-  store a capability score, tier, or trajectory; extended with the spine
-  readable-column lint hook (foundation/04 supplies the rule, this task
-  the runner).
+  store a capability score, tier, or trajectory — **nor any derived
+  reliability, trust, or weighting score about a person** (decision 025
+  withdrew the one mechanism that would have needed such a column, so this
+  now catches an unlicensed reintroduction rather than a bounded exception);
+  extended with the spine readable-column lint hook (foundation/04 supplies
+  the rule, this task the runner).
 - `checks/run.mjs` — runs all, then prints the frontier. Exempt from the
   plan gate (verifies the repo, not the product). Splits its checks into
   **metadata checks that need no database** (frontmatter, plan graph,

@@ -2,7 +2,7 @@
 id: trust-kernel
 type: layer
 status: ready
-milestone: v1
+milestone: first-product
 depends_on: [foundation]
 binds:
   - decisions/LOG.md#005
