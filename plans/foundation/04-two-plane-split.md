@@ -3,13 +3,17 @@ id: foundation/04
 type: task
 layer: foundation
 satisfies: [3, 4, 8]
-status: in_progress
+status: done
 depends_on: [foundation/03]
 migrations: [0003-spine-core, 0004-payload-us-bootstrap]
 binds:
   - decisions/LOG.md#011
-evidence: []
-verified_by: null
+evidence:
+  [
+    "log:log/2026-08-19-foundation-04-verification.md",
+    "diff:PR #4 @ 1f1fc0bf6957a82fb9fae5c9b2e23a57d950bcb6",
+  ]
+verified_by: clean-context-verifier@2026-08-19
 ---
 
 # Two-plane physical split
