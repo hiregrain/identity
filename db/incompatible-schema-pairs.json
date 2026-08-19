@@ -1,0 +1,4 @@
+{
+  "about": "Declared incompatible schema pairs (decision 017, foundation/03). Two schemas in a pair must be unlinkable: no role may read both, and no query may touch both. Declaring a boundary is an entry here, not a new mechanism. Enforced by checks/cross-schema-queries.mjs (repo-side lint) and test/append-only.test.mjs (database-side: the join is attempted as every non-superuser role and must fail at the permission layer). The first real pair arrives with party-registry/04 (party_users versus person tables, decision 016). Each entry is a two-element array of schema names.",
+  "pairs": []
+}

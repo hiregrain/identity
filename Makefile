@@ -12,9 +12,9 @@ PSQL_PAYLOAD := $(COMPOSE) exec -T payload psql -v ON_ERROR_STOP=1 -U identity -
 DUMP_SPINE := $(COMPOSE) exec -T spine pg_dump --schema-only --restrict-key=dump -U identity spine
 DUMP_PAYLOAD := $(COMPOSE) exec -T payload pg_dump --schema-only --restrict-key=dump -U identity payload
 
-.PHONY: check check-red check-red-db metadata install lint fmt-check go-check ts-check db-up db-reset migrate migrate-verify typegen typegen-check db-down
+.PHONY: check check-red check-red-db metadata install lint fmt-check go-check ts-check db-up db-reset migrate migrate-verify typegen typegen-check append-only db-down
 
-check: metadata install lint go-check db-up migrate-verify typegen-check ts-check
+check: metadata install lint go-check db-up migrate-verify typegen-check append-only ts-check
 	$(COMPOSE) down
 	@echo "check: green"
 
@@ -22,6 +22,8 @@ check: metadata install lint go-check db-up migrate-verify typegen-check ts-chec
 metadata:
 	node checks/frontmatter.mjs plans
 	node checks/migration-numbers.mjs
+	node checks/serving-credentials.mjs
+	node checks/cross-schema-queries.mjs
 
 install:
 	pnpm install --frozen-lockfile
@@ -31,7 +33,7 @@ fmt-check:
 	if [ -n "$$unformatted" ]; then echo "gofmt needed on:"; echo "$$unformatted"; exit 1; fi
 
 lint: fmt-check
-	pnpm exec prettier --check "checks/**/*.mjs" "db/**/*.mjs" "db/**/*.ts" "eslint.config.mjs" "surfaces/**/*.{ts,tsx,js,json}" --no-error-on-unmatched-pattern
+	pnpm exec prettier --check "checks/**/*.mjs" "db/**/*.mjs" "db/**/*.ts" "db/*.json" "test/*.mjs" "eslint.config.mjs" "surfaces/**/*.{ts,tsx,js,json}" --no-error-on-unmatched-pattern
 	pnpm exec eslint .
 
 go-check:
@@ -91,6 +93,11 @@ typegen:
 typegen-check:
 	node db/typegen.mjs --check
 
+# The standing append-only proof (foundation/03): runs against both
+# migrated planes; see test/append-only.test.mjs for what it asserts.
+append-only:
+	node test/append-only.test.mjs
+
 db-down:
 	$(COMPOSE) down
 
@@ -109,6 +116,10 @@ check-red:
 	! pnpm exec tsc -p test/fixtures/redpath/ts
 	@echo "red path 4: duplicate migration number across chains fails the numbering check (no database)"
 	! node checks/migration-numbers.mjs test/fixtures/redpath/migrations test/fixtures/redpath/plans
+	@echo "red path 5: owner credential planted in a serving tree fails the credentials check (no database)"
+	! node checks/serving-credentials.mjs test/fixtures/redpath/serving
+	@echo "red path 6: planted query touching both members of a declared incompatible schema pair fails the cross-schema lint (no database)"
+	! node checks/cross-schema-queries.mjs test/fixtures/redpath/cross-schema/pairs.json test/fixtures/redpath/cross-schema/queries
 	@echo "check-red: all red paths fail as required"
 
 # Database-dependent red path: a schema edit without regenerated types
@@ -121,4 +132,17 @@ check-red-db:
 	! node db/typegen.mjs --check
 	echo "DROP TABLE planted_drift;" | $(PSQL_SPINE) -f -
 	node db/typegen.mjs --check
-	@echo "check-red-db: schema/typegen drift fails as required"
+	@echo "red path db 2: an unenumerated UPDATE grant to the app role fails the append-only test"
+	echo "GRANT UPDATE ON schema_migrations TO identity_app;" | $(PSQL_SPINE) -f -
+	! node test/append-only.test.mjs
+	echo "REVOKE UPDATE ON schema_migrations FROM identity_app;" | $(PSQL_SPINE) -f -
+	@echo "red path db 2b: an unenumerated sequence UPDATE grant (setval) fails the append-only test"
+	echo "CREATE SEQUENCE planted_seq; GRANT UPDATE ON SEQUENCE planted_seq TO identity_app;" | $(PSQL_SPINE) -f -
+	! node test/append-only.test.mjs
+	echo "DROP SEQUENCE planted_seq;" | $(PSQL_SPINE) -f -
+	@echo "red path db 3: a SECURITY DEFINER function containing UPDATE fails the append-only test"
+	echo "CREATE FUNCTION planted_definer() RETURNS void LANGUAGE sql SECURITY DEFINER AS 'UPDATE schema_migrations SET name = name';" | $(PSQL_PAYLOAD) -f -
+	! node test/append-only.test.mjs
+	echo "DROP FUNCTION planted_definer();" | $(PSQL_PAYLOAD) -f -
+	node test/append-only.test.mjs
+	@echo "check-red-db: planted violations fail as required and the databases are left as found"

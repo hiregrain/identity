@@ -78,8 +78,13 @@ jobs:
       # Generated types are diffed against both live schemas; a table
       # edited without regenerated types fails here.
       - run: make typegen-check
-      # The database-dependent red path: planted schema drift must fail
-      # the check above.
+      # The standing append-only proof (foundation/03): grants, default-
+      # privilege inheritance, SECURITY DEFINER bodies, incompatible
+      # schema pairs — against both live planes.
+      - run: make append-only
+      # The database-dependent red paths: planted schema drift, a planted
+      # unenumerated UPDATE grant, and a planted mutating SECURITY
+      # DEFINER function must each fail their check.
       - run: make check-red-db
       - run: make db-down
 
