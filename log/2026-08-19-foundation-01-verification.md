@@ -57,3 +57,40 @@ foundation/02 and /06; Go pin in `core/go.mod` consumed by CI's
 fan-in expressing "all stages required"). No scope creep found: every file
 in the diff maps to a scope item. `contract/` already existed on `main`,
 so its absence from the diff is not a gap.
+
+## Delta re-verification — review-fix head
+
+PR #1 gained one review-fix commit after the pass above; the evidence now
+cites the head that merges.
+
+- New head SHA verified: `57b7adb35baecae4e3ba06faa988d632a1022323`
+  (`fix(foundation/01): review findings — pin actions, loopback db,
+  honest ts stage`).
+- Delta contents, confirmed exhaustive by diffing `01aacc0..57b7adb`:
+  (1) every CI action pinned to a commit SHA with the release tag in a
+  comment; (2) docker-compose port bound to `127.0.0.1:5433`; (3) new
+  `checks/workspace-scripts.mjs` wired as the first step of
+  `make ts-check`; (4) a workflow header comment stating that
+  `needs: [db-migrate]` is ordering only, not a data dependency. Nothing
+  else in the delta — no scope creep.
+- All four pinned SHAs verified independently against the GitHub API:
+  `actions/checkout@11d5960a…` = v4.4.0, `actions/setup-node@49933ea…` =
+  v4.4.0, `actions/setup-go@40f1582…` = v5.6.0,
+  `pnpm/action-setup@fc06bc1…` = v4.4.0 — each SHA is exactly the commit
+  its claimed tag points at.
+- Re-runs on a fresh clone at the new head: `make check` exit 0
+  (`check: green`), with the new zero-package statement observed —
+  `workspace-scripts: zero workspace packages matched (surfaces/ is an
+  empty seed; allowed)`. `make check-red` exit 0, all three red paths
+  fail as before. CI at the new head: all seven jobs pass
+  (actions run 32297414443).
+- Planted-package test: a temporary `surfaces/tmp-verify-pkg/package.json`
+  with a `test` script but no `typecheck` made
+  `node checks/workspace-scripts.mjs` exit 1 with the expected FAIL line;
+  removed, the check returned to the zero-package pass and the tree was
+  left clean.
+- Noted deviation, accepted by review: the fix commit uses type `fix`
+  where ORDER.md's vocabulary would arguably say `chore` (`fix` corrects
+  a verified defect; these were review findings). The commit is pushed;
+  evidence cites SHAs, so it is accepted rather than rewritten.
+- Verdict: **PASS** at `57b7adb35baecae4e3ba06faa988d632a1022323`.

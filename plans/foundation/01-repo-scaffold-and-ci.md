@@ -5,7 +5,7 @@ layer: foundation
 satisfies: []
 status: done
 depends_on: []
-evidence: ["log:log/2026-08-19-foundation-01-verification.md", "diff:PR #1 @ 01aacc053ad4f5672ba63c5ddd7946ecd3bf26b2"]
+evidence: ["log:log/2026-08-19-foundation-01-verification.md", "diff:PR #1 @ 57b7adb35baecae4e3ba06faa988d632a1022323"]
 verified_by: clean-context-verifier@2026-08-19
 ---
 
