@@ -1132,3 +1132,108 @@ covered entity in its own right rather than a vendor supplying documentation to
 one; and a cross-employer performance register is a labour-market information
 exchange under the January 2025 DOJ/FTC guidelines, where third-party
 intermediation is expressly not a defence. Both are in `ORDER.md`'s gate table.
+
+## 027 — Mark, pointer and imprint constraints settled (2026-08-18)
+
+Recorded in `mark/README.md` and `DESIGN.md` §3; generator and assets in `mark/`.
+
+**The mark.** Three concentric threaded bands, seven lobes, unequal band widths,
+one lobe deliberately deepened. Provisional — the lobe count may change and the
+generator is parameterised accordingly. Four purpose-drawn size tiers; scaling
+the master is what fails below ~40px. Dark renders stronger than light under
+~120px.
+
+**The verification mark is a POINTER, not a badge.** It says "this person has a
+record you can inspect", never "this person is verified". A badge collapses a
+graded epistemic claim into a yes, which is the credential logic this product
+exists to replace. Permanently prohibited: filled disc, shield, ring, container,
+checkmark, lobed disc at badge scale, any rendering larger than the adjacent
+name's cap height. On third-party surfaces the pointer must carry a count; on our
+own surfaces context does that work and it may stand alone.
+
+**Two binding laws added to `DESIGN.md` §1**, reasons recorded in the text so they
+survive editing: size never scales with career length (footprint that grows with
+tenure is an age proxy, and an age proxy on a hiring surface is a discrimination
+exposure); absence of attestation is never drawn as diminished magnitude (pale and
+thin read as *lesser*, not *unconfirmed*).
+
+**Open.** The lobe count; the break angle, which should be locked to the top; and
+the collision between the no-centre rule and the imprint's identity core, which is
+inked at signup and carries the empty state (`imprint/README.md` §7).
+
+**Unverified.** A second independent pass could not confirm the Smart Seal
+registration (Reg. 7142020) recorded in earlier research. Verify against the
+register before relying on it.
+
+## 028 — Founder grilling: next-block rulings (2026-08-18)
+
+Thirty-two questions across five rounds. Design proceeds; the two unruled legal
+findings in entry 026 stay open and are not treated as blocking. Order of work:
+**schema, then wordmark, then the worker core screen and the grant flow.**
+
+**Identity and access.**
+- **Login with Grain is an identity provider**, behaving like Login with Google or
+  LinkedIn. A separate consent screen appears only if the service also wants the
+  record. Same button on partner sites and on our own verticals, with no
+  privileged access for the verticals.
+- **Partners receive a per-partner pairwise pseudonym**, never `ledger_person_id`.
+  This also closes the pseudonym open item in entry 026: the ledger id never
+  leaves the system, so it cannot become a cross-service correlation key.
+
+**The record.**
+- **The chapter is the atom, and tenure is the relationship with the party.** A
+  task platform worked sporadically is one chapter spanning the whole
+  relationship. A chapter ends when the relationship ends, not when activity
+  pauses. Rehire starts a new chapter.
+- **Promotions and position changes sit inside the chapter**, drawn as a division
+  within the band, spaced tighter than the gap between chapters.
+- **Résumé upload auto-creates chapters as self-asserted**, reviewable before
+  commit.
+- **Once work history is added, only minor edits are possible.** Removal requires
+  contacting support with a justification. Coherent with decision 003: the worker's
+  exit is all-or-nothing — whole-profile deletion remains available at any time,
+  but individual chapters cannot be quietly excised.
+
+**Attestation.**
+- **Partners write freely. No worker countersign.** Founder ruling: the employer is
+  inherently more trustworthy. Consequence to design for: GDPR Art. 16 gives a
+  right of rectification regardless, so a correction path must exist — it moves
+  from a countersign gate to a post-hoc dispute.
+- **The party registers, not the person.** Attesting from a registered party's
+  verified domain is a signed link and one click, no account. An individual with no
+  registered party must create an account and attests as `peer_attested`, carrying
+  less weight. Friction lands where trust is lower. Supersedes the account-required
+  shape carried over from the hospitality product.
+- **Unregistered former employers are permanent `peer_attested`**, so workers with
+  informal employment history are not locked out of having a record.
+
+**Disputes.**
+- **Grain adjudicates authenticity, never substance.** Whether an attestation was
+  genuinely signed by that party, whether it is a duplicate or spam — yes. Whether
+  a performance claim is fair — never. Reason: FCRA §611 requires a consumer
+  reporting agency to conduct reasonable reinvestigation of disputed information;
+  performing substantive reinvestigation voluntarily is a defining CRA duty and
+  cuts against the R1 posture in decision 003.
+- **Disputed claims stay visible and marked**, with the worker's statement attached,
+  never silently removed.
+
+**Sharing.**
+- **Public URL**: verification status and work history, social-profile shaped,
+  worker-customisable.
+- **Custom share link**: full record including the imprint. Sensitive, carries a
+  warning, expires by default, revocable, and the worker can see every link issued.
+
+**Verification tiers.** Four internally — recorded, contact, document, biometric.
+**Only two surface to partners: identity verified, or not.** Document is the line;
+contact tier is the most likely to be misread as meaning more than an email
+round-trip. Biometric stays opt-in for a stated reason, given BIPA, the EU AI Act
+and separate regimes across target markets.
+
+**Schema standards.** W3C Verifiable Credentials 2.0 for the envelope, our own
+payload, ESCO for `work_kind` vocabulary. Open Badges 3.0 and 1EdTech CLR rejected
+as payload: they are shaped around achievements conferred by an issuer, which is
+the credential model the thesis attacks. Known weakness: ESCO's coverage of
+informal and platform work is thin and will need an extension mapped back to it.
+
+**Design.** Light by default, dark fully supported. Core screen order: imprint,
+outstanding verification, work history, sharing, identity.

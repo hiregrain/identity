@@ -305,6 +305,16 @@ contains no checkmarks.**
 **Iconography is starved.** Drawn in-house, 24px grid, 1.5px hairline, square
 terminals, never filled. Roughly eight exist.
 
+**The core screen runs in one order** (decision 028): the imprint, outstanding
+verification, work history, sharing, identity. Verification sits second because it
+is the only element that asks the worker to act, and an unattested record is the
+failure mode. Identity goes last because it is settled once and then irrelevant.
+
+**A promotion is a division inside the band, not a new band.** The chapter is the
+relationship with the party, so a position change is drawn as a hairline division
+within the chapter, spaced tighter than the gap between chapters. Three positions
+over six years at one employer must be legible as one relationship.
+
 **Photography:** a square-cut portrait, document-grade, paired beside the imprint
 in the identity block. The imprint remains the hero object.
 
@@ -397,8 +407,11 @@ micro-caption band with the record still readable from cache.
    permanent and never surfaces. Four formats rendered, none chosen.
 4. **The record schema** — no field list exists anywhere for a work-history row,
    a skill, or a credential. Every surface in this document renders data that is
-   not yet specified. Prior art to draw from: W3C Verifiable Credentials 2.0,
-   Open Badges 3.0, 1EdTech CLR, ESCO, Velocity Network.
+   not yet specified. **Standards settled in decision 028**: W3C Verifiable
+   Credentials 2.0 for the envelope, our own payload, ESCO for `work_kind`.
+   Open Badges 3.0 and 1EdTech CLR rejected as payload — achievement-shaped, and
+   the conferral model is what the thesis attacks. The field list itself is still
+   the next piece of work and blocks every surface below.
 5. **The marks enum** — blocking `plans/marks-and-embeds` from going ready.
 6. **Dark mode** — rule defined, never rendered.
 7. **Companion typeface** for non-Latin scripts. Archivo is Latin-only and the
@@ -413,7 +426,15 @@ micro-caption band with the record still readable from cache.
     from the mark was right — every reviewer group read a concentric centre as a
     bullseye with the worker inside it. But the imprint's identity core is inked
     at signup and carries the empty state. Whether it survives there is unresolved.
-12. **The guidance surface.** Worker-facing suggestions are the only prospective
+12. **The dispute surface.** Partners write freely with no countersign
+    (decision 028), so a rectification path is required by GDPR Art. 16 regardless.
+    A disputed claim stays visible and marked with the worker's statement attached.
+    Undesigned.
+13. **The grant flow and the share link.** The moment worker custody either exists
+    or does not: an employer asks, the worker sees what would be disclosed, decides
+    under time pressure. Plus the two-tier sharing model — a public URL and an
+    expiring full-record link carrying a warning. Undesigned.
+14. **The guidance surface.** Worker-facing suggestions are the only prospective
     content in an otherwise retrospective product and have no visual class. They
     must not borrow the self-reported treatment, which would read as a weak claim
     about the past rather than a proposal about the future.
