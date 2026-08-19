@@ -8,7 +8,7 @@ depends_on: [foundation/01, foundation/04]
 evidence:
   [
     "log:log/2026-08-19-foundation-06-verification.md",
-    "diff:PR #6 @ 97b90f18f78b7a1a002fe66b8858adfefe16655f",
+    "diff:PR #6 @ bd9e97703b82f9d2bcbfa234ce8f538486117719",
   ]
 verified_by: clean-context-verifier@2026-08-19
 ---
