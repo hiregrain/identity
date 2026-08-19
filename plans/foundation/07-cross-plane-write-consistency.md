@@ -3,12 +3,15 @@ id: foundation/07
 type: task
 layer: foundation
 satisfies: [5]
-status: in_progress
+status: done
 depends_on: [foundation/04]
 migrations: [0020-cross-plane-outbox]
 binds: [decisions/LOG.md#011, decisions/LOG.md#017, decisions/LOG.md#005]
-evidence: []
-verified_by: null
+evidence:
+  - log/2026-08-19-foundation-07-verification.md
+  - https://github.com/hiregrain/identity/pull/7
+  - https://github.com/hiregrain/identity/actions/runs/32308828505
+verified_by: clean-context-verifier@2026-08-19
 ---
 
 # Cross-plane write consistency

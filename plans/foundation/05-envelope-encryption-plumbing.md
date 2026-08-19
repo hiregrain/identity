@@ -3,14 +3,17 @@ id: foundation/05
 type: task
 layer: foundation
 satisfies: []
-status: in_progress
+status: done
 depends_on: [foundation/04]
 migrations: [0005-dek-registry]
 binds:
   - decisions/LOG.md#011
   - design/ledger-design-0.1.md#2.5
-evidence: []
-verified_by: null
+evidence:
+  - test:log/2026-08-19-foundation-05-verification.md
+  - diff:github.com/hiregrain/identity/pull/5 (head e91daf58fa07b675a3a3752d20271f7ce7dc560a)
+  - log:github.com/hiregrain/identity/actions/runs/32308259651
+verified_by: clean-context-verifier@2026-08-19
 ---
 
 # Envelope-encryption plumbing

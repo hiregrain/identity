@@ -19,6 +19,7 @@ TOK = {
   "@@MARK_SOLID@@": rd("mark-solid.svgfrag"),
   "@@MARK56@@":     rd("mark-56.svgfrag"),
   "@@POINTER@@":    rd("pointer.svgfrag"),
+  "@@LOCKUP@@":     rd("lockup.svgfrag"),
   "@@WORKING@@":    rd("working.svgfrag"),
   "@@CHAPTERS@@":   rd("chapters.svgfrag"),
   "@@LOBES@@":      rd("lobes.json"),

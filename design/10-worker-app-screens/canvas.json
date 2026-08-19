@@ -7,6 +7,14 @@
     {
       "id": "page-2",
       "name": "Onboarding and sharing"
+    },
+    {
+      "id": "page-3",
+      "name": "Platform"
+    },
+    {
+      "id": "page-4",
+      "name": "How native \u2014 settled"
     }
   ],
   "artboards": [
@@ -17,7 +25,7 @@
       "x": 0,
       "y": 0,
       "w": 360,
-      "h": 800
+      "h": 728
     },
     {
       "file": "Expanded.dc.html",
@@ -95,7 +103,52 @@
       "file": "Sharing.dc.html",
       "title": "Sharing",
       "page": "page-2",
-      "x": 2200,
+      "x": -440,
+      "y": 0,
+      "w": 360,
+      "h": 800
+    },
+    {
+      "file": "ShellIOS.dc.html",
+      "title": "iPhone 17 \u2014 402x874 @3x",
+      "page": "page-3",
+      "x": 0,
+      "y": 0,
+      "w": 426,
+      "h": 990
+    },
+    {
+      "file": "ShellAndroid.dc.html",
+      "title": "Android \u2014 common viewport",
+      "page": "page-3",
+      "x": 520,
+      "y": 0,
+      "w": 384,
+      "h": 990
+    },
+    {
+      "file": "HandleGrain.dc.html",
+      "title": "A \u00b7 Grain-native",
+      "page": "page-4",
+      "x": 0,
+      "y": 0,
+      "w": 360,
+      "h": 800
+    },
+    {
+      "file": "HandlePlatform.dc.html",
+      "title": "B \u00b7 Platform-native",
+      "page": "page-4",
+      "x": 440,
+      "y": 0,
+      "w": 360,
+      "h": 800
+    },
+    {
+      "file": "HandleSplit.dc.html",
+      "title": "C \u00b7 Split",
+      "page": "page-4",
+      "x": 880,
       "y": 0,
       "w": 360,
       "h": 800
@@ -197,10 +250,50 @@
       "y": -260,
       "w": 360,
       "text": "NEW, decision 045. Sharing was the record's fourth section, below identity, outstanding verification and work history \u2014 which is where a product puts what does not matter, on the one surface where worker custody is actually exercised.\nExposure is stated in one sentence before any control: a worker learns what is already true before deciding anything. Every control is drawn but inert; what revoke and the visibility switches actually do is undecided (gaps 8 and 13).\nThe closing line on grants says ending one stops future reads and cannot pull back what was already read and kept, rather than implying otherwise."
+    },
+    {
+      "id": "n-platform",
+      "page": "page-3",
+      "x": 0,
+      "y": -300,
+      "w": 880,
+      "text": "Verification frames, drawn from published device metrics. Neither paints fake chrome \u2014 no clock, no battery, no home-bar glyph \u2014 because on a real device the system draws into exactly that space and an imitation renders doubled. The insets are reserved bands carrying their measurements.\n\niPhone 17: 402x874 pt at 3x, status bar 54, portrait safe area top 62 / bottom 34. That leaves 778 pt, so a screen drawn 800 tall is 22 pt too tall \u2014 and 360 wide leaves 42 pt of the display unused, because every screen here has a hardcoded 360px root.\n\nAndroid, common viewport: 24 dp status bar and 48 dp three-button navigation \u2014 the larger figure, because three-button nav still ships and users still choose it. That leaves 728 dp, so 800 is 72 dp too tall.\n\nThe common safe box across both is 360 x 728, and that is the reflow target.\n\nAlso visible here and not fixed: Android takes BOTH edges for the back gesture, roughly 24 dp in. The record's section index sits at right:0, 32 px wide \u2014 entirely inside that strip, so dragging it navigates back. design/08 \u00a73 recorded the inset problem and nothing acted on it; removing the plate footer made the bottom worse by running scrollable content to the gesture-bar edge."
+    },
+    {
+      "id": "n-native-brief",
+      "page": "page-4",
+      "x": 0,
+      "y": -340,
+      "w": 1240,
+      "text": "SETTLED \u2014 decision 047. A wins: the component language stays Grain's own on iOS and Android alike. Material and HIG components are not adopted, because a record that renders differently per operating system is what \u00a75 exists to prevent.\n\nThese three stay as the record of HOW that was decided, not as screens to build. They should not be re-litigated without a superseding entry.\n\nOne screen, three component grammars, identical logic sliced from the shipped Handle and an identical palette \u2014 so the comparison isolated form and nothing else.\n\nWhat the decision owes, and 047 makes it an obligation rather than a hope: platform MECHANICS in full (safe areas, back and the gesture zones, 200% font scaling, screen-reader order, haptics named per platform, deep links); placement and behaviour conventional even where form is not; and anything tappable reading as tappable without motion or colour, which is the harder half of having neither. Nobody in the target population has been put in front of these screens, so 'intuitive' is an assertion and 047 records it as one."
+    },
+    {
+      "id": "n-native-a",
+      "page": "page-4",
+      "x": 0,
+      "y": 860,
+      "w": 360,
+      "text": "A \u00b7 Grain-native \u2014 CHOSEN (047). This is the shipped screen, mounted rather than copied so the baseline cannot drift.\n\nFor: the record is an instrument and reads as one; one language on both platforms; \u00a75's rule that nobody themes states holds by construction.\n\nAgainst, and it is the cost now owed: a ruled line is not what a worker's other apps taught them an input is. At rest it looks like a rule. 047 turns that into work \u2014 tappable must read as tappable without motion or colour \u2014 rather than letting the win settle the objection."
+    },
+    {
+      "id": "n-native-b",
+      "page": "page-4",
+      "x": 440,
+      "y": 860,
+      "w": 360,
+      "text": "B \u00b7 Platform-native, Material 3 \u2014 NOT ADOPTED (047).\n\n\nFor: instantly legible to an Android user. The filled field, the floating label, the chip and the pill button are the shapes their phone has trained them on. Lowest learning cost of the three.\n\nAgainst, and it is specific: the filled field is a CONTAINER, which \u00a78 deletes and whose boxed fields it says do not exist; the pill is 100px radius against \u00a77's 3px; the type is the system face against \u00a76's single family; and M3 carries error in colour, which \u00a75 forbids \u2014 faked here with weight, which is not what Material does. Adopting this means the record renders differently per operating system, which is the thing \u00a75 exists to prevent."
+    },
+    {
+      "id": "n-native-c",
+      "page": "page-4",
+      "x": 880,
+      "y": 860,
+      "w": 360,
+      "text": "C \u00b7 Split \u2014 NOT ADOPTED (047).\n\n\nFor: navigation and commit feel ordinary while everything carrying the record keeps the ruled input, Archivo and error in ink. Familiarity where familiarity pays, instrument where evidence lives.\n\nAgainst: the seam has to be defended case by case, and 'chrome' has no definition yet. Is a consent sheet chrome or record? A dispute form? Without a rule this becomes drift wearing a decision's clothes \u2014 which is exactly what entry 046 left open."
     }
   ],
   "launch": {
     "view": "canvas",
-    "page": "page-1"
+    "page": "page-4"
   }
 }

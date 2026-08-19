@@ -14,6 +14,16 @@ type DatabaseResidencyRow struct {
 	ResidencyRegion string
 }
 
+// DekRegistryRow is one row of payload.dek_registry.
+type DekRegistryRow struct {
+	PersonId        string
+	Event           string
+	WrappedDek      *[]byte
+	KeyProvider     string
+	RecordedAt      time.Time
+	ResidencyRegion string
+}
+
 // SchemaMigrationsRow is one row of payload.schema_migrations.
 type SchemaMigrationsRow struct {
 	Number          int32

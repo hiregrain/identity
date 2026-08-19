@@ -31,6 +31,10 @@ const TYPE_MAP = new Map([
   ["boolean", ["bool", "boolean"]],
   ["bytea", ["[]byte", "Uint8Array"]],
   ["timestamp with time zone", ["time.Time", "string"]],
+  // uuid: introduced by 0005-dek-registry's person_id (foundation/05).
+  // Ledger ids travel as their canonical lowercase string form in both
+  // languages; nothing computes on the bits.
+  ["uuid", ["string", "string"]],
 ]);
 
 const failures = [];
