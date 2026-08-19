@@ -3,12 +3,14 @@ id: foundation/08
 type: task
 layer: foundation
 satisfies: [6, 7]
-status: in_progress
+status: done
 depends_on: [foundation/05, foundation/07]
 migrations: [0021-deletion-journal, 0022-purge-role-and-restore-gate]
 binds: [decisions/LOG.md#017, decisions/LOG.md#014, design/ledger-design-0.1.md#2.5]
-evidence: []
-verified_by: null
+evidence:
+  - "log:log/2026-08-19-foundation-08-verification.md"
+  - "diff:PR #8 @ db0dd6472c0306684256b61f5156399ae27bd3be"
+verified_by: clean-context-verifier@2026-08-19
 ---
 
 # Deletion mechanics: purge, backups, and restore
