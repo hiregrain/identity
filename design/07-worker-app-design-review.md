@@ -182,7 +182,7 @@ Not convergent, but verifiable against the repo and therefore not opinion.
   the field "arrives prefilled by transliteration and is never rejected";
   `normalize()` strips to `[a-z0-9-]`, returning empty string for a Devanagari or
   Arabic name, which the component then classes as `empty`. The three fallbacks
-  are hardcoded Latin. This is the mechanism decision 029 relies on to keep
+  are hardcoded Latin. This is the mechanism decision 041 relies on to keep
   Latin-only URLs from reading as a rejection.
 - **The imprint is 12px off-centre on the core screen · T.** `main` padding is
   `0 44px 56px 20px` to clear the edge index, so the figure's centre lands at

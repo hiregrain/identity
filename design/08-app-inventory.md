@@ -14,23 +14,23 @@ closed first, named inline.
 
 ## 0. Settled — recorded here because the reasoning is load-bearing
 
-**All four items in this section were closed on 2026-08-19** by decisions 031 and
-034. They are kept rather than deleted because each one cost real evidence, and
+**All four items in this section were closed on 2026-08-19** by decisions 037 and
+040. They are kept rather than deleted because each one cost real evidence, and
 because §0.2 in particular is the kind of constraint a later reader will
 rediscover the hard way. Read the resolutions first:
 
 - **0.1 Platform** — native supersedes "PWA before native"; the PWA stays
   first-class from the same codebase; the web app is built in parallel
-  (decision 031). Framework ratified as Expo SDK 57 + Skia (decision 034).
+  (decision 037). Framework ratified as Expo SDK 57 + Skia (decision 040).
 - **0.2 The right edge** — resolved by demoting the edge index to an accelerator,
   plus a local Expo module for `setSystemGestureExclusionRects`. The 200dp budget
   is worse than it reads: shared across every window on the display, per edge,
   walked bottom-up, silently truncated with no error. Nothing depends on hitting
   the strip.
 - **0.3 Dark mode** — ships at v1 as a *second palette*, not a mechanical
-  inversion (decision 031). §5's rule does not survive arithmetic.
+  inversion (decision 037). §5's rule does not survive arithmetic.
 - **0.4 Dynamic Type** — still the open engineering problem, now carried by
-  `app-shell` AC-AS4. iOS AX5 Body is 3.12× the default; Android 14+ is
+  `app-shell` `app-shell` criterion 4. iOS AX5 Body is 3.12× the default; Android 14+ is
   non-linear and its docs warn against reproducing it with a scalar.
 
 ## 0-original. Four things to settle before building
@@ -117,10 +117,10 @@ figure column has `white-space:nowrap`.
 | D4 | Ask a coworker | TO BUILD |
 | D5 | Request sent, and its state afterwards | TO BUILD |
 
-### E · The attester's side — moved to the web (decision 032)
+### E · The attester's side — moved to the web (decision 038)
 
-Decision 029 gave every attester an account, which this document originally
-scoped as six screens inside the app. **Decision 032 withdrew that.** An
+Decision 041 gave every attester an account, which this document originally
+scoped as six screens inside the app. **Decision 038 withdrew that.** An
 invitation link opens the web attestation flow; the attester creates an account
 and attests there; the app is where they later hold their own record if they
 choose to. These surfaces belong to `public-web`, and the form itself to
@@ -150,7 +150,7 @@ their own chapter · the seven-measure form · submitted · their own empty reco
 | G1 | Sharing (section of B1) | BUILT |
 | G2 | Public page management — on/off, imprint on/off, preview | TO BUILD |
 | G3 | The public page, signed-in view | BUILT |
-| G4 | The public page, logged-out and crawler view (029: reduced) | TO BUILD |
+| G4 | The public page, logged-out and crawler view (041: reduced) | TO BUILD |
 | G5 | Create a grant or a share link — expiry, what they receive | TO BUILD |
 | G6 | Grant detail and revocation (sheet in B1) | BUILT |
 
@@ -161,12 +161,12 @@ their own chapter · the seven-measure form · submitted · their own empty reco
 | H1 | Account, read-only | BUILT |
 | H2 | Notification preferences | TO BUILD |
 | H3 | Language | TO BUILD |
-| H4 | Ask for an export — 24 hours, by email (030) | TO BUILD |
+| H4 | Ask for an export — 24 hours, by email (036) | TO BUILD |
 | H5 | Ask who has read the record — the Art. 15(1)(c) disclosure record | TO BUILD |
-| H6 | Contact support — the route for every account change (030) | TO BUILD |
-| H7 | Ask us to delete everything — **files the request, never executes it** (032) | TO BUILD |
+| H6 | Contact support — the route for every account change (036) | TO BUILD |
+| H7 | Ask us to delete everything — **files the request, never executes it** (038) | TO BUILD |
 | H7a | Deletion requested — the grace-period state, and what resets it | TO BUILD |
-| H7b | Unlock — biometrics or device passcode, declinable, default on (032) | TO BUILD |
+| H7b | Unlock — biometrics or device passcode, declinable, default on (038) | TO BUILD |
 | H8 | Sign out | TO BUILD |
 
 ### I · System and platform
@@ -271,7 +271,7 @@ Nothing can ship in Hindi until a companion face is chosen, and §6's whole
 hierarchy rests on a width axis the fallback stack does not have.
 
 **Notifications.** Per `plans/worker-surface/LAYER.md`, three events: a party
-attested, a grant is about to expire, a dispute deadline. Decision 029 removes
+attested, a grant is about to expire, a dispute deadline. Decision 041 removes
 read events. Each needs written content, and the permission prompt needs a
 moment — asking at launch is the pattern that gets denied.
 
@@ -282,8 +282,8 @@ moment — asking at launch is the pattern that gets denied.
 Two things follow from writing it down that were not visible before.
 
 **The attester side was roughly a fifth of the remaining app work, and decision
-032 moved it off the app entirely.** It was created by a decision about trust
-rather than about design (029, reversing 028), and putting it on the web removes
+038 moved it off the app entirely.** It was created by a decision about trust
+rather than about design (041, reversing 028), and putting it on the web removes
 the app's dependency on the product's scarcest action being completable on a
 phone. It is still the growth loop, and still not deferrable — it is simply
 `public-web`'s problem.

@@ -1,9 +1,9 @@
 # App framework — evaluation record
 
-2026-08-19. The evidence behind decision 034. Method follows
+2026-08-19. The evidence behind decision 040. Method follows
 `design/stack-litigation/`: advocacy briefs for each position, an adversarial
 audit, and independent verification of the facts both briefs would rest on.
-Binds nothing; decision 034 binds.
+Binds nothing; decision 040 binds.
 
 **Instruments.** An advocate's brief for Expo/React Native. An advocate's brief
 for native Swift + Kotlin twins, briefed to confront ratified D2 head-on. An
@@ -49,8 +49,8 @@ low-risk half and iOS is the risk.**
 Canvas and the rasterizer under a PWA are the same code. There is no native
 rendering advantage on the platform that matters most to this population.
 
-**The gesture API.** Decision 031 had already demoted the edge index to an
-accelerator, which is what satisfies AC-AS2. The native advocate scored its own
+**The gesture API.** Decision 037 had already demoted the edge index to an
+accelerator, which is what satisfies `app-shell` criterion 2. The native advocate scored its own
 headline platform argument at zero.
 
 **App size.** The 15.8MB-vs-2.0MB download gap between React Native and Kotlin
@@ -99,7 +99,7 @@ reproducing with a scalar. The web can be scaled but cannot read the setting,
 cannot branch, and applies a single linear multiplier. Against a nine-register
 fixed-px scale with a `nowrap` figure column at iOS AX5's 3.12×, this is the
 acceptance criterion most likely to fail — on the chosen framework. It is carried
-as `app-shell` AC-AS4 and it is real work.
+as `app-shell` `app-shell` criterion 4 and it is real work.
 
 **Haptics**, which also closed an open gap: `.rigid` on iOS is literally the
 seat's semantics, `HapticFeedbackConstants.CONFIRM` on Android. With the
@@ -138,11 +138,11 @@ Recorded because they emerged here and would otherwise be lost:
 
 - **`imprint/README.md` §8's patent clearance lost a limb.** It clears SAP US
   10712908 B2 partly on the ground that "the figure is generated
-  non-interactively." Decision 029 made it interactive. The transpose and
+  non-interactively." Decision 041 made it interactive. The transpose and
   ratings-source arguments stand independently; counsel was told otherwise and
   needs correcting.
 - **Neither IDV vendor permits capture in the host app's chrome**, on any
-  runtime. Decision 030 flagged that shape as "designed, not ruled"; decision 034
+  runtime. Decision 036 flagged that shape as "designed, not ruled"; decision 040
   ruled it.
 - **openapi-generator's plain `typescript` generator is experimental**;
   `typescript-fetch` and `typescript-axios` are the stable ones. A live defect in

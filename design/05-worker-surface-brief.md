@@ -74,7 +74,7 @@ The grant flow has to *demonstrate* control, not assert it:
 - **Expiry is mandatory.** A grant with no end is a permanent disclosure the
   worker forgets making.
 - **The worker sees every grant issued, and its state** — issued, active,
-  expired, revoked. *Amended by decision 029 §B4: read events are not surfaced.*
+  expired, revoked. *Amended by decision 035 §B4: read events are not surfaced.*
   A read stream during a live application is an anxiety feed and surveillance of
   the employer; GDPR Art. 15(1)(c) is satisfied by a disclosure record available
   on request.

@@ -1,6 +1,6 @@
 # The worker app — information architecture
 
-Settled 2026-08-19 (decision 029). This is what the app *is*: its structure, its
+Settled 2026-08-19 (decision 041). This is what the app *is*: its structure, its
 surfaces, and what sits on each. It is not a spec — `model/record-schema.md`
 owns the fields and `DESIGN.md` owns the grammar.
 
@@ -9,7 +9,7 @@ Companion documents: [`../DESIGN.md`](../DESIGN.md) ·
 this implements) · [`01-banned-patterns.md`](01-banned-patterns.md) ·
 [`../plans/worker-surface/LAYER.md`](../plans/worker-surface/LAYER.md).
 
-Where a ruling here supersedes an earlier document, decision 029 §B says so.
+Where a ruling here supersedes an earlier document, decision 041 §B says so.
 
 ---
 
@@ -182,7 +182,7 @@ receives — not as a warning, and not framed as a hazard.
 ## 7. Settings
 
 A sheet from the Record header, not a destination — and **read-only**
-(decision 030). Every account change is a support request.
+(decision 036). Every account change is a support request.
 
 - **Account** — full name, phone, email, identity tier, address. Shown, not
   edited. One route out of the group to support.
@@ -199,7 +199,7 @@ A sheet from the Record header, not a destination — and **read-only**
 
 The right is named rather than hidden because the consent instrument promises it
 at signup (`design/ledger-design-0.1.md` §8.2 item 5), and a promised right that
-cannot be found is worse than one never offered. Decision 030 records the
+cannot be found is worse than one never offered. Decision 036 records the
 Art. 12(2) exposure this carries.
 
 ## 7a. Identity verification
