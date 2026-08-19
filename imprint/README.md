@@ -39,9 +39,9 @@ Threads converge at the lobe tips and fan between them. This is load-bearing:
 | strand width | duration of that engagement | ledger |
 | **lobe angle** | **which responsibility dimension — seven permanent slots, identical registration on every strand** | `dimensions_exercised` |
 | **lobe depth** | **level attained, 0–6** | `dimension_standing[].level` |
-| thread density | corroboration tier — three discrete states | provenance class × corroboration |
+| thread density | corroboration tier — three discrete states, read as a contrast between bands and never as a count (044) | provenance class × corroboration |
 | plain vs lobed | whether anything about the work is attested at all | provenance class |
-| identity core | a person exists here; inked at signup | — |
+| ~~identity core~~ | dropped — 035 §B6; `_core()` is retained but no longer emitted by `render()` | — |
 
 **Deliberately not drawn:** slope, time-to-competence, complexity of work routed,
 outcome trajectory, `work_kind`, `volume`, resource magnitude. All are measured and
@@ -148,7 +148,30 @@ population, and splitting the ring otherwise suppresses their corroboration chan
 6. **Consequence Held may go unattested.** An employer signing "this person was the last
    check before an irreversible act" is creating a portable record of where liability
    sat. If legal refuses, the dimension set collapses back to a management ladder.
-7. **The outermost strand is systematically the least verified** — a current employer is
+7. **Thread pitch is floored at two DEVICE pixels and nobody has checked that
+   against an eye.** Decision 044 draws the figure as densely as the hardware
+   carries: 9 / 17 / 27 threads at dpr 1 / 2 / 3 for one record at 320 px,
+   verified through a CanvasKit harness. That is arithmetic. Two device pixels
+   is the tightest pitch that can resolve *at all*, which is not the same as the
+   tightest that resolves to a person holding a cheap phone at arm's length —
+   item 4 above governs, and if the floor is too tight the correction is the
+   constant, not the rule. It also means one record looks materially richer on a
+   3x screen than a 1x one, which is only honest because density is a contrast
+   and never a count.
+8. ~~The vertex cost.~~ **CLOSED 2026-08-19 (044).** Threads are cubic Beziers
+   fitted to `r(t)` with analytic tangents, segment count following arc length
+   and floored at eight per lobe. Verified against the analytic curve at 180
+   band/level/phase/density combinations: worst deviation **0.062 device
+   pixels** against a 0.25 budget. A mature nine-chapter record at 320 px costs
+   21 / 59 / 124 KB of path data at dpr 1 / 2 / 3 — below decision 040's
+   364 KB worst-case baseline while carrying 34 threads instead of 9. What
+   remains untested is behaviour under live zoom on a device, which is where
+   040 found the faceting in the first place.
+9. **Corroboration silently drops to two states on small surfaces.** Below a
+   four-thread budget `TIER_FRACTION`'s low (0.18) and mid (0.5) both round to
+   one thread. The channel degrades from three readable states to two and
+   nothing on the surface says so. Named in 044; undecided.
+10. **The outermost strand is systematically the least verified** — a current employer is
    the least likely to attest — while being the largest and most prominent element.
 
 ## 8. Prior art and IP
@@ -182,3 +205,13 @@ uniform-width arcs with rounded caps).
 
 Pure standard library, no dependencies. `imprint.py` is the whole generator;
 `examples/` holds the reference renders for each state, time structure and profile.
+
+`render()` takes `size` and `dpr` because thread count is budgeted in rendered
+pixels rather than viewbox units (decision 044). The SVG it emits carries
+`vector-effect='non-scaling-stroke'` on every stroked element — the property is
+not inherited, so a copy on the group would not reach the threads it governs.
+
+**SVG is not the product's renderer and is not evidence about this figure.**
+Decision 040 selected Skia and disqualified `react-native-svg` because it cannot
+express hairline mode at all. Imprint questions are settled against a CanvasKit
+harness; it is a scratch tool and is deliberately not committed here.
