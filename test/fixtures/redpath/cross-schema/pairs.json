@@ -1,0 +1,4 @@
+{
+  "about": "Red-path fixture (foundation/03): a declared incompatible pair whose planted query lives in queries/. checks/cross-schema-queries.mjs pointed at this file and that directory must exit 1.",
+  "pairs": [["redpath_left", "redpath_right"]]
+}
