@@ -1,5 +1,12 @@
 # D5 Verdict: Cloud Provider — Judge Recommendation
 
+> **SUPERSEDED 2026-08-19 by `d5-revised-verdict.md`. Do not rely on this file's
+> ruling.** Its central claim, that `rds.global_db_rpo` is a commit-gating
+> cross-region durability control, is false: the parameter gates on a
+> secondary's observed lag, not on the transaction reaching another region.
+> Two outside reviews found it and AWS's own documentation confirms it. The
+> reasoning is kept unedited so the error stays legible.
+
 Docket item D5, opened on founder go 2026-08-19 against the open item in
 decisions/LOG.md entry 011. Briefs: `d5-single-hyperscaler.md`,
 `d5-composed-stack.md`.
