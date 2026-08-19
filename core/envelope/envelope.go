@@ -64,6 +64,10 @@ var (
 	ErrDecryptFailed   = errors.New("envelope: decrypt failed")
 	ErrInvalidPersonID = errors.New("envelope: person id is not a lowercase uuid")
 	ErrEmptyClosure    = errors.New("envelope: destroy requires a non-empty alias closure")
+	// ErrNotServing: the payload plane was restored from a backup and
+	// the deletion-journal replay has not completed (foundation/08,
+	// decision 017). Every serving path refuses until it has.
+	ErrNotServing = errors.New("envelope: payload plane restored without deletion replay; not serving")
 )
 
 // The registry statements. The derivation rule lives in
@@ -104,6 +108,24 @@ RETURNING person_id`
 INSERT INTO dek_registry (person_id, event, wrapped_dek, key_provider, residency_region)
 SELECT $1, 'destroyed', NULL, $2, residency_region FROM database_residency
 ON CONFLICT (person_id) WHERE event = 'destroyed' DO NOTHING`
+
+	// servingGateSQL executes migration 0022's restore-gate rule — the
+	// only place it is executed:
+	//
+	//   A restored payload plane is SERVING iff no 'restored' row lacks
+	//   a 'replayed' row for the same restore_id.
+	//
+	// The query returns a row exactly when the system is GATED (an
+	// unbalanced restore exists), so a query failure and a returned row
+	// both refuse — the gate fails closed in every branch of
+	// assertServing.
+	servingGateSQL = `
+SELECT 1 FROM restore_gate r
+ WHERE r.event = 'restored'
+   AND NOT EXISTS (
+     SELECT 1 FROM restore_gate g
+      WHERE g.restore_id = r.restore_id AND g.event = 'replayed')
+ LIMIT 1`
 )
 
 // Envelope binds a registry connection and a key provider.
@@ -122,6 +144,9 @@ func New(q Querier, p keys.Provider) *Envelope {
 // and registers it. Fails with ErrAlreadyKeyed when the person already
 // holds a created row or has been destroyed.
 func (e *Envelope) Provision(ctx context.Context, person string) error {
+	if err := e.assertServing(ctx); err != nil {
+		return err
+	}
 	if err := validPersonID(person); err != nil {
 		return err
 	}
@@ -147,6 +172,9 @@ func (e *Envelope) Provision(ctx context.Context, person string) error {
 // is bound to the person id, so it decrypts under the subject's key
 // alone. Fails closed with ErrNoActiveDEK when no active DEK exists.
 func (e *Envelope) Encrypt(ctx context.Context, person string, plaintext []byte) ([]byte, error) {
+	if err := e.assertServing(ctx); err != nil {
+		return nil, err
+	}
 	dek, err := e.activeDEK(ctx, person)
 	if err != nil {
 		return nil, err
@@ -163,6 +191,9 @@ func (e *Envelope) Encrypt(ctx context.Context, person string, plaintext []byte)
 // provider's destruction error — never partial plaintext: the AEAD
 // authenticates the whole message or returns nothing.
 func (e *Envelope) Decrypt(ctx context.Context, person string, ciphertext []byte) ([]byte, error) {
+	if err := e.assertServing(ctx); err != nil {
+		return nil, err
+	}
 	dek, err := e.activeDEK(ctx, person)
 	if err != nil {
 		return nil, err
@@ -189,6 +220,12 @@ func (e *Envelope) Decrypt(ctx context.Context, person string, ciphertext []byte
 // that commit on), then the provider's scope key is destroyed (the
 // crypto-shred). Both halves are idempotent, so a partial failure is
 // retried by calling Destroy again with the same closure.
+//
+// Destroy is deliberately NOT behind the serving gate (foundation/08):
+// the restore-time deletion replay re-destroys every journaled person
+// while the gate is closed — destruction must always be possible, and
+// gating it would deadlock the very step that opens the gate. Every
+// serving path (Provision, Encrypt, Decrypt) is gated.
 func (e *Envelope) Destroy(ctx context.Context, closure []string) error {
 	if len(closure) == 0 {
 		return ErrEmptyClosure
@@ -205,6 +242,24 @@ func (e *Envelope) Destroy(ctx context.Context, closure []string) error {
 		if err := e.p.Destroy(ctx, person); err != nil {
 			return fmt.Errorf("envelope: destroy %s: %w", person, err)
 		}
+	}
+	return nil
+}
+
+// assertServing refuses every serving path while the payload plane
+// stands restored-but-not-replayed (foundation/08, decision 017): the
+// restore gate (migration 0022, restore_gate) is consulted before any
+// key is touched, and both failure branches — an unbalanced restore and
+// an unqueryable gate — refuse. ErrNotServing is deliberately distinct
+// from ErrNoActiveDEK: "this system is not serving anyone" must never
+// read as "this person was deleted".
+func (e *Envelope) assertServing(ctx context.Context) error {
+	rows, err := e.q.Query(ctx, servingGateSQL)
+	if err != nil {
+		return fmt.Errorf("envelope: serving gate: %w", err)
+	}
+	if len(rows) > 0 {
+		return ErrNotServing
 	}
 	return nil
 }

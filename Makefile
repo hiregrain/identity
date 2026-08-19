@@ -12,9 +12,9 @@ PSQL_PAYLOAD := $(COMPOSE) exec -T payload psql -v ON_ERROR_STOP=1 -U identity -
 DUMP_SPINE := $(COMPOSE) exec -T spine pg_dump --schema-only --restrict-key=dump -U identity spine
 DUMP_PAYLOAD := $(COMPOSE) exec -T payload pg_dump --schema-only --restrict-key=dump -U identity payload
 
-.PHONY: check check-red check-red-db metadata install lint fmt-check go-check ts-check db-up db-reset migrate migrate-verify typegen typegen-check append-only spine-schema payload-residency two-plane-split envelope-test cross-plane-constructs cross-plane-outbox db-down
+.PHONY: check check-red check-red-db metadata install lint fmt-check go-check ts-check db-up db-reset migrate migrate-verify typegen typegen-check append-only spine-schema payload-residency two-plane-split envelope-test cross-plane-constructs cross-plane-outbox deletion-test db-down
 
-check: metadata install lint go-check db-up migrate-verify typegen-check append-only spine-schema payload-residency two-plane-split envelope-test cross-plane-constructs cross-plane-outbox ts-check
+check: metadata install lint go-check db-up migrate-verify typegen-check append-only spine-schema payload-residency two-plane-split envelope-test cross-plane-constructs cross-plane-outbox deletion-test ts-check
 	$(COMPOSE) down
 	@echo "check: green"
 
@@ -25,6 +25,7 @@ metadata:
 	node checks/serving-credentials.mjs
 	node checks/cross-schema-queries.mjs
 	node checks/cross-plane-constructs.mjs
+	node checks/deletion-copy.mjs
 
 install:
 	pnpm install --frozen-lockfile
@@ -140,6 +141,21 @@ cross-plane-constructs:
 cross-plane-outbox:
 	node test/cross-plane-outbox.test.mjs
 
+# The deletion-mechanics acceptance suite (foundation/08): a real
+# pg_dump backup taken pre-deletion, restored (db/backup.mjs and
+# db/restore.mjs, driven exactly as an operator runs them), the restore
+# gate refusing traffic, the journal replay opening it, the purge role's
+# licensed DELETE and its audit trail. Build tag db like the envelope
+# suite; -count=1 because the database is state the test cache cannot
+# see. One provider run: everything this suite proves — journal, gate,
+# purge, replay — is provider-independent registry and grant state, and
+# the provider swap is already proven both ways by `envelope-test`.
+# NOTE: the restore scenario recreates the payload container mid-run;
+# the suite leaves both planes migrated and consistent on the green
+# path, which is why this target runs last in the database stage.
+deletion-test:
+	cd core && GRAIN_KEY_PROVIDER=software go test -tags db -count=1 ./deletion/...
+
 db-down:
 	$(COMPOSE) down
 
@@ -164,6 +180,8 @@ check-red:
 	! node checks/cross-schema-queries.mjs test/fixtures/redpath/cross-schema/pairs.json test/fixtures/redpath/cross-schema/queries
 	@echo "red path 7: a planted FDW migration fails the cross-plane construct check (no database)"
 	! node checks/cross-plane-constructs.mjs test/fixtures/redpath/cross-plane-constructs
+	@echo "red path 8: deletion copy whose day counts drift from the retention config fails the disclosure check (no database)"
+	! node checks/deletion-copy.mjs test/fixtures/redpath/deletion-copy/copy.md test/fixtures/redpath/deletion-copy/policy.json
 	@echo "check-red: all red paths fail as required"
 
 # Database-dependent red path: a schema edit without regenerated types
@@ -219,4 +237,9 @@ check-red-db:
 	! node checks/cross-plane-constructs.mjs --live
 	echo "DROP SERVER planted_server; DROP EXTENSION postgres_fdw;" | $(PSQL_PAYLOAD) -f -
 	node checks/cross-plane-constructs.mjs --live
+	@echo "red path db 9: a DELETE grant to the purge role on an unlicensed table fails the append-only standing proof"
+	echo "GRANT DELETE ON restore_gate TO identity_purge;" | $(PSQL_PAYLOAD) -f -
+	! node test/append-only.test.mjs
+	echo "REVOKE DELETE ON restore_gate FROM identity_purge;" | $(PSQL_PAYLOAD) -f -
+	node test/append-only.test.mjs
 	@echo "check-red-db: planted violations fail as required and the databases are left as found"

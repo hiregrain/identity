@@ -64,9 +64,24 @@ const APP = "identity_app"; // the serving role (migration 0002)
 // (migration 0002's header). Ruled but not yet landed — they arrive with
 // their own migration sites and get entries here in the same PR:
 //   * party_users erasure (decision 016, party-registry)
-//   * payload purge role (foundation/08)
 //   * stream_heads rebuildable projection (trust-kernel/03, decision 019)
-const EXEMPTIONS = [];
+const EXEMPTIONS = [
+  // The payload purge role (foundation/08, decision 017): the ONLY role
+  // holding DELETE on any payload table, licensed per table by name in
+  // 0022-purge-role-and-restore-gate, which also narrows the grant with
+  // row security to shredded 'created' rows — dead wrapped-DEK
+  // ciphertext whose person already holds a 'destroyed' row. Every
+  // purge run writes its purge_audit row in the same transaction as its
+  // deletes (core/deletion).
+  {
+    plane: "payload",
+    schema: "public",
+    table: "dek_registry",
+    grantee: "identity_purge",
+    privilege: "DELETE",
+    decision: "decisions/LOG.md#017 (foundation/08)",
+  },
+];
 
 const MUTATION_PRIVILEGES = ["UPDATE", "DELETE", "TRUNCATE"];
 

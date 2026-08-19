@@ -174,12 +174,38 @@ jobs:
       - run: make cross-plane-outbox
       - run: make db-down
 
+
+  # The deletion-mechanics acceptance suite (foundation/08). Boots its
+  # own Postgres pair — per this file's header, no job can reach
+  # db-migrate's — because the suite needs Go, Node (the backup/restore
+  # scripts) and both live planes: it takes a real pg_dump backup,
+  # restores it into a recreated payload container, proves the restore
+  # gate refuses traffic until the journal replay, and audits a purge
+  # run. `needs: [db-migrate]` is ordering only: schema problems fail
+  # there first, with the cheaper checks.
+  deletion:
+    name: deletion mechanics (backup, restore, replay, purge)
+    needs: [db-migrate]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5.6.0
+        with:
+          go-version-file: core/go.mod
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 24
+      - run: make db-up
+      - run: make migrate
+      - run: make deletion-test
+      - run: make db-down
+
   # Fan-in: the one status branch protection marks required, so every
   # stage above is required transitively.
   all-green:
     name: all stages green
     if: always()
-    needs: [metadata, red-paths, lint, db-migrate, go, ts, envelope, outbox]
+    needs: [metadata, red-paths, lint, db-migrate, go, ts, envelope, outbox, deletion]
     runs-on: ubuntu-latest
     steps:
       - run: |

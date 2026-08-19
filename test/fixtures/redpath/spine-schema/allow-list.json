@@ -67,6 +67,12 @@
       "migration": "0020-cross-plane-outbox"
     },
     {
+      "table": "deletion_journal",
+      "column": "requester_class",
+      "type": "text",
+      "migration": "0021-deletion-journal"
+    },
+    {
       "table": "planted_exception",
       "column": "blob",
       "type": "bytea",
