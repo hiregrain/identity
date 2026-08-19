@@ -30,7 +30,12 @@ lint: fmt-check
 go-check:
 	cd core && go vet ./... && go test ./...
 
+# workspace-scripts first: `pnpm -r run` silently skips packages without
+# the script, so the check fails any package missing typecheck/test and
+# states explicitly when zero packages matched (allowed while surfaces/
+# is an empty seed).
 ts-check:
+	node checks/workspace-scripts.mjs
 	pnpm -r run typecheck
 	pnpm -r run test
 
