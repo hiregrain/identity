@@ -6,8 +6,11 @@ milestone: v1
 depends_on: [prior-packet, ingestion, party-registry]
 binds:
   - model/attestation-interface.md
+  - model/roster-firewall.md
   - design/stack-litigation/d4-verdict.md
-acceptance: [AC-IS1, AC-IS2, AC-IS3, AC-IS4]
+  - decisions/LOG.md#031
+  - decisions/LOG.md#033
+acceptance: [AC-IS1, AC-IS2, AC-IS3, AC-IS4, AC-IS5]
 evidence: []
 verified_by: null
 ---
@@ -43,3 +46,9 @@ Acceptance:
   deliberately broken sample integration correctly.
 - AC-IS4: a second consumer (grain, or a synthetic second vertical)
   attaches with zero ledger-side custom code.
+- AC-IS5 (mechanical, `roster-firewall.md` RF-5 and interface A-6): no
+  endpoint emits a `ledger_person_id` — a partner receives only its own
+  pairwise pseudonym, and two partners holding records for the same person
+  receive values that do not correlate; the invitation payload accepts
+  employer identity and addressing only, and any worker-specific field is
+  rejected by schema.

@@ -6,9 +6,12 @@ milestone: v1
 depends_on: [trust-kernel, party-registry]
 binds:
   - model/attestation-interface.md
+  - model/roster-firewall.md
   - decisions/LOG.md#006
   - decisions/LOG.md#008
-acceptance: [AC-I1, AC-I2, AC-I3, AC-I4]
+  - decisions/LOG.md#031
+  - decisions/LOG.md#032
+acceptance: [AC-I1, AC-I2, AC-I3, AC-I4, AC-I5]
 evidence: []
 verified_by: null
 ---
@@ -41,3 +44,8 @@ Acceptance:
   invalidation path can.
 - AC-I4: the application role has no direct INSERT on fact tables — only
   the recording functions.
+- AC-I5 (mechanical, `roster-firewall.md` RF-2): an attestation whose
+  provenance is an employer roster is rejected unless it carries a live
+  `verification_request_id` naming the subject as requester. No write path
+  accepts a roster row as a source of truth. A deliberately constructed
+  employer-push attestation fails ingestion with a structured error.
