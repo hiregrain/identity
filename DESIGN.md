@@ -352,14 +352,14 @@ contains no checkmarks.**
 **Iconography is starved.** Drawn in-house, 24px grid, 1.5px hairline, square
 terminals, never filled. Roughly eight exist.
 
-**The core screen runs in one order** (decision 028, **amended by 029**):
+**The core screen runs in one order** (decision 028, **amended by 035**):
 identity and the imprint composed as one hero, then outstanding verification,
 work history, sharing. Verification sits second because it is the only element
 that asks the worker to act, and an unattested record is the failure mode.
 Identity moved from last to first: 028's reasoning — settled once, then
 irrelevant — holds for the returning user and fails for the new one, who would
 otherwise land on an abstract figure with their name at the foot of a scroll.
-The portrait was already paired beside the imprint here; 029 makes that pairing
+The portrait was already paired beside the imprint here; 035 makes that pairing
 the hero rather than splitting it across the screen. The whole app is this one
 screen — there is no tab bar at v1 (`design/06-worker-app-ia.md` §1).
 
@@ -469,7 +469,7 @@ micro-caption band with the record still readable from cache.
 3. **The display identifier** — whether a human-facing number is shown at all,
    and if so its format. Distinct from the opaque `ledger_person_id`, which is
    permanent and never surfaces. Four formats rendered, none chosen. **Newly
-   entangled (029):** the public handle now exists (`hiregrain.com/u/<handle>`,
+   entangled (035):** the public handle now exists (`hiregrain.com/u/<handle>`,
    Latin-only, claimed after the record exists, changeable but never released)
    and nothing has decided whether it becomes the display identifier.
 4. ~~The record schema~~ — **proposed 2026-08-18** in
@@ -480,14 +480,14 @@ micro-caption band with the record still readable from cache.
    claim about work performed. Five open items remain in its §8, including a
    vocabulary conflict between decision 028 and ratified decision 006.
 5. **The marks enum** — blocking `plans/marks-and-embeds` from going ready.
-6. **Dark mode** — **decision closed 2026-08-19 (031), drawing outstanding.**
+6. **Dark mode** — **decision closed 2026-08-19 (037), drawing outstanding.**
    It ships at v1 as a *second palette*, not as a mechanical inversion: §5's
    "the ink becomes the ground" does not survive arithmetic, since `rule` at
    3.35:1 on paper is a different ratio inverted and the imprint's hairlines
    bloom on dark ground where they fade on light. Derive from §12's floors
    independently; every state must be distinguishable in both appearances or in
    neither.
-7. **Companion typeface** — **closed for the first cohort 2026-08-19 (031):
+7. **Companion typeface** — **closed for the first cohort 2026-08-19 (037):
    Noto Sans Devanagari**, with Noto siblings for Bengali, Arabic and CJK as
    those cohorts land. Recorded consequence: **Noto has no width axis**, and
    §6's two display registers are Expanded 125%, so in non-Latin scripts the
@@ -496,7 +496,7 @@ micro-caption band with the record still readable from cache.
    non-Latin.
 8. **The employer surfaces** — attest queue, dossier, disclosure-grant view,
    cohort view. Undesigned.
-9. ~~Onboarding's first-run teaching sequence~~ — **closed by deletion (029).**
+9. ~~Onboarding's first-run teaching sequence~~ — **closed by deletion (035).**
    There is no tutorial; the first chapter landing is the teaching. The full
    first-open sequence is `design/06-worker-app-ia.md` §3. The mint/share
    artifact remains open.
@@ -530,7 +530,7 @@ micro-caption band with the record still readable from cache.
 10. **Chart grammar for analytics** — hairline, ruled, unfilled, monochrome is a
     gesture rather than a specification.
 11. ~~The identity core versus the no-centre rule.~~ **Closed 2026-08-19
-    (decision 029 §B6): the core is dropped.** Every reviewer group read a
+    (decision 035 §B6): the core is dropped.** Every reviewer group read a
     concentric centre as a bullseye with the worker inside it, and that reading
     does not improve for being inside the imprint rather than the mark. The empty
     state is carried instead by the graticule ground clipped to the fixed canvas
@@ -543,7 +543,7 @@ micro-caption band with the record still readable from cache.
     or does not: an employer asks, the worker sees what would be disclosed, decides
     under time pressure. Plus the two-tier sharing model — a public URL and an
     expiring full-record link carrying a warning. Undesigned.
-14. **The guidance surface** — **out of v1 (029).** Worker-facing suggestions
+14. **The guidance surface** — **out of v1 (035).** Worker-facing suggestions
     are the only prospective content in an otherwise retrospective product and
     have no visual class; they must not borrow the self-reported treatment, which
     would read as a weak claim about the past rather than a proposal about the

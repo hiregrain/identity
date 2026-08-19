@@ -106,14 +106,14 @@ drawn in the imprint** (`imprint/README.md` §2).
 | `grant_id` | opaque id | |
 | `subject_id` · `grantee_party_ref` | | |
 | `scope` | enum | `read_record \| write_attestation \| both` |
-| ~~`chapters`~~ | — | **Deleted, decision 029 §B3.** A grant is always the whole record. A chapter-scoped grant is claim curation wearing a grant's clothes and silently reverses founder decision 7 (`design/ledger-design-0.1.md` §7.1). |
+| ~~`chapters`~~ | — | **Deleted, decision 035 §B3.** A grant is always the whole record. A chapter-scoped grant is claim curation wearing a grant's clothes and silently reverses founder decision 7 (`design/ledger-design-0.1.md` §7.1). |
 | `granted_at` · `expires_at` | | **expiry is mandatory**; a grant with no end is a permanent disclosure the worker forgets making |
 | `revoked_at` | nullable | |
-| `last_read_at` | nullable | **Not surfaced to the worker, decision 029 §B4.** The worker sees the grant's *state* — issued, active, expired, revoked — and no read events. The field is retained for the disclosure record that satisfies GDPR Art. 15(1)(c) on request. |
+| `last_read_at` | nullable | **Not surfaced to the worker, decision 035 §B4.** The worker sees the grant's *state* — issued, active, expired, revoked — and no read events. The field is retained for the disclosure record that satisfies GDPR Art. 15(1)(c) on request. |
 
 **Share links** are grants with no `grantee_party_ref`, a 30-day default expiry,
 and a statement at creation of what the recipient receives — full work-history
-detail, and the ability to ask Grain to analyse it (decision 029). It is written
+detail, and the ability to ask Grain to analyse it (decision 035). It is written
 as what the recipient gets, not as a warning. **The public URL is not a grant** — it is a separate
 worker-curated projection carrying verification status and work history only.
 
@@ -152,7 +152,7 @@ credential logic the thesis attacks.
    do not collect at entry cannot be backfilled**. Resolving those strings into
    canonical employers is a real problem and is deliberately *not* modelled here:
    its first genuine consumer is cross-worker aggregation in `analytics`, and
-   nothing in `v1` or `first-product` needs it (decision 034 §E, corrected). When
+   nothing in `v1` or `first-product` needs it (decision 040 §E, corrected). When
    it is built, two rules already stated above govern it — the raw string is never
    mutated, and clustering proposes but never asserts — and the operating threshold
    is set against the **false-merge rate**, never F1, because a false merge
@@ -173,7 +173,7 @@ credential logic the thesis attacks.
    suspended, does an existing `party_attested` chapter fall back? The interface
    says suspension is never retroactive and produces a read-time flag — so
    probably no, but the chapter surface has to render that flag.
-5. ~~**Public-URL projection.**~~ **Closed by decision 029.** Whole record or no
+5. ~~**Public-URL projection.**~~ **Closed by decision 035.** Whole record or no
    record; no per-chapter curation on any surface. The single lever is the
    imprint, full or absent. Always indexed, with a reduced page for crawlers and
    logged-out visitors, and the imprint always behind sign-in. Field list in

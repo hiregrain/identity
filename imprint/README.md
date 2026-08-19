@@ -119,7 +119,7 @@ population, and splitting the ring otherwise suppresses their corroboration chan
 ## 7. Open — do not treat as settled
 
 0. ~~The identity core versus the no-centre rule.~~ **CLOSED 2026-08-19
-   (decision 029 §B6): the core is dropped.** Reviewer panels reached the same
+   (decision 035 §B6): the core is dropped.** Reviewer panels reached the same
    conclusion independently — a small concentric element at the centre of a lobed
    radial figure reads as a **bullseye with the worker inside it**, and two
    reviewers connected it directly to the ratings that already follow them at
