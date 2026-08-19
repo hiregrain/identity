@@ -1,6 +1,8 @@
 ---
 id: trust-kernel/07
 type: task
+layer: trust-kernel
+satisfies: [3]
 status: ready
 depends_on: [trust-kernel/04]
 migrations: []
@@ -41,9 +43,9 @@ clouds — the part of D3 that makes the anchoring externally credible.
 
 ## Acceptance
 
-- AC-TK3 (mechanical): checkpoints land in WORM within the interval under
-  load, and a deliberate overwrite attempt fails at the storage layer using
-  the most privileged credentials available.
+3. (mechanical) checkpoints land in WORM within the interval under
+   load, and a deliberate overwrite attempt fails at the storage layer using
+   the most privileged credentials available.
 - AC (mechanical): both clouds hold the same checkpoint sequence; a mirror
   divergence is detected.
 - AC (mechanical): the genesis-consistency proof verifies from hour zero.

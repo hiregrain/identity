@@ -5,15 +5,34 @@ status: draft
 milestone: v1
 depends_on: [person-identity]
 binds:
+  - decisions/LOG.md#036
+  - decisions/LOG.md#038
+  - decisions/LOG.md#040
   - design/ledger-design-0.1.md#2.5
   - design/ledger-design-0.1.md#8
   - counsel/brief-4-worker-agreements.md
-acceptance: [AC-CD1, AC-CD2, AC-CD3, AC-CD4]
 evidence: []
 verified_by: null
 ---
 
 # consent-and-deletion
+
+**Deletion mechanics settled 2026-08-19 across decisions 036, 038 and 040, and
+they moved twice in one day — read all three.** The end state: deletion is a
+**support-executed** process with an **in-app control that files the request**
+(Apple App Review 5.1.1(v) requires in-app initiation; support-only is a
+rejection) **and a web page that files the same request** (Google Play requires
+both). Access stops the moment the request is filed; erasure follows a grace
+period; **cancelling is an explicit affirmative act**, never a side effect of
+signing in — the EDPB's deceptive-design guidelines name "dead ends" that
+interrupt a deletion process, and a worker signing in to check on their deletion
+must not thereby cancel it.
+
+The consent instrument carries **seven** mechanics, not six (decision 038): the
+seventh states that parties describe the worker's work on seven set measures,
+that Grain derives a level from what they pick, and that it travels with every
+grant and onto the public page if the imprint is published. A person agreeing
+without that could not know they were consenting to be ranked.
 
 The worker's two ultimate controls, engineered as subsystems.
 
@@ -32,11 +51,11 @@ SLOs and an acknowledgment saga; deletion propagation to derived state
 (recompute, grain-pattern).
 
 Acceptance:
-- AC-CD1 (mechanical): post-deletion, a full-database scan finds no
-  readable personal data for the person; the tombstoned ID never reissues.
-- AC-CD2 (mechanical): a revoked grant blocks the next packet read in the
-  same second; the read log shows the denial.
-- AC-CD3: the copy-map is exercised by test — a datum planted in every
-  enumerated store is gone within its SLO after deletion.
-- AC-CD4: deletion during an open dispute completes; the dispute record
-  survives only in unreadable spine form.
+1. **After deletion, a full scan of the database finds nothing left.** (mechanical) post-deletion, a full-database scan finds no
+   readable personal data for the person; the tombstoned ID never reissues.
+2. **Revoking a grant stops the very next read.** (mechanical) a revoked grant blocks the next packet read in the
+   same second; the read log shows the denial.
+3. **Every place data is copied is proven by a planted datum.** the copy-map is exercised by test — a datum planted in every
+   enumerated store is gone within its SLO after deletion.
+4. **Deleting during an open dispute still completes.** deletion during an open dispute completes; the dispute record
+   survives only in unreadable spine form.

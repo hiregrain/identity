@@ -1,6 +1,8 @@
 ---
 id: party-registry/06
 type: task
+layer: party-registry
+satisfies: [3, 6, 7]
 status: ready
 depends_on: [party-registry/01, party-registry/05, trust-kernel/04]
 migrations: [0018-party-activation-preconditions]

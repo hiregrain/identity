@@ -11,7 +11,6 @@ binds:
   - decisions/LOG.md#016
   - decisions/LOG.md#017
   - design/stack-litigation/docket-rulings-0.1.md
-acceptance: [AC-F1, AC-F2, AC-F3, AC-F4, AC-F5, AC-F6, AC-F7, AC-F8]
 evidence: []
 verified_by: null
 ---
@@ -41,29 +40,29 @@ this layer's scope — it is a founder gate in ORDER.md, and no task here
 requires cloud credentials.
 
 Acceptance:
-- AC-F1 (mechanical): a test proves the application role cannot UPDATE or
-  DELETE any table outside an enumerated exemption list, and that a newly
-  created table inherits the restriction with no manual step — proven
-  across both databases, more than one schema, and a second owner role.
-- AC-F2 (mechanical): CI replays the migration chain from empty twice and
-  diffs generated types against the live schema.
-- AC-F3 (mechanical): no spine column uses a type outside the explicit spine
-  allow-list, and every allow-listed exception carries a written justification
-  in the migration that introduces it — enforced by the schema lint, which
-  fails on a planted violation of each kind. The lint does not claim to prove
-  opaque columns are free of personal data; that is AC-F8.
-- AC-F4 (mechanical): every payload table carries `residency_region` NOT NULL.
-- AC-F8 (adjudicated): a verifier with a clean context, given
+1. **Append-only is enforced by the database, not by discipline.** (mechanical) a test proves the application role cannot UPDATE or
+   DELETE any table outside an enumerated exemption list, and that a newly
+   created table inherits the restriction with no manual step — proven
+   across both databases, more than one schema, and a second owner role.
+2. **The migration chain replays from empty, and the types match.** (mechanical) CI replays the migration chain from empty twice and
+   diffs generated types against the live schema.
+3. **No spine column carries a type nobody justified.** (mechanical) no spine column uses a type outside the explicit spine
+   allow-list, and every allow-listed exception carries a written justification
+   in the migration that introduces it — enforced by the schema lint, which
+   fails on a planted violation of each kind. The lint does not claim to prove
+   opaque columns are free of personal data; that is criterion 8.
+4. **Every payload row knows which region it lives in.** (mechanical) every payload table carries `residency_region` NOT NULL.
+5. **A write interrupted between the two planes leaves nothing half-done.** (mechanical) a spine+payload write interrupted between planes is
+   completed by retry with no duplicate and no silent backlog; nothing is
+   acknowledged before both planes are durable.
+6. **A restored backup does not resurrect deleted payloads.** (mechanical) restoring a pre-deletion backup and running the
+   replay leaves nothing readable for a deleted person, and a restored
+   system that has not replayed refuses traffic.
+7. **Destroying the key destroys the readability.** (mechanical) payload content is unreadable after key destruction
+   through every path — not merely absent from a dump grep — and rows about
+   multiple people are keyed to the subject with no second wrap.
+8. **No spine column can re-identify a person on its own.** (adjudicated) a verifier with a clean context, given
   `foundation/04`'s correlation checklist and the spine schema alone, finds no
   spine column from which a person could be re-identified without the payload
-  plane. Split out of AC-F3 so the mechanical half cannot be reported as
+  plane. Split out of criterion 3 so the mechanical half cannot be reported as
   discharging the judgment half.
-- AC-F5 (mechanical): a spine+payload write interrupted between planes is
-  completed by retry with no duplicate and no silent backlog; nothing is
-  acknowledged before both planes are durable.
-- AC-F6 (mechanical): restoring a pre-deletion backup and running the
-  replay leaves nothing readable for a deleted person, and a restored
-  system that has not replayed refuses traffic.
-- AC-F7 (mechanical): payload content is unreadable after key destruction
-  through every path — not merely absent from a dump grep — and rows about
-  multiple people are keyed to the subject with no second wrap.

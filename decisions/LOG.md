@@ -1445,3 +1445,687 @@ collisions in one day; whether a `model/invariants.md` promotes the fourteen
 unnumbered binding claims stranded in `plans/`; whether `design/` stays a
 catchall; and whether `contract/` should be renamed, since it collides with the
 boundary contract in `model/`.
+
+## 035 — Worker app information architecture; twelve amendments (2026-08-19)
+
+Founder grilling across nine rounds, closing the app's structure end to end:
+home, first open, page inventory, settings, the public profile and its handle,
+and private full-record sharing. Full IA in `design/06-worker-app-ia.md`.
+Several rulings **amend or reverse earlier entries**; those are enumerated in
+§B and the affected files are amended in the same commit.
+
+### A. New rulings
+
+**Structure.** No tab bar at v1 — the record is the app, and sharing is a
+section inside it, not a destination. There is no Activity surface: every event
+already has a home (a read is grant state in Sharing, an attestation blooms the
+chapter and leaves outstanding verification, a dispute marks the chapter).
+Unseen changes surface as the record's own changed state, the plate footer's
+last-entry line, and an OS push deep-linking to the changed object. No badges,
+no counts. **Work and Earnings are reserved as the third and fourth
+destinations**; the bottom bar appears when they do. The record's edge index is
+intra-record navigation and is unaffected by that later addition.
+
+**Earnings and the money perimeter.** Earnings, when it exists, is a read-only
+view over a vertical's or a licensed partner's payment records. `research/08`
+§5.2 C1 ("no funds, ever, in the ledger entity") is recorded as **current
+posture, not a ruling** — decision 010's entity-level open item stands. Nothing
+is designed into the slot until it is closed.
+
+**First open.** Identifier (email or phone, verified control of one) → full
+name, one free-text Unicode field → the consent instrument, six mechanics as
+ledger rows with the deletion control linked → account exists → empty record →
+first chapter, added or imported → handle claimed, prefilled by transliteration.
+Document proofing never appears in signup; it is gated to the first
+value-bearing action. Per `research/11`, neither identifier is a uniqueness key.
+
+**Someone arriving from a shared link runs the same flow and unlocks at account
+creation** — they land on the profile they came for, and the empty canvas is
+what they meet on leaving it.
+
+**Safety is expressed structurally, not in copy.** `DESIGN.md` §12 forbids the
+usual instrument, so: permanence is shown before commitment and never after;
+commitment is progressive (no document at signup); the person's name renders at
+full size in their own script, which `research/11` argues is not cosmetic for a
+population credential systems routinely fail; and the deletion control is linked
+from the consent instrument so the exit is seen once at the start.
+
+**The record page.** Identity and the imprint compose as one hero — name and
+portrait with the figure, per `DESIGN.md` §8's existing pairing rule. Audience
+lives on the object: a chapter carries a mark **only while a live grant covers
+it**, and shows nothing when nobody can see it.
+
+**The expanded imprint closes `imprint/README.md` §7.1** (the missing angular
+anchor). Full-screen, interactive: dimension slots light one at a time under
+touch with name and attained level; tapping a ring walks that dimension outward
+across the career. The small figure stays unlabelled — labels earned by
+interaction are not a legend, and the ban in `design/01-banned-patterns.md`
+stands for printed ones.
+
+**Dimension standing** is pushed from chapter detail — one deliberate step past
+the figure, never a tab, never a landing surface (`design/05` §2).
+
+**The handle.** `hiregrain.com/u/<handle>`; a dedicated identity domain is
+recorded as a possible pre-launch requirement, with the never-reissue rule
+making a later 301 free. Latin-only `[a-z0-9-]`, prefilled by auto-
+transliteration and never rejected; claimed in onboarding **after** the record
+exists (no handle without a record). **Changeable but never released**: retired
+handles redirect permanently to the same person and are never reissued to
+anyone. Reasons: the consumer precedent (LinkedIn, X, Instagram, GitHub all
+release handles back to the pool) is wrong here because the handle points at a
+permanent work record used in hiring, so release is an impersonation vector; and
+immutability is wrong because `research/11` requires name changes be appends
+with prior names never surfacing in employer-visible views, which an immutable
+handle would violate permanently. Collision alternates are non-numeric.
+
+**The public page.** Whole record or no record — no per-chapter curation on any
+surface. The only lever is the imprint, full or absent, nothing between.
+**Always indexed**, but crawlers and logged-out visitors receive a reduced page
+(name, verification status, chapter list without detail); **the imprint is
+always behind sign-in** even when published, because an indexable imprint is the
+seven-dimension exposure at its widest. Viewing requires an account. The worker
+sees a recent view count and never viewer identities — naming viewers turns the
+page into a social product and creates the coercion hazard `design/05` §3
+records for Dubai and Bengaluru.
+
+**Private sharing.** A grant is whole-record, always. The public page and a
+grant divide by **depth, not selection**: the page carries what is true
+(chapters, parties, dates, provenance, optionally the imprint); a grant carries
+that plus what each party attested, dimension standing, dispute state and
+superseded versions. Expiry mandatory, revocation one action.
+
+**At grant creation the worker is told plainly that the recipient receives full
+work-history detail and may ask Grain to analyse it** — stated as what the
+recipient gets, not as a warning, and not framed as a hazard.
+
+**Settings** is a header sheet, not a destination: Account (name, phone, email,
+identity tier, handle), Notifications, Language, Your data (export, disclosure
+record, delete everything), About. Deletion runs a grace window — access ends at
+the request, data at the end of the window, signing back in cancels.
+
+**Accounts.** One account type for everyone. A basic account is required to
+view; document tier remains the worker's own identity-verified status.
+
+**The attester ladder.** Attester weight derives from relationship and verified
+employment, not from identity tier: **coworker · manager · partner employer
+account**, where a manager verifies employment at the party with a work email.
+That verification is the same event as employment-verifying **their own chapter**
+at that party — vouching for someone verifies you, which is the product's
+primary growth loop.
+
+**The imprint geometry is unchanged.** Three thread densities stand; the finer
+ladder lives in the rows and the expanded view. The figure states how well
+something is known; the record states who said it. This protects the one channel
+`imprint/README.md` §7.4 records as never tested with humans at size.
+
+**No dispute UI in the worker app.** The chapter renders its `disputed` field
+because that is a record value. Intake and adjudication sit outside the app.
+
+**The guidance surface is out of v1** (`DESIGN.md` gap 14). Outstanding
+verification already does the only prospective work v1 needs.
+
+### B. Amendments to earlier entries
+
+1. **028's core-screen order.** Was imprint · outstanding verification · work
+   history · sharing · identity, on the reasoning that identity is settled once
+   and then irrelevant. Now **identity + imprint (composed) · outstanding
+   verification · work history · sharing**. Reason: the returning-user argument
+   was right and the new-user one was not — landing on an abstract figure with
+   your name at the foot of a scroll is the coldest possible opening for someone
+   already nervous about recording their information anywhere.
+2. **028's attestation line.** *"Attesting from a registered party's verified
+   domain is a signed link and one click, no account"* is **reversed**. Every
+   attester holds an account with verified identity. The friction argument
+   survives in a different form: friction now scales with the attester ladder in
+   §A, not with account-versus-no-account.
+3. **`model/record-schema.md` §5** — `grant.chapters: all | [chapter_id]` is
+   **deleted**; a grant is `all`. Chapter-scoped grants are claim curation
+   wearing a grant's clothes and silently reverse founder decision 7
+   (`design/ledger-design-0.1.md` §7.1). With per-chapter hiding also gone from
+   the public page, the record is now uncurated on every surface and the
+   decision-7 tension is closed rather than balanced.
+4. **The read log narrows.** `design/ledger-design-0.1.md` §7.1 ("every packet
+   issuance is logged and visible to the worker") and §8.1 ("the full read
+   log"), `model/record-schema.md` §5 (`grant.last_read_at`), and `design/05` §3
+   ("the worker sees every grant issued, and whether it was opened") are
+   **superseded**: the worker sees the grant's **state** — issued, active,
+   expired, revoked — and no read events. Public-profile views are counted;
+   full-record reads are not surfaced. Reason: a read stream during a live
+   application is an anxiety feed and surveillance of the employer. **GDPR Art.
+   15(1)(c) is satisfied by a disclosure record available on request**, which is
+   a required consequence of this ruling, not an optional one.
+5. **`plans/worker-surface/LAYER.md` AC-WS1** ("a side-by-side against a raw API
+   dump shows nothing hidden") is narrowed by 4 and by the no-dispute-UI ruling.
+6. **`DESIGN.md` gap 11** (identity core versus the no-centre rule) — **closed:
+   the core is dropped.** The empty state is carried by the graticule ground
+   clipped to the fixed canvas, which is `DESIGN.md` §9's own primitive. Recorded
+   as design, not as a ratified decision, and rendered in the canvas below.
+7. **`DESIGN.md` gap 9** (first-run teaching sequence) — **closed by deletion.**
+   There is no tutorial; the first chapter landing is the teaching.
+8. **`DESIGN.md` gap 3** (the display identifier) — **still open, and now
+   entangled**: the handle exists and nothing here decided whether it becomes the
+   human-facing identifier.
+
+### C. Evidence consulted
+
+`research/08` §5.2 (C1, the money perimeter), `research/11` Parts A and B
+(signup identifier, name modelling, the three name layers), `research/12` §1–3
+(deletion and reputation evasion), `research/14` §1 (recordkeeping duties attach
+to the employer as user of a selection procedure, not to the scoring vendor —
+the vendor is reached only through the agent theory that carried *Mobley v.
+Workday*), and the shipped worker app in `hiregrain/grain` (`mobile/src/app`,
+`server/src/lib/publicCandidateHandle.ts`) as precedent, not as inheritance.
+
+### D. Still open after this entry
+
+The identity domain. Money at entity level (010). Whether the handle becomes the
+display identifier (gap 3). Employer surfaces (gap 8). Companion typeface (gap
+7). Dark mode (gap 6). The marks enum (gap 5). A party has no visual identity
+beyond its name and registry state, which is a deliberate restraint recorded
+here rather than a gap.
+
+## 036 — Support-mediated account actions; the identity flow (2026-08-19)
+
+Follow-on rulings to 035, settled the same day. They move every account mutation
+out of the app and add the identity-verification surface 035 left undesigned.
+
+**Every account change is handled by customer support.** Name, phone, email and
+the public handle are read-only in the app; changing any of them is a support
+request. This supersedes 035 §A's implication that the handle is changed in-app,
+and it narrows `design/06-worker-app-ia.md` §7 (Settings) to a read-only surface
+with a support route.
+
+**Deletion has no in-app control.** It is a support request. Access stops when
+the request is filed; erasure follows a grace period. **Signing in during the
+grace period resets the request** — the worker must file a new one to continue.
+Recorded consequence, not a challenge to the ruling: this supersedes 035 §7's
+in-app deletion with grace, and it is the pattern GDPR Art. 12(2) ("the
+controller shall facilitate the exercise of data subject rights") is most often
+read against. It stays lawful if honoured inside Art. 12(3)'s one month and not
+made burdensome. Settings still *names* the right and routes to support, because
+the consent instrument promises it at signup (`ledger-design-0.1.md` §8.2 item
+5) and a promised right that cannot be found is worse than one never offered.
+
+**Export is requested in the app and delivered within 24 hours**, by email. The
+screen states the commitment rather than "soon". Well inside the Art. 15(3) /
+Art. 20 one-month clock.
+
+**Identity verification (the KYC flow).** Two entry points: **self-serve from
+Settings at any time**, and **triggered by an employer's request at application**.
+It is therefore *not* gated to the first grant, which was the recommendation in
+the grilling; the ruling is broader and puts the worker in front of it earlier.
+
+Storage is unchanged and already ruled (decision 010, `research/08`): results-only
+vendor integration, no document images ever in the ledger, Sumsub global primary
+with Persona for the US, sanctions screening bought with only a signed pass/fail
+stored, no hit detail. Four internal tiers — recorded, contact, document,
+biometric — of which **only two surface to partners: identity verified, or not**
+(decision 028). The worker sees the internal tier, per the settled
+worker-sees-all-raw-facts position.
+
+**Surface shape — designed, not ruled (flagged to the founder as the designer's
+call).** Grain's own chrome wraps the vendor's capture step, with the vendor
+named plainly on the screen where the document is taken, so the worker is never
+handed to a stranger mid-flow. **Liveness is a separate step after the document
+passes and is declinable**, so refusing it costs nothing the worker already has —
+which is what decision 028's "biometric stays opt-in for a stated reason" needs
+in practice, given BIPA and the EU AI Act.
+
+**Amendments.** 035 §7 (settings inventory and the deletion grace window) is
+superseded by this entry. `design/06-worker-app-ia.md` §7 is rewritten and a §8a
+added for the identity flow.
+
+## 037 — Platform target, and four app-shell gates closed (2026-08-19)
+
+Grilling on the gates raised in `design/08-app-inventory.md` §0. The framework
+choice (Q5) is **not** settled here — it is under independent evaluation and
+gets its own entry.
+
+**Native supersedes "PWA before native."** `plans/worker-surface/LAYER.md`
+scoped responsive web first with an installable PWA before native; the target is
+now native iOS and Android, with the PWA remaining first-class from the same
+codebase rather than becoming a fallback — `design/06-worker-app-ia.md` §3 makes
+an arriving link the most common first session, and a link must never require an
+install. **The public web app is built in parallel**, not after.
+
+**Intra-record navigation survives Android by two changes, not one.** Android
+10+ takes a back-swipe from *both* screen edges, and the edge index — the app's
+only navigation, since there is no tab bar — sits on the right one. The app
+declares `setSystemGestureExclusionRects` over the index, which Android budgets
+at 200dp per edge against the index's ~248px, so the index is **capped to fit
+that budget**. And the index becomes an *accelerator*: the record is one scroll,
+so no destination may depend on hitting a 40px strip. The second change is
+load-bearing on its own, because the PWA cannot call that API at all.
+
+**Dark mode ships at v1, as a second palette rather than a mechanical
+inversion.** This closes `DESIGN.md` gap 6's decision half; the drawing is still
+outstanding. §5's inversion rule — "the ink becomes the ground" — is a sentence
+and does not survive arithmetic: `--rule` at 3.35:1 on paper is a different ratio
+inverted, and the imprint's hairlines *bloom* on dark ground where they *fade* on
+light. The dark palette is therefore derived from §12's contrast floors
+independently, and every state must be distinguishable in both appearances or in
+neither.
+
+**Archivo is paired with Noto Sans Devanagari**, closing `DESIGN.md` gap 7 for
+the first non-Latin cohort. SIL OFL, purpose-built, matching weights. Noto
+siblings follow for Bengali, Arabic and CJK as those cohorts land, under the same
+rule. **Recorded consequence, not a detail:** Noto has no width axis, and §6's
+two display registers are Expanded 125%. In Devanagari the display hierarchy must
+come from weight and size alone, so **the type system is genuinely weaker in
+non-Latin scripts than in Latin**. That is a real asymmetry in a product whose
+population is largely non-Latin, and it is recorded here rather than discovered
+at localisation.
+
+**The public page ships from a separate server-rendered web app**, not from
+`react-native-web`. Decision 035 requires it be always indexed with a reduced
+view for crawlers and logged-out visitors; a client-painted render ranks badly
+and cannot cleanly serve a distinct crawler payload. `public-web` is already its
+own layer. The two share design tokens and the generated contract client, never
+the component tree.
+
+**The imprint is computed on-device from the record**, never rendered
+server-side to an image. Law 1 — no mark without a fact — and the figure must
+stay recomputable from the ledger; a server-rendered image is a cache that can go
+stale and an endpoint that leaks figures. The renderer is a framework question
+and waits on Q5.
+
+**Open after this entry:** the app framework (Expo/React Native versus native
+Swift and Kotlin twins), under independent evaluation. It carries a live tension
+with ratified decision 012 / D2, which fixes surfaces as TypeScript.
+
+## 038 — Deletion control restored; attestation is a web surface (2026-08-19)
+
+Five rulings. Two amend entries made earlier the same day.
+
+**A deletion control returns to the app, and it files rather than executes.**
+Amends decision 036's "no button". Apple App Review Guideline 5.1.1(v) requires
+an app supporting account creation to offer in-app account deletion, so 036's
+support-only route does not ship on iOS. The control **files the support
+request** — it does not perform the deletion. Everything else in 036 stands:
+access stops the moment the request is filed, support executes the erasure after
+the grace period, and signing in during that period resets the request and
+requires a new one. This also closes the hole `design/07` found independently:
+the consent instrument promises the right at signup, and a promised right that
+cannot be found is worse than one never offered.
+
+**The app unlocks with biometrics or the device passcode**, declinable and
+defaulting to on. `research/11` records shared handsets in the Philippines and
+India as a real and unmeasured pattern, and the record is the thing worth
+protecting on a shared phone. It cannot gate the public page, which is public by
+construction.
+
+**Client telemetry ships, on a hard boundary.** Screen views, funnel steps and
+crash traces, on a rotating client id — **never keyed to `ledger_person_id`, and
+never carrying record content**. The line: telemetry may know *that* a chapter
+was added, never *what* was added. This is a different category from decisions
+022 and 026, which govern operator analytics *on the record*; it is recorded here
+so the two are not conflated later. The onboarding drop-off that cannot be seen
+cannot be fixed, and the population most likely to drop off is the one this
+product exists for.
+
+**Attestation is a web surface, not an app surface.** Decision 035 gave every
+attester an account with verified identity, which `design/08-app-inventory.md` §1
+scoped as six screens inside the mobile app — roughly a fifth of the remaining
+work. That scoping is **withdrawn**. An invitation link opens the web attestation
+flow; the attester creates their account and attests there; the native app is
+where they later hold their own record, if they choose to. Consequences: section
+E of the inventory moves to `public-web`, `plans/worker-surface/LAYER.md` loses
+the attester-onboarding paragraph added earlier today, and the attestation form
+itself stays `peer-references` (ledger-authored, no free-response field, decision
+025). This also removes the app's dependency on the scarcest action in the
+product being completable on a phone.
+
+**A worker may grant to a registered party or to an email address, and the two
+are visibly different objects.** A grant to a registered party is addressed to an
+identity Grain can vouch for. A share link sent to an email is a URL, and anyone
+holding it can open it — so a forwarded link is a disclosure the worker never
+made, and the creation flow says so. Both remain whole-record (decision 035) with
+mandatory expiry.
+
+## 039 — Record surfaces, and the unowned employer-normalization problem (2026-08-19)
+
+**Chapter detail shows all seven measures, including the zeros.** A party choosing
+"not part of this work" is a statement about the job; hiding it turns absence into
+a gap the reader fills in themselves. It is also what the worker-sees-all-raw-facts
+position requires — the worker sees exactly what was sent.
+
+**Push notifications name the fact, never the content.** "Sunrise Foods signed
+your work record", not what was said. A lock screen is read by whoever is holding
+the phone, which on a shared handset is not always the worker — the same reasoning
+that put biometric unlock on the app in decision 038.
+
+**The app icon is the mark.** No separate icon design. Consequence: it inherits
+`DESIGN.md` gap 1's three open items — the lobe count, the break angle, and
+silhouette agreement between the largest and smallest tiers. The icon gate
+therefore collapses into the mark gate rather than disappearing, and it is a
+store-submission asset.
+
+**Offline is read-only.** The whole record readable, the imprint computed on
+device, nothing queued for later write. A queued attestation request firing days
+later against a changed registry is a correctness problem, and this population's
+connectivity makes those days real. Recorded consequence from the platform
+research: on iOS this promise only holds for an **installed** Home Screen web app —
+WebKit's ITP deletes IndexedDB, LocalStorage, Cache API and the service-worker
+registration after seven days without interaction, and exempts installed web apps
+explicitly. Installation is the storage model, not a distribution preference.
+
+### The employer-normalization gap — raised, not closed
+
+**Party search at entry is rejected.** Founder ruling: search is not effective at
+global scale. The real problem it was papering over is **normalizing and
+standardizing employer data**, named as a major data-cleanliness issue.
+
+**Nothing in the repo owns this.** `plans/party-registry` (status `ready`) is
+scoped entirely to *registered* parties — lifecycle, keys, vetting, capability
+grants. `model/record-schema.md` gives `chapter.party_asserted` a rule that a
+worker-typed name is **never** resolved into a `party_ref` automatically, because
+"a name match is not an identity", and stops there. No layer addresses what
+happens when many workers type many spellings of one business, across scripts, and
+most of those businesses never register. In this population that is the majority
+of chapters, not the tail.
+
+**The shape of the answer is already in the repo, for people.** `research/03`
+solves person identity with Fellegi-Sunter scoring: candidate generation by
+blocking, a weighted match across several fields, human review, and never an
+automatic merge. The same discipline applies here — **clustering proposes, it
+never asserts** — which is what the schema rule already requires.
+
+**What this changes in the app, and it is the opposite of what was proposed.**
+Adding a chapter captures the raw employer string faithfully, plus enough
+disambiguating context for later central resolution — country and city at minimum
+— and never forces a match against a search result. A smaller and more honest
+screen than a search box.
+
+**Open, and needing an owner.** Whether employer entity-resolution extends
+`party-registry` (which would mean widening a layer already at `ready`), lands in
+`ingestion`, or becomes its own layer. Raised for the founder rather than decided
+here, because altering a `ready` layer's scope is exactly what the plan protocol
+exists to prevent.
+
+## 040 — App framework ratified; D2 narrowed; IDV inverted (2026-08-19)
+
+Four rulings, after an independent evaluation: an advocate's brief for Expo/React
+Native, an advocate's brief for native Swift + Kotlin twins, an adversarial risk
+audit, and four verification agents. Evaluation record: `design/09-app-framework-evaluation.md`.
+
+### A. The framework
+
+**Expo SDK 57 — React Native 0.86, React 19.2.3 — with CNG and config plugins,
+expo-router, and `@shopify/react-native-skia` as the imprint renderer.** One
+codebase for iOS, Android and the installable PWA. Pin SDK 57; take 58
+deliberately. The New Architecture is not a decision: RN 0.82 made it the only
+architecture and 0.84 removed the legacy one on iOS.
+
+**The advocate for the opposing position scored its own case at ~40%**, and the
+two arguments native is normally sold on did not survive primary sources:
+**Android Chrome *is* Skia**, so there is no native rendering advantage on the
+platform that matters most to this population; and decision 037 had already
+neutralised the gesture-exclusion argument by demoting the edge index to an
+accelerator.
+
+**The decisive evidence is about this repo's execution protocol, not about
+performance.** Kotlin and Compose have published agent benchmarks — JetBrains'
+105-task Kotlin benchmark, Google's Android Bench where 41% of tasks are Compose,
+verified by instrumentation tests. **Swift and SwiftUI have neither a benchmark
+nor a Linux-hosted verify loop**: there is no Linux→Apple build path, snapshot
+tests are simulator-identity-bound, and macOS CI costs roughly 10× Linux per
+minute. `plans/ORDER.md` runs entirely on cheap clean-context verifier sessions
+re-running mechanical criteria, and iOS is the one runtime where that loop does
+not work. Cost estimate: **~10.5 engineer-months against ~22**, with a standing
+~2× multiplier on all post-v1 surface work under twins.
+
+**`react-native-svg` is disqualified from source, not by benchmark.** It
+rasterizes via `Bitmap.createBitmap` + `new Canvas(bitmap)`, which is never
+hardware-accelerated on Android, and invalidates the whole bitmap on any child
+prop change. Decisively, `RenderableView.setupStrokePaint` returns early when
+`strokeWidth == 0`, so it **cannot express hairline mode at all** — and hairline
+mode is what `DESIGN.md` gap 10a requires. Skia reaches `SkPaint::setStrokeWidth(0)`,
+documented as "always exactly one pixel wide in device space… thickness does not
+change as the canvas is scaled."
+
+**A constraint discovered during the evaluation and recorded here because nothing
+else states it: at 4× zoom the imprint's fixed 760-sample polyline produces
+8.3-device-pixel chords, and the guilloché visibly facets into polygons.** The
+figure must be re-tessellated per zoom level, which a static SVG DOM cannot do.
+This makes the adaptive-sampling change to `imprint/imprint.py` a **correctness
+fix, not an optimisation** — sampling by radius at ~1.5px per segment also cuts
+total vertices 2–3× invisibly, and Bézier fitting to `r(t)` would cut ~10×.
+
+**Measured, correcting a figure used throughout this session:** the imprint is
+**5,327 vertices at first attestation, 15,981 at a median mature record, and
+24,352 worst case** (364 KB of path data) across the repo's own 14 reference
+renders. The "~5,000" used in earlier briefs was the sparse case.
+
+**Open, not ruled:** whether the Go core ships to the client via gomobile and
+wasm. It matters because `contract/CONTRACT.md` fixes canonicalization as RFC 8785
+JCS with ECMAScript `Number::toString` semantics and UTF-16 code-unit key
+ordering; if the client verifies its own record offline it is in the verification
+path, which is the hazard D2 ruled Go for. Reimplementing JCS in TypeScript is
+the thing not to do.
+
+**Live defect in the existing TS plan:** openapi-generator marks the plain
+`typescript` generator **experimental**; `typescript-fetch` and `typescript-axios`
+are the stable ones. Pin explicitly before it reaches `integration-surface`.
+
+### B. D2 is narrowed, not overturned
+
+**D2 now reads: TypeScript owns *web* surfaces.** Native clients are a separate
+category and are TypeScript by this ruling rather than by D2's.
+
+Grounds. D2 was ratified 2026-08-17; native became the target on 2026-08-19
+(decision 037), so **D2 could not have adjudicated a category that did not exist
+when it was ruled** — this is narrowing by construction. D2's own text says "TS
+owns worker **web** surface." Its dispositive evidence is entirely about the
+kernel — the npm supply-chain record, FIPS 140-3, the partner wire boundary — and
+the ruling itself records that "the TS agent-fluency evidence did not survive
+verification," so TS took the surfaces by elimination and never on affirmative
+evidence. Decision 012's carried-forward switch-triggers are all kernel triggers
+and none fires on a surface change.
+
+**Recorded against this narrowing:** D2's trigger register names **codegen-chain
+rot**, and that trigger sits closer to firing with more client targets. Mitigation
+is a single codegen toolchain with pinned generators and AC-IS2's byte-identical
+regeneration check extended to every target.
+
+### C. Identity verification: decision 010 inverts
+
+**Persona becomes the primary vendor; Sumsub secondary.** Both briefs and two
+verification agents independently established that **neither vendor permits the
+capture step to be hosted inside the host app's own chrome** — Persona's docs:
+"If you want to provide your own identity verification UI, you need to use a
+'Transactions-based' integration… contact the customer support engineering team."
+Sumsub offers theming only, in four buckets, and requires modal presentation
+because "SDK contains its own navigation stack."
+
+**Decision 036's F3 is therefore relaxed, and this is the ruling it flagged as
+"designed, not ruled."** "Grain's chrome wraps the vendor's capture step" now
+means **our screen hands off, with the vendor named on it** — not our viewfinder
+around their camera. That is framework-independent and true of native twins too.
+
+**Recorded exposure, for counsel before contracting:** Persona lists 16 US
+subprocessors including **Anthropic, OpenAI and Groq** for "data extraction and
+analysis" — identity documents and selfies reaching three model providers.
+Decision 010 forbids document images in the *ledger*; it says nothing about the
+vendor's onward processing. Sumsub's posture is materially stronger (German data
+centres by default, adequacy decisions and SCCs). **India DPDP residency is
+unproven for both** and must be answered in writing during procurement.
+
+### D. Deletion: both fixes
+
+**A web deletion URL is added to `public-web` scope.** Google Play requires
+**both** an in-app path and "a web link resource where users can request app
+account deletion" — the second is a requirement no in-app change satisfies, and
+decision 038 only closed the first half.
+
+**Cancelling a deletion becomes an explicit affirmative act**, not a side effect
+of signing in. Amends decision 038. The EDPB's deceptive-design guidelines name
+"dead ends" that interrupt a deletion process, and a worker who opens the app to
+check on their deletion currently cancels it. The coercion protection decision 038
+was buying survives; only the mechanism changes.
+
+### E. Employer entity-resolution gets its own layer
+
+`plans/employer-resolution/` — the nineteenth layer, depending on
+`party-registry` and `ingestion`. It reuses `research/03`'s Fellegi-Sunter
+discipline: **clustering proposes, it never asserts**, which is what
+`model/record-schema.md`'s "a name match is not an identity" already requires. A
+new layer rather than widening `party-registry`, which is already `status: ready`.
+
+### F. Raised for counsel, out of scope for this entry
+
+**`imprint/README.md` §8's patent clearance has lost one of its three limbs.** It
+clears SAP US 10712908 B2 partly on the ground that the patent's independent
+claims require "receiving input activating a portion" while "the figure is
+generated non-interactively." Decision 035 specified an expanded imprint where
+dimension slots light under touch and tapping a ring walks a dimension outward —
+which is input activating a portion. The transpose argument (radius = time, angle
+= dimension) and the ratings-source argument stand independently, so this is not
+fatal, but **counsel was told the non-interactivity limb held and it no longer
+does.**
+
+**`DESIGN.md` §10's premise that reduced motion suppresses haptics is unverified
+on both platforms** and should be restated as product policy rather than platform
+behaviour. Relatedly, the seat's haptic now has names: **`.rigid`
+(`UIImpactFeedbackGenerator.FeedbackStyle`) on iOS** — literally the seat's
+semantics — **and `HapticFeedbackConstants.CONFIRM` on Android**, closing the gap
+`design/08` §3 recorded.
+
+## 041 — Employer-resolution layer withdrawn (2026-08-19)
+
+**Corrects decision 040 §E, ruled hours earlier the same day.** The layer created
+there is deleted. The recommendation behind it was mine and it did not survive
+its own test.
+
+**It is neither `v1` nor `first-product`.** `plans/ORDER.md` defines `v1` as the
+round trip — signup, verification, control, deletion, a party reading a packet
+under grant and writing an attestation back. Employer clustering appears nowhere
+in it. `first-product` is "a worker signs up, imports a resume, and a partner buys
+a read on their history and trajectory" — a read on **one** worker, where a
+free-text employer name is entirely sufficient. Normalization pays only when
+aggregating *across* workers. The layer was filed at `milestone: v1`, which was
+wrong on its face.
+
+**The urgent part is not a layer.** Context that is not collected at entry cannot
+be backfilled, so `chapter` gains **`party_country` (required when `party_ref` is
+null) and `party_locality`**, `self-asserted-record` populates them in both CRUD
+and résumé import — asking rather than inferring, since an LLM guessing a country
+from an employer name is the silent resolution the schema forbids — and
+`worker-surface`'s add-a-chapter screen asks for them. Three layers that already
+exist.
+
+**The rest is a recorded future concern, not a plan.** Employer normalization is
+scoped as a note on `analytics`, where its first genuine consumer is. Every layer
+costs a founder grilling before it can go `ready`, plus decomposition and a
+verifier protocol; spending that on machinery nothing is building is the
+speculation the plan protocol exists to prevent.
+
+**Two rules survive the withdrawal**, now stated in `model/record-schema.md`
+beside the "a name match is not an identity" rule they belong to: the raw
+`party_asserted` string is **never mutated** and normalization is derived and
+disposable; and when resolution is eventually built, its operating threshold is
+set against the **false-merge rate**, never F1 — a false merge attributes one
+worker's employer to another's, and that is the harm the threshold exists to
+price.
+
+## 042 — Execution discipline: worktrees, two mandatory reviews, readable criterion identifiers (2026-08-19)
+
+Prompted by a day that went wrong in three ways, and by reading how
+`hiregrain/dispatch` and `hiregrain/grain` actually run rather than how this
+repo says it does.
+
+### What the two repos do that this one does not
+
+**Dispatch's `checks/` is real and it is the keystone.** Seven programs behind
+`run.mjs`; `plan-graph.mjs` validates every frontmatter block, walks the
+dependency graph, and prints what is workable now. Its executive loop states
+the consequence plainly: *"`node checks/run.mjs` is the only source of what is
+workable. The executive never re-derives status from prose."* **This repo has
+no `checks/`, so it has no queue, so its executive loop is a paragraph nobody
+can run.** The port is `plans/foundation/06` and it gates everything.
+
+**Dispatch tasks join to criteria.** A real task carries `satisfies: [AC-FND-4]`
+and `layer:`; the checker requires both. **All 31 task files here carry
+neither** — a divergence that predates today and that the checks port will fail
+on. Recorded rather than fixed: guessing which criteria an existing task
+delivers is authoring, not inference, and belongs with whoever next touches
+each layer. `layer:` was added mechanically, since it is derivable from the
+directory.
+
+**Dispatch has two escape hatches this repo lacks.** `gated_criteria` — criteria
+a `ready` layer knowingly cannot reach because the only satisfying task is
+still `draft`, where *"declaring it is the point: the check fails on the
+undeclared case, which is the one that drifts."* And `discharged_at_layer` —
+an adjudicated criterion with no implementation, because a task carrying one
+would be a PR containing nothing. Both are adopted.
+
+Recorded honestly: this entry first claimed `foundation` had declared eight
+criteria and written seven, as a live example of that drift. That was wrong.
+Criterion 8 was written — an *adjudicated* criterion, that a clean-context
+verifier finds no spine column from which a person could be re-identified
+without the payload plane. The acceptance sweep earlier the same day mangled it,
+because the pattern that rewrote criterion definitions matched only
+`(mechanical)` and this is the repo's single `(adjudicated)` one. It is
+restored. The escape hatches are still adopted, on Dispatch's reasoning rather
+than on a defect that turned out to be self-inflicted.
+
+**grain runs six worktrees and forbids code work in the main checkout.**
+
+### The rulings
+
+**The main checkout is a planning desk.** Plans, decisions, model and design
+edits only. All feature and code work happens in its own worktree. Adopted from
+grain, for the reason grain has it: today a second session checked out a branch
+in this checkout while another was mid-edit, and this log ended up with three
+duplicate entry numbers (030, 031, 032) that had to be reconciled by hand
+against a `main` that had renumbered them differently again. **Also adopted:
+grain's divergence check** — fetch, then read the log both ways, and surface a
+divergence rather than pivoting silently.
+
+**`/plan-eng-review` is mandatory before a layer goes `ready`, and again when
+its task files are authored.** Grill-before-ready settles what a layer is for;
+the engineering review settles whether its criteria can be executed and
+verified. `app-shell`, written today without one, carried **six criteria this
+repo's own verifier protocol could not check** — "verified on real hardware",
+"evidenced by a recorded session" — against `plans/ORDER.md`'s rule that
+*"mechanical criteria are re-run, not re-read"*, plus **three scope items with
+no criterion at all** (haptics, push, launch identity). All six were rewritten
+as assertions on the layout tree, the token pairs and the call site; the two
+that genuinely need a device are now named as the exception rather than hidden
+among them.
+
+**`/code-review` runs on every PR after it is posted and before it may merge.**
+Verification proves the criteria are met; code review is the only step that
+reads the diff for what the criteria did not think to ask. Merge gates now run
+in order: CI green → verification recorded → code review resolved → human
+merge.
+
+**The executive loop is written out.** It was one sentence; it is now seven
+steps with the worktree rule, both review gates, and an explicit list of what
+the executive never does. Adapted from Dispatch's, which is battle-tested.
+
+**Criteria are identified by position, not by code.** Inside a layer, the
+number. Across layers, `<layer>-<n>` — `worker-surface-3`. The `AC-XX<n>`
+codes were stripped from all 19 layers and 96 criteria today on the founder's
+instruction, because a reader could not tell what `AC-PI4a` meant. **The
+identifier they carried was load-bearing** — it is the `satisfies` join — and
+survives in this readable form. Recorded as a divergence from Dispatch with its
+reason, per `CLAUDE.md`'s rule that an unrecorded divergence is drift.
+
+Recorded against this ruling: the intermediate state, where the codes were
+replaced with a bare `acceptance_count:` integer in frontmatter, was **worse
+than the codes**. It named nothing and served no reader. It is gone; criteria
+are numbered in the body and every one now leads with a plain-English sentence
+saying what it requires.
+
+**Running state does not belong in a plan.** grain keeps a per-plan
+`PROGRESS.md` — PR checklist, decisions taken during execution, blockers,
+worktree path — so plans stay stable while progress churns. Adopted in
+principle; the file appears when a layer goes `ready`, not before.
+
+### Consequences
+
+`plans/ORDER.md` gains a frontmatter section and a written executive loop.
+`CLAUDE.md` (and `AGENTS.md`, its symlink) gain the worktree rule, the
+divergence check, both mandatory reviews, and the criterion-identifier
+convention. Every task file gains `layer:`. `satisfies:` remains unwritten
+across all 31 and is the first thing the checks port will surface.

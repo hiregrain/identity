@@ -1,6 +1,8 @@
 ---
 id: party-registry/05
 type: task
+layer: party-registry
+satisfies: []
 status: ready
 depends_on: [party-registry/01]
 migrations: [0017-party-vetting]

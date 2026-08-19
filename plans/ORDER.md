@@ -52,6 +52,40 @@ first thing sold runs on unverified self-asserted history plus whatever
 references have arrived — which is what `THESIS.md` §5 says, stated as a
 boundary rather than a sentence. `v1` remains the attestation round trip.
 
+## Frontmatter, and what each field is for
+
+A layer and a task carry different fields. The checks port
+(`plans/foundation/06`) validates these; until it lands they are enforced by
+reading.
+
+**Layer** — `id`, `type`, `status`, `depends_on`, `binds`, `evidence`,
+`verified_by`, plus `milestone` where it applies. Optional, and worth using:
+
+- `soft_depends_on` — work that can start before the dependency lands.
+- `gated_criteria` — criteria a `ready` layer knowingly cannot reach yet,
+  because the only task that would satisfy them is still `draft`. **Declaring
+  it is the point.** The undeclared case is the one that drifts, and it is
+  what `foundation` is doing today: eight criteria were declared and seven
+  written.
+- `discharged_at_layer` — a criterion settled by adjudication with no
+  implementation behind it. A task carrying one would be a PR containing
+  nothing, so it is declared here instead.
+
+**Task** — `id`, `type`, `layer`, `status`, `depends_on`, `satisfies`,
+`binds`, `evidence`, `verified_by`.
+
+**`satisfies` is the join, and it is missing.** It names the criteria a task
+delivers, so a check can prove every criterion has a task and no task claims a
+criterion that does not exist. All 31 task files in this repo lack both
+`layer` and `satisfies` — a divergence from Dispatch that predates the
+acceptance rewrite and that the checks port will fail on.
+
+**Criteria are identified by position, not by code** (decision 042). Inside a
+layer a criterion is its number; across layers it is `<layer>-<n>`, as in
+`worker-surface-3`. A task writes `satisfies: [3, 5]` for its own layer. The
+old `AC-XX<n>` codes were removed on 2026-08-19 because they were unreadable;
+the identifier they carried was load-bearing and survives in this form.
+
 ## The execution protocol
 
 Adopted from Dispatch verbatim, because it is proven and agents move
@@ -130,11 +164,82 @@ empty — recorded as a decisions-log entry. Task files are authored only
 after the layer's grilling closes. First instance: decision 011
 (foundation + trust-kernel).
 
-**The executive loop:** one executive session reads the computed queue,
-claims and dispatches to fresh-context implementers (one per task,
-parallel only on disjoint frontiers), dispatches clean verifiers, batches
-merge-ready PRs and raises for the founder, and never implements,
-verifies, merges, or answers a raise itself.
+**Grill-before-ready has a second half (added 2026-08-19).** A layer may not
+go `ready`, and its task files may not be authored, until an engineering
+review has run over the layer — `/plan-eng-review`, or an equivalent
+architecture pass recorded the same way. The founder grilling settles *what*
+the layer is for; the engineering review settles whether its criteria can be
+executed and verified. Decision 042 records why: the first layer written
+without one carried six criteria that this repo's own verifier protocol
+could not check, and three scope items with no criterion at all.
+
+## The executive loop
+
+One **executive** session drives execution. It runs no task itself; it runs
+the loop:
+
+1. **Read the queue.** `node checks/run.mjs` is the only source of what is
+   workable. The executive never re-derives status from prose, including
+   from this file. Until the checks port lands (`plans/foundation/06`), there
+   is no queue and therefore no loop — that port is the gate on everything
+   below.
+
+2. **Claim and dispatch.** Claim by writing `status: in_progress` (the write
+   is the claim), then hand the task to an **implementer** — a fresh session
+   given the task id and nothing else. One implementer per task; parallel
+   implementers only on tasks with no shared `depends_on` frontier.
+
+   **Every implementer works in its own worktree. The main checkout is a
+   planning desk.** It holds plans, decisions, model and design edits, and
+   nothing else. No implementer, and no executive, does code work in it.
+   This is grain's rule and it is adopted because its absence has already
+   cost this repo: on 2026-08-19 a second session checked out a branch in the
+   main checkout while another was editing it, producing duplicate entry
+   numbers in an append-only log.
+
+   **Before editing anything in the main checkout, check for divergence:**
+   `git fetch origin`, then read both `git log HEAD..origin/main` and
+   `git log origin/main..HEAD`. If either is non-empty, surface it rather
+   than pivoting silently.
+
+3. **Verify.** When the implementer's PR is up, dispatch a **verifier** — a
+   separate clean-context session that did not implement, given the task id
+   only. It reads the criteria, the diff, and runs the outside check. On a
+   pass it writes `status: done` and `verified_by`. Nobody else ever writes
+   `done`. An implementer never verifies its own task, and the executive
+   never verifies — it dispatched the work, so its context is contaminated
+   by intent.
+
+4. **Review the code.** `/code-review` runs on every PR after it is posted
+   and before it may merge. This is a gate, not a courtesy: verification
+   proves the task's criteria are met, and code review is the only step that
+   reads the diff for what the criteria did not ask about.
+
+5. **Present for merge.** Merging is a human act and stays one. The executive
+   batches merge-ready PRs — every gate below green — with one-line
+   judgment-call summaries, so founder review time goes to fit rather than
+   mechanics.
+
+6. **Aggregate raises.** An implementer that hits an unmade decision stops
+   and raises. The executive collects raises, answers none itself, batches
+   them to the founder, and marks the task honestly: `in_progress` with the
+   raise noted if work can continue elsewhere in it, back to `ready` if not.
+
+7. **Repeat** from 1 on every merge, raise resolution, or gate change.
+
+**What the executive never does:** implement, verify, merge, answer a raise,
+edit anything above a task's fence, or start work the queue does not list.
+Its authority is dispatch and bookkeeping; every judgment stays with the role
+that owns it.
+
+**Merge gates, in order.** All four, every time:
+
+1. CI green.
+2. Clean-context verification recorded (`verified_by` written by the verifier).
+3. `/code-review` run on the posted PR, findings resolved or explicitly accepted.
+4. Human review of judgment calls, and the merge itself.
+
+**Never squash.** Evidence and verification records cite SHAs.
 
 ## Founder gates
 
@@ -144,11 +249,14 @@ rather than one discovery at a time.
 | Gate | Blocks | Owner state |
 |---|---|---|
 | T1 spike ruling (pre-committed rule in `t1-spike.md`) | — | **discharged (decision 012)** — Go stands; switch-triggers carry forward as the guard |
-| Counsel brief 4 → final worker-agreement terms | the first real worker; `durability-and-launch` AC-DL3 config. Not the build | open, long lead — send the brief |
-| Chrome/marks rulings (invariant ledger chrome; epistemic mark system) | `marks-and-embeds` going `ready`; `worker-surface` AC-WS4 as written | open — drafted in session, awaiting ratification |
+| Counsel brief 4 → final worker-agreement terms | the first real worker; `durability-and-launch` `durability-and-launch` criterion 3 config. Not the build | open, long lead — send the brief |
+| Chrome/marks rulings (invariant ledger chrome; epistemic mark system) | `marks-and-embeds` going `ready`; `worker-surface` `worker-surface` criterion 4 as written | open — drafted in session, awaiting ratification |
 | **Cloud provider ruling** (AWS vs. GCP mini-litigation, decision 011 open item) | real provisioning; nothing local | open — litigation starts on founder go |
 | Cloud accounts + KMS + WORM buckets provisioned (two clouds, separate account for object-lock) | `trust-kernel` checkpoint tasks against real infra; local/CI work is ungated (software-key provider per decision 011) | open — follows the provider ruling; founder-held billing |
 | Persona/Sumsub DPAs signed (retention/destruction schedules per research/09) | live verification in `verification`; sandbox/stub work is ungated | open |
+| **Mark open items** — lobe count, break angle, largest/smallest silhouette agreement (`DESIGN.md` gap 1) | `app-distribution` going `ready`; the app icon and every store asset (decision 039) | open |
+| **Persona DPA — subprocessor scope** (decision 040 §C): 16 US subprocessors incl. Anthropic, OpenAI and Groq processing identity documents; plus India DPDP residency, unproven for both vendors | live verification in `verification`; sandbox work ungated | open — counsel, before contracting |
+| **Imprint patent re-read** (decision 040 §F): `imprint/README.md` §8's non-interactivity limb no longer holds now the expanded imprint responds to touch | nothing in the build; a disclosure correction to counsel | open — counsel |
 | PR merges (merge gate 3) | every task's completion | standing |
 | Witnessed-log witness contract | nothing until the registry deadline nears (D3); listed so it is not discovered late | open, deferred |
 

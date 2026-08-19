@@ -1,6 +1,8 @@
 ---
 id: person-identity/04
 type: task
+layer: person-identity
+satisfies: []
 status: ready
 depends_on: [person-identity/01]
 migrations: [0011-names]

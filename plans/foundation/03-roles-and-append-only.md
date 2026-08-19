@@ -1,6 +1,8 @@
 ---
 id: foundation/03
 type: task
+layer: foundation
+satisfies: [1]
 status: ready
 depends_on: [foundation/02]
 migrations: [0002-roles-and-default-privileges]
@@ -61,11 +63,11 @@ pattern (its migrations 0002/0006) verbatim in structure.
 
 ## Acceptance
 
-- AC-F1 (mechanical): the application role cannot UPDATE or DELETE any
-  table outside the enumerated exemption list; a table created by a later
-  dummy migration inherits the restriction with no manual step. The
-  exemption list is asserted explicitly, so adding one requires editing the
-  test.
+1. (mechanical) the application role cannot UPDATE or DELETE any
+   table outside the enumerated exemption list; a table created by a later
+   dummy migration inherits the restriction with no manual step. The
+   exemption list is asserted explicitly, so adding one requires editing the
+   test.
 - AC (mechanical): default-privilege inheritance is proven **across both
   databases and across more than one schema**, and under a second owner
   role. Postgres default privileges are per granting role and per schema,

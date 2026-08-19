@@ -1,6 +1,8 @@
 ---
 id: trust-kernel/05
 type: task
+layer: trust-kernel
+satisfies: [4]
 status: ready
 depends_on: [trust-kernel/03, foundation/08, person-identity/06, consent-and-deletion/01]
 binds: [decisions/LOG.md#011, decisions/LOG.md#017, decisions/LOG.md#019, design/stack-litigation/d2-verdict.md]
@@ -53,8 +55,8 @@ specs stand, property-based suites are the recorded fallback).
 
 ## Acceptance
 
-- AC-TK4 (mechanical): both specs model-check clean; the derived
-  conformance tests pass against the implementation.
+4. (mechanical) both specs model-check clean; the derived
+   conformance tests pass against the implementation.
 - AC (mechanical): a deliberately introduced violation (e.g. a read path
   that skips the deletion check) is caught by the conformance suite.
 

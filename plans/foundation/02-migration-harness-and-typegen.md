@@ -1,6 +1,8 @@
 ---
 id: foundation/02
 type: task
+layer: foundation
+satisfies: [2]
 status: ready
 depends_on: [foundation/01]
 migrations: [0001-migration-infrastructure]
@@ -38,7 +40,7 @@ generated types that cannot drift.
   site; accidental cross-plane type reuse is how the plane split gets
   violated in application code while every database-level check still
   passes. `--check` mode diffs against committed output; CI runs it.
-- CI replays the chain from empty twice (AC-F2's mechanism); adopt
+- CI replays the chain from empty twice (criterion 2's mechanism); adopt
   Dispatch's migration-number check into `checks/` scope (port lands in
   foundation/06, the number-claim convention binds from now).
 

@@ -1,6 +1,8 @@
 ---
 id: foundation/05
 type: task
+layer: foundation
+satisfies: []
 status: ready
 depends_on: [foundation/04]
 migrations: [0005-dek-registry]

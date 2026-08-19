@@ -1,6 +1,8 @@
 ---
 id: foundation/06
 type: task
+layer: foundation
+satisfies: []
 status: ready
 depends_on: [foundation/01, foundation/04]
 evidence: []

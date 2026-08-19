@@ -46,7 +46,9 @@ chapter. A rehire after leaving is a **new** chapter.
 | `chapter_id` | opaque id | never reissued |
 | `subject_id` | `ledger_person_id` | |
 | `party_ref` | registered party id, nullable | null when the party is unregistered |
-| `party_asserted` | string, nullable | worker-typed name, used only when `party_ref` is null. Never resolved into `party_ref` automatically — a name match is not an identity. |
+| `party_asserted` | string, nullable | worker-typed name, used only when `party_ref` is null. **Never mutated, and never resolved into `party_ref` automatically — a name match is not an identity.** Normalization is derived and disposable; the raw string is authoritative and must be reproducible verbatim. |
+| `party_country` | ISO 3166-1 alpha-2 | **Required whenever `party_ref` is null.** Disambiguating context for later resolution. |
+| `party_locality` | string, nullable | City or town as the worker gives it. Same purpose. |
 | `relationship_kind` | enum | `employment \| engagement \| platform \| agency \| self_employed` |
 | `started_on` · `ended_on` | month precision | **Month, never day.** Day precision is more identifying, invites exact-gap inference, and is not needed by any surface. `ended_on` null while ongoing. |
 | `ended_reason` | enum, optional | `relationship_ended \| party_declared_dormant`. Never a reason for leaving — that is a performance claim wearing a metadata costume. |
@@ -104,13 +106,15 @@ drawn in the imprint** (`imprint/README.md` §2).
 | `grant_id` | opaque id | |
 | `subject_id` · `grantee_party_ref` | | |
 | `scope` | enum | `read_record \| write_attestation \| both` |
-| `chapters` | `all \| [chapter_id]` | whole-record by default (decision 028) |
+| ~~`chapters`~~ | — | **Deleted, decision 029 §B3.** A grant is always the whole record. A chapter-scoped grant is claim curation wearing a grant's clothes and silently reverses founder decision 7 (`design/ledger-design-0.1.md` §7.1). |
 | `granted_at` · `expires_at` | | **expiry is mandatory**; a grant with no end is a permanent disclosure the worker forgets making |
 | `revoked_at` | nullable | |
-| `last_read_at` | nullable | the worker can see whether it was used |
+| `last_read_at` | nullable | **Not surfaced to the worker, decision 029 §B4.** The worker sees the grant's *state* — issued, active, expired, revoked — and no read events. The field is retained for the disclosure record that satisfies GDPR Art. 15(1)(c) on request. |
 
 **Share links** are grants with no `grantee_party_ref`, a 30-day default expiry,
-and a warning at creation. **The public URL is not a grant** — it is a separate
+and a statement at creation of what the recipient receives — full work-history
+detail, and the ability to ask Grain to analyse it (decision 029). It is written
+as what the recipient gets, not as a warning. **The public URL is not a grant** — it is a separate
 worker-curated projection carrying verification status and work history only.
 
 ## 6. `dispute`
@@ -142,6 +146,18 @@ credential logic the thesis attacks.
 
 ## 8. Open
 
+0. **Employer normalization at scale.** `party_country` and `party_locality`
+   exist because most chapters in the target population name businesses that never
+   register, in many scripts and many spellings of one employer, and **context you
+   do not collect at entry cannot be backfilled**. Resolving those strings into
+   canonical employers is a real problem and is deliberately *not* modelled here:
+   its first genuine consumer is cross-worker aggregation in `analytics`, and
+   nothing in `v1` or `first-product` needs it (decision 034 §E, corrected). When
+   it is built, two rules already stated above govern it — the raw string is never
+   mutated, and clustering proposes but never asserts — and the operating threshold
+   is set against the **false-merge rate**, never F1, because a false merge
+   attributes one worker's employer to another's.
+
 1. **Vocabulary conflict.** Decision 028 records "ESCO for `work_kind`". Ratified
    decision 006 / interface R-1 says the vocabulary is **ledger-authored** with
    published crosswalks to O\*NET/ISCO/ESCO. This document follows the ratified
@@ -157,5 +173,8 @@ credential logic the thesis attacks.
    suspended, does an existing `party_attested` chapter fall back? The interface
    says suspension is never retroactive and produces a read-time flag — so
    probably no, but the chapter surface has to render that flag.
-5. **Public-URL projection.** Worker-customisable per decision 028, but the field
-   list for what may appear there is not specified.
+5. ~~**Public-URL projection.**~~ **Closed by decision 029.** Whole record or no
+   record; no per-chapter curation on any surface. The single lever is the
+   imprint, full or absent. Always indexed, with a reduced page for crawlers and
+   logged-out visitors, and the imprint always behind sign-in. Field list in
+   `design/06-worker-app-ia.md` §5–6.

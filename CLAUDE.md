@@ -124,3 +124,48 @@ human or an agent and read by tools, never rewritten by them.
 authoring — as `docs(<directory>):` commits, one per directory, never on a
 branch and never inside an implementation diff. Branch and PR grammar in
 `plans/ORDER.md` applies to task work only. Names are derived, never invented.
+
+## Where work happens
+
+**The main checkout is a planning desk.** It holds plans, decisions, model and
+design edits, and nothing else. Feature and code work happens in its own
+worktree, never here. This is grain's rule, adopted for the reason grain has
+it: on 2026-08-19 a second session checked out a branch in this checkout while
+another was mid-edit, and the append-only decisions log ended up with three
+duplicate entry numbers. One checkout, one purpose.
+
+**Before editing anything here, check for divergence.** `git fetch origin`,
+then read both `git log HEAD..origin/main` and `git log origin/main..HEAD`.
+If either is non-empty, surface it rather than pivoting silently. A session
+that starts on one branch and finishes on another has produced work nobody can
+find.
+
+**Untracked files survive a branch switch; tracked edits do not.** A session
+holding a dozen modified files is one `git switch` away from a conflict it has
+to resolve under pressure. Commit or stash before switching, never after
+discovering the problem.
+
+## Two reviews are mandatory
+
+**`/plan-eng-review` before a layer goes `ready`.** The founder grilling
+settles what a layer is for; the engineering review settles whether its
+criteria can be executed and verified at all. The first layer written without
+one carried six criteria this repo's own verifier protocol could not check and
+three scope items with no criterion at all (decision 042). It runs again when a
+layer's task files are authored.
+
+**`/code-review` on every PR, after it is posted and before it may merge.**
+Verification proves the task's criteria are met. Code review is the only step
+that reads the diff for what the criteria did not think to ask about. Neither
+substitutes for the other, and the merge gates run in order: CI green →
+verification recorded → code review resolved → human merge.
+
+## Criteria are numbered, not coded
+
+Inside a layer a criterion is its number. Across layers it is `<layer>-<n>` —
+`worker-surface-3`. A task declares `satisfies: [3, 5]` for criteria in its own
+layer. The `AC-XX<n>` codes inherited from Dispatch were removed on 2026-08-19
+because a reader could not tell what one meant; the identifier they carried is
+load-bearing and survives in this readable form (decision 042). Do not
+reintroduce opaque codes, and do not invent a replacement vocabulary for them
+either — a bare count in frontmatter is worse than the codes were.

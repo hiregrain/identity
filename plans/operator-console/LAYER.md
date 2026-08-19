@@ -7,7 +7,6 @@ depends_on: [person-identity, ingestion]
 binds:
   - design/ledger-design-0.1.md#1.3
   - research/10-infra-comparison-grain-dispatch.md
-acceptance: [AC-OC1, AC-OC2, AC-OC3, AC-OC4]
 evidence: []
 verified_by: null
 ---
@@ -33,12 +32,12 @@ model: operator and steward roles ledger-side; no employer/customer role
 exists on ledger surfaces (that's vertical territory).
 
 Acceptance:
-- AC-OC1: a merge cannot execute over attested history except through the
-  steward queue; the queue shows the evidence that justified the
-  candidate.
-- AC-OC2 (mechanical): every console action lands as an append-only event
-  with actor attribution; a console session leaves a complete audit trail.
-- AC-OC3: dispute deadlines fire notifications and state transitions
-  without operator polling.
-- AC-OC4: reliability signals render only inside the console — asserted by
-  a check that no API or packet field carries them.
+1. **A merge over attested history happens only through the ceremony.** a merge cannot execute over attested history except through the
+   steward queue; the queue shows the evidence that justified the
+   candidate.
+2. **Every operator action lands as an appended event.** (mechanical) every console action lands as an append-only event
+   with actor attribution; a console session leaves a complete audit trail.
+3. **Dispute deadlines fire on their own, without a human remembering.** dispute deadlines fire notifications and state transitions
+   without operator polling.
+4. **Reliability signals never leave the console.** reliability signals render only inside the console — asserted by
+   a check that no API or packet field carries them.

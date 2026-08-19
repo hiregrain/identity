@@ -1,6 +1,8 @@
 ---
 id: person-identity/07
 type: task
+layer: person-identity
+satisfies: [4, 5, 6, 7]
 status: ready
 depends_on: [person-identity/01, consent-and-deletion/01, party-registry/01]
 migrations: [0014-safety-markers]

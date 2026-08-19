@@ -1,6 +1,8 @@
 ---
 id: foundation/04
 type: task
+layer: foundation
+satisfies: [3, 4]
 status: ready
 depends_on: [foundation/03]
 migrations: [0003-spine-core, 0004-payload-us-bootstrap]
@@ -61,7 +63,7 @@ naming convention.
   disagreement is a caught error rather than an open question.
 - The **spine schema lint** (CI): allow-listed column types/domains only
   in spine migrations; any text/blob/JSON column outside the allow-list
-  fails the build with a message naming the rule (AC-F3's mechanism).
+  fails the build with a message naming the rule (criterion 3's mechanism).
 - Connection plumbing: application config holds two connection strings;
   no code path may join across the planes in SQL (cross-plane assembly
   happens in application code, by design). The FDW/dblink ban in
@@ -73,18 +75,18 @@ naming convention.
 
 ## Acceptance
 
-- AC-F3 (mechanical, narrowed to what it can prove): a test migration
-  adding a column of a type outside the spine allow-list fails CI via the
-  lint, and a column outside the allow-list without a justification comment
-  also fails. The criterion no longer claims to prove that opaque columns
-  carry no personal data — the correlation checklist and human review cover
-  that.
+3. (mechanical, narrowed to what it can prove) a test migration
+   adding a column of a type outside the spine allow-list fails CI via the
+   lint, and a column outside the allow-list without a justification comment
+   also fails. The criterion no longer claims to prove that opaque columns
+   carry no personal data — the correlation checklist and human review cover
+   that.
 - AC (mechanical): the two planes are separate databases, not schemas —
   proven by showing a transaction cannot span them and that each has its
   own role set.
-- AC-F4 (mechanical): a payload table without `residency_region` fails
-  the lint; every seeded table carries it NOT NULL; and a row whose
-  `residency_region` disagrees with its database is caught by a check.
+4. (mechanical) a payload table without `residency_region` fails
+   the lint; every seeded table carries it NOT NULL; and a row whose
+   `residency_region` disagrees with its database is caught by a check.
 - AC: both chains replay from empty in CI; the append-only test from
   foundation/03 passes against both databases.
 

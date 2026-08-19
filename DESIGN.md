@@ -246,8 +246,20 @@ The record is monochrome. There is no accent colour.
     ink         #1B2A44   structure, figures, every verified fact
     paper       #F5F6F3   every surface of record
     secondary   #5C6878   labels, captions, self-reported material
-    hairline    #D3D7D6   rules, borders, the ledger grid
+    rule        #7E8794   any line that carries meaning — state, selection, boundary
+    hairline    #D3D7D6   pure separation only: the ledger grid, never a state
     page        #E6E6E4   behind the paper; app chrome ground
+
+**`rule` versus `hairline` — added 2026-08-19 (design review, `design/07`).** One
+token was doing two jobs and failing one of them. `hairline` on `paper` computes
+to **1.34:1**, against §12's 3:1 floor for meaning-bearing lines — correct for a
+grid that should recede, and invisible for a state. Every state pair in the first
+build (`.row`→selected, the attained ladder step, the input at rest, and the
+disclosure rule itself) rode the failing half. `rule` is **3.35:1** on paper and
+is the only value permitted to carry meaning. A line that a reader must notice is
+`rule`; a line that merely divides is `hairline`. Opacity is never a substitute:
+alpha on a stroke blends into the paper, so `.11` renders at 1.22:1 and `.45` at
+2.62:1.
 
 **Laws.** Primary controls are solid ink; secondary are hairline ink; links are
 ink, underlined. Danger is carried by ink inversion, explicit words and a
@@ -272,11 +284,29 @@ second face. No mono voice — the serial layer is Archivo tracked wide.
     section head          Normal · 600 · 17px
     record voice          Normal · 600 · 15px
     body                  Normal · 400 · 14px · 1.6 line-height
+    data                  Normal · 500 · 13px · tabular · sentence case
     meta                  Normal · 400 · 12px
     micro-caption         500 · 9.5px · +8% tracking · uppercase
     serial layer          500 · 11px · +14% tracking · uppercase
 
-Tabular numerals wherever digits align. **[GAP]** Archivo covers Latin, Cyrillic
+**The data register — added 2026-08-19 (design review, `design/07`).** §8 requires
+rows to carry "right tabular figures" and this scale had no register for them, so
+the first build put every date, duration, grant state, expiry and settings value
+into **micro-caption** — 56 applications against the screen title's 6 and the
+instrument register's 0, with 73 of 117 register applications at 12px or below.
+Because micro-caption uppercases, it also rendered a worker's own name as
+`LIEZEL MENDOZA` and their permanent address as `/U/LIEZEL-MENDOZA`. A caption
+register carrying proper nouns, URLs, figure columns and running sentences is
+four jobs it was not defined for, and it is the single most uniform treatment in
+the set — a Cluster B tell by frequency alone.
+
+**Micro-caption is now labels only.** Never a value, never a date, never a name,
+never a sentence. Anything a reader reads *as information* is `data` or above.
+
+Tabular numerals **where digits align** — the data and instrument registers, and
+figure columns. Not globally: §5 names tabular figures as engraving cost, and a
+blanket application puts gapped digits inside running prose, which costs nothing
+and means nothing. **[GAP]** Archivo covers Latin, Cyrillic
 and Greek but not Arabic or CJK; a companion face is needed for those markets,
 matched on weight and width discipline.
 
@@ -322,10 +352,16 @@ contains no checkmarks.**
 **Iconography is starved.** Drawn in-house, 24px grid, 1.5px hairline, square
 terminals, never filled. Roughly eight exist.
 
-**The core screen runs in one order** (decision 028): the imprint, outstanding
-verification, work history, sharing, identity. Verification sits second because it
-is the only element that asks the worker to act, and an unattested record is the
-failure mode. Identity goes last because it is settled once and then irrelevant.
+**The core screen runs in one order** (decision 028, **amended by 029**):
+identity and the imprint composed as one hero, then outstanding verification,
+work history, sharing. Verification sits second because it is the only element
+that asks the worker to act, and an unattested record is the failure mode.
+Identity moved from last to first: 028's reasoning — settled once, then
+irrelevant — holds for the returning user and fails for the new one, who would
+otherwise land on an abstract figure with their name at the foot of a scroll.
+The portrait was already paired beside the imprint here; 029 makes that pairing
+the hero rather than splitting it across the screen. The whole app is this one
+screen — there is no tab bar at v1 (`design/06-worker-app-ia.md` §1).
 
 **A promotion is a division inside the band, not a new band.** The chapter is the
 relationship with the party, so a position change is drawn as a hairline division
@@ -343,10 +379,18 @@ Twelve primitives, each drawn from the figure or the chart:
 
 **From the figure** — the person-mark (every human in the product, attestors
 included, rendered as their own mini-imprint rather than a photo or initials);
-loading as an arc scribing; progress as a band closing; selection as weave
-density in the row gutter; dividers carrying a faint sine modulation at the
-figure's own frequency; choice controls from the state grammar; tab indicators
-as arc segments.
+loading as an arc scribing; progress as a band closing; **selection as the
+meaning-bearing rule (§5), never as weave density**; dividers carrying a faint
+sine modulation at the figure's own frequency; choice controls from the state
+grammar; tab indicators as arc segments.
+
+**Corrected 2026-08-19 (design review, `design/07` §6.3).** This section
+previously specified "selection as weave density in the row gutter" while §2
+specifies "thread density = corroboration tier" — the same channel carrying two
+variables, which law 3 forbids. **Thread density means corroboration and nothing
+else.** Selection moves to `rule`, where it is a line quality (law 4) and cannot
+be confused with an epistemic claim. The first build hit this collision, chose a
+workaround, and did not record it; that is the failure this correction closes.
 
 **From the chart** — the plate (registration corners, a header band carrying
 document class and serial, a footer carrying append-only status); the graticule
@@ -424,7 +468,10 @@ micro-caption band with the record still readable from cache.
    distinctiveness of its own for text-only surfaces.
 3. **The display identifier** — whether a human-facing number is shown at all,
    and if so its format. Distinct from the opaque `ledger_person_id`, which is
-   permanent and never surfaces. Four formats rendered, none chosen.
+   permanent and never surfaces. Four formats rendered, none chosen. **Newly
+   entangled (029):** the public handle now exists (`hiregrain.com/u/<handle>`,
+   Latin-only, claimed after the record exists, changeable but never released)
+   and nothing has decided whether it becomes the display identifier.
 4. ~~The record schema~~ — **proposed 2026-08-18** in
    [`model/record-schema.md`](model/record-schema.md) (0.1). Objects: `chapter`,
    `position`, `attestation`, `chapter_standing`, `grant`, `dispute`. No `skill`
@@ -433,19 +480,61 @@ micro-caption band with the record still readable from cache.
    claim about work performed. Five open items remain in its §8, including a
    vocabulary conflict between decision 028 and ratified decision 006.
 5. **The marks enum** — blocking `plans/marks-and-embeds` from going ready.
-6. **Dark mode** — rule defined, never rendered.
-7. **Companion typeface** for non-Latin scripts. Archivo is Latin-only and the
-   product is global — Bengali, Arabic, Devanagari and CJK are launch-blocking,
-   not later work.
+6. **Dark mode** — **decision closed 2026-08-19 (031), drawing outstanding.**
+   It ships at v1 as a *second palette*, not as a mechanical inversion: §5's
+   "the ink becomes the ground" does not survive arithmetic, since `rule` at
+   3.35:1 on paper is a different ratio inverted and the imprint's hairlines
+   bloom on dark ground where they fade on light. Derive from §12's floors
+   independently; every state must be distinguishable in both appearances or in
+   neither.
+7. **Companion typeface** — **closed for the first cohort 2026-08-19 (031):
+   Noto Sans Devanagari**, with Noto siblings for Bengali, Arabic and CJK as
+   those cohorts land. Recorded consequence: **Noto has no width axis**, and
+   §6's two display registers are Expanded 125%, so in non-Latin scripts the
+   display hierarchy comes from weight and size alone. The type system is
+   genuinely weaker outside Latin, in a product whose population is largely
+   non-Latin.
 8. **The employer surfaces** — attest queue, dossier, disclosure-grant view,
    cohort view. Undesigned.
-9. **Onboarding's first-run teaching sequence**, and the mint/share artifact.
+9. ~~Onboarding's first-run teaching sequence~~ — **closed by deletion (029).**
+   There is no tutorial; the first chapter landing is the teaching. The full
+   first-open sequence is `design/06-worker-app-ia.md` §3. The mint/share
+   artifact remains open.
+10a. **The imprint has no size tier system, and its stroke is specified in the
+    wrong unit.** §3 established for the mark that scaling the master fails, and
+    gave it four purpose-drawn tiers. The imprint — whose entire content is
+    guilloché pitch — is fluid-scaled and has none.
+
+    **Corrected 2026-08-19, superseding this entry's first interim rule.** Raising
+    the base thread from 0.70 to 1.0 viewbox units was insufficient: at a 600-unit
+    viewbox rendered near 300px, 1.0 units is still **~0.5 CSS px**, below one
+    device pixel at dpr 1, so the thread still paints pale rather than crisp. The
+    unit is the defect. Verified behaviour, three surfaces:
+
+    - **CSS `border-width`** snaps a sub-pixel value **up** to one device pixel
+      (CSS Values 4, implemented across engines) — so 0.3px and 0.9px render
+      *identically*, and any meaning carried in the difference is lost.
+    - **SVG `stroke-width`** has **no snapping rule** — sub-pixel strokes
+      antialias to pale grey. This is the mechanism by which the figure fades.
+    - **Skia at `strokeWidth = 0`** is documented as "always exactly one pixel
+      wide in device space… thickness does not change as the canvas is scaled" —
+      the only one of the three that gives a crisp guarantee at any scale.
+
+    **The rule: the imprint's stroke is expressed in device pixels, never in
+    viewbox units.** In SVG that means `vector-effect="non-scaling-stroke"`; in a
+    Skia renderer it means hairline mode. `imprint/imprint.py`'s `STROKE` constant
+    is a viewbox-unit value and its meaning changes accordingly. Thread *counts*
+    are unaffected — the pitch at these band widths clears a device pixel — and
+    drawn tiers are still needed, still untested on hardware.
+
 10. **Chart grammar for analytics** — hairline, ruled, unfilled, monochrome is a
     gesture rather than a specification.
-11. **The identity core versus the no-centre rule.** Removing the centre point
-    from the mark was right — every reviewer group read a concentric centre as a
-    bullseye with the worker inside it. But the imprint's identity core is inked
-    at signup and carries the empty state. Whether it survives there is unresolved.
+11. ~~The identity core versus the no-centre rule.~~ **Closed 2026-08-19
+    (decision 029 §B6): the core is dropped.** Every reviewer group read a
+    concentric centre as a bullseye with the worker inside it, and that reading
+    does not improve for being inside the imprint rather than the mark. The empty
+    state is carried instead by the graticule ground clipped to the fixed canvas
+    — §9's own primitive. Recorded as design, not as a ratified decision.
 12. **The dispute surface.** Partners write freely with no countersign
     (decision 028), so a rectification path is required by GDPR Art. 16 regardless.
     A disputed claim stays visible and marked with the worker's statement attached.
@@ -454,7 +543,11 @@ micro-caption band with the record still readable from cache.
     or does not: an employer asks, the worker sees what would be disclosed, decides
     under time pressure. Plus the two-tier sharing model — a public URL and an
     expiring full-record link carrying a warning. Undesigned.
-14. **The guidance surface.** Worker-facing suggestions are the only prospective
-    content in an otherwise retrospective product and have no visual class. They
-    must not borrow the self-reported treatment, which would read as a weak claim
-    about the past rather than a proposal about the future.
+14. **The guidance surface** — **out of v1 (029).** Worker-facing suggestions
+    are the only prospective content in an otherwise retrospective product and
+    have no visual class; they must not borrow the self-reported treatment, which
+    would read as a weak claim about the past rather than a proposal about the
+    future. Outstanding verification already does the only prospective work v1
+    needs. When guidance arrives it takes the reserved **Work** destination
+    rather than being injected into the record, which is what gave it no visual
+    class in the first place.

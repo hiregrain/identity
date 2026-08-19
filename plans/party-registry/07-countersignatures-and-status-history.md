@@ -1,6 +1,8 @@
 ---
 id: party-registry/07
 type: task
+layer: party-registry
+satisfies: []
 status: ready
 depends_on: [party-registry/02, party-registry/06, trust-kernel/04]
 migrations: [0019-party-countersignatures]
@@ -37,7 +39,7 @@ recurring, attributable claim.
   (`integration-surface`), per the boundary rule in decision 015. **This
   task's acceptance therefore proves the protocol against a test harness,
   never against the shipped kit** — the "a partner runs one install and it
-  works" claim belongs to `integration-surface` AC-IS1, and this layer
+  works" claim belongs to `integration-surface` `integration-surface` criterion 1, and this layer
   cannot honestly assert it without depending on a layer that depends on it.
 - **Missed periods escalate; they never pass silently and never break a
   working integration on the first miss.** D4 left advisory-versus-

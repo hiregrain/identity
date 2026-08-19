@@ -8,7 +8,6 @@ binds:
   - model/attestation-interface.md
   - decisions/LOG.md#008
   - design/ledger-design-0.1.md#5
-acceptance: [AC-PP1, AC-PP2, AC-PP3, AC-PP4]
 evidence: []
 verified_by: null
 ---
@@ -33,12 +32,12 @@ read path, enforced structurally, with reads logged; fresh-read discipline
 per-packet issuance logging visible to the worker.
 
 Acceptance:
-- AC-PP1 (mechanical): revocation, deletion, supersession, and a registry
-  suspension are each reflected in the very next packet read.
-- AC-PP2 (mechanical): no code path serves `work_authorization` to a
-  pre-selection read; attempts are logged and structurally rejected.
-- AC-PP3: every `dimension_standing` entry resolves to its supporting
-  attestations; dropping the cache and recomputing reproduces identical
-  packets (Dispatch AC-REP-2 pattern).
-- AC-PP4: packets carry no sensitive-data-ban categories and no scores
-  finer than the interface's coarse tiers.
+1. **The packet is generated live, so nothing stale can survive in it.** (mechanical) revocation, deletion, supersession, and a registry
+   suspension are each reflected in the very next packet read.
+2. **Work authorization is unreadable before a selection has been made.** (mechanical) no code path serves `work_authorization` to a
+   pre-selection read; attempts are logged and structurally rejected.
+3. **Every standing entry resolves to the attestations behind it.** every `dimension_standing` entry resolves to its supporting
+   attestations; dropping the cache and recomputing reproduces identical
+   packets (Dispatch AC-REP-2 pattern).
+4. **Packets carry no banned data and no scores.** packets carry no sensitive-data-ban categories and no scores
+   finer than the interface's coarse tiers.

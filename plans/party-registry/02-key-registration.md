@@ -1,6 +1,8 @@
 ---
 id: party-registry/02
 type: task
+layer: party-registry
+satisfies: []
 status: ready
 depends_on: [party-registry/01, trust-kernel/02]
 migrations: [0015-party-keys]

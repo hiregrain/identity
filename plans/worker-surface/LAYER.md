@@ -5,10 +5,16 @@ status: draft
 milestone: v1
 depends_on: [person-identity, consent-and-deletion]
 binds:
+  - decisions/LOG.md#039
+  - decisions/LOG.md#040
   - decisions/LOG.md#022
+  - decisions/LOG.md#035
+  - decisions/LOG.md#036
+  - design/06-worker-app-ia.md
+  - design/07-worker-app-design-review.md
+  - design/08-app-inventory.md
   - design/ledger-design-0.1.md#7.1
   - design/ledger-design-0.1.md#8.1
-acceptance: [AC-WS1, AC-WS2, AC-WS3, AC-WS4]
 evidence: []
 verified_by: null
 ---
@@ -23,27 +29,76 @@ disputed/invalidated attestations with counter-statements, verification
 history, all in provenance-graded rendering; grant management (who reads,
 grant/revoke, full read log); dispute filing and tracking (the FCRA-shaped
 flow from design 0.1 §4); deletion request flow; profile and self-asserted
-claim editing (freeze states visible); notification of reads, new
-attestations, dispute deadlines; responsive web first (global worker
-population; low-end Android reality), installable PWA before native;
-localization scaffolding from day one (EN, then TL/HI with the first
-regional cohort). Operator-side analytics are not shown (decision 002 §4,
+claim editing (freeze states visible); notification of new attestations,
+expiring grants and dispute deadlines (read events are **not** surfaced —
+decision 035 §B4); localization scaffolding from day one (EN, then TL/HI
+with the first regional cohort).
+
+**The runtime moved out on 2026-08-19.** This layer previously scoped
+"responsive web first, installable PWA before native." Native iOS and
+Android is now the target and the platform contract is its own layer,
+`app-shell`. What stays here is *what the worker sees*; what lives there
+is everything true of every screen on a device.
+
+**Three rulings changed screens here on 2026-08-19, after this layer was
+otherwise settled.** A **deletion control returns to the app** and *files* the
+support request rather than executing it (decision 040 §D; Apple 5.1.1(v) makes
+support-only a rejection, and the consent instrument promises the right at
+signup). **Adding a chapter has no party search** (decision 039) — search is not
+effective at global scale, so the screen captures the raw employer string
+faithfully plus disambiguating context, country and city at minimum, and never
+forces a match. The screen records `party_country` and `party_locality`
+(`model/record-schema.md`) because context not collected at entry cannot be
+backfilled; resolving those strings into canonical employers is deliberately not
+built (decision 041). And **F3,
+the identity-capture screen, is relaxed** (decision 040 §C): neither vendor
+permits hosting capture in the host app's chrome, so it is our screen handing off
+with the vendor named on it.
+
+**The attester's surfaces are NOT here.** Decision 035 gave every attester an
+account; decision 038 put that flow on the web. An invitation opens the web
+attestation surface (`public-web`), the form itself is `peer-references`, and
+this layer sees an attester only later, as a person holding their own record.
+
+**The full screen and component inventory is
+[`design/08-app-inventory.md`](../../design/08-app-inventory.md)** — 52
+surfaces, of which 9 are drawn. Task decomposition follows that document,
+not this paragraph. Operator-side analytics are not shown (decision 002 §4,
 decision 022); the raw record always is.
 
-**The boundary of "the record", for AC-WS1.** Analytics run records are
+**The boundary of "the record", for criterion 1.** Analytics run records are
 compliance artifacts about Grain's own processing, not entries in the
 person's record, and are not shown here (decisions 022, 026). Attester
-veracity events no longer exist (decision 025). AC-WS1's "nothing hidden"
+veracity events no longer exist (decision 025). Criterion 1's "nothing hidden"
 therefore means every fact *about the person* — which is the whole record
 and always was.
 
+**Grill-before-ready is discharged** (decision 035, nine rounds; decision
+036, follow-on rulings). Promotion to `ready` now waits only on the four
+founder gates raised in `design/08-app-inventory.md` §0 and recorded in
+`plans/ORDER.md` — the platform target, Android intra-record navigation,
+the dark palette, and the companion typeface. Task files are authored when
+those close.
+
 Acceptance:
-- AC-WS1: every fact in the person's record is reachable in the UI; a
-  side-by-side against a raw API dump shows nothing hidden.
-- AC-WS2: provenance classes are visually distinct at every rendering
-  site, at WCAG-AA contrast, without color-only encoding.
-- AC-WS3: grant, revoke, dispute, and delete are each completable start to
-  finish on a 360px viewport over a slow connection.
-- AC-WS4: all trust-bearing flows serve from the ledger origin — no
-  vertical chrome, no theming beyond light/dark (per the invariant-chrome
-  ruling pending in the decisions log).
+1. **Every fact about the person is reachable in the app.** every fact in the person's record is reachable in the UI; a
+   side-by-side against a raw API dump shows nothing hidden. **Narrowed by
+   decision 035 §B4/§B5:** read events are excluded (grant *state* is shown, not
+   reads — the disclosure record is served on request), and there is no dispute
+   UI, so a chapter renders its `disputed` field but no dispute flow exists in
+   the app.
+2. **Provenance is distinguishable everywhere it renders, without relying on colour.** provenance classes are visually distinct at every rendering
+   site, at WCAG-AA contrast, without color-only encoding.
+3. **Grant, revoke, dispute and delete each complete on a small phone over a slow link.** grant, revoke, dispute, and delete are each completable start to
+   finish on a 360px viewport over a slow connection.
+4. **Trust-bearing flows serve from the ledger's own origin.** all trust-bearing flows serve from the ledger origin — no
+   vertical chrome, no theming beyond light/dark (per the invariant-chrome
+   ruling pending in the decisions log).
+5. **Every surface exists and carries all five of its states.** every surface in `design/08-app-inventory.md` §1 exists and
+   carries all five states named in its §2 — loading, empty, error with a
+   retry, offline, permission denied. A surface missing a state is not done.
+6. **No screen claims more than the record supports.** no screen states more than the record supports. Checked against
+   `design/07` §5: provenance is legible in words on the worker's own rows,
+   a chapter's removability is described accurately, no ordinal renders a
+   person on a scale, and the ceremony cannot produce corroboration from a
+   single attestation.

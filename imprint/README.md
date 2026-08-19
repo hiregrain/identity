@@ -118,14 +118,16 @@ population, and splitting the ring otherwise suppresses their corroboration chan
 
 ## 7. Open — do not treat as settled
 
-0. **The identity core versus the no-centre rule — added 2026-08-18.** Reviewer
-   panels reached the same conclusion independently: a small concentric element at
-   the centre of a lobed radial figure reads as a **bullseye with the worker inside
-   it**, and two reviewers connected it directly to the ratings that already follow
-   them at work. It was removed from the mark on that basis. But the core is inked
-   at signup, is the only element present before any record exists, and carries the
-   empty state. Whether it survives in the imprint is unresolved, and the empty
-   state has no other answer if it goes.
+0. ~~The identity core versus the no-centre rule.~~ **CLOSED 2026-08-19
+   (decision 029 §B6): the core is dropped.** Reviewer panels reached the same
+   conclusion independently — a small concentric element at the centre of a lobed
+   radial figure reads as a **bullseye with the worker inside it**, and two
+   reviewers connected it directly to the ratings that already follow them at
+   work. That reading does not improve for being inside the imprint rather than
+   the mark. The empty state, which was the only argument for keeping it, is
+   carried instead by the graticule ground clipped to the fixed canvas
+   (`DESIGN.md` §9). `_core()` in `imprint.py` is retained but no longer emitted
+   by any worker surface.
 1. **No angular anchor.** Nothing marks which lobe is which dimension. Profiles are
    comparable as shapes but not readable as claims. This is a hole in the most valuable
    channel, not a polish item.

@@ -1,6 +1,8 @@
 ---
 id: trust-kernel/02
 type: task
+layer: trust-kernel
+satisfies: [5]
 status: ready
 depends_on: [trust-kernel/01, foundation/03]
 migrations: [0006-key-event-log]
@@ -31,7 +33,7 @@ compromise-vs-backdating rule enforceable.
 - The verification rule as a kernel function: a signature is valid iff
   the key was active at signing time AND the attestation's ledger
   timestamp predates any compromise report for that key.
-- No code path outside the kernel can reach a signing operation (AC-TK5's
+- No code path outside the kernel can reach a signing operation (criterion 5's
   first half; the no-non-operator-key rule lands with the registry). Note
   the amended invariant: the operator signs with **its own** key, held as a
   single registry self-entry (decisions 015/016). The rule is that no

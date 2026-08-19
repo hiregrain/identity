@@ -9,7 +9,6 @@ binds:
   - decisions/LOG.md#025
   - research/06-adversarial-threat-model.md
   - research/10-infra-comparison-grain-dispatch.md
-acceptance: [AC-PF1, AC-PF2, AC-PF3, AC-PF4, AC-PF5]
 evidence: []
 verified_by: null
 ---
@@ -49,14 +48,14 @@ land the reference request/confirm path before the Sybil-resistance
 apparatus is complete, rather than blocking the whole layer on it.
 
 Acceptance:
-- AC-PF1: an unanchored reciprocal pair contributes at most one weighted
-  edge until anchored evidence corroborates (grain's cap, generalized).
-- AC-PF2 (mechanical): every peer attestation carries its anchor status
-  and referrer assurance level into any packet that includes it.
-- AC-PF3: a simulated farming ring (shared device/IP, rapid reciprocal
-  confirmations) lands with `excluded` weighting and appears in the
-  operator review queue — and nothing is deleted.
-- AC-PF4: no peer-derived signal reaches prior packets until the promotion
-  gate's conditions are met and recorded.
-- AC-PF5 (mechanical): the reference schema admits no free-text field; a
-  submission carrying one is rejected with a structured error.
+1. **Two people vouching for each other counts once, not twice.** an unanchored reciprocal pair contributes at most one weighted
+   edge until anchored evidence corroborates (grain's cap, generalized).
+2. **Every peer attestation says what anchors it.** (mechanical) every peer attestation carries its anchor status
+   and referrer assurance level into any packet that includes it.
+3. **A simulated farming ring is caught by the tests, not in production.** a simulated farming ring (shared device/IP, rapid reciprocal
+   confirmations) lands with `excluded` weighting and appears in the
+   operator review queue — and nothing is deleted.
+4. **Peer signal stays out of packets until it is promoted.** no peer-derived signal reaches prior packets until the promotion
+   gate's conditions are met and recorded.
+5. **The reference form has no free-text field at all.** (mechanical) the reference schema admits no free-text field; a
+   submission carrying one is rejected with a structured error.

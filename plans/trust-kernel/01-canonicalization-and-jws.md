@@ -1,6 +1,8 @@
 ---
 id: trust-kernel/01
 type: task
+layer: trust-kernel
+satisfies: [1]
 status: ready
 depends_on: [foundation/01, foundation/02]
 binds: [contract/CONTRACT.md, decisions/LOG.md#012, decisions/LOG.md#019]

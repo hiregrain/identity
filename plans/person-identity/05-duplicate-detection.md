@@ -1,6 +1,8 @@
 ---
 id: person-identity/05
 type: task
+layer: person-identity
+satisfies: [3]
 status: ready
 depends_on: [person-identity/04]
 migrations: [0012-match-candidates]

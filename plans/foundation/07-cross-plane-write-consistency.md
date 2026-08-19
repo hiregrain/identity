@@ -1,6 +1,8 @@
 ---
 id: foundation/07
 type: task
+layer: foundation
+satisfies: [5]
 status: ready
 depends_on: [foundation/04]
 migrations: [0020-cross-plane-outbox]

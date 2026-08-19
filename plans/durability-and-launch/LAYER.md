@@ -7,7 +7,6 @@ depends_on: [foundation, trust-kernel, party-registry, ingestion, person-identit
 binds:
   - design/stack-litigation/docket-rulings-0.1.md
   - counsel/brief-4-worker-agreements.md
-acceptance: [AC-DL1, AC-DL2, AC-DL3, AC-DL4]
 evidence: []
 verified_by: null
 ---
@@ -34,11 +33,11 @@ in the registry (D3 sub-ruling); load validation at synthetic 1M-identity
 volumes (trivial by the arithmetic; proven, not assumed).
 
 Acceptance:
-- AC-DL1: the failover game day loses zero acknowledged attestations and
-  the restored state passes full chain + checkpoint cross-verification.
-- AC-DL2 (mechanical): the production auditor runs continuously and its
-  alerts page a human; killing it is itself an alert.
-- AC-DL3: onboarding structurally refuses a worker where no counsel-final
-  consent terms are configured (the Dispatch capture-pipeline pattern).
-- AC-DL4: synthetic load at 1M identities / period-close burst meets the
-  read and ingest SLOs with the watermarks enforced.
+1. **The failover drill loses nothing that was acknowledged.** the failover game day loses zero acknowledged attestations and
+   the restored state passes full chain + checkpoint cross-verification.
+2. **The auditor runs continuously, and killing it is itself an alert.** (mechanical) the production auditor runs continuously and its
+   alerts page a human; killing it is itself an alert.
+3. **No real worker onboards before counsel signs the agreement.** onboarding structurally refuses a worker where no counsel-final
+   consent terms are configured (the Dispatch capture-pipeline pattern).
+4. **A million identities is proven, not assumed.** synthetic load at 1M identities / period-close burst meets the
+   read and ingest SLOs with the watermarks enforced.

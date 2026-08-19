@@ -1,6 +1,8 @@
 ---
 id: foundation/08
 type: task
+layer: foundation
+satisfies: [6, 7]
 status: ready
 depends_on: [foundation/05, foundation/07]
 migrations: [0021-deletion-journal]

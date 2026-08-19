@@ -1,6 +1,8 @@
 ---
 id: person-identity/01
 type: task
+layer: person-identity
+satisfies: []
 status: ready
 depends_on: [foundation/04, foundation/07]
 migrations: [0010-person-core]

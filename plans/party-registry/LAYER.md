@@ -11,7 +11,6 @@ binds:
   - decisions/LOG.md#016
   - design/stack-litigation/d4-verdict.md
   - design/ledger-design-0.1.md#3
-acceptance: [AC-PR1, AC-PR2, AC-PR3, AC-PR4, AC-PR5, AC-PR6, AC-PR7]
 evidence: []
 verified_by: null
 ---
@@ -51,26 +50,26 @@ countersignatures over their own issuance checkpoints, automated by the
 integration kit.
 
 Acceptance:
-- AC-PR1 (mechanical): registry state transitions are append-only rows;
-  attempting to activate an external-tier party without a live witnessed
-  log, or without the recorded legal precondition, fails.
-- AC-PR2: rotation completes unattended and a compromise report is
-  filable only by the key's own party. (The *verification* rule — valid
-  iff active at signing and pre-compromise — is `trust-kernel`'s
-  AC and is not restated here; one guarantee, one owner.)
-- AC-PR3: a suspended party's prior attestations remain cryptographically
-  valid and acquire the derived read-time flag everywhere they render.
-- AC-PR4 (mechanical): exactly one registry row may carry
-  `custody_model: ledger_kms`, enforced by constraint; no code path signs
-  with any other party's key.
-- AC-PR5 (mechanical): `may_file_safety_marker` is unreachable without a
-  *valid* addendum (signed, same party, effective, unrevoked, terms
-  present), and no role can read both `party_users` and person tables.
-- AC-PR6 (mechanical): a party parked in `pending` cannot outrun the D3
-  deadline silently — crossing either limb without a witnessed log requires
-  a signed governance event.
-- AC-PR7 (mechanical): a suspended vendor flags the verification records
-  whose evidence it produced and does not flag the operator generally.
+1. **Registry state is a row that was appended, never a field that changed.** (mechanical) registry state transitions are append-only rows;
+   attempting to activate an external-tier party without a live witnessed
+   log, or without the recorded legal precondition, fails.
+2. **Key rotation runs unattended, and a compromise is reported.** rotation completes unattended and a compromise report is
+   filable only by the key's own party. (The *verification* rule — valid
+   iff active at signing and pre-compromise — is `trust-kernel`'s
+   AC and is not restated here; one guarantee, one owner.)
+3. **Suspending a party does not retroactively break what it already signed.** a suspended party's prior attestations remain cryptographically
+   valid and acquire the derived read-time flag everywhere they render.
+4. **There is exactly one operator self-entry, and the schema enforces it.** (mechanical) exactly one registry row may carry
+   `custody_model: ledger_kms`, enforced by constraint; no code path signs
+   with any other party's key.
+5. **Filing a safety marker is unreachable without the signed addendum.** (mechanical) `may_file_safety_marker` is unreachable without a
+   *valid* addendum (signed, same party, effective, unrevoked, terms
+   present), and no role can read both `party_users` and person tables.
+6. **A party parked in pending cannot outrun the witnessed-log deadline.** (mechanical) a party parked in `pending` cannot outrun the D3
+   deadline silently — crossing either limb without a witnessed log requires
+   a signed governance event.
+7. **Suspending a vendor flags its verifications without rewriting them.** (mechanical) a suspended vendor flags the verification records
+   whose evidence it produced and does not flag the operator generally.
 
 ## Outside check
 

@@ -11,7 +11,6 @@ binds:
   - decisions/LOG.md#008
   - decisions/LOG.md#031
   - decisions/LOG.md#032
-acceptance: [AC-I1, AC-I2, AC-I3, AC-I4, AC-I5]
 evidence: []
 verified_by: null
 ---
@@ -36,16 +35,16 @@ acknowledgment until durable across failure domains) and two-phase
 issuance receipts.
 
 Acceptance:
-- AC-I1 (mechanical): a duplicate delivery is idempotent; an attestation
-  acked to a party survives a simulated primary loss (watermark test).
-- AC-I2 (mechanical): every sensitive-data-ban category is rejected with a
-  structured error, including in free text.
-- AC-I3: party B cannot supersede party A's attestation; the ledger
-  invalidation path can.
-- AC-I4: the application role has no direct INSERT on fact tables — only
-  the recording functions.
-- AC-I5 (mechanical, `roster-firewall.md` RF-2): an attestation whose
-  provenance is an employer roster is rejected unless it carries a live
-  `verification_request_id` naming the subject as requester. No write path
-  accepts a roster row as a source of truth. A deliberately constructed
-  employer-push attestation fails ingestion with a structured error.
+1. **A duplicate delivery changes nothing.** (mechanical) a duplicate delivery is idempotent; an attestation
+   acked to a party survives a simulated primary loss (watermark test).
+2. **Banned data categories are rejected at the door, with a reason.** (mechanical) every sensitive-data-ban category is rejected with a
+   structured error, including in free text.
+3. **No party can overwrite another party's attestation.** party B cannot supersede party A's attestation; the ledger
+   invalidation path can.
+4. **The application role cannot write a fact directly.** the application role has no direct INSERT on fact tables — only
+   the recording functions.
+5. **An attestation that fails the roster firewall never lands.** (mechanical, `roster-firewall.md` RF-2) an attestation whose
+   provenance is an employer roster is rejected unless it carries a live
+   `verification_request_id` naming the subject as requester. No write path
+   accepts a roster row as a source of truth. A deliberately constructed
+   employer-push attestation fails ingestion with a structured error.

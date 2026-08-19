@@ -1,6 +1,8 @@
 ---
 id: person-identity/06
 type: task
+layer: person-identity
+satisfies: [1, 8]
 status: ready
 depends_on: [person-identity/05, trust-kernel/03]
 migrations: [0013-merge-events-and-aliases]

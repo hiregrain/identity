@@ -8,7 +8,6 @@ binds:
   - design/ledger-design-0.1.md#7
   - decisions/LOG.md#024
   - model/attestation-interface.md
-acceptance: [AC-ME1, AC-ME2, AC-ME3, AC-ME4, AC-ME5]
 evidence: []
 verified_by: null
 ---
@@ -40,16 +39,16 @@ the party agreement; no mark may encode work-authorization, nationality, or
 anything the post-selection gate protects.
 
 Acceptance:
-- AC-ME1 (mechanical): mark state in any rendering equals the
-  server-derived state for the same claim at the same instant — SDK, badge
-  endpoint, and resolution page cannot disagree.
-- AC-ME2: every rendered mark carries a working resolution URL; the
-  resolution page respects grants and shows citations.
-- AC-ME3: glyph geometry is identical across SDK/badge/static tiers;
-  state is never encoded in color alone.
-- AC-ME4: the conformance annex's rules are each expressed as an automated
-  check a party's integration can run.
-- AC-ME5 (mechanical): the no-re-ink rule is enforced identically for a
-  Grain-operated surface and a third-party surface — the conformance suite
-  contains no first-party exemption, asserted by running it against a
-  Grain vertical's own integration.
+1. **A mark shows the same state wherever it is rendered.** (mechanical) mark state in any rendering equals the
+   server-derived state for the same claim at the same instant — SDK, badge
+   endpoint, and resolution page cannot disagree.
+2. **Every mark resolves somewhere real.** every rendered mark carries a working resolution URL; the
+   resolution page respects grants and shows citations.
+3. **The glyph is the same shape at every size tier.** glyph geometry is identical across SDK/badge/static tiers;
+   state is never encoded in color alone.
+4. **Every conformance rule is an automated check, not a paragraph.** the conformance annex's rules are each expressed as an automated
+   check a party's integration can run.
+5. **Nobody can re-ink the marks, and the rule binds everyone identically.** (mechanical) the no-re-ink rule is enforced identically for a
+   Grain-operated surface and a third-party surface — the conformance suite
+   contains no first-party exemption, asserted by running it against a
+   Grain vertical's own integration.

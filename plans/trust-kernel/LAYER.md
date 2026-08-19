@@ -14,7 +14,6 @@ binds:
   - model/attestation-interface.md
   - design/stack-litigation/d3-verdict.md
   - design/stack-litigation/d4-verdict.md
-acceptance: [AC-TK1, AC-TK2, AC-TK3, AC-TK4, AC-TK5, AC-TK6, AC-TK7]
 evidence: []
 verified_by: null
 ---
@@ -55,24 +54,24 @@ compromise report). Inclusion *proofs* are a kernel API here; inclusion
 *receipts* are issued by `ingestion`.
 
 Acceptance:
-- AC-TK1 (mechanical): golden-vector suite passes byte-identically in the
-  kernel and the reference model; vectors published into the contract.
-- AC-TK2 (mechanical): a mutated historical record is detected by chain
-  verification; a checkpoint proves inclusion of a named attestation.
-- AC-TK3 (mechanical): under a sustained write load of the rate named in the
-  task file, every checkpoint lands in WORM within the D3 interval measured at
-  the 99th percentile over a run of at least one hour, and a deliberate attempt
-  to overwrite or delete one fails at the storage layer. The load figure and
-  the run length are stated in the task file, not here.
-- AC-TK4: both TLA+ specs check; the conformance tests derived from them
-  pass against the implementation.
-- AC-TK5: no code path outside the kernel can produce a signature, and **no
-  non-operator party key is invokable anywhere** — amended from "no
-  registry-grade party key at all", which decisions 015/016 superseded by
-  giving the operator a single registry self-entry it signs with. Enforced
-  by the signing function having no key parameter, not by a runtime check.
-- AC-TK6 (mechanical): every governing event type is chained and covered by
-  a checkpoint; a mutation in any of them is detected. A merge moves no
-  record between chains.
-- AC-TK7 (mechanical): the reference model and the kernel agree byte-for-byte
-  over fuzzed input, and each checkpoint's predecessor link verifies.
+1. **The golden vectors pass byte-identically in both implementations.** (mechanical) golden-vector suite passes byte-identically in the
+   kernel and the reference model; vectors published into the contract.
+2. **Tampering with an old record is caught by the chain, not by luck.** (mechanical) a mutated historical record is detected by chain
+   verification; a checkpoint proves inclusion of a named attestation.
+3. **The chain keeps up under the write load the docket named.** (mechanical) under a sustained write load of the rate named in the
+   task file, every checkpoint lands in WORM within the D3 interval measured at
+   the 99th percentile over a run of at least one hour, and a deliberate attempt
+   to overwrite or delete one fails at the storage layer. The load figure and
+   the run length are stated in the task file, not here.
+4. **The formal specs check, and the tests derive from them.** both TLA+ specs check; the conformance tests derived from them
+   pass against the implementation.
+5. **Only the kernel can sign, and nothing else can be made to.** no code path outside the kernel can produce a signature, and **no
+   non-operator party key is invokable anywhere** — amended from "no
+   registry-grade party key at all", which decisions 015/016 superseded by
+   giving the operator a single registry self-entry it signs with. Enforced
+   by the signing function having no key parameter, not by a runtime check.
+6. **Every governing event is chained and covered.** (mechanical) every governing event type is chained and covered by
+   a checkpoint; a mutation in any of them is detected. A merge moves no
+   record between chains.
+7. **The reference model and the kernel agree byte-for-byte.** (mechanical) the reference model and the kernel agree byte-for-byte
+   over fuzzed input, and each checkpoint's predecessor link verifies.

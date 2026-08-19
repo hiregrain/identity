@@ -1,6 +1,8 @@
 ---
 id: trust-kernel/04
 type: task
+layer: trust-kernel
+satisfies: [2]
 status: ready
 depends_on: [trust-kernel/02, trust-kernel/03]
 migrations: [0008-checkpoint-log]

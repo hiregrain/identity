@@ -1,6 +1,8 @@
 ---
 id: person-identity/03
 type: task
+layer: person-identity
+satisfies: [2]
 status: ready
 depends_on: [person-identity/02, verification/01]
 binds: [decisions/LOG.md#013, decisions/LOG.md#020]

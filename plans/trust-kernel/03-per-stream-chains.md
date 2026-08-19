@@ -1,6 +1,8 @@
 ---
 id: trust-kernel/03
 type: task
+layer: trust-kernel
+satisfies: [2, 6]
 status: ready
 depends_on: [trust-kernel/01, foundation/04]
 migrations: [0007-stream-heads]

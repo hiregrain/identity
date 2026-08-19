@@ -1,6 +1,8 @@
 ---
 id: party-registry/04
 type: task
+layer: party-registry
+satisfies: []
 status: ready
 depends_on: [party-registry/01, foundation/03]
 migrations: [0016-party-principals]

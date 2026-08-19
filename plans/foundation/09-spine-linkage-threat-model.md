@@ -1,6 +1,8 @@
 ---
 id: foundation/09
 type: task
+layer: foundation
+satisfies: [8]
 status: abandoned
 depends_on: [foundation/04]
 migrations: []
@@ -24,7 +26,7 @@ by column — because the column-level lint can never answer this question.
 
 ## Scope
 
-- The gap this closes: AC-F3 promises no readable personal data on the
+- The gap this closes: criterion 3 promises no readable personal data on the
   spine and enforces it with a type lint. The lint blocks a `text` column.
   It cannot prove an opaque `bytea` or id does not encode a name, and it
   says nothing about the harder direction — **stable object ids,
