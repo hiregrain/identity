@@ -20,6 +20,10 @@
        with the display until it swallows the screen. 320 is the size it was
        drawn and budgeted at. */
     .fig{display:block;width:100%;max-width:320px;margin-inline:auto}
+    /* The plate's registration corners, at the figure's own scale. Same object
+       as `.reg` on the record plate — the chart's mark for a framed thing. */
+    .figreg{position:absolute;width:13px;height:13px;border:0 solid var(--rule);
+            pointer-events:none}
     .idx-tick{height:1px;background:var(--rule);transition:width 180ms cubic-bezier(0.2,0,0,1)}
     .sheet{position:absolute;left:0;right:0;bottom:0;background:var(--paper);
            border-top:1px solid var(--ink);padding:20px 20px 24px}
@@ -102,20 +106,19 @@
         </div>
       </div>
 
-      <!-- The figure says it opens by carrying a corner affordance, not by a
-           sentence underneath it. 44px target, offset so it never sits on the
-           drawing. -->
-      <div style="position:relative;max-width:320px;margin-inline:auto">
-      <button class="press" aria-label="Open your imprint at full size"
+      <!-- The whole figure opens it, and registration corners say so. Expand
+           arrows were a stock icon: §9 defines a closed vocabulary of twelve
+           primitives, each derived from the figure or from chart-work, and that
+           was not one of them. The corners are the plate's own mark for a framed
+           object, which is what this is. -->
+      <button class="fig-plate press" aria-label="Open your imprint at full size"
               onClick="{{ openImprint }}"
-              style="position:absolute;top:0;right:0;width:44px;height:44px;display:flex;
-                     align-items:center;justify-content:center;z-index:2">
-        <svg width="17" height="17" viewBox="0 0 20 20" fill="none" stroke="var(--ink)"
-             stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 3 L17 3 L17 8"/><path d="M8 17 L3 17 L3 12"/>
-          <path d="M17 3 L11.5 8.5"/><path d="M3 17 L8.5 11.5"/>
-        </svg>
-      </button>
+              style="position:relative;display:block;max-width:320px;width:100%;
+                     margin-inline:auto;padding:14px 0">
+        <span class="figreg" style="top:0;left:0;border-top-width:1px;border-left-width:1px"></span>
+        <span class="figreg" style="top:0;right:0;border-top-width:1px;border-right-width:1px"></span>
+        <span class="figreg" style="bottom:0;left:0;border-bottom-width:1px;border-left-width:1px"></span>
+        <span class="figreg" style="bottom:0;right:0;border-bottom-width:1px;border-right-width:1px"></span>
       <svg class="fig" viewBox="0 0 600 600" role="img" aria-label="{{ figureAlt }}">
         @@WORKING@@
         <g fill="none" stroke="var(--ink)">
@@ -130,7 +133,7 @@
           </sc-for>
         </g>
       </svg>
-      </div>
+      </button>
 
       <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;
                   min-height:22px;padding-top:8px">
