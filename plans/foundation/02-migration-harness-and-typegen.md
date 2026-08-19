@@ -3,11 +3,15 @@ id: foundation/02
 type: task
 layer: foundation
 satisfies: [2]
-status: in_progress
+status: done
 depends_on: [foundation/01]
 migrations: [0001-migration-infrastructure]
-evidence: []
-verified_by: null
+evidence:
+  [
+    "log:log/2026-08-19-foundation-02-verification.md",
+    "diff:PR #2 @ 1db47f577163b8f3b78683197e78a58a67c5b4d0",
+  ]
+verified_by: clean-context-verifier@2026-08-19
 ---
 
 # Migration harness and type generation
