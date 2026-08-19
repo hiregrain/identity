@@ -56,7 +56,7 @@
        The frame is drawn from those published metrics. The insets are reserved
        and measured, never simulated: no clock, no battery, no home-bar glyph,
        because a real device draws its own into exactly that space. */
-    .body{position:absolute;inset:0;border-radius:66px;background:var(--ink);
+    .body{position:absolute;top:0;left:0;right:0;border-radius:66px;background:var(--ink);
           box-shadow:inset 0 0 0 2px var(--secondary)}
     .screen{position:absolute;top:12px;left:12px;width:402px;height:874px;
             border-radius:55px;overflow:hidden;background:var(--paper)}
@@ -70,8 +70,8 @@
   </style>
 </helmet>
 
-<div style="width:426px;height:898px;position:relative;background:var(--page)">
-  <div class="body"></div>
+<div style="width:426px;height:990px;position:relative;background:var(--page)">
+  <div class="body" style="height:898px"></div>
 
   <div class="screen">
     <!-- 62 pt of safe-area top: the status bar and the Dynamic Island live here -->
@@ -81,9 +81,10 @@
     <div class="rule" style="top:62px"></div>
 
     <!-- What iOS actually leaves a screen: 874 - 62 - 34 -->
-    <div style="position:absolute;top:62px;bottom:34px;left:0;right:0;overflow:hidden;
-                display:flex;align-items:flex-start;justify-content:center">
-      <dc-import name="Main" hint-size="360px,800px"></dc-import>
+    <!-- Exactly what iOS leaves, and the app fills it. It used to be a fixed
+         360px column centred in 402, which left 42 pt of the display dead. -->
+    <div style="position:absolute;top:62px;bottom:34px;left:0;right:0;overflow:hidden">
+        <dc-import name="Main" hint-size="100%,100%"></dc-import>
     </div>
 
     <div class="rule" style="bottom:34px"></div>
@@ -94,11 +95,11 @@
     <div class="island"></div>
   </div>
 
-  <div style="position:absolute;right:20px;top:88px;width:150px;text-align:right;z-index:7">
-    <span class="t-micro" style="color:var(--ink);background:var(--paper);padding:2px 5px;
-                                 display:inline-block;line-height:1.5">{{ verdictH }}</span><br>
-    <span class="t-micro" style="color:var(--ink);background:var(--paper);padding:2px 5px;
-                                 display:inline-block;margin-top:3px;line-height:1.5">{{ verdictW }}</span>
+  <!-- Measurements sit BELOW the device. They were drawn inside it, over the app. -->
+  <div style="position:absolute;left:0;right:0;top:918px;display:flex;flex-direction:column;gap:3px">
+    <span class="t-micro" style="color:var(--secondary)">iPhone 17 · 402 × 874 pt @3x</span>
+    <span class="t-data" style="font-size:12px">{{ verdictH }}</span>
+    <span class="t-data" style="font-size:12px">{{ verdictW }}</span>
   </div>
 </div>
 </x-dc>

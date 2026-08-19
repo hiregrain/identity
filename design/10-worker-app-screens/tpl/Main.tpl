@@ -16,7 +16,10 @@
     /* No bleed. `main` reserves a 40px right gutter for the section index; the
        figure used to take 20px of it back, so the index's rotated labels and
        ticks were drawn on top of the imprint. */
-    .fig{display:block;width:100%}
+    /* Fluid, but capped: the root is fluid now, and an uncapped figure grows
+       with the display until it swallows the screen. 320 is the size it was
+       drawn and budgeted at. */
+    .fig{display:block;width:100%;max-width:320px;margin-inline:auto}
     .idx-tick{height:1px;background:var(--rule);transition:width 180ms cubic-bezier(0.2,0,0,1)}
     .sheet{position:absolute;left:0;right:0;bottom:0;background:var(--paper);
            border-top:1px solid var(--ink);padding:20px 20px 24px}
@@ -30,7 +33,10 @@
   </style>
 </helmet>
 
-<div style="width:360px;height:800px;position:relative;overflow:hidden;background:var(--paper)">
+<!-- Fluid width so it fills whatever display it is given; height is the common
+     safe box across iOS (778) and Android (728), which is 728. height:100% was
+     tried and collapses to zero wherever no ancestor is sized. -->
+<div style="width:100%;height:728px;position:relative;overflow:hidden;background:var(--paper)">
   <!-- §9 the plate. It marks the record; no other surface carries it. -->
   <div class="plate">
     <div class="reg" style="top:7px;left:7px;border-top-width:1px;border-left-width:1px"></div>
@@ -43,19 +49,24 @@
           style="height:52px;display:flex;align-items:center;justify-content:space-between;
                  padding:0 20px;border-bottom:1px solid var(--ink);position:relative;z-index:3;
                  background:var(--paper)">
-    <span style="display:flex;align-items:center;gap:10px;height:44px">
-      <svg viewBox="0 0 600 600" width="30" height="30" role="img" aria-label="Grain">@@MARK28@@</svg>
-      <span class="t-serial">Work record</span>
-    </span>
+    <!-- The lockup: mark plus the GRAIN wordmark (§4a), generated so the mark
+         swaps to its drawn reduction rather than scaling a master. -->
+    <svg viewBox="0 0 160 26" width="160" height="26" role="img" aria-label="Grain">@@LOCKUP@@</svg>
     <span style="display:flex;align-items:center">
       <!-- Sharing is a destination now, not a section buried under the record
            (decision 045). This is its entry point. -->
+      <!-- Sharing is where custody is exercised, so it does not look like the
+           menu's twin: inked, labelled, and carrying the live state. -->
       <button class="press" aria-label="{{ shareLabel }}" onClick="{{ openSharing }}"
-              style="width:44px;height:44px;display:flex;align-items:center;justify-content:center">
-        <svg width="20" height="20" viewBox="0 0 20 20" class="icon">
+              style="min-height:44px;display:flex;align-items:center;gap:7px;
+                     padding:0 12px;margin-right:4px;border:1px solid var(--ink);
+                     border-radius:3px">
+        <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="var(--ink)"
+             stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
           <path d="M10 13 L10 3"/><path d="M6.5 6.5 L10 3 L13.5 6.5"/>
           <path d="M4 11 L4 17 L16 17 L16 11"/>
         </svg>
+        <span class="t-data" style="font-size:13px">{{ shareCount }}</span>
       </button>
       <button class="press" aria-label="Account and settings" onClick="{{ openSettings }}"
               style="width:44px;height:44px;display:flex;align-items:center;justify-content:flex-end">
@@ -67,7 +78,7 @@
   </header>
 
   <main id="scroll" style="position:absolute;top:52px;bottom:0;left:0;right:0;overflow-y:auto;
-                           padding:0 40px 56px 20px;scroll-behavior:smooth">
+                           padding:0 20px 56px 20px;scroll-behavior:smooth">
 
     <!-- ===== identity and imprint, composed as one hero (029 §B1) ========= -->
     <section id="sec-0" style="padding-top:20px">
@@ -170,20 +181,10 @@
          and work history, which is where a product puts what does not matter. -->
   </main>
 
-  <nav aria-label="Sections"
-       style="position:absolute;right:0;top:52px;bottom:0;width:32px;display:flex;
-              flex-direction:column;justify-content:center;align-items:flex-end;
-              gap:14px;z-index:2">
-    <sc-for list="{{ index }}" as="s" hint-placeholder-count="4">
-      <button onClick="{{ s.go }}" aria-label="{{ s.label }}" aria-current="{{ s.cur }}"
-              style="width:44px;height:{{ s.h }};display:flex;align-items:center;
-                     justify-content:flex-end;gap:7px;padding:6px 5px 6px 0">
-        <span class="idx-tick" style="width:{{ s.tick }};background:{{ s.color }}"></span>
-        <span class="t-micro" style="writing-mode:vertical-rl;color:{{ s.color }};
-                                     letter-spacing:.10em">{{ s.label }}</span>
-      </button>
-    </sc-for>
-  </nav>
+  <!-- No section index. It sat at right:0, 32px wide — entirely inside the
+       ~24dp strip Android gives the back gesture from both edges, so dragging it
+       navigated back. 037 had already demoted it to an accelerator; an
+       accelerator that fights the platform is worse than none. -->
 
   <!-- No plate footer. DESIGN.md §9 gave it append-only status; decision 045
        moves that to the account surface and frees the band for navigation. -->
@@ -301,7 +302,6 @@ class Component extends DCLogic {
     }));
 
 
-    const labels = ['Record','Verify','History'];   // Sharing left with the section (045)
     return {
       headerCls: 'disclosed',
       figureAlt: 'Your imprint. Five chapters: two signed by the employer, one by a coworker, one dates only, one you added yourself.',
@@ -319,15 +319,6 @@ class Component extends DCLogic {
         give: c.attested ? 'rigid' : 'press',   // §7 rigidity is permanence
         sel: i === sel ? 'true' : 'false',
         pick: () => pick(i)})),
-      index: labels.map((label,i) => ({
-        label, h: i === st.active ? '76px' : '44px',
-        tick: i === st.active ? '20px' : '10px',
-        color: i === st.active ? 'var(--ink)' : 'var(--rule)',
-        cur: i === st.active ? 'true' : 'false',
-        go: () => { const s = document.getElementById('sec-'+i);
-                    if(s) s.scrollIntoView({behavior:'smooth', block:'start'});
-                    this.setState({active:i}); }
-      })),
       openImprint: () => open({kicker:'Imprint', title:'Your imprint, full size',
         body:'Every ring is one chapter. The weave shows who confirmed it. Open it to walk one measure of the work outward across your whole record.',
         cta:'Open it', dismiss:'Close'}),
@@ -337,6 +328,7 @@ class Component extends DCLogic {
       // The label states exposure rather than naming an action, so the control
       // never reads as "share" when the honest state is "already shared".
       shareLabel: 'Sharing. Public page on, 2 parties hold a grant',
+      shareCount: '3',
       openSharing: () => open({kicker:'Who can read this', title:'Two parties, and the public page',
         body:'Alorica Philippines and Sunrise Foods Manufacturing each hold a grant to your whole record. Your public page is live and anyone with a Grain account can open it.',
         cta:'Go to sharing', dismiss:'Close'}),

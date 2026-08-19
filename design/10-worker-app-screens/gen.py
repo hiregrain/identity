@@ -132,6 +132,10 @@ for k, v in {"self_asserted": flat(True), "employment_verified": flat(),
 for name, px in (("mark-28", 28), ("mark-56", 56), ("mark-solid", 20)):
     open(os.path.join(OUT, name + ".svgfrag"), "w").write(mark.tier_for(px)(px))
 open(os.path.join(OUT,"pointer.svgfrag"),"w").write(mark.pointer(28))
+# The lockup — mark plus the GRAIN wordmark (§4a). tier_for() inside lockup()
+# swaps the mark to its correct drawn reduction, so this is never a scaled master.
+LOCKUP_MARK_PX = 26
+open(os.path.join(OUT,"lockup.svgfrag"),"w").write(mark.lockup(LOCKUP_MARK_PX))
 
 print("after-paths(multi tier)=%d" % after.count("<path"))
 for h in hit: print(h)
