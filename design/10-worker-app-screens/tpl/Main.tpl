@@ -33,10 +33,13 @@
   </style>
 </helmet>
 
-<!-- Fluid width so it fills whatever display it is given; height is the common
-     safe box across iOS (778) and Android (728), which is 728. height:100% was
-     tried and collapses to zero wherever no ancestor is sized. -->
-<div style="width:100%;height:728px;position:relative;overflow:hidden;background:var(--paper)">
+<!-- Fluid in both axes: the record fills whatever safe area it is given. A fixed
+     728 left the plate's bottom registration corners hanging 50pt above the
+     screen on iOS, which reads as a stray corner rather than the plate's edge.
+     min-height carries the standalone case, where height:100% has no sized
+     ancestor to resolve against and would collapse to zero. -->
+<div style="width:100%;height:100%;min-height:728px;position:relative;overflow:hidden;
+            background:var(--paper)">
   <!-- §9 the plate. It marks the record; no other surface carries it. -->
   <div class="plate">
     <div class="reg" style="top:7px;left:7px;border-top-width:1px;border-left-width:1px"></div>
