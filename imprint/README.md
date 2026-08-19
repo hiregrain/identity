@@ -8,7 +8,9 @@ Status: **DRAFT**, 2026-08-18. The geometry below is settled enough to build aga
 The open items in §7 are not, and two of them are load-bearing.
 
 Companion documents: [`../DESIGN.md`](../DESIGN.md) §2 · [`../THESIS.md`](../THESIS.md) ·
-[`../model/attestation-interface.md`](../model/attestation-interface.md)
+[`../model/attestation-interface.md`](../model/attestation-interface.md) ·
+[`../mark/README.md`](../mark/README.md) (the logo and the record pointer — a
+**different object**, invariant, carrying no data)
 
 ---
 
@@ -116,6 +118,14 @@ population, and splitting the ring otherwise suppresses their corroboration chan
 
 ## 7. Open — do not treat as settled
 
+0. **The identity core versus the no-centre rule — added 2026-08-18.** Reviewer
+   panels reached the same conclusion independently: a small concentric element at
+   the centre of a lobed radial figure reads as a **bullseye with the worker inside
+   it**, and two reviewers connected it directly to the ratings that already follow
+   them at work. It was removed from the mark on that basis. But the core is inked
+   at signup, is the only element present before any record exists, and carries the
+   empty state. Whether it survives in the imprint is unresolved, and the empty
+   state has no other answer if it goes.
 1. **No angular anchor.** Nothing marks which lobe is which dimension. Profiles are
    comparable as shapes but not readable as claims. This is a hole in the most valuable
    channel, not a polish item.

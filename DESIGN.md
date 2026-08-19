@@ -1,13 +1,14 @@
 # Grain — Design System
 
-**STATUS: DRAFT, 2026-08-18.** Not ratified. Two central items are explicitly
-**NOT DECIDED**: the verification mark (§3) and the wordmark (§4). Everything
+**STATUS: DRAFT, 2026-08-18.** Not ratified. The mark and the pointer are settled
+provisionally (§3, recorded in `mark/`). The **wordmark (§4) remains NOT DECIDED**. Everything
 else in this file is settled by founder decision during the 2026-08-17/18 design
 sessions unless marked otherwise.
 
 Companion documents: `THESIS.md` (what the business is and where the seam sits),
-`imprint/README.md` (the imprint's geometry system, generator and open items — the
-source of truth for §2), `design/01-banned-patterns.md` (the negative space — read it
+`imprint/README.md` (the imprint's geometry, generator and open items — the source
+of truth for §2), `mark/README.md` (the mark, its size tiers and the pointer —
+the source of truth for §3), `design/01-banned-patterns.md` (the negative space — read it
 before proposing anything), `design/03-design-perspectives.md` (the research-grounded
 argument), `design/04-signature-element-brainstorm.md` (the candidate record).
 
@@ -52,6 +53,12 @@ rediscovered.
    figures are the on-screen equivalent of engraving cost.
 6. **Nothing generic ships.** Every primitive derives from the figure or the
    chart.
+7. **Size never scales with career length.** A footprint that grows with tenure is
+   an age proxy, and an age proxy on a hiring surface is a discrimination
+   exposure, not a style question. The canvas is fixed for everyone.
+8. **Absence of attestation is never drawn as diminished magnitude.** Pale, thin
+   and faint are the universal idiom for *lesser*, not for *unconfirmed*. An
+   unverified strong record and a verified weak one must never look alike.
 
 The three-question test for any proposed element is in
 `design/01-banned-patterns.md` and is binding.
@@ -111,91 +118,88 @@ computable — it is simply not in the figure.
 and the fact that the level anchors are unvalidated — are enumerated in
 [`imprint/README.md`](imprint/README.md) §7 and must not be treated as settled.
 
-## 3. The verification mark — NOT DECIDED
+## 3. The mark and the pointer — provisional, recorded in `mark/`
 
-A canonical mark, identical for every person, showing identity-assurance phase
-(recorded / contact / document / biometric). A different object from the imprint,
-doing a different job: the imprint says who this is, the mark says how well the
-identity is proven. The imprint cannot carry this, because a per-person figure
-varies for unrelated reasons and so cannot be compared across people.
+Three objects, one construction, routinely confused. **The mark** is Grain's logo,
+invariant, carrying no data. **The tiers** are purpose-drawn reductions of it for
+small sizes. **The pointer** is the glyph that says a person has a record. All
+three are recorded with a runnable generator in
+[`mark/README.md`](mark/README.md); this section is the summary.
 
-Whether it should exist as a second object at all is itself open.
+**The mark.** Three concentric threaded bands, seven lobes, radii 90 / 172 / 264
+and amplitudes 22 / 30 / 40 — **deliberately unequal, which is what makes it read
+as a record rather than an ornament.** One lobe is deepened at a fixed angle: it
+gives the mark a top, and it converts an unownable stock genre into a describable
+feature that can be policed.
 
-### Constraints any proposal must satisfy — established by research, do not re-derive
+**The lobe count is provisional.** There is no unclaimed count — every small
+integer of radial symmetry is somebody's emblem somewhere. Three is Woolmark's
+exact construction and Mercury's gestalt; five is the five-star rating
+convention; seven reads as a law-enforcement badge to some; eight is the Rub el
+Hizb and the Star of Lakshmi. Treat the count as a choice about *which*
+association is acceptable, not as an escape from the problem.
+
+**Tiers, drawn and never scaled** — scaling the master is what fails. Three
+threaded bands at 80px and above; outer and inner band from 40 to 79, because the
+middle band clogs first; one contour per band from 24 to 39; solid mass with a
+knocked-out counter at 23 and below. **Dark renders stronger than light** at
+everything under ~120px.
+
+### The pointer — and what it must never become
+
+The pointer says **"this person has a record you can inspect."** It does not say
+"this person is verified." That is the thesis, not a nuance: Grain states what is
+known and how well; the partner decides what it means. A badge collapses a graded
+epistemic claim into a yes, which is the credential logic this product exists to
+replace.
+
+**Permanently prohibited:** a filled disc, shield, ring or any container; a
+checkmark in any form; a lobed disc beside a name at badge scale; any rendering
+larger than the adjacent name's cap height.
+
+**On third-party surfaces the pointer must carry a count** — "4 chapters, 3
+corroborated". A bare glyph beside a name reads as endorsement whatever its
+shape. On our own surfaces the context does that work and it may stand alone.
+
+### Constraints established by research — do not re-derive
 
 **From the visual landscape survey (~95 marks inspected):**
 
-- **Lobed and scalloped silhouettes are disqualified.** X's verified badge is an
-  octofoil; LinkedIn's is a sixteen-point scallop; Meta, Instagram, Threads and
-  TikTok share the family. **Pinwheel** — payroll and income verification, a
-  direct adjacency — is a four-lobed quatrefoil. A lobed disc beside a name
-  reads as a social verification badge, importing the endorsement meaning the
-  mark must never carry.
+- **Lobed and scalloped silhouettes are disqualified for the pointer.** X's
+  verified badge is an octofoil; LinkedIn's is a sixteen-point scallop; Meta,
+  Instagram, Threads and TikTok share the family. **Pinwheel** — payroll and
+  income verification, a direct adjacency — is a four-lobed quatrefoil. A lobed
+  disc beside a name imports the endorsement meaning the mark must never carry.
+  This is why the pointer is a citation glyph and not a badge.
 - **Plain circles are dead** on crowding: roughly twenty of ninety-five marks.
 - **Saturated and banned:** checkmark in any container, shield, solid hexagon
   (Onfido and Entrust are near-identical), ring of dots (Trulioo, CLEAR and
   Sora ID already collide with each other), letterform in a rounded square.
 - **Guilloché interlace is claimed** in the immediate neighbourhood: Mercury
   (a true engine-turned rosette, fintech), Woolmark, Plaid, Alloy, Atomic.
-- **Genuinely unclaimed:** the punched cartouche of hallmarking; fingerprint
-  geometry (zero occurrences in ninety-five marks); uncontained open-line marks.
-- **Form guidance:** line-only, monochrome, single weight, uncontained. CE, the
-  BSI Kitemark and the UK hallmarks are the marks that have lasted decades and
-  all three are open-line with no fill and no container.
-- **Colour:** not blue. Blue plus check is the verified-badge signature; red plus
-  shield is antivirus.
-- **Phase must be categorical, not ordered.** X's gold-versus-blue tiering reads
-  as prestige rather than as a different verification method.
+- **Colour:** not blue-plus-check. Blue plus check is the verified-badge
+  signature; red plus shield is antivirus.
 
-**From the trademark research (USPTO and EUIPO primary registers; research, not
-legal advice):**
+**From the trademark research (research, not legal advice):**
 
-- **Reg. 7142020, Smart Seal, Inc.** — an eight-lobed guilloché rosette,
-  registered, in classes 009 and 042, for proof-of-authenticity software. The
-  single most important live obstacle. Any six- or eight-lobe rosette faces a
-  citation risk and Smart Seal has standing to oppose. Counsel must be asked
-  specifically about this registration.
-- **Quatrefoil is the highest-risk silhouette.** Louis Vuitton's monogram flower
-  is a four-petal quatrefoil, enforced aggressively; two credit unions hold
-  four-leaf marks in classes 035/036/041; Workday holds a four-circle mark in
-  ours. Four-fold rotational symmetry is the most colonised symmetry order in
-  the register.
-- **Asymmetry is the strongest defensibility lever.** Every crowded design code
-  describes a regular form. Irregular-circumference circles hold roughly 2,550
-  live marks in our classes against 50,000 for shaded circles, and two irregular
-  forms are unlikely to be irregular in the same way.
-- **Do not pursue a certification mark.** US law makes it cancellable at any
-  time where the owner supplies the certified service, and EU Art. 83 bars the
-  applicant outright. File an ordinary service mark. Revisit only if a separate
-  standards-setting entity is created.
-- **File the device before the name**, and separately. See §4.
-- No check mark, no shield, no badge — §43(a) false-association exposure exists
-  whether or not the platform badges are registered, and the survey could not
-  find registrations for them.
+- **Reg. 7142020, Smart Seal, Inc.** — an eight-lobed guilloché rosette in classes
+  009 and 042 for proof-of-authenticity software. A later independent pass could
+  not confirm this registration; **verify against the register before relying on
+  it.**
+- **Quatrefoil is the highest-risk silhouette.** Four-fold rotational symmetry is
+  the most colonised symmetry order in the register.
+- **Asymmetry is the strongest defensibility lever**, which is what the deliberate
+  break buys.
+- **Do not pursue a certification mark.** US law makes it cancellable where the
+  owner supplies the certified service; EU Art. 83 bars the applicant outright.
+- **A generated mark cannot be cleanly owned.** If the logo were an instance of
+  the imprint generator, the company would be trying to own a shape its own
+  product mass-produces. This is why the mark shares the imprint's grammar but is
+  not a valid output of it.
 
-### Where the exploration got to
-
-Six derivations of the imprint were rendered and ranked, each changing exactly
-one property of the construction in §2. Ranked on legibility at fifteen pixels,
-distinctiveness, defensibility and fidelity to the source:
-
-1. **Circular, cropped** — interference clipped hard at a true circle, lobes cut
-   rather than closed. Takes the circular silhouette's legibility without the
-   concentric-circle crowding or the scallop collision.
-2. **Circular, contained** — the figure with a circular rule struck around it.
-   More obviously descended from the record, but this is Mercury's construction.
-3. **Circular by amplitude** — lobe amplitude driven to zero so the same curves
-   converge into rings. Most elegant derivation, most legible, weakest ownership.
-4. **Regularised** — the imprint with eps zeroed. Gives up the asymmetry that is
-   its best defence.
-5. **Single annulus** — reads as a star or flower at small size.
-6. **Canonical four-lobe** — beautiful and effectively unownable.
-
-**Reduction is mandatory and tiered**, not a scale-down: above 26px two or three
-elements; 16–25px a single ring plus cored centre; below 16px a solid silhouette
-with a knocked-out core, because line art does not hold below that size.
-
----
+**Also live, and independent of the mark:** at least two active fintechs operate
+as *Grain*, one with a registration in class 009 — one of our intended classes.
+Clearance is a counsel question and sits upstream of any mark decision.
 
 ## 4. The wordmark — NOT DECIDED
 
@@ -382,8 +386,11 @@ micro-caption band with the record still readable from cache.
 
 ## 13. Gaps
 
-1. **The verification mark** — whether it exists, and which form. §3 carries the
-   binding constraints.
+1. ~~The verification mark~~ — **resolved 2026-08-18.** It exists, and it is a
+   *pointer* rather than a badge: "this person has a record you can inspect."
+   Form, prohibitions and usage rules in `mark/README.md` §4. Still open within
+   it: the lobe count, the break angle (should be locked to the top), and
+   silhouette agreement between the largest and smallest tiers.
 2. **The wordmark**, and the name-clearance sequencing in §4.
 3. **The display identifier** — whether a human-facing number is shown at all,
    and if so its format. Distinct from the opaque `ledger_person_id`, which is
@@ -394,13 +401,19 @@ micro-caption band with the record still readable from cache.
    Open Badges 3.0, 1EdTech CLR, ESCO, Velocity Network.
 5. **The marks enum** — blocking `plans/marks-and-embeds` from going ready.
 6. **Dark mode** — rule defined, never rendered.
-7. **Companion typeface** for non-Latin scripts.
+7. **Companion typeface** for non-Latin scripts. Archivo is Latin-only and the
+   product is global — Bengali, Arabic, Devanagari and CJK are launch-blocking,
+   not later work.
 8. **The employer surfaces** — attest queue, dossier, disclosure-grant view,
    cohort view. Undesigned.
 9. **Onboarding's first-run teaching sequence**, and the mint/share artifact.
 10. **Chart grammar for analytics** — hairline, ruled, unfilled, monochrome is a
     gesture rather than a specification.
-11. **The guidance surface.** Worker-facing suggestions are the only prospective
+11. **The identity core versus the no-centre rule.** Removing the centre point
+    from the mark was right — every reviewer group read a concentric centre as a
+    bullseye with the worker inside it. But the imprint's identity core is inked
+    at signup and carries the empty state. Whether it survives there is unresolved.
+12. **The guidance surface.** Worker-facing suggestions are the only prospective
     content in an otherwise retrospective product and have no visual class. They
     must not borrow the self-reported treatment, which would read as a weak claim
     about the past rather than a proposal about the future.
