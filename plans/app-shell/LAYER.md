@@ -76,6 +76,10 @@ is Devanagari and Archivo does not cover it** (`DESIGN.md` gap 7, recorded as
 launch-blocking). This layer carries the platform plumbing; the companion
 typeface is a founder gate.
 
+**The mockup gate does not apply to this layer.** It owns the runtime, not the
+content, and its criteria are assertions about how any screen behaves on a
+device. Screens are gated in `worker-surface` and `public-web`.
+
 Acceptance. Each of these is checkable from the code by someone who has never
 seen this layer before. Where a check genuinely needs a phone, it says so.
 

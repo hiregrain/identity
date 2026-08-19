@@ -59,6 +59,11 @@ hygiene; status page. Publishing is opt-in per record and is not
 discoverability: no public person search — a record is reachable
 only through worker-shared links and grants (decision 002 §7).
 
+**The mockup gate applies here too** (`plans/worker-surface/LAYER.md` § Design
+venue). The public page and the attestation surface are drawn before they are
+built; only the public page exists today, in
+[`design/10-worker-app-screens/Public.dc.html`](../../design/10-worker-app-screens/Public.dc.html).
+
 Acceptance:
 1. **Every landing page ends in the same ledger chrome.** each landing variant terminates in the identical ledger-chrome
    signup/consent flow; no variant forks the trust path.

@@ -80,6 +80,42 @@ founder gates raised in `design/08-app-inventory.md` §0 and recorded in
 the dark palette, and the companion typeface. Task files are authored when
 those close.
 
+## Design venue, and the mockup gate
+
+**Design happens on the published canvas**, not in repo tasks:
+
+<https://claude.ai/code/artifact/7d177fbe-88c2-4e18-97b8-5a8d1fd85232>
+
+Its source of record is [`design/10-worker-app-screens/`](../../design/10-worker-app-screens/),
+which is authoritative where the two disagree. Repo tasks in this layer cover
+*build*, against surfaces settled there.
+
+**The gate, adopted from `dispatch/plans/console` and binding here: nothing in
+this layer gets built — no task claimed, no screen coded — until the surface it
+implements is drawn. A build task names the surface it implements; a build task
+with no named surface is not authorable.** This is the design-track counterpart
+of "code is written only against a `ready` plan layer."
+
+**The register is [`design/08-app-inventory.md`](../../design/08-app-inventory.md) §1**,
+which lists every surface with its status. It is the checklist the gate runs
+against, and it is also this layer's decomposition input — tasks derive from it,
+not from prose here.
+
+**Nine of fifty-two surfaces are drawn.** Forty-three are listed with nothing
+behind them, so most of this layer is gated today. That is the honest state and
+the gate is what keeps it visible.
+
+**A drawn surface is not a settled one.**
+[`design/07-worker-app-design-review.md`](../../design/07-worker-app-design-review.md)
+records what six independent reviews found in the nine that exist, several of
+which are still open in the source. A surface with unresolved review findings is
+drawn, not settled, and the gate reads settled.
+
+**This layer cannot be four to eight tasks.** `plans/ORDER.md` sets that guidance
+and thirty-six unbuilt app surfaces do not fit it. Splitting is unresolved and is
+the first question its engineering review has to answer — `app-shell` had eleven
+scope items and was split on the same grounds (decision 042).
+
 Acceptance:
 1. **Every fact about the person is reachable in the app.** every fact in the person's record is reachable in the UI; a
    side-by-side against a raw API dump shows nothing hidden. **Narrowed by
