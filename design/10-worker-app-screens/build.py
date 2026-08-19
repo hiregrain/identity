@@ -21,7 +21,7 @@ TOK = {
   "@@POINTER@@":    rd("pointer.svgfrag"),
   "@@WORKING@@":    rd("working.svgfrag"),
   "@@CHAPTERS@@":   rd("chapters.svgfrag"),
-  "@@AXES@@":       rd("axes.json"),
+  "@@LOBES@@":      rd("lobes.json"),
   "@@IMPORTED@@":   rd("imported.svgfrag"),
   "@@CBASE@@":      rd("ceremony-base.svgfrag"),
   "@@CBEFORE@@":    rd("ceremony-before.svgfrag"),

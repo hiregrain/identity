@@ -63,19 +63,17 @@ for (dur, live), width in zip(segs, widths):
     r += width
 json.dump(hit, open(os.path.join(OUT,"hit.json"), "w"))
 
-# The expanded view's figure annotation. Every axis is labelled and every attained
-# level is notched, for all seven measures at once — closing imprint/README.md
-# section 7.1 (nothing marked which lobe was which measure) without a selector.
-# It used to be computed in the artboard's own JavaScript, which meant a second
-# copy of profile() and a hardcoded stroke inset that no longer matched the
-# generator, so the annotation sat off the band it annotated.
+# The expanded view's lobe highlight — one path per chapter and measure, so the
+# figure can light the lobe a reader is reading about. No spokes, no sector
+# lines, no notches: they read as damage across the drawing. It used to be
+# computed in the artboard's own JavaScript, which meant a second copy of
+# profile() and a hardcoded stroke inset that no longer matched the generator,
+# so the highlight sat off the band it was highlighting.
 S = 0.86                               # the figure's scale inside Expanded's stage
-SHORT = ["Discretion", "Directing others", "Consequence", "Outside dealings",
-         "Method", "Resource", "Systems"]
 def _P(rad, ang):
     return (300 + rad*S*math.cos(ang), 300 + rad*S*math.sin(ang))
 
-axes = []
+lobes = []
 for i, eng in enumerate(WORKING):
     span = next(h for h in hit if h["ch"] == i)
     r0, r1 = span["r0"], span["r1"]
@@ -83,24 +81,19 @@ for i, eng in enumerate(WORKING):
     amp = (r1 - r0) / 2.0 - imprint.STROKE_PX / (PPU * DPR)
     row = []
     for dim in range(LOBES):
+        if eng.levels is None:
+            row.append("")
+            continue
+        L = imprint.profile(eng.levels)
         t0 = dim * (TAU / LOBES)
-        ax0, ay0 = _P(imprint.R_INNER - 14, t0)
-        ax1, ay1 = _P(imprint.R_OUTER + 6, t0)
-        lx, ly = _P(imprint.R_OUTER + 26, t0)
-        cell = {"axis": "M%.1f %.1f L%.1f %.1f" % (ax0, ay0, ax1, ay1),
-                "lx": round(lx, 1), "ly": round(ly, 1),
-                "anchor": "start" if math.cos(t0) > 0.2 else ("end" if math.cos(t0) < -0.2 else "middle"),
-                "label": SHORT[dim], "notch": "", "level": None}
-        if eng.levels is not None:
-            lv = eng.levels[dim]
-            nx, ny = _P(mid + amp * (imprint.LOBE_FLOOR
-                                     + (1 - imprint.LOBE_FLOOR) * (lv/6.0)), t0)
-            tx, ty = -math.sin(t0)*9, math.cos(t0)*9
-            cell["notch"] = "M%.1f %.1f L%.1f %.1f" % (nx-tx, ny-ty, nx+tx, ny+ty)
-            cell["level"] = lv
-        row.append(cell)
-    axes.append(row)
-json.dump(axes, open(os.path.join(OUT,"axes.json"), "w"))
+        pts = []
+        for j in range(49):
+            t = t0 - math.pi/LOBES + (TAU/LOBES) * (j/48.0)
+            x, y = _P(mid + amp * L(t) * math.sin(LOBES*t + math.pi/2.0), t)
+            pts.append("%.1f %.1f" % (x, y))
+        row.append("M" + " L".join(pts))
+    lobes.append(row)
+json.dump(lobes, open(os.path.join(OUT,"lobes.json"), "w"))
 
 chs = "".join("<g class='ch ch%d'>%s</g>" % (i,
         "".join(per[i]).replace("<path d=","<path pathLength='1' d=").replace("<circle ","<circle pathLength='1' "))

@@ -43,20 +43,30 @@
           style="height:52px;display:flex;align-items:center;justify-content:space-between;
                  padding:0 20px;border-bottom:1px solid var(--ink);position:relative;z-index:3;
                  background:var(--paper)">
-    <button class="press" onClick="{{ openSharing }}" aria-label="Who can read this record"
-            style="display:flex;align-items:center;gap:10px;height:44px">
+    <span style="display:flex;align-items:center;gap:10px;height:44px">
       <svg viewBox="0 0 600 600" width="30" height="30" role="img" aria-label="Grain">@@MARK28@@</svg>
       <span class="t-serial">Work record</span>
-    </button>
-    <button class="press" aria-label="Account and settings" onClick="{{ openSettings }}"
-            style="width:44px;height:44px;display:flex;align-items:center;justify-content:flex-end">
-      <svg width="20" height="20" viewBox="0 0 20 20" class="icon">
-        <path d="M2 5 L18 5"/><path d="M2 10 L13 10"/><path d="M2 15 L18 15"/>
-      </svg>
-    </button>
+    </span>
+    <span style="display:flex;align-items:center">
+      <!-- Sharing is a destination now, not a section buried under the record
+           (decision 045). This is its entry point. -->
+      <button class="press" aria-label="{{ shareLabel }}" onClick="{{ openSharing }}"
+              style="width:44px;height:44px;display:flex;align-items:center;justify-content:center">
+        <svg width="20" height="20" viewBox="0 0 20 20" class="icon">
+          <path d="M10 13 L10 3"/><path d="M6.5 6.5 L10 3 L13.5 6.5"/>
+          <path d="M4 11 L4 17 L16 17 L16 11"/>
+        </svg>
+      </button>
+      <button class="press" aria-label="Account and settings" onClick="{{ openSettings }}"
+              style="width:44px;height:44px;display:flex;align-items:center;justify-content:flex-end">
+        <svg width="20" height="20" viewBox="0 0 20 20" class="icon">
+          <path d="M2 5 L18 5"/><path d="M2 10 L13 10"/><path d="M2 15 L18 15"/>
+        </svg>
+      </button>
+    </span>
   </header>
 
-  <main id="scroll" style="position:absolute;top:52px;bottom:26px;left:0;right:0;overflow-y:auto;
+  <main id="scroll" style="position:absolute;top:52px;bottom:0;left:0;right:0;overflow-y:auto;
                            padding:0 40px 56px 20px;scroll-behavior:smooth">
 
     <!-- ===== identity and imprint, composed as one hero (029 §B1) ========= -->
@@ -186,24 +196,22 @@
   </main>
 
   <nav aria-label="Sections"
-       style="position:absolute;right:0;top:52px;bottom:26px;width:40px;display:flex;
-              flex-direction:column;justify-content:center;align-items:flex-end;z-index:2">
+       style="position:absolute;right:0;top:52px;bottom:0;width:32px;display:flex;
+              flex-direction:column;justify-content:center;align-items:flex-end;
+              gap:14px;z-index:2">
     <sc-for list="{{ index }}" as="s" hint-placeholder-count="4">
       <button onClick="{{ s.go }}" aria-label="{{ s.label }}" aria-current="{{ s.cur }}"
               style="width:44px;height:{{ s.h }};display:flex;align-items:center;
-                     justify-content:flex-end;gap:6px;padding-right:8px">
-        <span class="t-micro" style="writing-mode:vertical-rl;color:{{ s.color }}">{{ s.label }}</span>
+                     justify-content:flex-end;gap:7px;padding:6px 5px 6px 0">
         <span class="idx-tick" style="width:{{ s.tick }};background:{{ s.color }}"></span>
+        <span class="t-micro" style="writing-mode:vertical-rl;color:{{ s.color }};
+                                     letter-spacing:.10em">{{ s.label }}</span>
       </button>
     </sc-for>
   </nav>
 
-  <footer style="position:absolute;left:0;right:0;bottom:0;height:26px;display:flex;
-                 align-items:center;justify-content:space-between;padding:0 20px;
-                 border-top:1px solid var(--hairline);background:var(--paper);z-index:2">
-    <span class="t-micro" style="color:var(--secondary)">Grain</span>
-    <span class="t-data" style="color:var(--secondary);font-size:11px">47 entries · last 12 Aug 2026</span>
-  </footer>
+  <!-- No plate footer. DESIGN.md §9 gave it append-only status; decision 045
+       moves that to the account surface and frees the band for navigation. -->
 
   <sc-if value="{{ sheet }}" hint-placeholder-val="{{ true }}">
     <div class="scrim" onClick="{{ close }}"></div>
@@ -362,6 +370,9 @@ class Component extends DCLogic {
       openSettings: () => open({kicker:'Account', title:'Your account',
         body:'Your name, phone, email, identity and address. Ask for an export, see who you have disclosed to, or ask us to delete everything.',
         cta:'Open account', dismiss:'Close'}),
+      // The label states exposure rather than naming an action, so the control
+      // never reads as "share" when the honest state is "already shared".
+      shareLabel: 'Sharing. Public page on, 2 parties hold a grant',
       openSharing: () => open({kicker:'Who can read this', title:'Two parties, and the public page',
         body:'Alorica Philippines and Sunrise Foods Manufacturing each hold a grant to your whole record. Your public page is live and anyone with a Grain account can open it.',
         cta:'Go to sharing', dismiss:'Close'}),

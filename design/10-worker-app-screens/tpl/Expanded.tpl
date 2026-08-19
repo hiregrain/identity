@@ -25,7 +25,9 @@
     /* unselected chapters recede to 3.4:1, not to invisibility. Selection is not
        provenance, so recession here does not collide with law 8. */
     .ch{transition:opacity 220ms cubic-bezier(0.2,0,0,1)}
-    .sel0 .ch,.sel1 .ch,.sel2 .ch,.sel3 .ch,.sel4 .ch{opacity:.55}
+    /* The band the detail below is about is the one that reads. .55 was not far
+       enough from 1 to say which chapter the page was describing. */
+    .sel0 .ch,.sel1 .ch,.sel2 .ch,.sel3 .ch,.sel4 .ch{opacity:.3}
     .sel0 .ch0,.sel1 .ch1,.sel2 .ch2,.sel3 .ch3,.sel4 .ch4{opacity:1}
     .pick{display:flex;gap:8px;overflow-x:auto;padding:0 20px;scrollbar-width:none}
     .pick::-webkit-scrollbar{height:0}
@@ -62,16 +64,15 @@
       <g class="{{ selCls }}" transform="{{ view }}">
         <g fill="none" stroke="var(--ink)" stroke-width="1"
            transform="translate(42 42) scale(0.86)">@@CHAPTERS@@</g>
-        <!-- The chapter's band, then every measure's axis and the depth attested
-             on it. All seven are named permanently: this is what closes
-             imprint/README.md 7.1, and it is why no selector is needed. -->
+        <!-- The chapter's band, and the lobe for the measure being read about.
+             Nothing else is drawn over the figure: spokes, sector lines and
+             level notches all read as damage across the engraving. -->
         <g fill="none" stroke="var(--ink)">
           <circle cx="300" cy="300" r="{{ selR0 }}" stroke-width="1.1"></circle>
           <circle cx="300" cy="300" r="{{ selR1 }}" stroke-width="1.1"></circle>
-          <sc-for list="{{ axes }}" as="ax" hint-placeholder-count="7">
-            <path d="{{ ax.axis }}" stroke-width="1.4" opacity=".4"></path>
-            <path d="{{ ax.notch }}" stroke-width="4"></path>
-          </sc-for>
+          <sc-if value="{{ hasLobe }}" hint-placeholder-val="{{ true }}">
+            <path d="{{ lobe }}" stroke-width="4"></path>
+          </sc-if>
         </g>
 
       </g>
@@ -103,22 +104,24 @@
     <div style="padding:14px 20px 10px">
       <span class="t-micro" style="display:block;color:var(--secondary)">{{ attestHead }}</span>
       <p class="t-meta" style="margin:6px 0 0;color:var(--secondary);text-wrap:pretty">
-        The seven spokes on the figure run clockwise from the right, in the order
-        below. The mark on each spoke is the depth attested on that measure.</p>
+        Touch a measure to light its lobe on the figure.</p>
     </div>
     <sc-for list="{{ measures }}" as="mm" hint-placeholder-count="7">
-      <div style="padding:12px 20px 14px;border-bottom:1px solid var(--hairline)">
-        <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px">
+      <button class="press" aria-pressed="{{ mm.on }}" onClick="{{ mm.go }}"
+              style="display:block;width:100%;text-align:left;padding:12px 20px 14px;
+                     border-bottom:1px solid {{ mm.border }}">
+        <span style="display:flex;align-items:baseline;justify-content:space-between;gap:12px">
           <span style="font-weight:600;font-size:15px;line-height:1.3">{{ mm.name }}</span>
           <span class="rung" aria-hidden="true">
             <sc-for list="{{ mm.scale }}" as="st" hint-placeholder-count="7">
               <i style="height:{{ st.h }};background:{{ st.c }}"></i>
             </sc-for>
           </span>
-        </div>
-        <p class="t-meta" style="margin:3px 0 0;color:var(--secondary);text-wrap:pretty">{{ mm.definition }}</p>
-        <p class="t-body" style="margin:7px 0 0;color:{{ mm.valueColor }};text-wrap:pretty">{{ mm.value }}</p>
-      </div>
+        </span>
+        <span class="t-meta" style="display:block;margin-top:3px;color:var(--secondary);text-wrap:pretty">{{ mm.definition }}</span>
+        <span class="t-body" style="display:block;margin-top:7px;color:{{ mm.valueColor }};text-wrap:pretty">{{ mm.value }}</span>
+        <span class="t-meta" style="display:block;margin-top:6px;color:var(--secondary);text-wrap:pretty">{{ mm.standing }}</span>
+      </button>
     </sc-for>
     <div style="padding:16px 20px 0">
       <span class="t-micro" style="display:block;color:var(--secondary);padding-bottom:6px">How this was set</span>
@@ -144,11 +147,11 @@
 // No ordinal is shown: design/07 §2.2 records four independent reviewers reading
 // "Step N of 6" as a rating of a person. The anchor sentence is the level.
 const TAU = Math.PI*2, LOBES = 7, S = 0.86;
-// Axis labels and attained notches, generated rather than computed here. This
-// file used to carry its own profile() and a hardcoded viewbox stroke that no
-// longer matched imprint.py, so the annotation sat off the band it annotated.
-// One copy of the geometry now, in imprint.py (decision 044).
-const AXES = @@AXES@@;
+// The lobe highlight, generated rather than computed here. This file used to
+// carry its own profile() and a hardcoded viewbox stroke that no longer matched
+// imprint.py, so the highlight sat off the band it highlighted. One copy of the
+// geometry now, in imprint.py (decision 044).
+const LOBES_D = @@LOBES@@;
 const DIMS = [
  {n:'Discretion', s:'Discretion', d:'How much of the what-and-how you decided, rather than received.',
   a:['Not part of this work','Followed instructions for each task','Chose the order of the work',
@@ -181,18 +184,18 @@ const DIMS = [
      'Owned the systems the work runs on']},
 ];
 const CHAPTERS = [
-  {r0:58.00,  r1:95.35,  party:'Bataan Poultry Processing', short:'Bataan Poultry', span:'Sep 2017 to Mar 2019',
+  {r0:58.00,  r1:95.35,  party:'Bataan Poultry Processing', short:'Bataan Poultry', span:'Sep 2017 to Mar 2019', corr:null,
    levels:null, setBy:'Nobody has confirmed this chapter, so there is nothing attested about the work. It is your own account of it.'},
-  {r0:95.35,  r1:145.14, party:'Sunrise Foods Manufacturing', short:'Sunrise Foods', span:'Mar 2019 to Sep 2021',
+  {r0:95.35,  r1:145.14, party:'Sunrise Foods Manufacturing', short:'Sunrise Foods', span:'Mar 2019 to Sep 2021', corr:'multi',
    levels:[3,3,3,1,3,2,2],
    setBy:'Sunrise Foods signed this on 14 October 2021, and a second party agreed.'},
-  {r0:145.14, r1:194.93, party:'R. Santos Dry Goods', short:'R. Santos', span:'Sep 2020 to Mar 2023',
+  {r0:145.14, r1:194.93, party:'R. Santos Dry Goods', short:'R. Santos', span:'Sep 2020 to Mar 2023', corr:'peer',
    levels:[2,0,2,4,1,1,2],
    setBy:'A coworker signed this on 2 April 2023. It stands at their reading, and nobody else has agreed.'},
-  {r0:194.93, r1:240.58, party:'Metro Manila Logistics', short:'Metro Manila', span:'Mar 2023 to Jan 2025',
+  {r0:194.93, r1:240.58, party:'Metro Manila Logistics', short:'Metro Manila', span:'Mar 2023 to Jan 2025', corr:'single',
    levels:[4,3,4,3,3,3,4],
    setBy:'Metro Manila Logistics signed this on 20 January 2025. Nobody else has agreed yet.'},
-  {r0:240.58, r1:280.00, party:'Cebu Pacific Cargo Services', short:'Cebu Pacific', span:'Jan 2025 to present',
+  {r0:240.58, r1:280.00, party:'Cebu Pacific Cargo Services', short:'Cebu Pacific', span:'Jan 2025 to present', corr:null,
    levels:null, setBy:'They confirmed the dates and the job, but nothing about the work, so there is nothing attested here yet.'},
 ];
 const ZOOMS = [1, 2.5];   // double-tap the figure. The old five-tick scale rule
@@ -202,7 +205,7 @@ const ZOOMS = [1, 2.5];   // double-tap the figure. The old five-tick scale rule
 const CAVEAT = 'Grain wrote these seven descriptions. They have not been tested for whether two managers reading the same work pick the same one. Where parties disagree, the ledger takes the description at least two of them chose, and never averages them.';
 
 class Component extends DCLogic {
-  constructor(p){ super(p); this.state = {ch:1, z:0, tx:0, ty:0, dragging:false, moved:0, phase:'opening'}; }
+  constructor(p){ super(p); this.state = {ch:1, dim:0, z:0, tx:0, ty:0, dragging:false, moved:0, phase:'opening'}; }
   componentDidMount(){ this._t = setTimeout(() => this.setState({phase:''}), 1100); }
   componentWillUnmount(){ clearTimeout(this._t); }
 
@@ -249,8 +252,20 @@ class Component extends DCLogic {
     this.setState({ch});
   }
   renderVals(){
-    const {ch, z, tx, ty} = this.state;
+    const {ch, dim, z, tx, ty} = this.state;
     const c = CHAPTERS[ch], k = ZOOMS[z];
+    const lobe = LOBES_D[ch][dim] || '';
+    // Why the level stands where it does. The model has no rationale field —
+    // `attestation` carries dimensions_exercised[] and a signature, nothing in
+    // free text — so what can honestly be said is how the level was DERIVED:
+    // who asserted it, whether anyone agreed, and that disagreeing attesters are
+    // never averaged (model/record-schema.md §4).
+    const STANDING = {
+      multi:  'Two parties assert this level independently, so it stands corroborated. Where parties disagree the record keeps the highest level at least two of them assert, and never an average.',
+      single: 'One business asserts this. Nobody else has agreed, so it stands at their reading alone.',
+      peer:   'A coworker asserts this, not the business. It stands at their reading and carries no employer agreement.',
+      none:   'Nobody has attested this measure on this chapter, so the record says nothing about it.'
+    };
 
     return {
       down:(e)=>this.down(e), move:(e)=>this.move(e), up:(e)=>this.up(e),
@@ -258,7 +273,7 @@ class Component extends DCLogic {
       figureAlt: `Imprint. ${c.party}, with every measure named and its attested depth marked.`,
       view: `translate(${tx.toFixed(1)} ${ty.toFixed(1)}) translate(${(300*(1-k)).toFixed(1)} ${(300*(1-k)).toFixed(1)}) scale(${k})`,
       selR0: (c.r0*S).toFixed(1), selR1: (c.r1*S).toFixed(1),
-      axes: AXES[ch],
+      hasLobe: lobe !== '', lobe,
       setBy: c.setBy, caveat: c.levels ? CAVEAT : '', party: c.party, span: c.span,
       prevCh: () => this.setState({ch: (ch + CHAPTERS.length - 1) % CHAPTERS.length}),
       nextCh: () => this.setState({ch: (ch + 1) % CHAPTERS.length}),
@@ -271,11 +286,16 @@ class Component extends DCLogic {
       // of a person.
       measures: DIMS.map((x, i) => {
         const lv = c.levels ? c.levels[i] : null;
+        const sel = i === dim;
         return {
           name: x.n,
           definition: x.d,
           value: lv === null ? 'Nothing attested here.' : x.a[lv],
           valueColor: lv === null ? 'var(--secondary)' : 'var(--ink)',
+          standing: STANDING[lv === null ? 'none' : (c.corr || 'single')],
+          on: sel ? 'true' : 'false',
+          border: sel ? 'var(--ink)' : 'var(--hairline)',
+          go: () => this.setState({dim: i}),
           scale: x.a.map((_, r) => ({
             h: (4 + r*1.6).toFixed(0) + 'px',
             c: lv === null ? 'var(--hairline)'
