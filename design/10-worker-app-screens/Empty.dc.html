@@ -1,0 +1,115 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap');
+    /* Grain — DESIGN.md §5 colour, §6 type, §7 spacing/radius/depth */
+    :root{
+      --ink:#1B2A44; --paper:#F5F6F3; --secondary:#5C6878;
+      --rule:#7E8794;      /* 3.35:1 — every line that carries meaning */
+      --hairline:#D3D7D6;  /* 1.34:1 — pure separation, never a state */
+      --page:#E6E6E4;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--page);color:var(--ink);
+         font-family:'Archivo',-apple-system,'Helvetica Neue',sans-serif;
+         -webkit-font-smoothing:antialiased}
+    a{color:var(--ink);text-decoration:underline;text-underline-offset:2px}
+    a:hover{color:var(--ink);text-decoration-thickness:2px}
+    button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;text-align:left}
+    /* §6 — one family, hierarchy from width, weight and tracking */
+    .t-title {font-stretch:125%;font-weight:700;font-size:28px;line-height:1.12;text-wrap:balance}
+    .t-sec   {font-weight:600;font-size:17px;line-height:1.2;text-wrap:balance}
+    .t-rec   {font-weight:600;font-size:15px;line-height:1.3}
+    .t-body  {font-weight:400;font-size:14px;line-height:1.6}
+    .t-data  {font-weight:500;font-size:13px;line-height:1.35;font-variant-numeric:tabular-nums}
+    .t-meta  {font-weight:400;font-size:12px;line-height:1.4}
+    /* labels ONLY — never a value, a date, a name or a sentence (§6) */
+    .t-micro {font-weight:500;font-size:9.5px;letter-spacing:0.08em;text-transform:uppercase;line-height:1.3}
+    .t-serial{font-weight:500;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;line-height:1.2}
+    .t-inst  {font-stretch:125%;font-weight:800;font-size:40px;line-height:1;font-variant-numeric:tabular-nums}
+    /* §7 depth presses down; verified rows have zero press-give — rigidity is
+       how permanence is expressed. Both halves are load-bearing. */
+    .press{transition:transform 60ms cubic-bezier(0.2,0,0,1)}
+    .press:active{transform:translateY(2px)}
+    .rigid:active{transform:none}
+    /* §8 buttons — no pills, no icons inside. 44px minimum (§12). */
+    .btn-primary{background:var(--ink);color:var(--paper);border-radius:3px;
+                 padding:13px 16px;font-weight:600;font-size:15px;width:100%;
+                 text-align:center;min-height:44px}
+    .btn-secondary{border:1px solid var(--ink);border-radius:3px;padding:12px 16px;
+                   font-weight:600;font-size:15px;width:100%;text-align:center;min-height:44px}
+    .btn-tertiary{font-weight:600;font-size:14px;text-decoration:underline;
+                  text-underline-offset:3px;min-height:44px;padding:13px 8px;display:inline-block}
+    /* a disabled control loses its ink, never its contrast (law 8) */
+    .btn-primary[disabled]{background:none;color:var(--ink);border:1px solid var(--rule)}
+    :focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+    @media (prefers-reduced-motion:reduce){
+      *{animation-duration:1ms !important;transition-duration:1ms !important;
+        animation-delay:0ms !important;transition-delay:0ms !important}
+    }
+
+    .plate{position:absolute;inset:0;pointer-events:none}
+    .reg{position:absolute;width:11px;height:11px;border:0 solid var(--ink);opacity:.55}
+  </style>
+</helmet>
+
+<div style="width:360px;height:800px;position:relative;overflow:hidden;background:var(--paper)">
+  <div class="plate">
+    <div class="reg" style="top:7px;left:7px;border-top-width:1px;border-left-width:1px"></div>
+    <div class="reg" style="top:7px;right:7px;border-top-width:1px;border-right-width:1px"></div>
+    <div class="reg" style="bottom:7px;left:7px;border-bottom-width:1px;border-left-width:1px"></div>
+    <div class="reg" style="bottom:7px;right:7px;border-bottom-width:1px;border-right-width:1px"></div>
+  </div>
+
+  <header style="height:52px;display:flex;align-items:center;gap:10px;padding:0 20px;
+                 border-bottom:1px solid var(--hairline)">
+    <svg viewBox="0 0 600 600" width="28" height="28" aria-label="Grain"><g fill='none' stroke='#1B2A44' stroke-width='26.79'><path d='M564.00 300.00 L570.45 308.50 L576.34 317.39 L581.35 326.60 L585.20 336.03 L587.68 345.56 L588.60 355.05 L587.86 364.35 L585.43 373.29 L581.32 381.73 L575.62 389.56 L568.50 396.67 L560.15 403.00 L550.82 408.54 L540.80 413.31 L530.40 417.40 L519.96 420.92 L509.80 424.07 L500.24 427.07 L491.56 430.19 L484.02 433.70 L477.76 437.89 L472.88 443.02 L469.36 449.31 L467.07 456.89 L465.80 465.80 L465.26 475.98 L465.08 487.25 L464.88 499.30 L464.26 511.77 L462.89 524.20 L460.46 536.12 L456.80 547.07 L451.78 556.65 L445.42 564.52 L437.81 570.47 L429.11 574.37 L419.54 576.25 L409.36 576.21 L398.81 574.46 L388.15 571.29 L377.58 567.02 L367.27 562.00 L357.36 556.60 L347.91 551.16 L338.96 546.01 L330.50 541.44 L322.47 537.69 L314.78 534.95 L307.33 533.36 L300.00 532.98 L292.65 533.83 L285.16 535.83 L277.42 538.85 L269.34 542.72 L260.85 547.18 L251.94 551.95 L242.62 556.72 L232.94 561.17 L223.01 564.99 L212.96 567.88 L202.94 569.59 L193.13 569.93 L183.70 568.74 L174.84 565.98 L166.69 561.63 L159.38 555.79 L152.98 548.60 L147.54 540.24 L143.03 530.98 L139.38 521.08 L136.46 510.83 L134.12 500.52 L132.13 490.41 L130.28 480.73 L128.32 471.68 L126.02 463.38 L123.14 455.92 L119.52 449.31 L115.00 443.50 L109.50 438.40 L103.01 433.88 L95.56 429.74 L87.28 425.80 L78.33 421.86 L68.96 417.72 L59.42 413.21 L50.03 408.17 L41.10 402.51 L32.94 396.15 L25.84 389.08 L20.04 381.34 L15.75 372.98 L13.09 364.13 L12.13 354.91 L12.85 345.48 L15.15 335.99 L18.87 326.57 L23.77 317.38 L29.59 308.50 L36.00 300.00 L42.67 291.91 L49.27 284.23 L55.48 276.89 L61.01 269.81 L65.65 262.88 L69.22 255.98 L71.62 248.95 L72.84 241.67 L72.92 234.03 L72.00 225.92 L70.27 217.29 L67.98 208.14 L65.39 198.48 L62.83 188.40 L60.59 178.02 L58.98 167.50 L58.25 157.03 L58.63 146.82 L60.29 137.10 L63.34 128.05 L67.80 119.89 L73.65 112.75 L80.80 106.75 L89.09 101.94 L98.32 98.32 L108.28 95.83 L118.69 94.35 L129.32 93.69 L139.92 93.63 L150.27 93.92 L160.19 94.28 L169.55 94.44 L178.24 94.12 L186.25 93.10 L193.60 91.18 L200.34 88.22 L206.59 84.15 L212.49 78.98 L218.20 72.78 L223.87 65.69 L229.67 57.92 L235.74 49.74 L242.20 41.44 L249.13 33.35 L256.57 25.80 L264.52 19.11 L272.92 13.57 L281.72 9.43 L290.79 6.87 L300.00 6.00 L309.21 6.87 L318.28 9.43 L327.08 13.57 L335.48 19.11 L343.43 25.80 L350.87 33.35 L357.80 41.44 L364.26 49.74 L370.33 57.92 L376.13 65.69 L381.80 72.78 L387.51 78.98 L393.41 84.15 L399.66 88.22 L406.40 91.18 L413.75 93.10 L421.76 94.12 L430.45 94.44 L439.81 94.28 L449.73 93.92 L460.08 93.63 L470.68 93.69 L481.31 94.35 L491.72 95.83 L501.68 98.32 L510.91 101.94 L519.20 106.75 L526.35 112.75 L532.20 119.89 L536.66 128.05 L539.71 137.10 L541.37 146.82 L541.75 157.03 L541.02 167.50 L539.41 178.02 L537.17 188.40 L534.61 198.48 L532.02 208.14 L529.72 217.29 L527.99 225.92 L527.07 234.03 L527.16 241.68 L528.37 248.95 L530.76 255.98 L534.33 262.89 L538.96 269.81 L544.49 276.89 L550.70 284.23 L557.31 291.91 L564.00 300.00 Z'/><path d='M472.00 300.00 L480.69 305.68 L488.81 311.88 L495.93 318.52 L501.69 325.48 L505.79 332.59 L507.99 339.68 L508.15 346.53 L506.22 352.95 L502.24 358.75 L496.31 363.78 L488.64 367.92 L479.51 371.07 L469.23 373.23 L458.20 374.44 L446.82 374.81 L435.54 374.52 L424.79 373.80 L415.00 372.98 L406.54 372.41 L399.73 372.46 L394.79 373.53 L391.82 375.96 L390.79 380.04 L391.54 385.96 L393.79 393.79 L397.13 403.43 L401.07 414.64 L405.10 427.05 L408.70 440.13 L411.38 453.30 L412.78 465.95 L412.61 477.45 L410.75 487.26 L407.18 494.96 L402.03 500.24 L395.51 502.96 L387.90 503.14 L379.55 500.92 L370.78 496.59 L361.91 490.53 L353.22 483.17 L344.93 474.99 L337.21 466.47 L330.15 458.07 L323.79 450.23 L318.11 443.34 L313.02 437.72 L308.41 433.62 L304.12 431.24 L300.00 430.65 L295.86 431.86 L291.52 434.79 L286.84 439.27 L281.68 445.04 L275.96 451.78 L269.65 459.12 L262.75 466.63 L255.35 473.88 L247.57 480.47 L239.57 485.98 L231.56 490.10 L223.77 492.54 L216.43 493.13 L209.76 491.77 L203.97 488.46 L199.22 483.32 L195.60 476.53 L193.16 468.35 L191.88 459.10 L191.64 449.15 L192.27 438.88 L193.56 428.67 L195.21 418.86 L196.93 409.76 L198.38 401.62 L199.24 394.62 L199.21 388.86 L198.05 384.34 L195.56 381.01 L191.63 378.74 L186.22 377.33 L179.40 376.54 L171.30 376.11 L162.18 375.77 L152.32 375.25 L142.10 374.30 L131.90 372.74 L122.16 370.41 L113.28 367.22 L105.64 363.15 L99.58 358.23 L95.35 352.55 L93.12 346.24 L92.99 339.49 L94.92 332.48 L98.78 325.42 L104.36 318.49 L111.34 311.87 L119.36 305.68 L128.00 300.00 L136.81 294.87 L145.34 290.27 L153.17 286.12 L159.93 282.31 L165.32 278.67 L169.10 275.03 L171.16 271.20 L171.46 267.00 L170.08 262.26 L167.20 256.85 L163.06 250.70 L158.00 243.78 L152.39 236.12 L146.64 227.84 L141.17 219.07 L136.37 210.04 L132.60 201.00 L130.16 192.21 L129.27 183.97 L130.07 176.54 L132.63 170.17 L136.89 165.07 L142.75 161.37 L150.00 159.14 L158.38 158.38 L167.59 158.99 L177.29 160.82 L187.17 163.61 L196.89 167.07 L206.17 170.85 L214.77 174.58 L222.51 177.89 L229.29 180.43 L235.06 181.87 L239.85 181.95 L243.76 180.49 L246.95 177.40 L249.59 172.67 L251.90 166.40 L254.11 158.78 L256.45 150.08 L259.09 140.66 L262.21 130.92 L265.91 121.28 L270.25 112.18 L275.25 104.06 L280.84 97.30 L286.93 92.22 L293.37 89.07 L300.00 88.00 L306.63 89.07 L313.07 92.22 L319.16 97.30 L324.75 104.06 L329.75 112.18 L334.09 121.28 L337.79 130.92 L340.91 140.66 L343.55 150.08 L345.89 158.78 L348.10 166.40 L350.41 172.67 L353.05 177.40 L356.24 180.49 L360.15 181.95 L364.94 181.87 L370.71 180.43 L377.49 177.89 L385.23 174.58 L393.83 170.85 L403.11 167.07 L412.83 163.61 L422.71 160.82 L432.41 158.99 L441.62 158.38 L450.00 159.14 L457.25 161.37 L463.11 165.07 L467.37 170.17 L469.93 176.54 L470.73 183.97 L469.84 192.21 L467.40 201.00 L463.63 210.04 L458.83 219.07 L453.36 227.84 L447.61 236.12 L442.00 243.78 L436.94 250.70 L432.80 256.85 L429.91 262.26 L428.53 267.00 L428.82 271.20 L430.87 275.03 L434.65 278.67 L440.03 282.31 L446.79 286.12 L454.62 290.27 L463.16 294.87 L472.00 300.00 Z'/><path d='M390.00 300.00 L394.78 302.98 L399.25 306.24 L403.18 309.75 L406.37 313.44 L408.64 317.21 L409.88 320.96 L409.99 324.59 L408.97 327.98 L406.81 331.03 L403.60 333.66 L399.43 335.80 L394.45 337.40 L388.86 338.45 L382.85 338.99 L376.66 339.06 L370.52 338.77 L364.68 338.25 L359.37 337.68 L354.79 337.24 L351.13 337.15 L348.50 337.62 L346.95 338.84 L346.48 340.98 L347.00 344.13 L348.33 348.33 L350.27 353.53 L352.55 359.60 L354.87 366.33 L356.96 373.44 L358.56 380.60 L359.44 387.47 L359.47 393.71 L358.57 399.04 L356.73 403.20 L354.03 406.03 L350.57 407.47 L346.52 407.50 L342.06 406.23 L337.37 403.80 L332.63 400.42 L327.99 396.33 L323.57 391.79 L319.46 387.07 L315.72 382.42 L312.37 378.08 L309.38 374.27 L306.73 371.17 L304.33 368.90 L302.12 367.58 L300.00 367.25 L297.87 367.92 L295.62 369.54 L293.19 372.02 L290.50 375.21 L287.50 378.94 L284.17 383.00 L280.52 387.15 L276.59 391.18 L272.45 394.84 L268.19 397.92 L263.92 400.23 L259.77 401.62 L255.86 402.00 L252.33 401.31 L249.27 399.56 L246.79 396.80 L244.92 393.13 L243.71 388.71 L243.12 383.70 L243.10 378.31 L243.57 372.75 L244.39 367.22 L245.41 361.92 L246.46 357.01 L247.36 352.64 L247.93 348.89 L248.02 345.83 L247.47 343.46 L246.19 341.74 L244.12 340.60 L241.22 339.94 L237.55 339.63 L233.18 339.52 L228.23 339.46 L222.88 339.30 L217.32 338.91 L211.77 338.18 L206.47 337.03 L201.63 335.41 L197.48 333.31 L194.18 330.74 L191.90 327.76 L190.71 324.43 L190.66 320.86 L191.75 317.15 L193.89 313.40 L196.98 309.74 L200.83 306.24 L205.25 302.98 L210.00 300.00 L214.84 297.32 L219.53 294.94 L223.82 292.80 L227.53 290.84 L230.47 288.99 L232.53 287.13 L233.63 285.16 L233.76 282.99 L232.96 280.52 L231.33 277.69 L229.01 274.44 L226.17 270.77 L223.04 266.69 L219.82 262.27 L216.74 257.58 L214.04 252.74 L211.89 247.89 L210.47 243.18 L209.90 238.77 L210.26 234.80 L211.58 231.41 L213.84 228.72 L216.96 226.79 L220.85 225.68 L225.36 225.36 L230.32 225.80 L235.55 226.90 L240.87 228.53 L246.11 230.52 L251.10 232.69 L255.71 234.83 L259.85 236.73 L263.45 238.20 L266.50 239.06 L269.01 239.17 L271.03 238.43 L272.65 236.79 L273.97 234.25 L275.10 230.85 L276.18 226.70 L277.33 221.96 L278.64 216.82 L280.22 211.49 L282.11 206.22 L284.36 201.24 L286.96 196.80 L289.89 193.09 L293.10 190.31 L296.50 188.58 L300.00 188.00 L303.50 188.58 L306.90 190.31 L310.11 193.09 L313.04 196.80 L315.64 201.24 L317.89 206.22 L319.78 211.49 L321.36 216.82 L322.67 221.96 L323.82 226.70 L324.90 230.85 L326.03 234.25 L327.35 236.79 L328.97 238.43 L330.99 239.17 L333.50 239.06 L336.55 238.20 L340.15 236.73 L344.29 234.83 L348.90 232.69 L353.89 230.52 L359.13 228.53 L364.45 226.90 L369.68 225.80 L374.64 225.36 L379.15 225.68 L383.04 226.79 L386.16 228.72 L388.42 231.41 L389.74 234.80 L390.10 238.77 L389.53 243.18 L388.11 247.89 L385.96 252.74 L383.26 257.58 L380.18 262.27 L376.96 266.69 L373.83 270.77 L370.99 274.44 L368.67 277.69 L367.03 280.52 L366.24 282.99 L366.36 285.17 L367.46 287.13 L369.51 288.99 L372.45 290.85 L376.15 292.80 L380.45 294.94 L385.14 297.32 L390.00 300.00 Z'/></g></svg>
+    <span class="t-serial">Work record</span>
+  </header>
+
+  <main style="position:absolute;top:52px;bottom:26px;left:0;right:0;padding:0 20px;
+               display:flex;flex-direction:column;justify-content:center;gap:40px">
+    <!-- the fixed canvas, empty. The graticule ground (§9) carries it; there is no
+         identity core, and no boundary ring: absence is drawn as absence. -->
+    <div style="position:relative;width:296px;height:296px;align-self:center">
+      <svg viewBox="0 0 296 296" width="296" height="296" aria-label="Your record, empty">
+        <defs><clipPath id="canv"><circle cx="148" cy="148" r="139"></circle></clipPath></defs>
+        <g clip-path="url(#canv)" fill="none" stroke="var(--hairline)" stroke-width=".75">
+          <path d='M0 24 L296 24'/><path d='M0 48 L296 48'/><path d='M0 72 L296 72'/><path d='M0 96 L296 96'/><path d='M0 120 L296 120'/><path d='M0 144 L296 144'/><path d='M0 168 L296 168'/><path d='M0 192 L296 192'/><path d='M0 216 L296 216'/><path d='M0 240 L296 240'/><path d='M0 264 L296 264'/><path d='M0 288 L296 288'/><path d='M24.0 0 Q18.1 148.0 24.0 296'/><path d='M48.0 0 Q43.3 148.0 48.0 296'/><path d='M72.0 0 Q68.4 148.0 72.0 296'/><path d='M96.0 0 Q93.5 148.0 96.0 296'/><path d='M120.0 0 Q118.7 148.0 120.0 296'/><path d='M144.0 0 Q143.8 148.0 144.0 296'/><path d='M168.0 0 Q168.9 148.0 168.0 296'/><path d='M192.0 0 Q194.1 148.0 192.0 296'/><path d='M216.0 0 Q219.2 148.0 216.0 296'/><path d='M240.0 0 Q244.4 148.0 240.0 296'/><path d='M264.0 0 Q269.5 148.0 264.0 296'/><path d='M288.0 0 Q294.6 148.0 288.0 296'/>
+        </g>
+      </svg>
+    </div>
+    <div>
+      <h1 class="t-title" style="margin:0 0 12px">Nothing<br>on it yet</h1>
+      <p class="t-body" style="margin:0 0 28px;color:var(--secondary);max-width:280px;text-wrap:pretty">
+        Add where you have worked. Work nobody has confirmed is drawn plain. It fills in
+        when someone who was there signs for it.
+      </p>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <button class="btn-primary press">Add where you worked</button>
+        <button class="btn-secondary press">Import a résumé</button>
+      </div>
+    </div>
+  </main>
+
+  <footer style="position:absolute;left:0;right:0;bottom:0;height:26px;display:flex;
+                 align-items:center;justify-content:space-between;padding:0 20px;
+                 border-top:1px solid var(--hairline)">
+    <span class="t-micro" style="color:var(--secondary)">Append only</span>
+    <span class="t-micro" style="color:var(--secondary)">0 entries</span>
+  </footer>
+</div>
+</x-dc>
+
+<script data-dc-script data-props='{"$preview":{"width":360,"height":800}}'>
+class Component extends DCLogic { renderVals(){ return {}; } }
+</script>
+</body>
+</html>

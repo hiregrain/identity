@@ -1,0 +1,135 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+@@CSS@@
+    .plate{position:absolute;inset:0;pointer-events:none}
+    .reg{position:absolute;width:11px;height:11px;border:0 solid var(--ink);opacity:.55}
+    .row{display:flex;gap:12px;align-items:flex-start;padding:12px 0;
+         border-bottom:1px solid var(--hairline);width:100%}
+    .gutter{flex:0 0 26px;padding-top:3px}
+    /* §10 — the attestation landing. One of only two heavy ceremonies.
+       A state change of something already on screen: no overlay, no spawned UI. */
+    .before{opacity:1}
+    .after path{stroke-dasharray:1;stroke-dashoffset:1}
+    .run .before{animation:fadeout 360ms cubic-bezier(0.2,0,0,1) forwards}
+    .run .after path{animation:scribe 880ms cubic-bezier(0.2,0,0,1) forwards}
+    .run .after path:nth-child(2){animation-delay:50ms}
+    .run .after path:nth-child(3){animation-delay:100ms}
+    .run .after path:nth-child(4){animation-delay:150ms}
+    .run .after path:nth-child(5){animation-delay:150ms}
+    .run .after path:nth-child(6){animation-delay:200ms}
+    .done .before{opacity:0}
+    .done .after path{stroke-dashoffset:0}
+    @keyframes fadeout{to{opacity:0}}
+    @keyframes scribe{to{stroke-dashoffset:0}}
+    /* §7 — the seat. Pending rows sit 2px proud and seat flush on verification. */
+    .seat{transform:translateY(-2px)}
+    .run .seat{animation:seat 320ms cubic-bezier(0.2,0,0,1) 320ms forwards}
+    .done .seat{transform:translateY(0)}
+    @keyframes seat{to{transform:translateY(0)}}
+    .contact{opacity:0}
+    .run .contact{animation:contact 240ms cubic-bezier(0.2,0,0,1) 600ms}
+    @keyframes contact{0%{opacity:.5}100%{opacity:0}}
+  </style>
+</helmet>
+
+<div class="{{ phase }}" style="width:360px;height:800px;position:relative;overflow:hidden;background:var(--paper)">
+  <div class="plate">
+    <div class="reg" style="top:7px;left:7px;border-top-width:1px;border-left-width:1px"></div>
+    <div class="reg" style="top:7px;right:7px;border-top-width:1px;border-right-width:1px"></div>
+    <div class="reg" style="bottom:7px;left:7px;border-bottom-width:1px;border-left-width:1px"></div>
+    <div class="reg" style="bottom:7px;right:7px;border-bottom-width:1px;border-right-width:1px"></div>
+  </div>
+
+  <header style="height:52px;display:flex;align-items:center;gap:10px;padding:0 20px;
+                 border-bottom:1px solid var(--hairline)">
+    <svg viewBox="0 0 600 600" width="28" height="28" aria-label="Grain">@@MARK28@@</svg>
+    <span class="t-serial">Work record</span>
+  </header>
+
+  <main style="position:absolute;top:52px;bottom:26px;left:0;right:0;padding:20px 20px 0">
+    <svg viewBox="0 0 600 600" width="100%" role="img" aria-label="An attestation lands">
+      @@CBASE@@
+      <g class="before">@@CBEFORE@@</g>
+      <g class="after">@@CAFTER@@</g>
+    </svg>
+
+    <div style="display:flex;justify-content:space-between;align-items:baseline;padding:12px 0 0">
+      <span class="t-micro" style="color:var(--secondary)">Liezel Mendoza</span>
+      <span class="t-micro">{{ readout }}</span>
+    </div>
+
+    <div style="padding-top:28px">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;
+                  border-bottom:1px solid var(--ink);padding-bottom:8px">
+        <h2 class="t-sec" style="margin:0">{{ sectionLabel }}</h2>
+      </div>
+      <div style="position:relative">
+        <div class="contact" style="position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--ink)"></div>
+        <div class="row seat">
+          <span class="gutter">
+            <svg viewBox="0 0 26 14" width="26" height="14" fill="none"
+                 stroke="var(--ink)" stroke-width="0.9"><use href="{{ sw }}"></use></svg>
+          </span>
+          <span style="flex:1;min-width:0">
+            <span class="t-rec" style="display:block">Cebu Pacific Cargo Services</span>
+            <span class="t-meta" style="display:block;color:var(--secondary);padding-top:2px">{{ rowState }}</span>
+          </span>
+          <span class="t-micro" style="text-align:right;white-space:nowrap;padding-top:2px">Jan 2025 – present</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="padding-top:32px;text-align:center">
+      <button class="btn-tertiary press" onClick="{{ replay }}">Play it again</button>
+    </div>
+  </main>
+
+  <footer style="position:absolute;left:0;right:0;bottom:0;height:26px;display:flex;
+                 align-items:center;justify-content:space-between;padding:0 20px;
+                 border-top:1px solid var(--hairline)">
+    <span class="t-micro" style="color:var(--secondary)">Append only</span>
+    <span class="t-micro" style="color:var(--secondary)">{{ entries }}</span>
+  </footer>
+</div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <g id="sw-emp">@@SW_EMP@@</g>
+  <g id="sw-multi">@@SW_MULTI@@</g>
+</defs></svg>
+</x-dc>
+
+<script data-dc-script data-props='{"$preview":{"width":360,"height":800}}'>
+class Component extends DCLogic {
+  constructor(p){ super(p); this.state = {phase:'idle'}; }
+  componentDidMount(){ this._t = setTimeout(() => this.run(), 700); }
+  componentWillUnmount(){ clearTimeout(this._t); clearTimeout(this._u); }
+  run(){
+    this.setState({phase:'run'});
+    this._u = setTimeout(() => this.setState({phase:'done'}), 1080);
+  }
+  renderVals(){
+    const done = this.state.phase === 'done';
+    return {
+      phase: this.state.phase,
+      readout: done ? '4 chapters signed. 1 you added yourself.' : '3 chapters signed. 2 not yet.',
+      sectionLabel: done ? 'Work history' : 'Outstanding verification',
+      rowState: done ? 'Cebu Pacific signed this. Nobody else has agreed yet.'
+                     : 'They confirmed the dates and the job. Not the work.',
+      sw: done ? '#sw-single' : '#sw-emp',
+      entries: done ? '48 entries · last today' : '47 entries · last 12 Aug 2026',
+      replay: () => { clearTimeout(this._u); this.setState({phase:'idle'});
+                      setTimeout(() => this.run(), 60); }
+    };
+  }
+}
+</script>
+</body>
+</html>

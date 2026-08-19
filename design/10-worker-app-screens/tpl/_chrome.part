@@ -1,0 +1,13 @@
+    /* the plate (§9) marks the RECORD. A settings sheet is not one, so the
+       corners appear on the record surface and nowhere else. */
+    .plate{position:absolute;inset:0;pointer-events:none}
+    .reg{position:absolute;width:11px;height:11px;border:0 solid var(--rule)}
+    .row{display:flex;gap:12px;align-items:flex-start;padding:12px 0;
+         border-bottom:1px solid var(--hairline);width:100%}
+    .row-sel{border-bottom:1.5px solid var(--rule)}
+    .gutter{flex:0 0 26px;padding-top:3px}
+    .sechead{display:flex;justify-content:space-between;align-items:baseline;
+             border-bottom:1px solid var(--ink);padding-bottom:8px;gap:12px}
+    .icon{stroke:var(--ink);stroke-width:1.5;fill:none;stroke-linecap:square}
+    .col-r{text-align:right;white-space:nowrap;padding-top:1px}
+    main::-webkit-scrollbar{width:0}
