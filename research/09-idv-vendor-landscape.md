@@ -1,5 +1,9 @@
 # IDV/KYC/KYB Vendor Landscape (2026), Evaluated for This Buyer
 
+**Evidence tier — binds nothing.** Research informs decisions and constrains
+no implementation. A figure here describes what someone else did or what a
+regulator said in one matter; it is not a target, a spec, or a decision.
+
 **Status:** Research memo, not a design doc. Confidence levels stated per claim.
 **Buyer profile assumed throughout:** 3-person AI-build-heavy team; verification bought, not built (design 0.1 §1.2); universal self-signup; scale 10⁴ → 10⁶ → 10⁷ verifications/yr; target populations US trades, Philippine ops, Indian workers, plus KYB on attesting parties; sensitive-data payload ban means the ledger must never hold document images.
 **Sourcing note:** vendor-published claims (document counts, automation rates, coverage percentages) are marked low-confidence throughout — the DHS testing record (below) shows marketing claims and measured performance diverge badly. Pricing is flagged as OFFICIAL (vendor-published), BENCH (Vendr/PriceLevel buyer-reported), or ANEC (third-party/anecdotal).

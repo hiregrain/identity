@@ -1,5 +1,9 @@
 # Research Synthesis — Cross-Cutting Conclusions (2026-08-17)
 
+**Evidence tier — binds nothing.** Research informs decisions and constrains
+no implementation. A figure here describes what someone else did or what a
+regulator said in one matter; it is not a target, a spec, or a decision.
+
 Synthesis of `01`–`06`, written for the design session. Two kinds of content:
 where the research **converges** on a design constraint, and where it
 **collides with a founder decision** recorded in `00-founder-grilling`.

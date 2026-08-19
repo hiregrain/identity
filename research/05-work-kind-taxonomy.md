@@ -1,5 +1,9 @@
 # Taxonomy Prior Art for `work_kind` and Responsibility Dimensions
 
+**Evidence tier — binds nothing.** Research informs decisions and constrains
+no implementation. A figure here describes what someone else did or what a
+regulator said in one matter; it is not a target, a spec, or a decision.
+
 ## TLDR
 
 - **No existing taxonomy is directly adoptable wholesale.** O*NET is US-only, occupation-grained (not task/work-kind grained), revised on a slow multi-year cadence, and every occupation code eventually gets split/merged/retired — which is exactly the kind of churn a permanent ledger cannot absorb without a versioning discipline. ESCO is EU-only, occupation+skill grained (no clean "kind of work performed" layer either), and young (v1 launched 2017, still stabilizing). ISCO-08/SOC are coarser still — built for national labor statistics, not for describing what a single attestation of work actually was.

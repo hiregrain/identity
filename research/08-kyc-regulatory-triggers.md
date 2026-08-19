@@ -1,5 +1,9 @@
 # Regulatory Trigger Map: KYC/AML, Right-to-Work, Sanctions Screening
 
+**Evidence tier — binds nothing.** Research informs decisions and constrains
+no implementation. A figure here describes what someone else did or what a
+regulator said in one matter; it is not a target, a spec, or a decision.
+
 **Status:** Research memo, not legal advice. Not counsel-reviewed. Written
 2026-08-17. Companion to `01-regulatory-perimeter.md` (FCRA/GDPR/DPA perimeter)
 and `07-synthesis.md`. Confidence is marked inline; settled statute, agency

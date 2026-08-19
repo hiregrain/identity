@@ -1,5 +1,9 @@
 # Attestation Trust Mechanics: Signatures, Key Lifecycle, Trust Registries, Disputes
 
+**Evidence tier — binds nothing.** Research informs decisions and constrains
+no implementation. A figure here describes what someone else did or what a
+regulator said in one matter; it is not a target, a spec, or a decision.
+
 Research memo. Confidence levels stated per claim — this domain has well-documented standards (PKI, CT, eIDAS, FCRA) but few precedents for the exact combination this system needs (worker-outcome attestations at hundreds-of-parties scale). Where I extrapolate rather than cite, I say so.
 
 ---

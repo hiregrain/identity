@@ -1,5 +1,9 @@
 # Jurisdictional Recordkeeping and Automated-Decision Duties
 
+**Evidence tier — binds nothing.** Research informs decisions and constrains
+no implementation. A figure here describes what someone else did or what a
+regulator said in one matter; it is not a target, a spec, or a decision.
+
 **Companion to `research/13`.** Where 13 answers two questions in depth — may an
 AI Act logging duty defeat the erasure right, and is there any lawful basis to
 retain a link across deletion to stop reset gaming — this file records the

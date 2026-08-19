@@ -1,5 +1,9 @@
 # Person-ID Issuance, Deduplication, and Merge Under Append-Only Rules
 
+**Evidence tier — binds nothing.** Research informs decisions and constrains
+no implementation. A figure here describes what someone else did or what a
+regulator said in one matter; it is not a target, a spec, or a decision.
+
 **Status:** Research memo, not a design doc. Confidence levels stated per claim.
 **Scope:** How to issue a stable `ledger_person_id` at global self-signup, detect/merge duplicates without breaking append-only history, and grade phone/email as identity anchors.
 

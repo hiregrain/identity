@@ -1,5 +1,9 @@
 # Regulatory Perimeter: Global Worker Identity + Work Ledger
 
+**Evidence tier — binds nothing.** Research informs decisions and constrains
+no implementation. A figure here describes what someone else did or what a
+regulator said in one matter; it is not a target, a spec, or a decision.
+
 **Status:** Research memo, not legal advice. Not counsel-reviewed. Confidence
 levels are marked inline. Written 2026-08-17.
 

@@ -1,5 +1,9 @@
 # Prior Art in Portable Credentials and Portable Reputation — Why the Graveyard Is Full
 
+**Evidence tier — binds nothing.** Research informs decisions and constrains
+no implementation. A figure here describes what someone else did or what a
+regulator said in one matter; it is not a target, a spec, or a decision.
+
 **Confidence note:** Sections 1–2 (standards status) are well-evidenced from primary sources (W3C, 1EdTech, EU) and current as of mid-2026. Section 4 (graveyard) mixes documented failures (Klout, LinkedIn Skill Assessments) with cases where I have high but not certain confidence from general knowledge and could not fully verify current status via search (Sovrin, uPort/Bloom, Learning Machine) — flagged inline. Braintrust is confirmed still operating, not dead, which revises a common "graveyard" assumption. Treat section 6 as synthesis/judgment, not fact.
 
 ---

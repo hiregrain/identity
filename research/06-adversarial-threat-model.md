@@ -1,5 +1,9 @@
 # Adversarial Threat Model for a Global Identity + Work Ledger
 
+**Evidence tier — binds nothing.** Research informs decisions and constrains
+no implementation. A figure here describes what someone else did or what a
+regulator said in one matter; it is not a target, a spec, or a decision.
+
 *Research memo — provenance-graded claims (self-asserted / peer-attested / party-attested), worker-visible record, universal self-signup.*
 
 ---

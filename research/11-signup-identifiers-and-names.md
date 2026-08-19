@@ -1,5 +1,9 @@
 # Signup Identifiers (Phone vs. Email) and Name Modeling for a Global Worker-Identity Platform
 
+**Evidence tier — binds nothing.** Research informs decisions and constrains
+no implementation. A figure here describes what someone else did or what a
+regulator said in one matter; it is not a target, a spec, or a decision.
+
 **Status:** Research memo, not a design doc. Confidence stated per claim.
 **Scope:** (A) What identifier major identity/gig platforms require at signup, and how much Sybil resistance a verified phone number actually buys over an email address in 2026. (B) How document standards, IDV vendors, and national ID systems model a person's name, and what field structure a global platform should adopt.
 **Related:** `03-person-id-and-merge.md` (phone/email as merge anchors), `09-idv-vendor-landscape.md` (vendor selection), `06-adversarial-threat-model.md`.

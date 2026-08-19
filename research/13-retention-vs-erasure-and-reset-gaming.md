@@ -1,5 +1,9 @@
 # Retention of AI-System Records Against the Erasure Right; and Reset Gaming
 
+**Evidence tier — binds nothing.** Research informs decisions and constrains
+no implementation. A figure here describes what someone else did or what a
+regulator said in one matter; it is not a target, a spec, or a decision.
+
 **Status:** Research memo, not legal advice. Not counsel-reviewed. Written
 2026-08-18. Companion to `12-deletion-vs-reputation-evasion.md` (which supplies
 the erasure-law baseline this memo builds on), `08-kyc-regulatory-triggers.md`,
