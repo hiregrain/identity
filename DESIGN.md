@@ -8,7 +8,7 @@ sessions unless marked otherwise.
 Companion documents: `THESIS.md` (what the business is and where the seam sits),
 `imprint/README.md` (the imprint's geometry, generator and open items — the source
 of truth for §2), `mark/README.md` (the mark, its size tiers and the pointer —
-the source of truth for §3), `design/01-banned-patterns.md` (the negative space — read it
+the source of truth for §3), `model/record-schema.md` (what every surface renders), `design/01-banned-patterns.md` (the negative space — read it
 before proposing anything), `design/03-design-perspectives.md` (the research-grounded
 argument), `design/04-signature-element-brainstorm.md` (the candidate record).
 
@@ -405,13 +405,13 @@ micro-caption band with the record still readable from cache.
 3. **The display identifier** — whether a human-facing number is shown at all,
    and if so its format. Distinct from the opaque `ledger_person_id`, which is
    permanent and never surfaces. Four formats rendered, none chosen.
-4. **The record schema** — no field list exists anywhere for a work-history row,
-   a skill, or a credential. Every surface in this document renders data that is
-   not yet specified. **Standards settled in decision 028**: W3C Verifiable
-   Credentials 2.0 for the envelope, our own payload, ESCO for `work_kind`.
-   Open Badges 3.0 and 1EdTech CLR rejected as payload — achievement-shaped, and
-   the conferral model is what the thesis attacks. The field list itself is still
-   the next piece of work and blocks every surface below.
+4. ~~The record schema~~ — **proposed 2026-08-18** in
+   [`model/record-schema.md`](model/record-schema.md) (0.1). Objects: `chapter`,
+   `position`, `attestation`, `chapter_standing`, `grant`, `dispute`. No `skill`
+   object — the seven dimensions replace it, because a skill list is a
+   self-asserted claim about capability where a dimension level is an attested
+   claim about work performed. Five open items remain in its §8, including a
+   vocabulary conflict between decision 028 and ratified decision 006.
 5. **The marks enum** — blocking `plans/marks-and-embeds` from going ready.
 6. **Dark mode** — rule defined, never rendered.
 7. **Companion typeface** for non-Latin scripts. Archivo is Latin-only and the
