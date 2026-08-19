@@ -34,17 +34,15 @@
     </div>
     <div class="rule" style="top:62px"></div>
 
-    <!-- What iOS actually leaves a screen: 874 - 62 - 34 -->
+    <!-- No band drawn over the home indicator: that space belongs to the
+         system, and hatching it reads as a boundary the app owns.
+    What iOS actually leaves a screen: 874 - 62 - 34 -->
     <!-- Exactly what iOS leaves, and the app fills it. It used to be a fixed
          360px column centred in 402, which left 42 pt of the display dead. -->
     <div style="position:absolute;top:62px;bottom:34px;left:0;right:0;overflow:hidden">
         <dc-import name="Main" hint-size="100%,100%"></dc-import>
     </div>
 
-    <div class="rule" style="bottom:34px"></div>
-    <div class="inset" style="bottom:0;height:34px">
-      <span class="t-micro" style="color:var(--secondary)">home indicator · 34 pt</span>
-    </div>
 
     <div class="island"></div>
   </div>
