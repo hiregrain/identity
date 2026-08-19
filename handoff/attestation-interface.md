@@ -1,5 +1,12 @@
 # Attestation Interface — schema_version 0.1-proposed
 
+> **SUPERSEDED, 2026-08-18.** This is the handoff copy as Dispatch authored it.
+> The live contract is [`../model/attestation-interface.md`](../model/attestation-interface.md),
+> ratified at 0.2 by decision 006 with amendments A-1..A-5 and resolutions
+> R-1..R-4 applied, and carrying 0.3-proposed amendments since. Nothing here
+> binds. Retained as the dated record of what was handed over, so the
+> ratification diff stays legible.
+
 The contract between the ledger and any vertical attached to it. Authored by
 Dispatch (the first vertical) as `model/attestation.md` in the Dispatch repo;
 **this repo's to ratify, amend, or argue against.** On ratification the ledger
