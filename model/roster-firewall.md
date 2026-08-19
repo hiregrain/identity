@@ -131,10 +131,10 @@ shadow-log promotion gate. A firewall enforced by convention is not a firewall.
 | # | Check | Fails on | Owning layer |
 |---|---|---|---|
 | RF-1 | Plane separation at the schema — roster and ledger tables in separate schemas, **no foreign key from any roster table to `ledger_person_id`** | any such constraint appearing | `foundation` (04 two-plane split, 06 checks port) |
-| RF-2 | Worker initiation required — ingestion validation rejects any attestation with employer-roster provenance lacking a live `verification_request_id`; no write path accepts a roster row as a source of truth | any roster-derived write without the id | `ingestion` (`ingestion` criterion 5) |
+| RF-2 | Worker initiation required — ingestion validation rejects any attestation with employer-roster provenance lacking a live `verification_request_id`; no write path accepts a roster row as a source of truth | any roster-derived write without the id | `ingestion` (criterion 5) |
 | RF-3 | Analytics input allowlist — roster tables are not on it | any addition to the input set | `analytics` |
 | RF-4 | Cross-plane join ban | any query joining a roster table to a ledger table | `foundation` (06 checks port) |
-| RF-5 | Invitation payload schema-constrained to employer identity plus addressing | any worker-specific field | `integration-surface` (`integration-surface` criterion 5) |
+| RF-5 | Invitation payload schema-constrained to employer identity plus addressing | any worker-specific field | `integration-surface` (criterion 6) |
 
 RF-1 and RF-4 are grep-class checks over schema and query text and belong with
 the other repo-metadata checks that run before any database boots
