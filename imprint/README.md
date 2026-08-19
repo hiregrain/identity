@@ -159,13 +159,16 @@ circle" whose portions are career stages, subdivided into ratings-category segme
 "a type of fingerprint."
 
 All three independent claims (1, 15, 18) require **"receiving ratings from the user"** and
-**"receiving input activating a portion."** The imprint does neither: levels come from
-signed third-party attestations, and the figure is generated non-interactively. The
-geometry is also the transpose — SAP's angle is career stage and radius is rating; ours
-is radius = time, angle = dimension. Infringement looks unlikely on several independent
-grounds, but this is not legal advice: the live question for counsel is whether the
-patent family contains broader claims, and whether it is citable prior art against any
-future Grain application.
+**"receiving input activating a portion."** The ratings limb holds: levels come from
+signed third-party attestations. The non-interactivity limb **no longer holds** —
+decision 035's expanded imprint makes the figure interactive (a lobe can
+be activated to reach the evidence beneath it), which is close to the claims' "input
+activating a portion." The geometry remains the transpose — SAP's angle is career stage
+and radius is rating; ours is radius = time, angle = dimension — and that argument and
+the ratings-source argument stand independently. Counsel was briefed on the earlier
+three-limb version and needs the correction (design/09 §7). Not legal advice: the live
+question for counsel is whether the patent family contains broader claims, and whether
+it is citable prior art against any future Grain application.
 
 Aesthetic neighbours worth knowing: **Woolmark** (swept hairlines in a lobed rosette,
 used as a certification mark — the sharpest precedent), **Mercury** (monochrome line-only
