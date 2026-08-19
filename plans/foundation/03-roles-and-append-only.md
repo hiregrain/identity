@@ -11,7 +11,7 @@ binds:
 evidence:
   [
     "log:log/2026-08-19-foundation-03-verification.md",
-    "diff:PR #3 @ 20b7d9cb25ffbf30587e9afc35cfd5cbd38d8a27",
+    "diff:PR #3 @ eef3d59cad502bb8c9a9a4b5e06e5edbb42d7530",
   ]
 verified_by: clean-context-verifier@2026-08-19
 ---

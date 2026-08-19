@@ -135,3 +135,37 @@ untouched by the diff (the fence held).
 
 All mechanical criteria re-run and pass at
 `20b7d9cb25ffbf30587e9afc35cfd5cbd38d8a27`. **PASS.**
+
+## Delta re-verification at review-fix head `eef3d59cad502bb8c9a9a4b5e06e5edbb42d7530`
+
+Two review-fix commits landed after the pass above (`1f3559b`, `eef3d59`).
+Delta re-verified by the same clean-context verifier, 2026-08-19, from a
+fresh clone at `eef3d59`.
+
+- **Diff `20b7d9c..eef3d59` is exactly the review fixes, nothing else.**
+  Three files: `test/append-only.test.mjs` — the grant sweep now includes
+  sequences (relkind `'S'` with the sequence-kind default ACL in the
+  `acldefault` comparison), owner-implicit entries filtered so an owner's
+  legitimate sequence UPDATE never trips it; `Makefile` — red path db 2b, a
+  planted `GRANT UPDATE ON SEQUENCE ... TO identity_app` must fail the test
+  until dropped; `checks/serving-credentials.mjs` — doc comment softened to
+  claim only literal-shape (lexical) detection, naming the database-side
+  role restriction as the enforcement layer. The PR body's criterion-4
+  paragraph carries the matching correction ("lexical lint ... early alarm
+  and not the boundary"). No scope creep.
+- **CI:** run 32303639592 at `eef3d59`, `success`, every job green.
+- **Re-run:** `make check` green from the fresh clone (includes the standing
+  proof, 18 assertions on both planes). `make check-red` — red paths 1–6
+  all fail as required. `make check-red-db` — planted drift, planted table
+  grant, **planted sequence grant (red path 2b, spine)**, and planted
+  mutating SECURITY DEFINER function each fail the check; databases left as
+  found.
+- **Independent sequence probes, on the other plane from the shipped red
+  path:** verifier's own `CREATE SEQUENCE v_seq; GRANT UPDATE ON SEQUENCE
+  v_seq TO identity_app` on **payload** made the test exit 1 ("mutation
+  grants do not equal the exemption list"); dropped, green. An
+  owner-created sequence with its implicit UPDATE, exercised with a real
+  `setval`, did **not** trip the sweep — 18 assertions, exit 0.
+
+**Delta verdict: PASS at `eef3d59cad502bb8c9a9a4b5e06e5edbb42d7530` —
+the merged SHA is the verified SHA.**
