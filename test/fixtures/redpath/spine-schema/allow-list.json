@@ -1,0 +1,46 @@
+{
+  "about": "Red-path fixture (make check-red-db): the real allow-list plus one planted exception, planted_exception.blob. Run against a spine carrying that planted table with the without-justification/ migrations dir, the lint must fail (exception with no justification block); with the with-justification/ dir it must pass. Never used by the green path.",
+  "domains": [
+    {
+      "domain": "spine_object_id",
+      "base": "uuid",
+      "why": "mirror of db/spine-allow-list.json"
+    },
+    {
+      "domain": "spine_commitment",
+      "base": "bytea",
+      "why": "mirror of db/spine-allow-list.json"
+    },
+    {
+      "domain": "spine_ledger_timestamp",
+      "base": "timestamp with time zone",
+      "why": "mirror of db/spine-allow-list.json"
+    }
+  ],
+  "exceptions": [
+    {
+      "table": "schema_migrations",
+      "column": "number",
+      "type": "integer",
+      "migration": "0001-migration-infrastructure"
+    },
+    {
+      "table": "schema_migrations",
+      "column": "name",
+      "type": "text",
+      "migration": "0001-migration-infrastructure"
+    },
+    {
+      "table": "schema_migrations",
+      "column": "applied_at",
+      "type": "timestamp with time zone",
+      "migration": "0001-migration-infrastructure"
+    },
+    {
+      "table": "planted_exception",
+      "column": "blob",
+      "type": "bytea",
+      "migration": "9998-planted-exception"
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "about": "The exhaustive allow-list of permitted spine column types (foundation/04, decision 017). This enumeration IS the definition of what may sit on the spine — 'readable-content type' was never defined, so the boundary is a list, not a description. Every entry is a standing permission, so the list is minimal: exactly the purpose-built domains from 0003-spine-core, each carrying its correlation reasoning in that migration. No bare base type is allowed — a bare uuid, bytea, or timestamptz column must use its domain. Everything else, migration bookkeeping included, is a per-column exception below, and checks/spine-schema.mjs fails any exception whose introducing migration lacks the five-question justification block (format in that check's header). Adding to 'domains' or 'exceptions' is a reviewed edit to a standing permission, never a routine step.",
+  "domains": [
+    {
+      "domain": "spine_object_id",
+      "base": "uuid",
+      "why": "spine object identifiers and payload keys; random by convention (0003-spine-core)"
+    },
+    {
+      "domain": "spine_commitment",
+      "base": "bytea",
+      "why": "opaque cryptographic commitments to content held elsewhere (0003-spine-core)"
+    },
+    {
+      "domain": "spine_ledger_timestamp",
+      "base": "timestamp with time zone",
+      "why": "ledger timestamps; checklist question 2 answered per column (0003-spine-core)"
+    }
+  ],
+  "exceptions": [
+    {
+      "table": "schema_migrations",
+      "column": "number",
+      "type": "integer",
+      "migration": "0001-migration-infrastructure"
+    },
+    {
+      "table": "schema_migrations",
+      "column": "name",
+      "type": "text",
+      "migration": "0001-migration-infrastructure"
+    },
+    {
+      "table": "schema_migrations",
+      "column": "applied_at",
+      "type": "timestamp with time zone",
+      "migration": "0001-migration-infrastructure"
+    }
+  ]
+}

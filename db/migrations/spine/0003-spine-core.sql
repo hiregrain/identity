@@ -1,0 +1,63 @@
+-- 0003-spine-core (foundation/04; decisions 011, 017): the spine's base
+-- column conventions. First file in the spine's own chain
+-- (db/migrations/spine/), number 0003 under the one shared numbering
+-- sequence.
+--
+-- The spine carries ordering and commitments, never content. Every
+-- column type permitted on the spine is enumerated in
+-- db/spine-allow-list.json — the allow-list IS the definition of
+-- "permitted spine column type" (decision 017: "readable-content type"
+-- was never defined, so the boundary is enumerated rather than
+-- described). checks/spine-schema.mjs enforces it against the live
+-- schema. The standing list is exactly the three domains below; every
+-- other column, bookkeeping included, is a per-column exception carrying
+-- a written five-question justification in its migration.
+--
+-- Domains rather than bare types, deliberately: a bare `uuid` or `bytea`
+-- column fails the lint even though its base type underlies a domain
+-- here. Declaring the domain is declaring the purpose, and the
+-- correlation reasoning below attaches to the purpose, not the type.
+
+-- Object-ID domain: the identifier of a spine object, and the key
+-- payload rows use to reference spine objects (0004 declares the
+-- matching domain on the payload plane).
+--
+-- Correlation posture (the foundation/04 checklist, answered for the
+-- domain so columns of it inherit the reasoning):
+--   1 ordering: ids must be random (UUIDv4 by convention). A
+--     time-ordered id (UUIDv7, ULID) would leak enrollment order and
+--     volume; the type cannot enforce the version, so generation sites
+--     are the review point.
+--   2 timestamp-granularity: none — a random id carries no time.
+--   3 external-roster-join: a random id joins to nothing external until
+--     it is disclosed alongside identifying context; disclosure surfaces
+--     are governed above the spine.
+--   4 commitment-salt-reuse: not a commitment; an id is reused across
+--     rows by design — that reuse is the linkage the ledger itself
+--     needs, reviewed per column when one is added.
+--   5 partial-dataset-adversary: an adversary holding an external
+--     dataset learns nothing from the id value itself; joins require a
+--     disclosed mapping.
+CREATE DOMAIN spine_object_id AS uuid;
+
+-- Commitment domain: an opaque cryptographic commitment to content that
+-- lives elsewhere (payload plane, or a party's own records). Opaque by
+-- construction; the lint cannot prove a bytea encodes nothing readable
+-- (decision 017), which is exactly why columns of this domain still face
+-- the five-question review when a migration adds one.
+--
+-- No length CHECK, deliberately: pinning a length would silently pin the
+-- hash algorithm, which no decisions entry has ruled. The layer that
+-- lands the first committing write (trust-kernel) pins the algorithm and
+-- may tighten this domain with ALTER DOMAIN ... ADD CONSTRAINT in its
+-- own migration.
+CREATE DOMAIN spine_commitment AS bytea;
+
+-- Ledger-timestamp domain: the convention for every timestamp the spine
+-- records. Question 2 of the correlation checklist (timestamp
+-- granularity exposing an activity pattern) applies to every column of
+-- this domain; a migration adding one answers it for that column's
+-- semantics. Kept at full timestamptz precision here because the domain
+-- is shared — a column needing coarser granularity coarsens at write
+-- time and records that answer in its justification.
+CREATE DOMAIN spine_ledger_timestamp AS timestamptz;
