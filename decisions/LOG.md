@@ -1238,6 +1238,10 @@ informal and platform work is thin and will need an extension mapped back to it.
 **Design.** Light by default, dark fully supported. Core screen order: imprint,
 outstanding verification, work history, sharing, identity.
 
+*Numbers 029 and 030 were never assigned. They were consumed in the 2026-08-19
+two-checkout collision and lost in the reconciliation (entry 042). The gap is
+permanent; do not fill it.*
+
 ## 031 — Ingestion is worker-initiated; the employer-push shape is withdrawn (2026-08-19)
 
 Ruled while designing the seam between the identity layer and the hospitality
