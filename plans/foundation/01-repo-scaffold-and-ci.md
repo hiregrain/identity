@@ -3,7 +3,7 @@ id: foundation/01
 type: task
 layer: foundation
 satisfies: []
-status: ready
+status: in_progress
 depends_on: []
 evidence: []
 verified_by: null
