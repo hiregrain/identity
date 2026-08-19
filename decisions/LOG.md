@@ -2467,3 +2467,45 @@ the space the plate footer vacated stays with the record.
 **Revisit when a third peer destination exists.** If **Work** lands, the count is
 three, the traffic pattern changes, and this entry should be reopened rather than
 worked around. Scoped to v1 deliberately.
+
+## 049 — Warm ground, cool ink; §9's texture primitives put to work (2026-08-19)
+
+The drawn record read as stale and cold. Diagnosed rather than restyled: roughly
+half of that is the thesis working — no accent, no elevation, square record
+surfaces, hairlines and an institutional voice are what make this an instrument
+rather than a social product, and `DESIGN.md`'s own summary calls it a banknote
+engraver's system. Banknotes are cold deliberately. The other half was ours.
+
+**The grounds were cool, and are now warm. The ink does not move.** `paper`
+`#F5F6F3` and `page` `#E6E6E4` both carried a red-minus-blue of +2 — faintly
+green — which put every surface on the cold side of neutral. They become
+`#F8F5EE` and `#E9E5DE`, at +10. **Ink, `secondary`, `rule` and `hairline` are
+untouched**, so warm paper sits under cool ink, which is what printed paper
+actually looks like. No accent is introduced and the state grammar is unchanged.
+
+**Measured against §12's floors, it costs nothing:** ink on paper 13.25 → 13.20,
+secondary 5.22 → 5.20, `rule` 3.35 → 3.34, `hairline` still pure separation at
+1.33. Every floor holds with the same headroom it had.
+
+**§9's texture primitives were specified and never drawn.** §9 defines dividers
+carrying a faint sine modulation at the figure's own frequency, and a graticule
+ground; the record screen used the plate and nothing else, which is most of why
+it read as bare. Both are now generated — the divider is a real sine at seven
+lobes, the figure's own frequency, emitted by `gen.py` rather than approximated
+in CSS — and the graticule sits under the figure inside the plate frame at low
+opacity. Nothing new was invented: this is the vocabulary the system already
+had, finally used.
+
+**The demo record stays sparse, deliberately.** It draws eight threads because
+two of its five chapters are unattested, and the founder declined to enrich it:
+a typical worker's record *is* thin, and designing against the best case is how
+a product lies to itself about what it will feel like in a stranger's hand. The
+figure looking faint here is the encoding telling the truth, and the fix for that
+is more attestation, not a better demo.
+
+**Not addressed here, and still open.** The record has no moment that
+acknowledges the person — §10's celebration economy fires on the seat and on an
+attestation landing, and the record at rest has none of it. And `design/07`
+counted 73 of 117 register applications at 12px or smaller, which is why the page
+reads as a form rather than a document. Both are live causes of the same
+complaint.
