@@ -2288,3 +2288,44 @@ from the product precisely because it cannot express hairline mode, so those
 artboards are not evidence about the imprint and are recorded as such. The
 CanvasKit harness built for this entry is the venue for the next imprint
 question; it is a scratch tool and is not committed.
+
+## 045 — Sharing becomes a destination; the plate footer leaves the record (2026-08-19)
+
+Two founder rulings from reviewing the drawn record screen, both amending
+earlier entries.
+
+**Sharing is its own destination, superseding 035's fourth core-screen slot.**
+035 put sharing on the record as its fourth section, below identity, outstanding
+verification and work history. Drawn, that puts the one surface where worker
+custody is actually exercised at the bottom of a scroll, which is where a
+product puts things that do not matter. It becomes a destination reached from
+the record's header, and it owns what the section could not hold: the public
+page and what it shows, visibility, live grants and their expiry, and
+revocation. The founder's words: *does not belong with the record, buried.*
+
+**Consequences.** The record's header gains a second control beside the menu,
+and the `Public page on · N parties hold a grant` readout under the figure
+becomes the link into the destination rather than an anchor to a section
+below. The employer grant view (`DESIGN.md` gap 8) and the two-tier share model
+(gap 13) now have somewhere to live; neither is drawn.
+
+**The plate footer is removed from the record surface, amending `DESIGN.md`
+§9.** §9 gives the plate a footer carrying append-only status, drawn as
+`47 entries · last 12 Aug 2026`. Raised against removal on the ground that it is
+the only surface making *nothing can be deleted* checkable rather than a claim,
+and the founder reaffirmed: the bar is not earning a permanent 26px band across
+every record screen, and the app needs that room for ordinary navigation
+chrome.
+
+**Append-only status is relocated, not dropped.** It moves to the account
+surface, which decision 036 already made read-only and support-mediated. The
+guarantee stays findable and stops being decoration; what is lost is its
+constant presence, and that loss is the point of this entry rather than an
+oversight. A record that cannot show what it refuses to delete is a weaker
+object, and this entry says so plainly rather than pretending the move is free.
+
+**Not settled here.** What replaces the band. "Traditional app UI components"
+names a direction — a bottom navigation bar — and this repo has never decided
+whether the worker app has one, what destinations it carries, or how that
+squares with 035's single-scroll record. That is the next decision, and drawing
+a tab bar before it is made would be the failure `CLAUDE.md` describes.
