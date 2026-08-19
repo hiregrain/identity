@@ -3,13 +3,17 @@ id: foundation/03
 type: task
 layer: foundation
 satisfies: [1]
-status: in_progress
+status: done
 depends_on: [foundation/02]
 migrations: [0002-roles-and-default-privileges]
 binds:
   - decisions/LOG.md#005
-evidence: []
-verified_by: null
+evidence:
+  [
+    "log:log/2026-08-19-foundation-03-verification.md",
+    "diff:PR #3 @ 20b7d9cb25ffbf30587e9afc35cfd5cbd38d8a27",
+  ]
+verified_by: clean-context-verifier@2026-08-19
 ---
 
 # Roles and append-only enforcement
