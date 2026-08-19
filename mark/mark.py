@@ -27,6 +27,12 @@ BANDS = (                       # (mid radius, amplitude, sweep direction)
     (264.0, 30.0, +1),
 )
 PITCH_RATIO = 2.2               # thread pitch must exceed stroke by this factor or they fuse
+SWEEP_PERIODS = 2               # how many lobe periods delta sweeps. The family's radial
+                                # spread is 2*a*sin(m*pi/k): at m=1 that is only 0.87a, which
+                                # is why the weave looked thin. m=2 gives 1.56a — nearly twice
+                                # the thread count — and the lobed silhouette still survives.
+                                # A full 2*pi sweep gives the densest weave and destroys the
+                                # lobes completely; it is a circle. Do not go there.
 
 # The deliberate irregularity. One lobe deepened, at a fixed angle, so the mark has a
 # describable feature to police and an unambiguous top. Set BREAK_AMOUNT to 0 to disable.
@@ -55,11 +61,13 @@ def contour(R, amp, phase=0.0, broken=False, samples=560, t0=0.0, t1=TAU):
 def threads(R, amp, direction, weight, broken=False, pitch=PITCH_RATIO):
     """Threads at a pitch that actually separates them. Returns None if it cannot:
     the caller falls back to a single contour rather than drawing mush."""
-    n = int(2.0 * amp * math.sin(math.pi / LOBES) / (pitch * weight))
+    span = SWEEP_PERIODS * TAU / LOBES
+    spread = 2.0 * amp * math.sin(min(SWEEP_PERIODS * math.pi / LOBES, math.pi / 2))
+    n = int(spread / (pitch * weight))
     if n < 3:
         return None
     return "".join(
-        "<path d='%s'/>" % contour(R, amp, direction * i * (TAU / LOBES) / n, broken)
+        "<path d='%s'/>" % contour(R, amp, direction * i * span / n, broken)
         for i in range(n)
     )
 
@@ -74,7 +82,7 @@ def stroke_for(px, base=1.0):
 # identity; the threading is only its finish. Dropping a band to buy a size is
 # what makes the mark unrecognisable, and it was the wrong order.
 
-WEAVE_MIN_PX = 150   # below this the pitch rule cannot separate threads on every
+WEAVE_MIN_PX = 96    # below this the pitch rule cannot separate threads on every
                      # band — computed, not chosen; see README section 3
 SOLID_MAX_PX = 23    # below this line art has nothing to hold
 
@@ -199,7 +207,22 @@ def lockup(mark_px, dark=False, font_family="Archivo"):
                  fg, WORDMARK["text"])
 
 
-def lockup_svg(mark_px, dark=False, font_css="", pad=None):
+def wordmark_svg(cap_px, font_css="", pad=None):
+    """The wordmark alone. cap_px is cap height; padding is one cap height."""
+    fs = cap_px / CAP_RATIO
+    pad = cap_px if pad is None else pad
+    w = fs * 4.45 + pad * 2
+    h = cap_px + pad * 2
+    return ("<svg xmlns='http://www.w3.org/2000/svg' width='%.0f' height='%.0f' viewBox='0 0 %.0f %.0f'>"
+            "<defs><style>%s</style></defs>"
+            "<text x='%.2f' y='%.2f' font-family='Archivo' font-size='%.2f' font-weight='%d' "
+            "font-stretch='%d%%' letter-spacing='%.2f' fill='%s'>%s</text></svg>"
+            ) % (w, h, w, h, font_css, pad, pad + cap_px, fs,
+                 WORDMARK["weight"], WORDMARK["stretch"], fs * WORDMARK["tracking"],
+                 INK, WORDMARK["text"])
+
+
+def lockup_svg(mark_px, dark=False, font_css="", pad=None, background=True):
     """A complete standalone lockup SVG. font_css should carry an @font-face for
     Archivo; without it the file renders in a fallback face."""
     cap = mark_px / MARK_RATIO
@@ -208,8 +231,10 @@ def lockup_svg(mark_px, dark=False, font_css="", pad=None):
     pad = cap * CLEAR_SPACE if pad is None else pad
     w = mark_px + gap + fs * 4.45 + pad * 2      # calibrated: "GRAIN" advances 4.414em at +9% tracking
     h = mark_px + pad * 2
-    bg = INK if dark else PAPER
+    rect = ""
+    if background:
+        rect = "<rect width='%.0f' height='%.0f' fill='%s'/>" % (w, h, INK if dark else PAPER)
     return ("<svg xmlns='http://www.w3.org/2000/svg' width='%.0f' height='%.0f' viewBox='0 0 %.0f %.0f'>"
-            "<defs><style>%s</style></defs><rect width='%.0f' height='%.0f' fill='%s'/>"
+            "<defs><style>%s</style></defs>%s"
             "<g transform='translate(%.2f,%.2f)'>%s</g></svg>"
-            ) % (w, h, w, h, font_css, w, h, bg, pad, pad, lockup(mark_px, dark))
+            ) % (w, h, w, h, font_css, rect, pad, pad, lockup(mark_px, dark))

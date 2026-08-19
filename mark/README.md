@@ -26,9 +26,18 @@ direction alternating. **The band widths are deliberately unequal** — that is 
 makes the figure read as a record rather than an ornament, and it is the first
 thing to preserve under any change.
 
-`delta_i` sweeps one lobe period across the pass count. Thread pitch must exceed
-the stroke by ~2.2× or the threads fuse into a solid ribbon; the pass count is
-derived from that constraint rather than chosen.
+`delta_i` sweeps **two lobe periods** (`SWEEP_PERIODS = 2`). Thread pitch must
+exceed the stroke by ~2.2× or the threads fuse; the pass count is derived from
+that constraint rather than chosen.
+
+**The sweep range is what governs thread density, and it is not obvious.** The
+family's radial spread is `2·a·sin(m·π/k)` for a sweep of *m* lobe periods. At
+m = 1 that is only **0.87 a** — the thread zone is 3–6% of the mark's box, and even
+at 512px you get 7/13/10 threads, which is why the weave looked thin. At m = 2 it
+is **1.56 a**, nearly doubling the count to 14/25/19, and the seven-lobe silhouette
+survives. A **full 2π sweep** maximises the weave at 62–82 threads and **destroys
+the lobes entirely — the mark renders as plain circles.** Do not go there; it was
+tested.
 
 **The deliberate break.** One lobe is deepened ~42% at a fixed angle. Two reasons,
 both practical: it gives the mark an unambiguous top, and it converts "a
@@ -68,11 +77,12 @@ most used. That was the wrong order.
 
 | Tier | Range | What it is |
 |---|---|---|
-| `tier_full` | ≥ 150px | three threaded bands |
-| `tier_contour` | 24–149 | three bands, one contour each, no weave |
+| `tier_full` | ≥ 96px | three threaded bands |
+| `tier_contour` | 24–95 | three bands, one contour each, no weave |
 | `tier_solid` | ≤ 23 | solid body, counter knocked out |
 
-**Why 150.** The pitch rule needs `2·a·sin(π/7) / n ≥ 2.2 × stroke`. Computing
+**Why 96.** With the two-period sweep the spread is 1.56 a rather than 0.87 a, so
+the threshold moved down from 150. The pitch rule needs `2·a·sin(π/7) / n ≥ 2.2 × stroke`. Computing
 pitch-to-stroke per band across sizes: at 200px the ratios are 3.2 / 2.3 / 2.9 —
 threads separate. At 80px they are 1.3 / 2.3 / 1.7, and at 54px 0.7 / 1.4 / 1.0 —
 the threads have merged into solid ribbons. **150px is where all three bands still
@@ -199,6 +209,20 @@ These are recorded with their reasons so they are not "improved" later.
   right; whether it survives in the imprint is unresolved. See
   [`../imprint/README.md`](../imprint/README.md) §7.
 - **The wordmark** and its lockup with the mark — `DESIGN.md` §4, still open.
+
+## 6a. The three deliverables
+
+Generated at the root of `mark/`, full detail, one file each — never bundled:
+
+| File | What it is |
+|---|---|
+| `grain-mark.svg` | the mark alone, 1024px, 58 threads, no background |
+| `grain-lockup.svg` | mark plus wordmark, 55 threads, clear space one cap height |
+| `grain-wordmark.svg` | the wordmark alone, Archivo embedded so it renders standalone |
+
+The lockup file is deliberately wide — clear space is one cap height on each side,
+so most of the canvas is intentional whitespace and it will not preview well in a
+square thumbnailer.
 
 ## 7. Running it
 

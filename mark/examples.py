@@ -18,6 +18,21 @@ if __name__ == "__main__":
     # the pointer
     w("pointer-16.svg", M.svg(M.pointer(16), 16, background=False))
     w("pointer-24.svg", M.svg(M.pointer(24), 24, background=False))
+    # ---- primary deliverables: full detail, one file each, at the repo root of mark/
+    import base64 as _b64
+    _fp = os.path.join(os.path.dirname(os.path.abspath(__file__)), "archivo.woff2")
+    _css = ""
+    if os.path.exists(_fp):
+        _b = _b64.b64encode(open(_fp, "rb").read()).decode()
+        _css = ("@font-face{font-family:'Archivo';src:url(data:font/woff2;base64,%s) "
+                "format('woff2');font-weight:100 900;font-stretch:62%% 125%%;}" % _b)
+    root = os.path.dirname(os.path.abspath(__file__))
+    open(os.path.join(root, "grain-mark.svg"), "w").write(
+        M.svg(M.tier_full(1024), 1024, background=False))
+    open(os.path.join(root, "grain-wordmark.svg"), "w").write(M.wordmark_svg(200, _css))
+    open(os.path.join(root, "grain-lockup.svg"), "w").write(
+        M.lockup_svg(520, font_css=_css, background=False))
+
     # lockups. Archivo is supplied by the consuming surface; if a woff2 is present
     # at mark/archivo.woff2 it is embedded so the file renders standalone.
     import base64
