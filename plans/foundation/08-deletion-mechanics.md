@@ -3,7 +3,7 @@ id: foundation/08
 type: task
 layer: foundation
 satisfies: [6, 7]
-status: ready
+status: in_progress
 depends_on: [foundation/05, foundation/07]
 migrations: [0021-deletion-journal]
 binds: [decisions/LOG.md#017, decisions/LOG.md#014, design/ledger-design-0.1.md#2.5]
