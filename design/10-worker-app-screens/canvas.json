@@ -14,7 +14,7 @@
     },
     {
       "id": "page-4",
-      "name": "How native"
+      "name": "How native \u2014 settled"
     }
   ],
   "artboards": [
@@ -265,7 +265,7 @@
       "x": 0,
       "y": -340,
       "w": 1240,
-      "text": "One screen, three component grammars, so the question is decided against pixels rather than in the abstract. Handle is the only real form in the app, which makes it the honest test.\n\nPalette is held constant at Grain's ink and paper in all three. Material's own baseline colours would decide the comparison before anyone looked at a component, and the thing under judgement is FORM.\n\nAll three run the identical logic \u2014 the same transliteration, the same validation \u2014 sliced from the shipped screen. Only the components differ."
+      "text": "SETTLED \u2014 decision 047. A wins: the component language stays Grain's own on iOS and Android alike. Material and HIG components are not adopted, because a record that renders differently per operating system is what \u00a75 exists to prevent.\n\nThese three stay as the record of HOW that was decided, not as screens to build. They should not be re-litigated without a superseding entry.\n\nOne screen, three component grammars, identical logic sliced from the shipped Handle and an identical palette \u2014 so the comparison isolated form and nothing else.\n\nWhat the decision owes, and 047 makes it an obligation rather than a hope: platform MECHANICS in full (safe areas, back and the gesture zones, 200% font scaling, screen-reader order, haptics named per platform, deep links); placement and behaviour conventional even where form is not; and anything tappable reading as tappable without motion or colour, which is the harder half of having neither. Nobody in the target population has been put in front of these screens, so 'intuitive' is an assertion and 047 records it as one."
     },
     {
       "id": "n-native-a",
@@ -273,7 +273,7 @@
       "x": 0,
       "y": 860,
       "w": 360,
-      "text": "A \u00b7 Grain-native. This is the shipped screen, mounted rather than copied so the baseline cannot drift.\n\nFor: the record is an instrument and reads as one; one language on both platforms; \u00a75's rule that nobody themes states holds by construction.\n\nAgainst: a ruled line is not what a worker's other apps taught them an input is. Nothing here signals tappable by the conventions the population already knows, and 'highly intuitive' is the requirement."
+      "text": "A \u00b7 Grain-native \u2014 CHOSEN (047). This is the shipped screen, mounted rather than copied so the baseline cannot drift.\n\nFor: the record is an instrument and reads as one; one language on both platforms; \u00a75's rule that nobody themes states holds by construction.\n\nAgainst, and it is the cost now owed: a ruled line is not what a worker's other apps taught them an input is. At rest it looks like a rule. 047 turns that into work \u2014 tappable must read as tappable without motion or colour \u2014 rather than letting the win settle the objection."
     },
     {
       "id": "n-native-b",
@@ -281,7 +281,7 @@
       "x": 440,
       "y": 860,
       "w": 360,
-      "text": "B \u00b7 Platform-native, Material 3.\n\nFor: instantly legible to an Android user. The filled field, the floating label, the chip and the pill button are the shapes their phone has trained them on. Lowest learning cost of the three.\n\nAgainst, and it is specific: the filled field is a CONTAINER, which \u00a78 deletes and whose boxed fields it says do not exist; the pill is 100px radius against \u00a77's 3px; the type is the system face against \u00a76's single family; and M3 carries error in colour, which \u00a75 forbids \u2014 faked here with weight, which is not what Material does. Adopting this means the record renders differently per operating system, which is the thing \u00a75 exists to prevent."
+      "text": "B \u00b7 Platform-native, Material 3 \u2014 NOT ADOPTED (047).\n\n\nFor: instantly legible to an Android user. The filled field, the floating label, the chip and the pill button are the shapes their phone has trained them on. Lowest learning cost of the three.\n\nAgainst, and it is specific: the filled field is a CONTAINER, which \u00a78 deletes and whose boxed fields it says do not exist; the pill is 100px radius against \u00a77's 3px; the type is the system face against \u00a76's single family; and M3 carries error in colour, which \u00a75 forbids \u2014 faked here with weight, which is not what Material does. Adopting this means the record renders differently per operating system, which is the thing \u00a75 exists to prevent."
     },
     {
       "id": "n-native-c",
@@ -289,7 +289,7 @@
       "x": 880,
       "y": 860,
       "w": 360,
-      "text": "C \u00b7 Split \u2014 platform chrome, Grain content.\n\nFor: navigation and commit feel ordinary while everything carrying the record keeps the ruled input, Archivo and error in ink. Familiarity where familiarity pays, instrument where evidence lives.\n\nAgainst: the seam has to be defended case by case, and 'chrome' has no definition yet. Is a consent sheet chrome or record? A dispute form? Without a rule this becomes drift wearing a decision's clothes \u2014 which is exactly what entry 046 left open."
+      "text": "C \u00b7 Split \u2014 NOT ADOPTED (047).\n\n\nFor: navigation and commit feel ordinary while everything carrying the record keeps the ruled input, Archivo and error in ink. Familiarity where familiarity pays, instrument where evidence lives.\n\nAgainst: the seam has to be defended case by case, and 'chrome' has no definition yet. Is a consent sheet chrome or record? A dispute form? Without a rule this becomes drift wearing a decision's clothes \u2014 which is exactly what entry 046 left open."
     }
   ],
   "launch": {
