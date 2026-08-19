@@ -2,7 +2,7 @@
 id: foundation/04
 type: task
 layer: foundation
-satisfies: [3, 4]
+satisfies: [3, 4, 8]
 status: ready
 depends_on: [foundation/03]
 migrations: [0003-spine-core, 0004-payload-us-bootstrap]
