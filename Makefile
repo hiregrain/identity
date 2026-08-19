@@ -130,7 +130,19 @@ db-down:
 # check-red-db below.
 check-red:
 	@echo "red path 1: broken plan file fails the metadata check (no database)"
-	! node checks/frontmatter.mjs test/fixtures/redpath/plans
+	! node checks/frontmatter.mjs test/fixtures/redpath/plans > /tmp/frontmatter-red.out 2>&1
+	@echo "red path 1b: every foundation/06 validation is individually proven to fire (an aggregate exit code proves only the oldest rule)"
+	grep -F 'status "shipped" is outside the ORDER.md vocabulary' /tmp/frontmatter-red.out
+	grep -F 'id "broken-layer/99" does not match its path-derived id' /tmp/frontmatter-red.out
+	grep -F 'layer "other-layer" does not match its directory' /tmp/frontmatter-red.out
+	grep -F 'field "priority" is outside the ORDER.md vocabulary for a task' /tmp/frontmatter-red.out
+	grep -F 'depends_on entry "not a ref" is not a <layer>/<NN> reference' /tmp/frontmatter-red.out
+	grep -F 'satisfies entry "first" is not a criterion number' /tmp/frontmatter-red.out
+	grep -F 'evidence entry "screenshot:proof.png" is not <kind>:<ref>' /tmp/frontmatter-red.out
+	grep -F 'verified_by "someone, probably" is neither null nor' /tmp/frontmatter-red.out
+	grep -F 'status done with empty evidence' /tmp/frontmatter-red.out
+	grep -F 'status done with verified_by null' /tmp/frontmatter-red.out
+	rm /tmp/frontmatter-red.out
 	@echo "red path 2: misformatted Go file fails gofmt"
 	@unformatted="$$(gofmt -l test/fixtures/redpath/go)"; \
 	if [ -z "$$unformatted" ]; then echo "fixture unexpectedly clean"; exit 1; fi; \
@@ -217,4 +229,9 @@ check-red-db:
 	! node checks/scored-columns.mjs
 	echo "DROP TABLE planted_judgment;" | $(PSQL_PAYLOAD) -f -
 	node checks/scored-columns.mjs
+	@echo "green path db: the runner's --schema group and bare form both work while the databases are up, and the bare run prints the frontier exactly once"
+	node checks/run.mjs --schema
+	node checks/run.mjs > /tmp/run-bare.out
+	test "$$(grep -c '^frontier (' /tmp/run-bare.out)" = "1"
+	rm /tmp/run-bare.out
 	@echo "check-red-db: planted violations fail as required and the databases are left as found"
