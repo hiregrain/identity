@@ -150,12 +150,40 @@ jobs:
       - run: make envelope-test
       - run: make db-down
 
+  # The cross-plane write consistency scenarios (foundation/07). Boots
+  # its own Postgres pair — per this file's header, no job can reach
+  # db-migrate's — because the worker binary needs Go and the scenarios
+  # need both live planes, which db-migrate's toolchain does not carry.
+  # `needs: [db-migrate]` is ordering only: schema problems fail there
+  # first, with the cheaper checks.
+  outbox:
+    name: cross-plane outbox scenarios
+    needs: [db-migrate]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5.6.0
+        with:
+          go-version-file: core/go.mod
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 24
+      - run: make db-up
+      - run: make migrate
+      # The FDW/dblink ban, live half: no cross-database construct in
+      # either live database (the file half runs in metadata).
+      - run: make cross-plane-constructs
+      # The worker driven through its kill points, manual replay, the
+      # reconciler, and the stalled-payload acknowledgment proof.
+      - run: make cross-plane-outbox
+      - run: make db-down
+
   # Fan-in: the one status branch protection marks required, so every
   # stage above is required transitively.
   all-green:
     name: all stages green
     if: always()
-    needs: [metadata, red-paths, lint, db-migrate, go, ts, envelope]
+    needs: [metadata, red-paths, lint, db-migrate, go, ts, envelope, outbox]
     runs-on: ubuntu-latest
     steps:
       - run: |

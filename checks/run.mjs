@@ -32,6 +32,7 @@ const METADATA = [
   "counts",
   "serving-credentials",
   "cross-schema-queries",
+  "cross-plane-constructs",
 ];
 const SCHEMA = ["spine-schema", "payload-residency", "scored-columns"];
 

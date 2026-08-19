@@ -12,9 +12,9 @@ PSQL_PAYLOAD := $(COMPOSE) exec -T payload psql -v ON_ERROR_STOP=1 -U identity -
 DUMP_SPINE := $(COMPOSE) exec -T spine pg_dump --schema-only --restrict-key=dump -U identity spine
 DUMP_PAYLOAD := $(COMPOSE) exec -T payload pg_dump --schema-only --restrict-key=dump -U identity payload
 
-.PHONY: check check-red check-red-db metadata install lint fmt-check go-check ts-check db-up db-reset migrate migrate-verify typegen typegen-check append-only spine-schema payload-residency scored-columns two-plane-split envelope-test db-down
+.PHONY: check check-red check-red-db metadata install lint fmt-check go-check ts-check db-up db-reset migrate migrate-verify typegen typegen-check append-only spine-schema payload-residency scored-columns two-plane-split envelope-test cross-plane-constructs cross-plane-outbox db-down
 
-check: metadata install lint go-check db-up migrate-verify typegen-check append-only spine-schema payload-residency scored-columns two-plane-split envelope-test ts-check
+check: metadata install lint go-check db-up migrate-verify typegen-check append-only spine-schema payload-residency scored-columns two-plane-split envelope-test cross-plane-constructs cross-plane-outbox ts-check
 	$(COMPOSE) down
 	@echo "check: green"
 
@@ -131,6 +131,20 @@ envelope-test:
 	cd core && GRAIN_KEY_PROVIDER=software go test -tags db -count=1 ./envelope/...
 	cd core && GRAIN_KEY_PROVIDER=stub-kms go test -tags db -count=1 ./envelope/...
 
+# The FDW/dblink ban, live half (foundation/07): no cross-database
+# construct in either live database. The file half runs in `metadata`.
+cross-plane-constructs:
+	node checks/cross-plane-constructs.mjs --live
+
+# The cross-plane write consistency scenarios (foundation/07): the
+# spine-first outbox worker driven through its kill points, manual
+# replay, the reconciler (its documented alert threshold is 60 seconds;
+# the scenarios pass -threshold 0 to make stragglers immediate), and
+# the stalled-payload acknowledgment proof. Builds core/cmd/outbox, so
+# it needs Go as well as both migrated planes.
+cross-plane-outbox:
+	node test/cross-plane-outbox.test.mjs
+
 db-down:
 	$(COMPOSE) down
 
@@ -188,6 +202,8 @@ check-red:
 	node checks/verbatim-copies.mjs test/fixtures/greenpath/verbatim
 	@echo "red path 11: a hand-written count adjacent to an enumerable structure fails the counts check (no database)"
 	! node checks/counts.mjs test/fixtures/redpath/counts
+	@echo "red path 12: a planted FDW migration fails the cross-plane construct check (no database)"
+	! node checks/cross-plane-constructs.mjs test/fixtures/redpath/cross-plane-constructs
 	@echo "check-red: all red paths fail as required"
 
 # Database-dependent red path: a schema edit without regenerated types
@@ -244,4 +260,13 @@ check-red-db:
 	node checks/run.mjs > /tmp/run-bare.out
 	test "$$(grep -c '^frontier (' /tmp/run-bare.out)" = "1"
 	rm /tmp/run-bare.out
+	@echo "red path db 9: a cross-database extension created live fails the cross-plane construct check"
+	echo "CREATE EXTENSION postgres_fdw;" | $(PSQL_SPINE) -f -
+	! node checks/cross-plane-constructs.mjs --live
+	echo "DROP EXTENSION postgres_fdw;" | $(PSQL_SPINE) -f -
+	@echo "red path db 9b: a foreign server on the OTHER plane also fails it (the catalog net, not just the extension list)"
+	echo "CREATE EXTENSION postgres_fdw; CREATE SERVER planted_server FOREIGN DATA WRAPPER postgres_fdw;" | $(PSQL_PAYLOAD) -f -
+	! node checks/cross-plane-constructs.mjs --live
+	echo "DROP SERVER planted_server; DROP EXTENSION postgres_fdw;" | $(PSQL_PAYLOAD) -f -
+	node checks/cross-plane-constructs.mjs --live
 	@echo "check-red-db: planted violations fail as required and the databases are left as found"

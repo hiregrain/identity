@@ -2422,3 +2422,48 @@ else, and this entry makes that an obligation rather than a hope:
 **Kept as evidence, not as work.** The three variants stay on the canvas under a
 page marked settled. They are the record of how this was decided and should not
 be re-litigated without a superseding entry; they are not screens to build.
+
+## 048 — No bottom navigation in v1; the masthead stops implying one (2026-08-19)
+
+Closes the item 045 left open when the plate footer was removed: what replaces
+the band, and whether the worker app has a bottom navigation bar.
+
+**It does not, in v1.** Not on system grounds — a tab bar is placement and
+behaviour rather than an imported component, so 047 permits one drawn in Grain's
+own language, and it would not hit the Android back-gesture conflict that killed
+the section index, which was an edge-anchored control inside the ~24 dp side
+strip rather than a horizontal band above the navigation inset. It is refused on
+arithmetic and on traffic.
+
+**The destination count is two, not five.** `Expanded` is a pushed detail view
+reached from the figure, which a tab bar does not carry. `Account` is settings,
+and settings is behind a menu in every convention worth following because it is
+visited twice a year. `Public` is a preview of something else. What remains are
+**the record and sharing**. gap 14 reserves a third, **Work**, which 035 put out
+of v1. A two-destination tab bar is a segmented control given a permanent band.
+
+**The cost, measured on the binding device.** Android leaves 728 dp of safe box.
+A 56 dp tab bar on top of the 52 dp masthead is **108 dp of app chrome, and
+180 dp of 800 — 22% of the display — before any record shows**. The record's hero
+is a 320 dp figure, so figure plus masthead plus tab bar is 428 of 728, leaving
+300 dp for outstanding verification and work history together: the sections the
+product exists for, squeezed to buy navigation between two places. On iPhone 17
+the same bar costs 6.7% of remaining content height, on Android 8.3%.
+
+**Tabs are paid for by switching, and there is none here.** A worker opens Grain
+to look at their record. Sharing is reached when somebody asks them for it, which
+is rare and always prompted from outside the app. Permanent chrome for rare
+traffic is the trade a tab bar is worst at. Adding one would also partially
+reverse 035's deliberate single-scroll record, for no reason that arose tonight —
+sharing leaving the scroll (045) *reduced* what the record holds.
+
+**What was actually wrong is the masthead lying.** Its right-hand control is a
+hamburger, which is the universal glyph for *a menu of places to go*, and it
+opens one screen. That is why a bar carrying no navigation reads as a navigation
+bar that does nothing. **The glyph becomes an account glyph and stops implying a
+menu.** The record is the app; sharing and account are reached from the masthead;
+the space the plate footer vacated stays with the record.
+
+**Revisit when a third peer destination exists.** If **Work** lands, the count is
+three, the traffic pattern changes, and this entry should be reopened rather than
+worked around. Scoped to v1 deliberately.

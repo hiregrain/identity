@@ -24,8 +24,10 @@
   <div class="body"></div>
 
   <div class="screen">
-    <!-- 24 dp status bar; 48 dp three-button navigation, the larger of the two
-         navigation modes and the one still shipped and still chosen. -->
+    <!-- Status bar only. Nothing is drawn over the navigation band: that
+         space is the system's, and a box on it reads as the app's edge.
+         48 dp is still reserved below — three-button nav, the larger of the
+         two modes and the one still shipped and still chosen. -->
     <div class="zone" style="top:0;height:24px">
       <span class="t-micro" style="color:var(--secondary)">status bar · 24 dp</span>
     </div>
@@ -34,9 +36,6 @@
       <dc-import name="Main" hint-size="100%,100%"></dc-import>
     </div>
 
-    <div class="zone" style="bottom:0;height:48px">
-      <span class="t-micro" style="color:var(--secondary)">navigation · 48 dp</span>
-    </div>
     <div class="punch"></div>
   </div>
 

@@ -8,9 +8,8 @@ depends_on: [foundation/04]
 migrations: [0020-cross-plane-outbox]
 binds: [decisions/LOG.md#011, decisions/LOG.md#017, decisions/LOG.md#005]
 evidence:
-  - log/2026-08-19-foundation-07-verification.md
-  - https://github.com/hiregrain/identity/pull/7
-  - https://github.com/hiregrain/identity/actions/runs/32308828505
+  - "log:log/2026-08-19-foundation-07-verification.md"
+  - "diff:PR #7 @ ad2ad82ab1f6f824691ec5c4f6bb6491c7a7be57"
 verified_by: clean-context-verifier@2026-08-19
 ---
 

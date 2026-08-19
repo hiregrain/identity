@@ -33,10 +33,13 @@
   </style>
 </helmet>
 
-<!-- Fluid width so it fills whatever display it is given; height is the common
-     safe box across iOS (778) and Android (728), which is 728. height:100% was
-     tried and collapses to zero wherever no ancestor is sized. -->
-<div style="width:100%;height:728px;position:relative;overflow:hidden;background:var(--paper)">
+<!-- Fluid in both axes: the record fills whatever safe area it is given. A fixed
+     728 left the plate's bottom registration corners hanging 50pt above the
+     screen on iOS, which reads as a stray corner rather than the plate's edge.
+     min-height carries the standalone case, where height:100% has no sized
+     ancestor to resolve against and would collapse to zero. -->
+<div style="width:100%;height:100%;min-height:728px;position:relative;overflow:hidden;
+            background:var(--paper)">
   <!-- §9 the plate. It marks the record; no other surface carries it. -->
   <div class="plate">
     <div class="reg" style="top:7px;left:7px;border-top-width:1px;border-left-width:1px"></div>
@@ -62,17 +65,22 @@
       <button class="press" aria-label="{{ shareLabel }}" onClick="{{ openSharing }}"
               style="min-height:44px;display:flex;align-items:center;gap:7px;
                      padding:0 10px;margin-right:2px">
-        <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="var(--ink)"
-             stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <svg width="19" height="19" viewBox="0 0 20 20" fill="none" stroke="var(--ink)"
+             stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M10 13 L10 3"/><path d="M6.5 6.5 L10 3 L13.5 6.5"/>
           <path d="M4 11 L4 17 L16 17 L16 11"/>
         </svg>
         <span class="t-data" style="font-size:13px">{{ shareCount }}</span>
       </button>
+      <!-- An account glyph, not a hamburger. The hamburger is the universal sign
+           for a menu of places to go, and this opens one screen — a bar carrying
+           no navigation read as a navigation bar that did nothing (048). -->
       <button class="press" aria-label="Account and settings" onClick="{{ openSettings }}"
               style="width:44px;height:44px;display:flex;align-items:center;justify-content:flex-end">
-        <svg width="20" height="20" viewBox="0 0 20 20" class="icon">
-          <path d="M2 5 L18 5"/><path d="M2 10 L13 10"/><path d="M2 15 L18 15"/>
+        <svg width="19" height="19" viewBox="0 0 20 20" fill="none" stroke="var(--ink)"
+             stroke-width="1.2" stroke-linecap="round">
+          <circle cx="10" cy="7" r="3.1"/>
+          <path d="M3.8 17 C3.8 13.4 6.6 11.6 10 11.6 C13.4 11.6 16.2 13.4 16.2 17"/>
         </svg>
       </button>
     </span>
@@ -94,6 +102,20 @@
         </div>
       </div>
 
+      <!-- The figure says it opens by carrying a corner affordance, not by a
+           sentence underneath it. 44px target, offset so it never sits on the
+           drawing. -->
+      <div style="position:relative;max-width:320px;margin-inline:auto">
+      <button class="press" aria-label="Open your imprint at full size"
+              onClick="{{ openImprint }}"
+              style="position:absolute;top:0;right:0;width:44px;height:44px;display:flex;
+                     align-items:center;justify-content:center;z-index:2">
+        <svg width="17" height="17" viewBox="0 0 20 20" fill="none" stroke="var(--ink)"
+             stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3 L17 3 L17 8"/><path d="M8 17 L3 17 L3 12"/>
+          <path d="M17 3 L11.5 8.5"/><path d="M3 17 L8.5 11.5"/>
+        </svg>
+      </button>
       <svg class="fig" viewBox="0 0 600 600" role="img" aria-label="{{ figureAlt }}">
         @@WORKING@@
         <g fill="none" stroke="var(--ink)">
@@ -108,15 +130,12 @@
           </sc-for>
         </g>
       </svg>
-
-      <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding-top:10px">
-        <span class="t-data" aria-live="polite" style="flex:1;min-width:0">{{ readout }}</span>
-        <button class="btn-tertiary press" onClick="{{ openImprint }}" style="padding:13px 0">Open</button>
       </div>
-      <!-- an affordance that removes itself once used is not a legend -->
-      <sc-if value="{{ showHint }}" hint-placeholder-val="{{ true }}">
-        <p class="t-meta" style="margin:2px 0 0;color:var(--secondary)">Touch a ring to read the chapter it holds.</p>
-      </sc-if>
+
+      <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;
+                  min-height:22px;padding-top:8px">
+        <span class="t-data" aria-live="polite" style="flex:1;min-width:0">{{ readout }}</span>
+      </div>
     </section>
 
     <!-- ===== outstanding verification ===================================== -->
@@ -310,10 +329,9 @@ class Component extends DCLogic {
       selBand: sel !== null,
       selR0: sel === null ? 0 : z[sel].r0,
       selR1: sel === null ? 0 : z[sel].r1,
-      readout: sel === null
-        ? 'Public page on. 2 parties hold a grant.'
-        : chs[sel].party + '. ' + chs[sel].state,
-      showHint: !st.touched,
+      // Nothing when nothing is selected. The masthead carries disclosure now
+      // (045/048), and repeating it here turned the record's readout into chrome.
+      readout: sel === null ? '' : chs[sel].party + '. ' + chs[sel].state,
       outstanding,
       chapters: chs.map((c,i) => ({...c,
         cls: i === sel ? 'row-sel' : '',
