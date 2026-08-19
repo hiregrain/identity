@@ -19,8 +19,20 @@ if __name__ == "__main__":
     # the pointer
     w("pointer-16.svg", M.svg(M.pointer(16), 16, background=False))
     w("pointer-24.svg", M.svg(M.pointer(24), 24, background=False))
+    # lockups. Archivo is supplied by the consuming surface; if a woff2 is present
+    # at mark/archivo.woff2 it is embedded so the file renders standalone.
+    import base64
+    fp = os.path.join(os.path.dirname(os.path.abspath(__file__)), "archivo.woff2")
+    css = ""
+    if os.path.exists(fp):
+        b64 = base64.b64encode(open(fp, "rb").read()).decode()
+        css = ("@font-face{font-family:'Archivo';src:url(data:font/woff2;base64,%s) "
+               "format('woff2');font-weight:100 900;font-stretch:62%% 125%%;}" % b64)
+    for px in (104, 80, 54, 44, 30):
+        w("lockup-%d.svg" % px, M.lockup_svg(px, font_css=css))
+        w("lockup-dark-%d.svg" % px, M.lockup_svg(px, dark=True, font_css=css))
     # app icons
     for px in IOS:
         w("icon-light-%d.svg" % px, M.app_icon(px, uid="l%d" % px))
         w("icon-dark-%d.svg" % px, M.app_icon(px, dark=True, uid="d%d" % px))
-    print("wrote %d files to %s" % (6 + 2 * len(IOS), OUT))
+    print("wrote %d files to %s" % (6 + 10 + 2 * len(IOS), OUT))

@@ -156,3 +156,56 @@ def app_icon(px, dark=False, inset=0.74, uid="mask"):
             "<g clip-path='url(#%s)'><rect width='%d' height='%d' fill='%s'/>"
             "<svg x='%.2f' y='%.2f' width='%.2f' height='%.2f' viewBox='0 0 600 600'>%s</svg>"
             "</g></svg>") % (px, px, px, px, uid, squircle(px), uid, px, px, bg, off, off, m, m, body)
+
+
+# ------------------------------------------------------------------ the lockup
+# Measured, not assumed. Re-measure if the typeface or the mark changes.
+CAP_RATIO = 0.690        # Archivo cap height / font-size, at weight 600 stretch 125%
+MARK_OPTICAL_CENTRE = 0.4875   # the mark's ink-bbox centre as a fraction of its height
+MARK_RATIO = 1.4         # mark height / cap height
+GAP_RATIO = 1.3          # gap / cap height
+CLEAR_SPACE = 1.0        # clear space on every side, in cap heights
+MIN_LOCKUP_MARK = 30     # below this the mark goes alone: the solid tier is a dense
+                         # mass and reads wrong beside outline-weight type
+
+WORDMARK = dict(text="GRAIN", weight=600, stretch=125, tracking=0.09)
+
+
+def lockup(mark_px, dark=False, font_family="Archivo"):
+    """The horizontal lockup. Returns SVG fragment; caller supplies the viewBox.
+
+    The mark uses tier_for(), so it swaps to the correct reduction as it shrinks —
+    never a scaled master. Below MIN_LOCKUP_MARK, use the mark alone instead.
+    """
+    cap = mark_px / MARK_RATIO
+    fs = cap / CAP_RATIO
+    gap = cap * GAP_RATIO
+    centre_y = mark_px * MARK_OPTICAL_CENTRE
+    baseline = centre_y + cap / 2.0
+    fg = PAPER if dark else INK
+    body = tier_for(mark_px)(mark_px)
+    if dark:
+        body = body.replace(INK, PAPER)
+    return ("<svg x='0' y='0' width='%.2f' height='%.2f' viewBox='0 0 600 600'>%s</svg>"
+            "<text x='%.2f' y='%.2f' font-family='%s' font-size='%.2f' font-weight='%d' "
+            "font-stretch='%d%%' letter-spacing='%.2f' fill='%s'>%s</text>"
+            ) % (mark_px, mark_px, body,
+                 mark_px + gap, baseline, font_family, fs,
+                 WORDMARK["weight"], WORDMARK["stretch"], fs * WORDMARK["tracking"],
+                 fg, WORDMARK["text"])
+
+
+def lockup_svg(mark_px, dark=False, font_css="", pad=None):
+    """A complete standalone lockup SVG. font_css should carry an @font-face for
+    Archivo; without it the file renders in a fallback face."""
+    cap = mark_px / MARK_RATIO
+    fs = cap / CAP_RATIO
+    gap = cap * GAP_RATIO
+    pad = cap * CLEAR_SPACE if pad is None else pad
+    w = mark_px + gap + fs * 4.45 + pad * 2      # calibrated: "GRAIN" advances 4.414em at +9% tracking
+    h = mark_px + pad * 2
+    bg = INK if dark else PAPER
+    return ("<svg xmlns='http://www.w3.org/2000/svg' width='%.0f' height='%.0f' viewBox='0 0 %.0f %.0f'>"
+            "<defs><style>%s</style></defs><rect width='%.0f' height='%.0f' fill='%s'/>"
+            "<g transform='translate(%.2f,%.2f)'>%s</g></svg>"
+            ) % (w, h, w, h, font_css, w, h, bg, pad, pad, lockup(mark_px, dark))

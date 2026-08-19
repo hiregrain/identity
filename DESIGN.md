@@ -1,7 +1,7 @@
 # Grain — Design System
 
 **STATUS: DRAFT, 2026-08-18.** Not ratified. The mark and the pointer are settled
-provisionally (§3, recorded in `mark/`). The **wordmark (§4) remains NOT DECIDED**. Everything
+provisionally (§3, recorded in `mark/`). The wordmark and lockup are settled (§4, recorded in `mark/`). Everything
 else in this file is settled by founder decision during the 2026-08-17/18 design
 sessions unless marked otherwise.
 
@@ -201,24 +201,38 @@ shape. On our own surfaces the context does that work and it may stand alone.
 as *Grain*, one with a registration in class 009 — one of our intended classes.
 Clearance is a counsel question and sits upstream of any mark decision.
 
-## 4. The wordmark — NOT DECIDED
+## 4. The wordmark — settled, recorded in `mark/`
 
-Four Archivo treatments were rendered: expanded-tight, expanded-tracked,
-sentence case, and condensed wide-tracked. The tracked treatments sit in the
-document register the rest of the system occupies; the tight and sentence-case
-ones read as consumer software. A wordmark in a second typeface is forbidden by
-§6.
+**Archivo Expanded, weight 600, +9% tracking, all caps.** No second typeface (§6).
+Expanded because §6's own scale already uses it for the display registers; tracked
+because tracking is how this system signals register; 600 because 700 and above is
+the consumer-software bracket.
 
-**The name is not clear.** `GRAIN` is a live standard-character US registration
-in classes 009 and 042 (Grain Intelligence, Inc.) and in 009 (Grain Technology,
-Inc.); Grain London Limited holds the EU word mark across 9, 35, 41 and 42. Not
-realistically clearable as a standalone word in the classes we want. Grain
-Network, Inc. (hiregrain) has no filings, so there are common-law rights in
-employment services but nothing registered.
+**The lockup:** mark at 1.4× cap height, gap at 1.3× cap height, clear space one
+cap height all round, wordmark cap-band centred on the mark's *optical* centre
+(0.4875 of its height, not 0.5 — the deliberate break shifts mass). **Minimum
+lockup mark is 30px**; below that the mark goes alone, because `tier_solid` is a
+dense mass and reads wrong beside outline-weight type. Geometry, measured
+constants and the reasoning are in [`mark/README.md`](mark/README.md) §4a.
 
-Consequence for sequencing: **file the device first and separately** — it is
-clear where the name is not — and pursue the name as a composite, a two-word
-variant, or on common-law use. **[GAP]** Not ruled.
+**Recorded weakness.** Expanded tracked caps are the current default in crypto, AI
+and fintech. The wordmark is coherent and not distinctive; all the ownability sits
+in the mark, so `GRAIN` as plain text is anonymous. Custom letterforms were
+considered and rejected — unmodified type is what comparable infrastructure brands
+use, and a bespoke cut is high-risk and licence-sensitive. Revisit only if the
+identity must hold on text-only surfaces.
+
+**The name is not clear.** `GRAIN` is a live standard-character US registration in
+classes 009 and 042 (Grain Intelligence, Inc.) and in 009 (Grain Technology, Inc.);
+Grain London Limited holds the EU word mark across 9, 35, 41 and 42. Grain Network,
+Inc. (hiregrain) has no filings, so there are common-law rights in employment
+services but nothing registered. Independent research also found an active B2B SaaS
+company on grain.com and ~1,678 "Grain" trademark results.
+
+**The founder has ruled the name is not changing** (2026-08-18). Consequences:
+**file the device first and separately** — it is clear where the name is not — and
+pursue the name on common-law use, since the composite descriptor was cut. Whether
+to reinstate a composite purely for filing is a counsel question. **[GAP]**
 
 ---
 
@@ -401,7 +415,10 @@ micro-caption band with the record still readable from cache.
    Form, prohibitions and usage rules in `mark/README.md` §4. Still open within
    it: the lobe count, the break angle (should be locked to the top), and
    silhouette agreement between the largest and smallest tiers.
-2. **The wordmark**, and the name-clearance sequencing in §4.
+2. ~~The wordmark~~ — **settled 2026-08-18** (§4, `mark/README.md` §4a). Still
+   open within it: whether to reinstate a composite purely for filing, given the
+   name is fixed and not clearable alone; and whether the wordmark needs
+   distinctiveness of its own for text-only surfaces.
 3. **The display identifier** — whether a human-facing number is shown at all,
    and if so its format. Distinct from the opaque `ledger_person_id`, which is
    permanent and never surfaces. Four formats rendered, none chosen.

@@ -10,6 +10,7 @@ Three objects, one construction. They are routinely confused and must not be:
 | **the mark** | Grain's logo. App icon, site, decks, partner listings. | never |
 | **the tiers** | purpose-drawn reductions of the mark for small sizes | never |
 | **the pointer** | "this person has a record you can inspect" | never |
+| **the lockup** | mark plus wordmark — see §4a | never |
 | **the imprint** | the per-person figure — a *different object*, see [`../imprint/`](../imprint/) | per person |
 
 Companion documents: [`../DESIGN.md`](../DESIGN.md) §3 · [`../imprint/README.md`](../imprint/README.md)
@@ -98,6 +99,61 @@ credential logic the product exists to replace.
 "4 chapters · 3 corroborated". A bare glyph beside a name reads as endorsement
 whatever its shape. On Grain's own surfaces the surrounding context does that
 work and the glyph may stand alone.
+
+## 4a. The wordmark and the lockup
+
+**Wordmark: Archivo Expanded, weight 600, +9% tracking, all caps.** No second
+typeface (`DESIGN.md` §6). Chosen because §6's own scale already uses Expanded for
+its two display registers — instrument numerals and screen titles — so Normal
+width would put the wordmark in the body register; because tracking is how this
+system signals register, at +8% for micro-captions and +14% for the serial layer;
+and because 700 and above is the consumer-tech bracket §4 flagged as reading like
+consumer software.
+
+**Honest weakness, recorded so it is not rediscovered:** expanded tracked caps are
+the current default across crypto, AI and fintech. The wordmark is coherent with
+the system and contributes little distinctiveness of its own — all of it sits in
+the mark. `GRAIN` set as text, without the mark, is anonymous.
+
+**No custom letterforms.** Considered and rejected: the mark carries the
+distinctiveness, unmodified type is what Stripe, Plaid, Ramp and Mercury all do,
+and cutting a bespoke glyph is high-effort, high-risk and licence-sensitive.
+Revisit only if the identity has to hold up on text-only surfaces.
+
+### Lockup geometry — all values measured, not chosen
+
+| Constant | Value | How it was obtained |
+|---|---|---|
+| `CAP_RATIO` | 0.690 | rendered `H` at a known size, measured ink to baseline |
+| `MARK_OPTICAL_CENTRE` | 0.4875 | the mark's ink-bbox centre as a fraction of its height — it is **not** 0.5, because the deliberate break shifts mass down-right |
+| `MARK_RATIO` | 1.4 | mark height ÷ cap height |
+| `GAP_RATIO` | 1.3 | gap ÷ cap height |
+| `CLEAR_SPACE` | 1.0 | cap heights on every side |
+| wordmark advance | 4.414 em | calibrated against a known-width reference in the same frame |
+
+**Re-measure all of these if the typeface or the mark changes.** Two of them were
+wrong on the first pass: the wordmark sat 3.6px high because cap-centring was
+applied to the wrong variable, and the canvas width clipped the final `N`.
+
+**Alignment rule.** The wordmark's cap band is centred on the mark's *optical*
+centre, not its box centre: `baseline = mark_y + mark_px × 0.4875 + cap ÷ 2`.
+
+**`MIN_LOCKUP_MARK = 30`.** Below 30px the mark falls to `tier_solid`, which is a
+dense mass, and it reads wrong beside outline-weight type — verified in 1-bit,
+where the small lockup is a black blob next to a hairline word. Below 30px, use
+the mark alone.
+
+**Ratio testing.** 1.3–1.6 × cap against gaps of 0.9–1.5 were rendered as a matrix.
+At 1.5 and above the mark out-weighs five open letterforms and the eye lands on it
+first, which is wrong for a lockup where the name should lead. 1.4 with a 1.3 gap
+is where the word leads and the intricate mark still has air around it.
+
+**The composite was cut.** An earlier version carried a "THE WORK RECORD"
+descriptor. It has a consequence worth stating: §4's recorded filing path was
+device-first plus the name as a composite, because `GRAIN` is not clearable alone
+in classes 009 and 042. Without a composite, the name route is common-law use in
+employment services — real, since Grain Network trades there, but weaker than a
+registration.
 
 ## 5. Constraints inherited from the imprint, and why
 
