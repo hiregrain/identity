@@ -169,3 +169,22 @@ because a reader could not tell what one meant; the identifier they carried is
 load-bearing and survives in this readable form (decision 042). Do not
 reintroduce opaque codes, and do not invent a replacement vocabulary for them
 either — a bare count in frontmatter is worse than the codes were.
+
+## Agent skills
+
+### Issue tracker
+
+GitHub Issues on `hiregrain/identity`, as an intake surface only — the work
+queue stays `plans/` and decisions stay `decisions/LOG.md`. See
+`docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+The five defaults, label string equal to role name. See
+`docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Mapped to this repo's own structure — `THESIS.md` and `CLAUDE.md` as context,
+`decisions/LOG.md` as the ADR log; no `CONTEXT.md`, no `docs/adr/`. See
+`docs/agents/domain.md`.
