@@ -2381,3 +2381,44 @@ renders differently per operating system, which is the thing §5 exists to
 prevent. The founder's instruction is that the app must be **highly intuitive**
 and that the call may be case by case. That is a decision this entry does not
 make.
+
+## 047 — Grain-native components on both platforms (2026-08-19)
+
+Closes the question 046 left open. Decided against three drawn variants of the
+same screen — `design/10-worker-app-screens/Handle{Grain,Platform,Split}` — with
+identical logic and an identical palette, so the comparison isolated component
+form and nothing else.
+
+**The component language stays Grain's own, on iOS and Android alike.** §5's
+prohibition on anyone theming states, §7's radius and depth rules, §8's deleted
+containers and ruled-line inputs, and §6's single family all stand as ratified.
+Material and HIG components are not adopted. The record renders identically on
+both platforms, which is what §5 exists to protect: a pending record must not be
+able to pass as a verified one because it is being read on a different phone.
+
+**Platform mechanics are not the same question and are not optional.** Safe
+areas, back and the gesture zones that own the screen edges, font scaling to
+200%, screen-reader order and naming, haptics named per platform, deep links.
+046 measured the current state: every screen is drawn 360×800, which is 41 pt
+too tall for iOS and 72 dp too tall for Android, with the header under the
+status bar on both. None of that is loosened by this entry; all of it is owed.
+
+**What this decision costs, since it is the losing case that has to be answered.**
+The population this product is for has been taught what an input is by every
+other app on their phone, and a hairline they type on is not it. Choosing an
+unfamiliar component language means intuitiveness has to be bought somewhere
+else, and this entry makes that an obligation rather than a hope:
+
+- **Form may be unconventional; placement and behaviour may not.** A primary
+  action sits where the platform puts a primary action. Back goes where back
+  goes. A field commits on the platform's own keyboard action.
+- **Anything tappable must read as tappable without motion or colour**, which is
+  the harder half of having neither. A ruled input at rest currently looks like
+  a rule.
+- **The claim is testable and untested.** Nobody in the target population has
+  been put in front of these screens. Until they have, "intuitive" is an
+  assertion, and this entry records it as one.
+
+**Kept as evidence, not as work.** The three variants stay on the canvas under a
+page marked settled. They are the record of how this was decided and should not
+be re-litigated without a superseding entry; they are not screens to build.

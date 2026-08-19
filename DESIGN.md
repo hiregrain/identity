@@ -354,6 +354,16 @@ contact line, never elevation shadow.
 
 ## 8. Components
 
+**Settled 2026-08-19 (decision 047): this language is used on both platforms.**
+Material and HIG components were drawn against it on the same screen and not
+adopted — a record that renders differently per operating system is what §5
+exists to prevent. Platform *mechanics* are a separate question and are owed in
+full: safe areas, back and the gesture zones, 200% font scaling, screen-reader
+order, haptics named per platform, deep links. The cost of an unfamiliar
+component language is carried in 047: form may be unconventional, placement and
+behaviour may not, and anything tappable must read as tappable without motion or
+colour.
+
 **Containers are deleted by default.** Hairlines and whitespace structure the
 page. A drawn container appears only for the credential surface, an embedded
 record, or a sheet.
