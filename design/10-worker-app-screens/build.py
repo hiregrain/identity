@@ -20,6 +20,7 @@ TOK = {
   "@@MARK56@@":     rd("mark-56.svgfrag"),
   "@@POINTER@@":    rd("pointer.svgfrag"),
   "@@LOCKUP@@":     rd("lockup.svgfrag"),
+  "@@SINERULE@@":   rd("sine-rule.svgfrag"),
   "@@WORKING@@":    rd("working.svgfrag"),
   "@@CHAPTERS@@":   rd("chapters.svgfrag"),
   "@@LOBES@@":      rd("lobes.json"),

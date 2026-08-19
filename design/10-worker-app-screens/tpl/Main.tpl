@@ -24,6 +24,13 @@
        as `.reg` on the record plate — the chart's mark for a framed thing. */
     .figreg{position:absolute;width:13px;height:13px;border:0 solid var(--rule);
             pointer-events:none}
+    /* §9's sine-modulated divider, carrying the figure's own frequency, and the
+       graticule ground. Both specified in §9 and unused until now — the record
+       had the plate and nothing else, which is most of why it read as bare. */
+    .sinerule{margin-top:-1px;line-height:0;opacity:.9}
+    .figground{position:absolute;inset:14px 0;display:flex;align-items:center;
+               justify-content:center;pointer-events:none;opacity:.16}
+    .figground svg{width:100%;max-width:320px;height:100%}
     .idx-tick{height:1px;background:var(--rule);transition:width 180ms cubic-bezier(0.2,0,0,1)}
     .sheet{position:absolute;left:0;right:0;bottom:0;background:var(--paper);
            border-top:1px solid var(--ink);padding:20px 20px 24px}
@@ -119,6 +126,10 @@
         <span class="figreg" style="top:0;right:0;border-top-width:1px;border-right-width:1px"></span>
         <span class="figreg" style="bottom:0;left:0;border-bottom-width:1px;border-left-width:1px"></span>
         <span class="figreg" style="bottom:0;right:0;border-bottom-width:1px;border-right-width:1px"></span>
+        <span class="figground" aria-hidden="true">
+          <svg viewBox="0 0 296 296" preserveAspectRatio="xMidYMid slice" fill="none"
+               stroke="var(--rule)" stroke-width="0.5">@@GRATICULE_LG@@</svg>
+        </span>
       <svg class="fig" viewBox="0 0 600 600" role="img" aria-label="{{ figureAlt }}">
         @@WORKING@@
         <g fill="none" stroke="var(--ink)">
@@ -147,6 +158,7 @@
         <h2 class="t-sec" style="margin:0">Outstanding verification</h2>
         <span class="t-data" style="color:var(--secondary)">3</span>
       </div>
+      <div class="sinerule">@@SINERULE@@</div>
       <sc-for list="{{ outstanding }}" as="o" hint-placeholder-count="3">
         <button class="row press" onClick="{{ o.open }}">
           <span class="gutter">
@@ -168,6 +180,7 @@
         <h2 class="t-sec" style="margin:0">Work history</h2>
         <span class="t-data" style="color:var(--secondary)">5</span>
       </div>
+      <div class="sinerule">@@SINERULE@@</div>
       <sc-for list="{{ chapters }}" as="c" hint-placeholder-count="5">
         <button class="row {{ c.cls }} {{ c.give }}" aria-pressed="{{ c.sel }}" onClick="{{ c.pick }}">
           <span class="gutter">
