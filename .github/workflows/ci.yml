@@ -1,14 +1,16 @@
-# CI as a dependency graph (foundation/01). Repo-metadata checks validate
-# files and need no schema, so they run before any database boots; the
-# database chain then gates the language suites. Stages owned by later
-# tasks (typegen --check in foundation/02, schema-dependent checks in
+# CI as a dependency graph (foundation/01; db stages foundation/02).
+# Repo-metadata checks validate files and need no schema, so they run
+# before any database boots; the database chain then gates the language
+# suites. Stages owned by later tasks (schema-dependent checks in
 # foundation/04 and 06) slot into this graph when those tasks land.
 #
 # The go/ts jobs' `needs: [db-migrate]` is ordering only, not a data
 # dependency: every job is an isolated runner, and db-migrate tears its
-# Postgres down before finishing. When foundation/02+ adds Go/TS tests
-# that talk to a database, those jobs must boot their own Postgres
-# (compose or a service container) — they cannot reach db-migrate's.
+# Postgres pair down before finishing. The plane-separation tests those
+# jobs run are compile/typecheck-level and need no database; when a later
+# task adds Go/TS tests that talk to one, those jobs must boot their own
+# Postgres (compose or a service container) — they cannot reach
+# db-migrate's.
 name: ci
 
 on:
@@ -60,13 +62,25 @@ jobs:
       - run: make lint
 
   db-migrate:
-    name: db up + migrate
+    name: db replay + typegen check
     needs: [metadata]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 24
       - run: make db-up
-      - run: make migrate
+      # Both chains replay from empty twice; the second replay must be a
+      # no-op and an independent from-empty replay must produce an
+      # identical schema (layer criterion 2's mechanism).
+      - run: make migrate-verify
+      # Generated types are diffed against both live schemas; a table
+      # edited without regenerated types fails here.
+      - run: make typegen-check
+      # The database-dependent red path: planted schema drift must fail
+      # the check above.
+      - run: make check-red-db
       - run: make db-down
 
   go:
