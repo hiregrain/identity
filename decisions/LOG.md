@@ -2133,3 +2133,25 @@ principle; the file appears when a layer goes `ready`, not before.
 divergence check, both mandatory reviews, and the criterion-identifier
 convention. Every task file gains `layer:`. `satisfies:` remains unwritten
 across all 31 and is the first thing the checks port will surface.
+
+## 043 — Foundation execution run: fork deferred, merge authority delegated (2026-08-19)
+
+Two founder rulings settling the last open items before `foundation` executes.
+
+**The run-record spine/payload fork (decision 026, AI Act Art. 19) is
+deferred to `analytics`.** ORDER.md's gate table carried it as "a
+`foundation` task nobody owns". Its first genuine consumer is the analytics
+run record; building the fork before anything writes a run record is the
+speculation the plan protocol exists to prevent. `foundation` may close
+without it. The deferral is this entry; `analytics` inherits the item and
+cannot go `ready` without owning it.
+
+**Merge authority is delegated to the executive for the foundation run, and
+only for it.** ORDER.md gate 4 makes merging a human act. For this run the
+founder pre-authorizes the executive to merge a PR once the three prior
+gates are green — CI, clean-context verification recorded, review findings
+resolved — with judgment-call summaries posted per PR for after-the-fact
+audit. The delegation is scoped: it covers `foundation/01`–`08` and expires
+when the layer closes. Any PR carrying an unresolved judgment call still
+waits for the founder. Raises park the task and the run continues where
+dependencies allow; they batch to the founder rather than pausing the run.
