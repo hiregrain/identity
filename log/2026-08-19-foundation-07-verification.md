@@ -3,7 +3,8 @@
 - Task: `foundation/07` (plans/foundation/07-cross-plane-write-consistency.md),
   layer criterion foundation-5
 - Head SHA verified: `40620300c9315b567e4997efa5ca4ee897a6970c` (PR #7,
-  branch `task/foundation-07`)
+  branch `task/foundation-07`); re-verified at the integration head
+  `ad2ad82ab1f6f824691ec5c4f6bb6491c7a7be57` — delta section at the end
 - Verifier: clean-context session, 2026-08-19. Inputs: the task file,
   plans/foundation/LAYER.md, the PR diff and body, plans/ORDER.md. No
   implementer transcripts. Environment: fresh clone into an isolated
@@ -11,9 +12,9 @@
   ports, so the clone ran under a no-ports compose override (established
   precedent) — the checks reach Postgres through `docker compose exec`
   and never a host port.
-- CI at the same SHA: all eight jobs green, including the new
+- CI run: all eight jobs green at `4062030…`, including the new
   `cross-plane outbox scenarios` job and the `all stages green` fan-in
-  (actions run 32308828505).
+  (https://github.com/hiregrain/identity/actions/runs/32308828505).
 - Verdict: **PASS**
 
 ## Criterion 1 — kill between the planes, recover on restart
@@ -123,3 +124,37 @@ commit.
 - **Scope:** every file in the diff serves the task; the red-path
   fixture allow-list mirror is explained and required by red path db 5.
   No scope creep found.
+
+## Delta re-verification at the integration head
+
+PR #7 gained a sibling-integration merge commit; the merged head
+`ad2ad82ab1f6f824691ec5c4f6bb6491c7a7be57` (merge of origin/main, bringing
+foundation/05 into `task/foundation-07`) is now the verified SHA.
+
+- **Merge content.** The combined diff of the merge commit against both
+  parents touches exactly three files — Makefile, ci.yml, db/typegen.mjs —
+  plus type files regenerated against the merged chains (proven by
+  `typegen --check` inside `make check` below). Nothing beyond conflict
+  resolution: the Makefile `.PHONY`/`check` chains carry both
+  `envelope-test` and `cross-plane-constructs cross-plane-outbox`; ci.yml
+  carries the complete `envelope` and `outbox` jobs with `all-green`
+  needing both; typegen.mjs holds a single `uuid` mapping whose comment
+  cites both introducing migrations (0005 and 0020).
+- **Set-diff, both directions.** Enumerated every Makefile target and CI
+  job on the main parent (`62b5a70`), the pre-merge branch (`4062030`),
+  and the merged head: no target or job present on either parent is
+  missing from the merged head, and the merged head contains nothing
+  absent from both parents. Nothing dropped, nothing invented.
+- **CI at the merged head:** run 32310042148, nine jobs all green at
+  `ad2ad82…`, including both acceptance suites
+  (https://github.com/hiregrain/identity/actions/runs/32310042148).
+- **Re-run on a fresh clone at `ad2ad82…`** (no-ports compose override,
+  no cloud credentials): `make check` green end-to-end — envelope suite
+  under both key providers (software and stub-kms) AND the outbox
+  scenarios (45 assertions), with append-only (18 assertions),
+  spine-schema, residency, two-plane-split, and typegen-check all green
+  in the chain. `make check-red` and `make check-red-db`: every red path
+  fails as required — including db 8/8b, the live FDW on each plane —
+  and the databases are left as found.
+- **Delta verdict: PASS.** The merged head is conflict resolution only;
+  everything verified at `4062030…` holds at `ad2ad82…`.
