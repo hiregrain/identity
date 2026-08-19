@@ -62,7 +62,7 @@ Acceptance:
    through every path — not merely absent from a dump grep — and rows about
    multiple people are keyed to the subject with no second wrap.
 8. **No spine column can re-identify a person on its own.** (adjudicated) a verifier with a clean context, given
-  `foundation/04`'s correlation checklist and the spine schema alone, finds no
-  spine column from which a person could be re-identified without the payload
-  plane. Split out of criterion 3 so the mechanical half cannot be reported as
-  discharging the judgment half.
+   `foundation/04`'s correlation checklist and the spine schema alone, finds no
+   spine column from which a person could be re-identified without the payload
+   plane. Split out of criterion 3 so the mechanical half cannot be reported as
+   discharging the judgment half.

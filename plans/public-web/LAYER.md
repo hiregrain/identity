@@ -25,7 +25,7 @@ where users can request app account deletion." Decision 038 closed only the in-a
 half; the web half is a store requirement no app change satisfies. It is a plain,
 guessable page that files the same support request the app files, reachable
 without an account, and it must agree with the consent instrument and with
-decision 036 line by line — `app-shell` `app-shell` criterion 6 checks that by diff.
+decision 036 line by line — `app-distribution` criterion 3 checks that by diff.
 
 **Scope added 2026-08-19 (decision 038): the attestation surface.** Decision 035
 gave every attester an account with verified identity, and 038 ruled that flow

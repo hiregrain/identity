@@ -1,5 +1,10 @@
 # T1 Spike — Agent-Fluency Measurement, Go vs. TypeScript (gate on decision 005 / D2)
 
+> **Discharged (decision 012): Go stands; the switch-triggers carry forward as
+> the guard.** This file is the spike's frozen specification, kept because the
+> pre-committed rule and the trigger register are still cited. Nothing below is
+> live work.
+
 Purpose: D2 (Go core) was ratified contingent on this spike. Pre-committed
 rule: **Go stands unless its measured defect rate is materially worse than
 TypeScript's** (working threshold: >1.5× oracle-detected defects, or any

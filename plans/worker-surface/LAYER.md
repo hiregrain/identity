@@ -86,8 +86,9 @@ those close.
 
 <https://claude.ai/code/artifact/7d177fbe-88c2-4e18-97b8-5a8d1fd85232>
 
-Its source of record is [`design/10-worker-app-screens/`](../../design/10-worker-app-screens/),
-which is authoritative where the two disagree. Repo tasks in this layer cover
+Its source of record is
+[`design/10-worker-app-screens/`](../../design/10-worker-app-screens/), which
+is authoritative where the two disagree. Repo tasks in this layer cover
 *build*, against surfaces settled there.
 
 **The gate, adopted from `dispatch/plans/console` and binding here: nothing in
@@ -117,23 +118,27 @@ the first question its engineering review has to answer — `app-shell` had elev
 scope items and was split on the same grounds (decision 042).
 
 Acceptance:
-1. **Every fact about the person is reachable in the app.** every fact in the person's record is reachable in the UI; a
-   side-by-side against a raw API dump shows nothing hidden. **Narrowed by
-   decision 035 §B4/§B5:** read events are excluded (grant *state* is shown, not
-   reads — the disclosure record is served on request), and there is no dispute
-   UI, so a chapter renders its `disputed` field but no dispute flow exists in
+1. **Every fact about the person is reachable in the app.** A side-by-side
+   against a raw API dump shows nothing hidden. **Narrowed by decision 035
+   §B4/§B5:** read events are excluded (grant *state* is shown, not reads —
+   the disclosure record is served on request), and there is no dispute UI,
+   so a chapter renders its `disputed` field but no dispute flow exists in
    the app.
-2. **Provenance is distinguishable everywhere it renders, without relying on colour.** provenance classes are visually distinct at every rendering
-   site, at WCAG-AA contrast, without color-only encoding.
-3. **Grant, revoke, dispute and delete each complete on a small phone over a slow link.** grant, revoke, dispute, and delete are each completable start to
-   finish on a 360px viewport over a slow connection.
-4. **Trust-bearing flows serve from the ledger's own origin.** all trust-bearing flows serve from the ledger origin — no
-   vertical chrome, no theming beyond light/dark (per the invariant-chrome
-   ruling pending in the decisions log).
-5. **Every surface exists and carries all five of its states.** every surface in `design/08-app-inventory.md` §1 exists and
-   carries all five states named in its §2 — loading, empty, error with a
-   retry, offline, permission denied. A surface missing a state is not done.
-6. **No screen claims more than the record supports.** no screen states more than the record supports. Checked against
+2. **Provenance is distinguishable everywhere it renders, without relying on
+   colour.** Provenance classes are visually distinct at every rendering
+   site, at WCAG-AA contrast, with no colour-only encoding.
+3. **Grant, revoke and delete each complete on a small phone over a slow
+   link.** Each is completable start to finish on a 360px viewport over a
+   slow connection. Dispute is not in this list because decision 035 §B5
+   removed the in-app dispute flow — see criterion 1's narrowing.
+4. **Trust-bearing flows serve from the ledger's own origin.** No vertical
+   chrome, no theming beyond light/dark (per the invariant-chrome ruling
+   pending in the decisions log).
+5. **Every surface exists and carries all five of its states.** Every surface
+   in `design/08-app-inventory.md` §1 exists and carries all five states
+   named in its §2 — loading, empty, error with a retry, offline, permission
+   denied. A surface missing a state is not done.
+6. **No screen claims more than the record supports.** Checked against
    `design/07` §5: provenance is legible in words on the worker's own rows,
    a chapter's removability is described accurately, no ordinal renders a
    person on a scale, and the ceremony cannot produce corroboration from a

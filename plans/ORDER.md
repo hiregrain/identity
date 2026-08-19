@@ -64,9 +64,8 @@ reading.
 - `soft_depends_on` — work that can start before the dependency lands.
 - `gated_criteria` — criteria a `ready` layer knowingly cannot reach yet,
   because the only task that would satisfy them is still `draft`. **Declaring
-  it is the point.** The undeclared case is the one that drifts, and it is
-  what `foundation` is doing today: eight criteria were declared and seven
-  written.
+  it is the point.** The undeclared case is the one that drifts. Adopted on
+  Dispatch's reasoning (decision 042).
 - `discharged_at_layer` — a criterion settled by adjudication with no
   implementation behind it. A task carrying one would be a PR containing
   nothing, so it is declared here instead.
@@ -74,11 +73,11 @@ reading.
 **Task** — `id`, `type`, `layer`, `status`, `depends_on`, `satisfies`,
 `binds`, `evidence`, `verified_by`.
 
-**`satisfies` is the join, and it is missing.** It names the criteria a task
-delivers, so a check can prove every criterion has a task and no task claims a
-criterion that does not exist. All 31 task files in this repo lack both
-`layer` and `satisfies` — a divergence from Dispatch that predates the
-acceptance rewrite and that the checks port will fail on.
+**`satisfies` is the join.** It names the criteria a task delivers, so a
+check can prove every criterion has a task and no task claims a criterion
+that does not exist. Every task file carries `layer` and `satisfies`
+(written 2026-08-19, closing a divergence from Dispatch); the checks port
+will enforce both once it lands.
 
 **Criteria are identified by position, not by code** (decision 042). Inside a
 layer a criterion is its number; across layers it is `<layer>-<n>`, as in
@@ -249,8 +248,8 @@ rather than one discovery at a time.
 | Gate | Blocks | Owner state |
 |---|---|---|
 | T1 spike ruling (pre-committed rule in `t1-spike.md`) | — | **discharged (decision 012)** — Go stands; switch-triggers carry forward as the guard |
-| Counsel brief 4 → final worker-agreement terms | the first real worker; `durability-and-launch` `durability-and-launch` criterion 3 config. Not the build | open, long lead — send the brief |
-| Chrome/marks rulings (invariant ledger chrome; epistemic mark system) | `marks-and-embeds` going `ready`; `worker-surface` `worker-surface` criterion 4 as written | open — drafted in session, awaiting ratification |
+| Counsel brief 4 → final worker-agreement terms | the first real worker; `durability-and-launch` criterion 3 config. Not the build | open, long lead — send the brief |
+| Chrome/marks rulings (invariant ledger chrome; epistemic mark system) | `marks-and-embeds` going `ready`; `worker-surface` criterion 4 as written | open — drafted in session, awaiting ratification |
 | **Cloud provider ruling** (AWS vs. GCP mini-litigation, decision 011 open item) | real provisioning; nothing local | open — litigation starts on founder go |
 | Cloud accounts + KMS + WORM buckets provisioned (two clouds, separate account for object-lock) | `trust-kernel` checkpoint tasks against real infra; local/CI work is ungated (software-key provider per decision 011) | open — follows the provider ruling; founder-held billing |
 | Persona/Sumsub DPAs signed (retention/destruction schedules per research/09) | live verification in `verification`; sandbox/stub work is ungated | open |

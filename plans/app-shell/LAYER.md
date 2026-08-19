@@ -68,10 +68,16 @@ stores hand the app automatically; **text scaling** — iOS Dynamic Type and
 Android font scaling to 200%+, against a type scale expressed entirely in fixed
 px, and a reflow rule for the ledger row's `nowrap` figure column; **haptics** —
 §7's "one hard haptic at contact" named per platform, and retained under
-`prefers-reduced-motion` per §10; and **offline** — §12's rule that the record stays readable from cache, which needs a storage and staleness contract.
+`prefers-reduced-motion` per §10; and **offline** — §12's rule that the record
+stays readable from cache, which needs a storage and staleness contract.
 
-**Reachability and distribution moved out (eng review, 2026-08-19).** Deep links, push, launch identity and store submission are `app-distribution`. They gate on the mark's open items and on counsel rather than on engineering, and bundling them here made one grilling cover eleven unrelated problems against `plans/ORDER.md`'s four-to-eight guidance.
- **Localisation is shared, not owned here.** EN, then TL and HI. TL is Latin; **HI
+**Reachability and distribution moved out (eng review, 2026-08-19).** Deep
+links, push, launch identity and store submission are `app-distribution`. They
+gate on the mark's open items and on counsel rather than on engineering, and
+bundling them here made one grilling cover eleven unrelated problems against
+`plans/ORDER.md`'s four-to-eight guidance.
+
+**Localisation is shared, not owned here.** EN, then TL and HI. TL is Latin; **HI
 is Devanagari and Archivo does not cover it** (`DESIGN.md` gap 7, recorded as
 launch-blocking). This layer carries the platform plumbing; the companion
 typeface is a founder gate.
