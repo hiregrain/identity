@@ -6,6 +6,25 @@
 // when the row shapes coincide.
 export declare const spinePlane: unique symbol;
 
+/** One row of spine.cross_plane_outbox. */
+export interface CrossPlaneOutboxRow {
+  readonly [spinePlane]: "spine";
+  entry_id: string;
+  target_plane: string;
+  instruction: Uint8Array;
+  created_at: string;
+}
+
+/** One row of spine.cross_plane_outbox_attempts. */
+export interface CrossPlaneOutboxAttemptsRow {
+  readonly [spinePlane]: "spine";
+  entry_id: string;
+  attempt: number;
+  state: string;
+  detail: string;
+  noted_at: string;
+}
+
 /** One row of spine.schema_migrations. */
 export interface SchemaMigrationsRow {
   readonly [spinePlane]: "spine";

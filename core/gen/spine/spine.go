@@ -8,6 +8,23 @@ package spine
 
 import "time"
 
+// CrossPlaneOutboxRow is one row of spine.cross_plane_outbox.
+type CrossPlaneOutboxRow struct {
+	EntryId     string
+	TargetPlane string
+	Instruction []byte
+	CreatedAt   time.Time
+}
+
+// CrossPlaneOutboxAttemptsRow is one row of spine.cross_plane_outbox_attempts.
+type CrossPlaneOutboxAttemptsRow struct {
+	EntryId string
+	Attempt int32
+	State   string
+	Detail  string
+	NotedAt time.Time
+}
+
 // SchemaMigrationsRow is one row of spine.schema_migrations.
 type SchemaMigrationsRow struct {
 	Number    int32
