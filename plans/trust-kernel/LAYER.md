@@ -59,8 +59,11 @@ Acceptance:
   kernel and the reference model; vectors published into the contract.
 - AC-TK2 (mechanical): a mutated historical record is detected by chain
   verification; a checkpoint proves inclusion of a named attestation.
-- AC-TK3: checkpoints land in WORM within the interval under load, and a
-  deliberate attempt to overwrite one fails at the storage layer.
+- AC-TK3 (mechanical): under a sustained write load of the rate named in the
+  task file, every checkpoint lands in WORM within the D3 interval measured at
+  the 99th percentile over a run of at least one hour, and a deliberate attempt
+  to overwrite or delete one fails at the storage layer. The load figure and
+  the run length are stated in the task file, not here.
 - AC-TK4: both TLA+ specs check; the conformance tests derived from them
   pass against the implementation.
 - AC-TK5: no code path outside the kernel can produce a signature, and **no

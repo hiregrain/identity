@@ -42,9 +42,12 @@ only through worker-shared links and grants (decision 002 §7).
 Acceptance:
 - AC-PW1: each landing variant terminates in the identical ledger-chrome
   signup/consent flow; no variant forks the trust path.
-- AC-PW2: a mark resolution URL renders correctly logged-out, shows
-  exactly the grant-scoped content, and degrades gracefully for a revoked
-  grant.
+- AC-PW2 (mechanical): a mark resolution URL renders logged-out and its
+  rendered content equals the grant's scope exactly — no field outside it, and
+  every field within it present. On a revoked, expired, or never-issued grant
+  the same URL returns the identical response: the record exists, its contents
+  are not disclosed, and nothing distinguishes the three cases to the caller,
+  including by status code, body length, or timing.
 - AC-PW3: no unauthenticated route enumerates or searches persons — a
   published record is reachable only by its own link, and is excluded from
   indexing unless the worker opts in separately.

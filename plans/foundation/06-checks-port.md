@@ -40,11 +40,25 @@ execution queue is computed, never hand-maintained (plans/ORDER.md).
   now catches an unlicensed reintroduction rather than a bounded exception);
   extended with the spine readable-column lint hook (foundation/04 supplies
   the rule, this task the runner).
+- `checks/verbatim-copies.mjs` — Dispatch's diff of labeled constraint
+  blockquotes against their sources. In Dispatch this check is the
+  **precondition for quoting any constraint into a plan file**: a labeled
+  blockquote is an exact copy, `[…]` marks a deliberate splice, and commentary
+  sits outside the quote. Identity's plan files today carry pointers rather
+  than quotes, so the check has nothing to fail on — port it anyway, because
+  its absence is what makes quoting look free.
+- `checks/counts.mjs` — no hand-written count of a checkable thing outside a
+  closed record (`CLAUDE.md`). Flags a numeral or number-word immediately
+  preceding an enumerable structure — a table, a list, a directory listing —
+  in `plans/`, `model/`, `DESIGN.md` and the READMEs, excluding
+  `decisions/LOG.md` and discharged spikes, whose counts are frozen facts.
+  Two such counts were already wrong when this task was authored.
 - `checks/run.mjs` — runs all, then prints the frontier. Exempt from the
   plan gate (verifies the repo, not the product). Splits its checks into
   **metadata checks that need no database** (frontmatter, plan graph,
-  numbering, ordering, decisions index) and **schema checks that do**, so
-  foundation/01's CI can run the first group before any database boots.
+  numbering, ordering, decisions index, verbatim copies, counts) and **schema
+  checks that do**, so foundation/01's CI can run the first group before any
+  database boots.
 
 ## Acceptance
 

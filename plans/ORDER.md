@@ -25,12 +25,10 @@ plans/
   trust-kernel/ … durability-and-launch/
 ```
 
-Seventeen layers: `foundation`, `trust-kernel`, `party-registry`,
-`ingestion`, `person-identity`, `verification`, `self-asserted-record`,
-`consent-and-deletion`, `worker-surface`, `peer-references`,
-`prior-packet`, `marks-and-embeds`, `analytics`, `integration-surface`,
-`operator-console`, `public-web`, `durability-and-launch`. Their current
-status and dependencies live in their own frontmatter, nowhere else.
+Every directory under `plans/` other than this file and `t1-spike.md` is a
+layer. Their names, status and dependencies live in their own frontmatter,
+nowhere else — this file does not carry a second copy of the list, and no
+count of them is written here. Let a check count.
 
 **Two levels; tasks are files, not headings.** Each task carries its own
 `status`, `evidence`, `verified_by`; two agents working two tasks in one
@@ -84,11 +82,46 @@ Binding prose (decisions, model changes, plan authoring) goes straight to
 → clean-context verification recorded → human review of judgment calls.
 Merging is a human act. **Never squash** — evidence cites SHAs.
 
-**Naming:** branches `task/<layer>-<NN>`; commits
-`<type>(<task-id>): <what changed>` with the closed vocabulary
-`feat | fix | verify | docs | checks | chore`; PR titles
-`<task-id> — <task H1 verbatim>`; migrations `NNNN-<kebab-noun-phrase>`
-naming what exists after. Naming friction is a scope alarm.
+**Naming.** *Names are derived, never invented* — every identifier already
+exists in a plan file, a date, or a task id, so two agents naming the same
+thing produce the same string. A name you had to invent means something
+upstream, a task or a decision, is missing. Naming friction is a scope alarm,
+not a wording problem.
+
+- **Branches:** `task/<layer>-<NN>`. No descriptive words; the task file
+  carries the description. (`<layer>/<NN>` is unusable — git forbids a branch
+  under a name that is itself a branch.)
+- **Commits:** `<type>(<scope>): <what changed>`, lowercase, present tense, no
+  period. Closed vocabulary: `feat` implements criteria, `fix` corrects a
+  verified defect, `verify` records a verification, **`docs` is binding prose
+  and goes straight to `main`, scope being the directory** (`docs(model):`),
+  `checks` is repo self-checks, `chore` is tooling with no criteria. **A change
+  with no clear type is two changes** — and binding prose spanning several
+  directories is one commit per directory, so a contract change is never buried
+  inside a research diff.
+- **PR titles:** `<task-id> — <the task file's H1, verbatim>`. No "Add", no
+  "Implement" — a title you have to compose means no task exists for the work.
+- **PR bodies:** three sections, headers verbatim. `## Criteria` — one line per
+  acceptance criterion, how it was discharged. `## Judgment calls` — deviations
+  with rationale, or "None.", which is a claim the verifier can falsify.
+  `## Verification` — the verification record, `verified_by`, and the head SHA
+  verified.
+- **Log files:** `YYYY-MM-DD-<slug>.md`. Verification records
+  `YYYY-MM-DD-<layer>-<NN>-verification.md`, carrying the task id, the head SHA
+  verified, each criterion with how it was discharged, and the pass or fail.
+  Recorded here so the first verifier does not invent it.
+- **Migrations:** `NNNN-<kebab-noun-phrase>.sql`, naming what exists after, not
+  what the migration does — `0002-roles-and-default-privileges`, never
+  `0002-add-roles`.
+
+**The fence.** A tool may rewrite `status`, `evidence` and `verified_by`.
+Nothing else. Objective, scope, constraints and criteria are authored by a
+human or an agent and read by tools, never rewritten by them.
+
+**The grammar binds from 2026-08-19 forward.** Most earlier subjects on `main`
+predate its enforcement and are left as they stand: rewriting them means
+force-pushing a published branch, which costs more than the inconsistency.
+Evidence cites SHAs, not subjects, so nothing depends on them.
 
 **Grill-before-ready (this repo's addition):** promoting a layer to
 `ready` requires a founder grilling session on that layer's design tree —

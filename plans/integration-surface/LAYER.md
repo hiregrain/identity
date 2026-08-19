@@ -44,8 +44,11 @@ Acceptance:
 - AC-IS3: the sandbox's synthetic workers exercise every endpoint
   including disputes and revocation; the conformance suite passes/fails a
   deliberately broken sample integration correctly.
-- AC-IS4: a second consumer (grain, or a synthetic second vertical)
-  attaches with zero ledger-side custom code.
+- AC-IS4 (mechanical): a second consumer — grain, or a synthetic second
+  vertical — completes the round trip against a ledger build whose diff, from
+  the commit where the first consumer's integration was verified, touches no
+  file outside `docs/`, the party registry's data rows, and the consumer's own
+  SDK package. Any other changed path fails the criterion.
 - AC-IS5 (mechanical, `roster-firewall.md` RF-5 and interface A-6): no
   endpoint emits a `ledger_person_id` — a partner receives only its own
   pairwise pseudonym, and two partners holding records for the same person

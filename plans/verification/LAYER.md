@@ -37,9 +37,14 @@ Acceptance:
 - AC-V1 (mechanical): the ledger stores no image/biometric payloads after
   any verification flow — asserted by schema and by an integration test
   inspecting all writes.
-- AC-V2: two verifications from different issuers coexist; assurance level
-  derives correctly and decays on expiry.
-- AC-V3: vendor swap requires only a new adapter + registry entry — no
-  schema change (proven by the second provider landing).
+- AC-V2 (mechanical): two verifications from different issuers coexist on one
+  person; a fixture table of (issuer, method, level, verified_at, expiry) pairs
+  maps to the expected assurance level for every row, and a verification whose
+  expiry has passed contributes nothing to the level.
+- AC-V3 (mechanical): a second provider adapter is added behind the internal
+  `verify(person, method)` interface using only a new adapter module and a
+  registry entry, and `git diff` over `db/migrations/` for that change is
+  empty. A synthetic second adapter satisfies this; it does not wait on a
+  commercial provider landing.
 - AC-V4: a failed/abandoned verification leaves the account usable at its
   prior assurance level (progressive proofing never gates signup).

@@ -11,7 +11,7 @@ binds:
   - decisions/LOG.md#016
   - decisions/LOG.md#017
   - design/stack-litigation/docket-rulings-0.1.md
-acceptance: [AC-F1, AC-F2, AC-F3, AC-F4, AC-F5, AC-F6, AC-F7]
+acceptance: [AC-F1, AC-F2, AC-F3, AC-F4, AC-F5, AC-F6, AC-F7, AC-F8]
 evidence: []
 verified_by: null
 ---
@@ -47,12 +47,17 @@ Acceptance:
   across both databases, more than one schema, and a second owner role.
 - AC-F2 (mechanical): CI replays the migration chain from empty twice and
   diffs generated types against the live schema.
-- AC-F3: no spine column may use a type outside the explicit spine
-  allow-list, and any allow-listed exception carries a written
-  justification — enforced by the schema lint. The lint does not claim to
-  prove opaque columns are free of personal data; `foundation/04`'s
-  correlation checklist and human review cover that.
-- AC-F4: every payload table carries `residency_region` NOT NULL.
+- AC-F3 (mechanical): no spine column uses a type outside the explicit spine
+  allow-list, and every allow-listed exception carries a written justification
+  in the migration that introduces it — enforced by the schema lint, which
+  fails on a planted violation of each kind. The lint does not claim to prove
+  opaque columns are free of personal data; that is AC-F8.
+- AC-F4 (mechanical): every payload table carries `residency_region` NOT NULL.
+- AC-F8 (adjudicated): a verifier with a clean context, given
+  `foundation/04`'s correlation checklist and the spine schema alone, finds no
+  spine column from which a person could be re-identified without the payload
+  plane. Split out of AC-F3 so the mechanical half cannot be reported as
+  discharging the judgment half.
 - AC-F5 (mechanical): a spine+payload write interrupted between planes is
   completed by retry with no duplicate and no silent backlog; nothing is
   acknowledged before both planes are durable.
