@@ -169,6 +169,8 @@ check-red-db:
 	@echo "red path db 5: an allow-listed exception column whose migration lacks the justification block fails the spine schema lint (and passes with the block present)"
 	echo "CREATE TABLE planted_exception (blob bytea);" | $(PSQL_SPINE) -f -
 	! node checks/spine-schema.mjs test/fixtures/redpath/spine-schema/allow-list.json db/migrations db/migrations/spine test/fixtures/redpath/spine-schema/without-justification
+	@echo "red path db 5b: a justification block in the WRONG file (a decoy the declared migration field does not name) is not a match — the lint must still fail"
+	! node checks/spine-schema.mjs test/fixtures/redpath/spine-schema/allow-list.json db/migrations db/migrations/spine test/fixtures/redpath/spine-schema/without-justification test/fixtures/redpath/spine-schema/decoy
 	node checks/spine-schema.mjs test/fixtures/redpath/spine-schema/allow-list.json db/migrations db/migrations/spine test/fixtures/redpath/spine-schema/with-justification
 	echo "DROP TABLE planted_exception;" | $(PSQL_SPINE) -f -
 	node checks/spine-schema.mjs

@@ -12,6 +12,10 @@
 //   * a declared per-column EXCEPTION in the allow-list, whose
 //     introducing migration carries a written justification block
 //     answering foundation/04's five-question correlation checklist.
+//     The exception's `migration` field names that migration, and the
+//     block counts ONLY when it sits in the file that field names — a
+//     block pasted into any other file, including one the runner never
+//     applies, is not a match.
 //
 // Anything else — a bare base type, a text/blob/JSON column, an unlisted
 // domain, an exception with no justification — fails with a message
@@ -107,14 +111,33 @@ for (const line of rows) {
   }
 
   matchedExceptions.add(exception);
-  const block = justifications.get(`${table}.${column}`);
-  if (block === undefined) {
+  const key = `${table}.${column}`;
+  const declaredPath = justifications.files.get(exception.migration);
+  if (declaredPath === undefined) {
     failures.push(
-      `spine column ${where} is a declared allow-list exception, but no ` +
-        `migration in [${migrationDirs.join(", ")}] carries its ` +
-        `justification block ("-- justify-column: ${table}.${column} ...") ` +
-        `— every exception answers foundation/04's five-question ` +
-        `correlation checklist in the migration that introduces it`,
+      `spine column ${where} is a declared allow-list exception naming ` +
+        `migration "${exception.migration}", but no ` +
+        `${exception.migration}.sql exists in [${migrationDirs.join(", ")}] ` +
+        `— the exception's migration field must name the migration that ` +
+        `introduces the column (foundation/04)`,
+    );
+    continue;
+  }
+  const block = justifications.blocks.get(exception.migration)?.get(key);
+  if (block === undefined) {
+    const elsewhere = [...justifications.blocks.entries()]
+      .filter(([name, byKey]) => name !== exception.migration && byKey.has(key))
+      .map(([, byKey]) => byKey.get(key).source);
+    failures.push(
+      `spine column ${where} is a declared allow-list exception, but its ` +
+        `declared migration ${declaredPath} carries no justification block ` +
+        `("-- justify-column: ${key} ...")` +
+        (elsewhere.length > 0
+          ? ` — a block found only in [${elsewhere.join(", ")}] is not a ` +
+            `match; the justification lives in the migration that ` +
+            `introduces the column`
+          : ` — every exception answers foundation/04's five-question ` +
+            `correlation checklist in the migration that introduces it`),
     );
     continue;
   }
@@ -151,16 +174,24 @@ console.log(
 
 // --- helpers -----------------------------------------------------------
 
-// Map "table.column" -> { text, source } for every justify-column block
-// found in the chain's migration files. A block is the justify-column
-// line plus the contiguous comment lines that follow it.
+// Scan the migration dirs and return
+//   files:  migration name (basename without .sql) -> path (first found)
+//   blocks: migration name -> Map("table.column" -> { text, source })
+// so an exception's justification resolves ONLY from the file its
+// `migration` field names; blocks elsewhere are kept for diagnostics. A
+// block is the justify-column line plus the contiguous comment lines
+// that follow it.
 function collectJustifications(dirs) {
+  const files = new Map();
   const blocks = new Map();
   for (const dir of dirs) {
     if (!existsSync(dir)) continue;
     for (const name of readdirSync(dir)) {
       if (!name.endsWith(".sql")) continue;
+      const migration = name.replace(/\.sql$/, "");
       const path = join(dir, name);
+      if (!files.has(migration)) files.set(migration, path);
+      const byKey = new Map();
       const lines = readFileSync(path, "utf8").split("\n");
       for (let i = 0; i < lines.length; i++) {
         const match =
@@ -173,11 +204,13 @@ function collectJustifications(dirs) {
           if (/^\s*--\s*justify-column:/.test(line)) break;
           body.push(line.replace(/^\s*--\s?/, ""));
         }
-        blocks.set(match[1], { text: body.join("\n"), source: path });
+        byKey.set(match[1], { text: body.join("\n"), source: path });
       }
+      if (byKey.size > 0 && !blocks.has(migration))
+        blocks.set(migration, byKey);
     }
   }
-  return blocks;
+  return { files, blocks };
 }
 
 function escapeRegExp(text) {
