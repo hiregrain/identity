@@ -9,7 +9,7 @@ migrations: [0001-migration-infrastructure]
 evidence:
   [
     "log:log/2026-08-19-foundation-02-verification.md",
-    "diff:PR #2 @ 1db47f577163b8f3b78683197e78a58a67c5b4d0",
+    "diff:PR #2 @ 11b1b2f1870fba5842eaa03686548c7a5c5c3ade",
   ]
 verified_by: clean-context-verifier@2026-08-19
 ---

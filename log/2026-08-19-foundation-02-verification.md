@@ -78,3 +78,20 @@ scope item or a declared judgment call.
 ## Verdict
 
 **PASS.** `status: done` and `verified_by` written by this verifier.
+
+## Delta re-verification at the review-fix head
+
+- New head SHA verified: `11b1b2f1870fba5842eaa03686548c7a5c5c3ade`
+  (one commit past `1db47f5`, `fix(foundation/02): neutral names for the
+  duplicate-number red-path fixtures`).
+- Delta contents, exhaustively confirmed against `git diff
+  1db47f5..11b1b2f`: the two duplicate-number red-path fixtures renamed
+  to `spine/0002-redpath-left.sql` and `payload/0002-redpath-right.sql`,
+  with the table names inside neutralized to match
+  (`redpath_left`/`redpath_right`). Nothing else in the diff — no scope
+  creep.
+- Re-runs from a fresh clone at the new head: `make check-red` exit 0,
+  red path 4 failing on `number 0002 used twice under the shared
+  sequence` with the new fixture names; `make check` exit 0
+  ("check: green"). CI at the new head: all seven jobs green.
+- **PASS.** Evidence updated to cite `11b1b2f`.
