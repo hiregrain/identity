@@ -1,0 +1,106 @@
+# CI as a dependency graph (foundation/01). Repo-metadata checks validate
+# files and need no schema, so they run before any database boots; the
+# database chain then gates the language suites. Stages owned by later
+# tasks (typegen --check in foundation/02, schema-dependent checks in
+# foundation/04 and 06) slot into this graph when those tasks land.
+#
+# The go/ts jobs' `needs: [db-migrate]` is ordering only, not a data
+# dependency: every job is an isolated runner, and db-migrate tears its
+# Postgres down before finishing. When foundation/02+ adds Go/TS tests
+# that talk to a database, those jobs must boot their own Postgres
+# (compose or a service container) — they cannot reach db-migrate's.
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  metadata:
+    name: repo metadata (before any database)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 24
+      - run: make metadata
+
+  red-paths:
+    name: red-path fixtures (database stage disabled)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5.6.0
+        with:
+          go-version-file: core/go.mod
+      - uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4.4.0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: make install
+      - run: make check-red
+
+  lint:
+    name: gofmt + prettier + eslint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5.6.0
+        with:
+          go-version-file: core/go.mod
+      - uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4.4.0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: make install
+      - run: make lint
+
+  db-migrate:
+    name: db up + migrate
+    needs: [metadata]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - run: make db-up
+      - run: make migrate
+      - run: make db-down
+
+  go:
+    name: go vet + test
+    needs: [db-migrate]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5.6.0
+        with:
+          go-version-file: core/go.mod
+      - run: make go-check
+
+  ts:
+    name: pnpm typecheck + test
+    needs: [db-migrate]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4.4.0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: make install
+      - run: make ts-check
+
+  # Fan-in: the one status branch protection marks required, so every
+  # stage above is required transitively.
+  all-green:
+    name: all stages green
+    if: always()
+    needs: [metadata, red-paths, lint, db-migrate, go, ts]
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          test "${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') || contains(needs.*.result, 'skipped') }}" = "false"
