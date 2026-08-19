@@ -219,7 +219,7 @@ check-red:
 	! node checks/counts.mjs test/fixtures/redpath/counts
 	@echo "red path 12: a planted FDW migration fails the cross-plane construct check (no database)"
 	! node checks/cross-plane-constructs.mjs test/fixtures/redpath/cross-plane-constructs
-	@echo "red path 8: deletion copy whose day counts drift from the retention config fails the disclosure check (no database)"
+	@echo "red path 13: deletion copy whose day counts drift from the retention config fails the disclosure check (no database)"
 	! node checks/deletion-copy.mjs test/fixtures/redpath/deletion-copy/copy.md test/fixtures/redpath/deletion-copy/policy.json
 	@echo "check-red: all red paths fail as required"
 
