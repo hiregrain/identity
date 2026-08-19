@@ -3,7 +3,7 @@ id: foundation/03
 type: task
 layer: foundation
 satisfies: [1]
-status: ready
+status: in_progress
 depends_on: [foundation/02]
 migrations: [0002-roles-and-default-privileges]
 binds:
