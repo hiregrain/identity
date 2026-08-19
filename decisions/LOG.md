@@ -1237,3 +1237,144 @@ informal and platform work is thin and will need an extension mapped back to it.
 
 **Design.** Light by default, dark fully supported. Core screen order: imprint,
 outstanding verification, work history, sharing, identity.
+
+## 031 — Ingestion is worker-initiated; the employer-push shape is withdrawn (2026-08-19)
+
+Ruled while designing the seam between the identity layer and the hospitality
+vertical. **Supersedes the design considered earlier the same day**, in which
+employers connected their HR systems and Grain held verified employment records
+about people who had not signed up, for those people to claim later.
+
+**The mechanic.** A worker creates a Grain identity themselves. They assert a
+chapter — employer, role, dates — which enters the record as `self_asserted`.
+They then request verification from that employer; the request is timestamped
+and carries a `verification_request_id`. The employer confirms against its own
+roster, through a connected system or a human, and signs an attestation. The
+attestation enters the ledger; the employer's roster row never does.
+
+**Why the earlier shape was withdrawn.** Research filed the same day as
+`research/15` (EU/UK) and `research/16` (US), evidence tier:
+
+- **US, high confidence: the employer-push shape makes Grain a consumer
+  reporting agency.** Pre-claim collection removes the last non-frivolous
+  argument. FTC comment 603(d)(2)(A)(i)-1E holds that a reference communication
+  from an employer is excluded but the same information from a CRA to a
+  potential employer *is* a consumer report — privity runs to the source and
+  does not travel with the data. The market has sorted on this axis: the
+  employer-pushed platforms are CRAs and the one consumer-initiated platform is
+  the only non-CRA claimant. The founder ruled against accepting that
+  classification. **R1 (decision 003) is preserved by changing the mechanic, not
+  by argument.**
+- **EU: no lawful basis for the employer-push shape.** Consent fails twice —
+  sought from the wrong person under Art. 4(11), and unfree in the employment
+  context. Contract fails on the face of Art. 6(1)(b). Legitimate interests
+  fails at the *necessity* limb before balancing, under *KNLTB* C-621/22
+  ¶52–53: a controller who could ask first is not processing out of necessity,
+  and Grain can ask first.
+- **The value was unavailable in any case.** Data protection, competition law,
+  AI Act Art. 26(7) and this repo's own ratified schema independently converge
+  on the same constraint — no employer may read a record it did not supply
+  unless the worker discloses it, and nothing unclaimed may feed analytics.
+  The employer-side flywheel the mechanic existed to create could not have been
+  built from it.
+
+**Consequences.** The ratified rule at `model/attestation-interface.md` — *"A
+person without a ledger ID cannot be attested for; the attestation waits until
+the reference exists"* — is correct as written and needs no amendment. The
+retention question for unclaimed records is moot. Art. 14 becomes ordinary
+Art. 13 notice to a user. Maryland's minimisation standard (Com. Law
+§ 14-4607(b)(1)(i)), which benchmarks collection against a service *requested by
+the consumer to whom the data pertains*, is satisfied rather than fought.
+
+**This narrows decision 028, which is recorded here rather than left implicit.**
+028 ruled that partners write freely with no worker countersign, on the founder's
+reasoning that the employer is inherently more trustworthy. A required
+`verification_request_id` means a party may no longer originate an attestation
+about a subject unprompted. The narrowing is confined to what it must be: **the
+worker initiates the first attestation from a given party; that party writes
+freely thereafter**, within the relationship the worker opened. The countersign
+is still absent — a worker never approves the content of what is written about
+them, only whether the relationship enters their record at all. 028's dispute
+path remains the correction mechanism.
+
+**One tension put before counsel rather than resolved here.** Decision 022
+records that workers do not see when analytics are run on them, as a deliberate
+cost. That is the inverse of the FCRA § 1681g(a)(3)(A)(i) recipient-disclosure
+duty, and if the CRA question is ever litigated it cuts against the
+worker-initiation story. Brief 5 carries it.
+
+**What this does not fix**, and which stands regardless of the mechanic:
+antitrust exposure on multi-employer pooling (brief 6, new); the CPPA ADMT
+compliance date of 1 January 2027 for the ranking surface; Colorado 4 CCR 904-3
+Rule 4.06(D)(4) against R2; and the counsel-brief overlap at 15 U.S.C.
+§ 1681h(e), whose qualified immunity runs only to CRAs — briefs 3 and 4 are
+answering one question without knowing it.
+
+**Open, surfaced this session and unruled.** The two marks collide: the
+hospitality product renders a badge-position glyph whose rings encode trust tier
+("Top trust tier (Mark 2)"), which `mark/README` §4 and decision 027 prohibit
+permanently. The vertical distinguishes four evidence states against the
+interface's three provenance classes. The hospitality trust computation is a
+damped PageRank over a mutable graph, where the interface requires a published
+deterministic rule producing identical marks from identical evidence. The
+production reference questionnaire carries free text, which decision 025 bans.
+The `work_kind` vocabulary conflict between decisions 028 and 006 is still
+unruled and still blocks the vocabulary work.
+
+## 032 — The roster firewall (2026-08-19)
+
+`model/roster-firewall.md` 0.1-PROPOSED, adopted as the working boundary
+document under decision 031. Not ratified.
+
+**The rule.** Roster data serves the employer's operations. It becomes a
+worker's record only when the worker pulls it. What crosses is an attestation,
+never a copy.
+
+Two planes: the vertical plane, where the employer is controller and Grain is a
+processor for the employer's own staffing purpose; and the ledger plane, where
+the worker is subject and Grain is controller. One crossing, at the worker's
+request, carrying a `verification_request_id` that is the auditable evidence of
+initiation.
+
+**Grain may not prompt the crossing from roster knowledge.** Surfacing "this
+employer is connected — is this you?" requires knowing the worker appears on
+that roster. The worker names the employer unprompted, or from a list shown
+identically to everyone. This is the constraint that makes the boundary hold,
+and it is the one most likely to be removed later as a usability improvement.
+
+**Enforcement is mechanical**, five CI checks (RF-1..RF-5), following the
+precedent of Dispatch's AC-04.3 schema-grep and the hospitality product's
+shadow-log promotion gate. A firewall enforced by convention is not a firewall.
+
+**Open**, recorded in the document's §9: the negative-answer case; stale and
+partial rosters, which are probably the common case in hospitality and would
+otherwise read a truthful worker as a liar; the two production schema values
+`method: 'employer_roster'` and `confirmedVia: 'roster_attestation'`, which now
+mean the opposite of what their names imply.
+
+## 033 — Interface amendments 0.2 → 0.3, PROPOSED (2026-08-19)
+
+Two amendments to the ratified contract at `model/attestation-interface.md`.
+**Proposed, not ratified** — ratification is a founder act and has not occurred.
+
+**A-6 — the packet delivers a pairwise pseudonym, not `ledger_person_id`.**
+Decision 028 ruled that partners receive a per-partner pairwise pseudonym and
+that the ledger id never leaves the system, precisely so it cannot become a
+cross-service correlation key. The contract was never updated and still lists
+`ledger_person_id` in the down direction. 028 is later and stronger; the
+contract catches up.
+
+**A-7 — a third `scope` value, `evaluation`.** `scope` currently admits
+`engagement` and `period`, both of which describe work performed. Two objects
+need a scope that does not exist: a manager's structured reference, and a skills
+assessment result. THESIS §5 already records the assessment gap. Both are
+statements of *judgment about a person* rather than records of work, which makes
+them a scope problem and not a fourth provenance class — the source is already
+covered by `party_attested` or `peer_attested`. `evaluation` carries a required
+`evaluation_kind` discriminator (`reference | assessment`) and the same signing,
+supersession and sensitive-data rules as every other attestation.
+
+Rationale for one scope rather than two: the ledger's reason to distinguish them
+is identical — a reader must know that a claim is evaluative before weighing it
+— while the difference between a reference and an assessment is a property of
+the instrument, which the discriminator carries.
