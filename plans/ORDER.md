@@ -62,6 +62,8 @@ reading.
 `verified_by`, plus `milestone` where it applies. Optional, and worth using:
 
 - `soft_depends_on` — work that can start before the dependency lands.
+- `soft_blocks` — the inverse pointer: layers this one informs but does not
+  gate. Advisory, never read by the frontier computation.
 - `gated_criteria` — criteria a `ready` layer knowingly cannot reach yet,
   because the only task that would satisfy them is still `draft`. **Declaring
   it is the point.** The undeclared case is the one that drifts. Adopted on
