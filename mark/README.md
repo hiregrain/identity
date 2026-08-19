@@ -3,7 +3,9 @@
 Status: **PROVISIONAL, 2026-08-18.** The lobe count is explicitly open — see §2.
 Everything here is parameterised so a change of `LOBES` or `BANDS` propagates.
 
-Three objects, one construction. They are routinely confused and must not be:
+One construction, several objects drawn from it. They are routinely confused
+and must not be — the imprint above all, which is a different object entirely
+and varies per person where nothing else here varies at all:
 
 | Object | Job | Varies? |
 |---|---|---|
