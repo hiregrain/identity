@@ -91,6 +91,18 @@ plain-versus-lobed = whether anything about the work is attested · core = a per
 trajectory, `work_kind`, `volume`, resource magnitude. All measured, all stored, all
 belonging to the record and the analytics layer where they can be labelled.
 
+**Thread density is a contrast, never a count — decision 044.** A band is read
+against its neighbours inside one figure. The thread *count* is set by the pitch
+budget at the size and pixel density being drawn, floored at two device pixels,
+so the same record legitimately draws a different number of threads at different
+sizes and on different hardware — 9 / 17 / 27 at dpr 1 / 2 / 3 for one record at
+320px — and the tier fractions survive as ratios rather than as quantities. Nobody counts
+hairlines, and `imprint/README.md` §7.4 records that no human has been tested on
+this channel at all, so an absolute reading never had evidence behind it.
+**Recorded because it degrades an epistemic channel:** below a four-thread budget
+the low and mid corroboration tiers both round to one thread, and corroboration
+falls from three readable states to two. Nothing announces this yet.
+
 **Two constraints that are not negotiable.** The canvas is fixed, because a footprint
 that grows with career length is an age proxy and an age proxy on a hiring surface is a
 discrimination exposure. And radius is cumulative engaged time rather than calendar
@@ -139,11 +151,23 @@ convention; seven reads as a law-enforcement badge to some; eight is the Rub el
 Hizb and the Star of Lakshmi. Treat the count as a choice about *which*
 association is acceptable, not as an escape from the problem.
 
-**Tiers, drawn and never scaled** — scaling the master is what fails. Three
-threaded bands at 80px and above; outer and inner band from 40 to 79, because the
-middle band clogs first; one contour per band from 24 to 39; solid mass with a
-knocked-out counter at 23 and below. **Dark renders stronger than light** at
-everything under ~120px.
+**Tiers, drawn and never scaled** — scaling the master is what fails. **Reduce
+the weave before the bands:** three concentric bands are the mark's identity and
+the threading is only its finish, so a tier drops threads and never a band.
+Three threaded bands at 96px and above, with a per-band fallback to a single
+contour where the pitch rule cannot separate threads; all three bands at one
+contour each from 24 to 95; solid mass with a knocked-out counter at 23 and
+below. **Dark renders stronger than light** at everything under ~120px.
+
+**Corrected 2026-08-19 (decision 044).** This section previously specified
+dropping the outer and inner band from 40 to 79 "because the middle band clogs
+first". `mark.py` has not done that for some time and argues against it in
+source: dropping a band is what makes the mark unrecognisable, and it was the
+wrong order. The code is right and this paragraph was stale; the breakpoints
+above are the ones `tier_for()` actually applies. **The mark's stroke unit is
+sound** — `stroke_for(px)` derives the viewbox stroke from the render size, so
+it lands at 1.00 CSS px at every tier and pitch at 2.2–2.8 CSS px, which is the
+`PITCH_RATIO` defect §2 had and §3 never did.
 
 ### The pointer — and what it must never become
 
@@ -377,8 +401,13 @@ in the identity block. The imprint remains the hero object.
 
 Twelve primitives, each drawn from the figure or the chart:
 
-**From the figure** — the person-mark (every human in the product, attestors
-included, rendered as their own mini-imprint rather than a photo or initials);
+**From the figure** — ~~the person-mark~~ (**deleted 2026-08-19, decision 044**:
+at the 20–28px such a glyph occupies, each band is about two pixels of radius and
+seven lobes cannot separate at any device density, so a unique-but-unreadable
+figure implied a legible identity it could not deliver. **A person is their name
+and their imprint**, composed as one hero on the record screen. Attestor and party
+rows carry the name alone — which decision 007 requires independently, since those
+parties are frequently organisations and organisations are never subjects);
 loading as an arc scribing; progress as a band closing; **selection as the
 meaning-bearing rule (§5), never as weave density**; dividers carrying a faint
 sine modulation at the figure's own frequency; choice controls from the state
@@ -500,8 +529,11 @@ micro-caption band with the record still readable from cache.
    There is no tutorial; the first chapter landing is the teaching. The full
    first-open sequence is `design/06-worker-app-ia.md` §3. The mint/share
    artifact remains open.
-10a. **The imprint has no size tier system, and its stroke is specified in the
-    wrong unit.** §3 established for the mark that scaling the master fails, and
+10a. ~~**The imprint has no size tier system, and its stroke is specified in
+    the wrong unit.**~~ **Closed 2026-08-19 (decision 044) — there is no tier
+    system; the pitch rule carries it.** Numbered 10a because three documents
+    cite it by that label: `design/09`, `plans/app-shell/LAYER.md` and
+    `design/10-worker-app-screens/gen.py`. §3 established for the mark that scaling the master fails, and
     gave it four purpose-drawn tiers. The imprint — whose entire content is
     guilloché pitch — is fluid-scaled and has none.
 
@@ -522,10 +554,21 @@ micro-caption band with the record still readable from cache.
 
     **The rule: the imprint's stroke is expressed in device pixels, never in
     viewbox units.** In SVG that means `vector-effect="non-scaling-stroke"`; in a
-    Skia renderer it means hairline mode. `imprint/imprint.py`'s `STROKE` constant
-    is a viewbox-unit value and its meaning changes accordingly. Thread *counts*
-    are unaffected — the pitch at these band widths clears a device pixel — and
-    drawn tiers are still needed, still untested on hardware.
+    Skia renderer it means hairline mode.
+
+    **Thread counts were NOT unaffected — this entry's last claim was wrong, and
+    044 corrects it.** `PITCH_RATIO` asserted pitch against the stroke in the
+    same viewbox units, and passed: the reference record's outer band carried
+    ten threads at 1.67 units against a required 1.54, which at 296 px is
+    **0.82 CSS px** — adjacent threads less than a pixel apart. Crisper strokes
+    at that spacing merge sooner than pale ones, so fixing the stroke alone made
+    it worse. **Pitch is now floored at two device pixels** — the tightest that
+    resolves as two threads — so the figure is drawn as densely as the hardware
+    carries. **There are no drawn tiers and none are needed**: §3's tiers drop
+    bands, and every band here is somebody's job. The density ceiling is the
+    *depth channel*, not the pixel grid: a two-period phase sweep would buy 1.8x
+    the threads and blur level-attained, so §2's one-period rule stands.
+    Verified through Skia; never verified on a human (`imprint/README.md` §7.4).
 
 10. **Chart grammar for analytics** — hairline, ruled, unfilled, monochrome is a
     gesture rather than a specification.
