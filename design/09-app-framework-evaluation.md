@@ -50,8 +50,8 @@ Canvas and the rasterizer under a PWA are the same code. There is no native
 rendering advantage on the platform that matters most to this population.
 
 **The gesture API.** Decision 037 had already demoted the edge index to an
-accelerator, which is what satisfies `app-shell` criterion 2. The native advocate scored its own
-headline platform argument at zero.
+accelerator, which is what satisfies `app-shell` criterion 2. The native
+advocate scored its own headline platform argument at zero.
 
 **App size.** The 15.8MB-vs-2.0MB download gap between React Native and Kotlin
 Multiplatform on a Huawei P40 Lite is real, but four of five target markets sit in
@@ -98,8 +98,8 @@ Android 14+ applies a documented **non-linear** curve its own docs warn against
 reproducing with a scalar. The web can be scaled but cannot read the setting,
 cannot branch, and applies a single linear multiplier. Against a nine-register
 fixed-px scale with a `nowrap` figure column at iOS AX5's 3.12×, this is the
-acceptance criterion most likely to fail — on the chosen framework. It is carried
-as `app-shell` `app-shell` criterion 4 and it is real work.
+acceptance criterion most likely to fail — on the chosen framework. It is
+carried as `app-shell` criterion 4 and it is real work.
 
 **Haptics**, which also closed an open gap: `.rigid` on iOS is literally the
 seat's semantics, `HapticFeedbackConstants.CONFIRM` on Android. With the
@@ -138,7 +138,7 @@ Recorded because they emerged here and would otherwise be lost:
 
 - **`imprint/README.md` §8's patent clearance lost a limb.** It clears SAP US
   10712908 B2 partly on the ground that "the figure is generated
-  non-interactively." Decision 041 made it interactive. The transpose and
+  non-interactively." Decision 035's expanded imprint made it interactive. The transpose and
   ratings-source arguments stand independently; counsel was told otherwise and
   needs correcting.
 - **Neither IDV vendor permits capture in the host app's chrome**, on any

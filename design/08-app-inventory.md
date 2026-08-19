@@ -30,7 +30,7 @@ rediscover the hard way. Read the resolutions first:
 - **0.3 Dark mode** — ships at v1 as a *second palette*, not a mechanical
   inversion (decision 037). §5's rule does not survive arithmetic.
 - **0.4 Dynamic Type** — still the open engineering problem, now carried by
-  `app-shell` `app-shell` criterion 4. iOS AX5 Body is 3.12× the default; Android 14+ is
+  `app-shell` criterion 4. iOS AX5 Body is 3.12× the default; Android 14+ is
   non-linear and its docs warn against reproducing it with a scalar.
 
 ## 0-original. Four things to settle before building
@@ -119,7 +119,7 @@ figure column has `white-space:nowrap`.
 
 ### E · The attester's side — moved to the web (decision 038)
 
-Decision 041 gave every attester an account, which this document originally
+Decision 035 gave every attester an account, which this document originally
 scoped as six screens inside the app. **Decision 038 withdrew that.** An
 invitation link opens the web attestation flow; the attester creates an account
 and attests there; the app is where they later hold their own record if they
@@ -271,7 +271,7 @@ Nothing can ship in Hindi until a companion face is chosen, and §6's whole
 hierarchy rests on a width axis the fallback stack does not have.
 
 **Notifications.** Per `plans/worker-surface/LAYER.md`, three events: a party
-attested, a grant is about to expire, a dispute deadline. Decision 041 removes
+attested, a grant is about to expire, a dispute deadline. Decision 035 removes
 read events. Each needs written content, and the permission prompt needs a
 moment — asking at launch is the pattern that gets denied.
 

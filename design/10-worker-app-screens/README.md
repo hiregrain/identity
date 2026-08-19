@@ -1,6 +1,6 @@
 # Worker app screens
 
-The nine drawn surfaces of the worker app, as source. Committed on 2026-08-19
+The drawn surfaces of the worker app, as source — one template per screen. Committed on 2026-08-19
 after decision 012's lesson was repeated: the T1 spike artifacts were lost to
 temp-directory cleanup, and these nearly went the same way — they existed only
 in a session scratchpad and a published Artifact.
