@@ -55,14 +55,15 @@
     <span style="display:flex;align-items:center">
       <!-- Sharing is a destination now, not a section buried under the record
            (decision 045). This is its entry point. -->
-      <!-- Sharing is where custody is exercised, so it does not look like the
-           menu's twin: inked, labelled, and carrying the live state. -->
+      <!-- Sharing is where custody is exercised, so it carries more than the menu
+           does — but by ink and by saying a number out loud, not by a box. §8
+           deletes containers; a border here would be the one thing the system
+           forbids, put in to buy prominence it can get honestly. -->
       <button class="press" aria-label="{{ shareLabel }}" onClick="{{ openSharing }}"
               style="min-height:44px;display:flex;align-items:center;gap:7px;
-                     padding:0 12px;margin-right:4px;border:1px solid var(--ink);
-                     border-radius:3px">
-        <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="var(--ink)"
-             stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                     padding:0 10px;margin-right:2px">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="var(--ink)"
+             stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <path d="M10 13 L10 3"/><path d="M6.5 6.5 L10 3 L13.5 6.5"/>
           <path d="M4 11 L4 17 L16 17 L16 11"/>
         </svg>
