@@ -1,8 +1,8 @@
 # CI as a dependency graph (foundation/01; db stages foundation/02).
 # Repo-metadata checks validate files and need no schema, so they run
 # before any database boots; the database chain then gates the language
-# suites. Stages owned by later tasks (schema-dependent checks in
-# foundation/04 and 06) slot into this graph when those tasks land.
+# suites. Stages owned by later tasks (the checks port in foundation/06)
+# slot into this graph when those tasks land.
 #
 # The go/ts jobs' `needs: [db-migrate]` is ordering only, not a data
 # dependency: every job is an isolated runner, and db-migrate tears its
@@ -82,9 +82,20 @@ jobs:
       # privilege inheritance, SECURITY DEFINER bodies, incompatible
       # schema pairs — against both live planes.
       - run: make append-only
-      # The database-dependent red paths: planted schema drift, a planted
-      # unenumerated UPDATE grant, and a planted mutating SECURITY
-      # DEFINER function must each fail their check.
+      # The spine schema lint (foundation/04): live spine columns are
+      # allow-listed domains or justified exceptions.
+      - run: make spine-schema
+      # The residency check (foundation/04): residency_region NOT NULL on
+      # every payload table; no row disagrees with its database.
+      - run: make payload-residency
+      # The physical-split proof (foundation/04): distinct clusters, no
+      # spanning transaction, a role catalog per plane.
+      - run: make two-plane-split
+      # The database-dependent red paths: planted schema drift, planted
+      # grant and SECURITY DEFINER violations, and foundation/04's
+      # planted lint violations (disallowed spine type, unjustified
+      # exception, missing/disagreeing residency) must each fail their
+      # check.
       - run: make check-red-db
       - run: make db-down
 

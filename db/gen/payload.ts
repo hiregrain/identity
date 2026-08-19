@@ -6,10 +6,18 @@
 // when the row shapes coincide.
 export declare const payloadPlane: unique symbol;
 
+/** One row of payload.database_residency. */
+export interface DatabaseResidencyRow {
+  readonly [payloadPlane]: "payload";
+  one_row: boolean;
+  residency_region: string;
+}
+
 /** One row of payload.schema_migrations. */
 export interface SchemaMigrationsRow {
   readonly [payloadPlane]: "payload";
   number: number;
   name: string;
   applied_at: string;
+  residency_region: string;
 }

@@ -8,9 +8,16 @@ package payload
 
 import "time"
 
+// DatabaseResidencyRow is one row of payload.database_residency.
+type DatabaseResidencyRow struct {
+	OneRow          bool
+	ResidencyRegion string
+}
+
 // SchemaMigrationsRow is one row of payload.schema_migrations.
 type SchemaMigrationsRow struct {
-	Number    int32
-	Name      string
-	AppliedAt time.Time
+	Number          int32
+	Name            string
+	AppliedAt       time.Time
+	ResidencyRegion string
 }

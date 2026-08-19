@@ -12,9 +12,9 @@ PSQL_PAYLOAD := $(COMPOSE) exec -T payload psql -v ON_ERROR_STOP=1 -U identity -
 DUMP_SPINE := $(COMPOSE) exec -T spine pg_dump --schema-only --restrict-key=dump -U identity spine
 DUMP_PAYLOAD := $(COMPOSE) exec -T payload pg_dump --schema-only --restrict-key=dump -U identity payload
 
-.PHONY: check check-red check-red-db metadata install lint fmt-check go-check ts-check db-up db-reset migrate migrate-verify typegen typegen-check append-only db-down
+.PHONY: check check-red check-red-db metadata install lint fmt-check go-check ts-check db-up db-reset migrate migrate-verify typegen typegen-check append-only spine-schema payload-residency two-plane-split db-down
 
-check: metadata install lint go-check db-up migrate-verify typegen-check append-only ts-check
+check: metadata install lint go-check db-up migrate-verify typegen-check append-only spine-schema payload-residency two-plane-split ts-check
 	$(COMPOSE) down
 	@echo "check: green"
 
@@ -98,6 +98,23 @@ typegen-check:
 append-only:
 	node test/append-only.test.mjs
 
+# The spine schema lint (foundation/04): every live spine column is an
+# allow-listed domain (db/spine-allow-list.json) or a declared exception
+# whose migration carries the five-question justification block.
+spine-schema:
+	node checks/spine-schema.mjs
+
+# The residency check (foundation/04): every payload table carries
+# residency_region NOT NULL, and no row disagrees with the database's
+# declared region (database authoritative, column checked).
+payload-residency:
+	node checks/payload-residency.mjs
+
+# The physical-split proof (foundation/04): distinct clusters, no
+# spanning transaction, a role catalog per plane.
+two-plane-split:
+	node test/two-plane-split.test.mjs
+
 db-down:
 	$(COMPOSE) down
 
@@ -145,4 +162,23 @@ check-red-db:
 	! node test/append-only.test.mjs
 	echo "DROP FUNCTION planted_definer();" | $(PSQL_PAYLOAD) -f -
 	node test/append-only.test.mjs
+	@echo "red path db 4: a spine column of a type outside the allow-list fails the spine schema lint"
+	echo "CREATE TABLE planted_spine (note text);" | $(PSQL_SPINE) -f -
+	! node checks/spine-schema.mjs
+	echo "DROP TABLE planted_spine;" | $(PSQL_SPINE) -f -
+	@echo "red path db 5: an allow-listed exception column whose migration lacks the justification block fails the spine schema lint (and passes with the block present)"
+	echo "CREATE TABLE planted_exception (blob bytea);" | $(PSQL_SPINE) -f -
+	! node checks/spine-schema.mjs test/fixtures/redpath/spine-schema/allow-list.json db/migrations db/migrations/spine test/fixtures/redpath/spine-schema/without-justification
+	node checks/spine-schema.mjs test/fixtures/redpath/spine-schema/allow-list.json db/migrations db/migrations/spine test/fixtures/redpath/spine-schema/with-justification
+	echo "DROP TABLE planted_exception;" | $(PSQL_SPINE) -f -
+	node checks/spine-schema.mjs
+	@echo "red path db 6: a payload table without residency_region fails the residency check"
+	echo "CREATE TABLE planted_no_residency (id integer PRIMARY KEY);" | $(PSQL_PAYLOAD) -f -
+	! node checks/payload-residency.mjs
+	echo "DROP TABLE planted_no_residency;" | $(PSQL_PAYLOAD) -f -
+	@echo "red path db 7: a row whose residency_region disagrees with its database fails the residency check"
+	echo "INSERT INTO schema_migrations (number, name, residency_region) VALUES (9999, 'planted-disagreement', 'zz');" | $(PSQL_PAYLOAD) -f -
+	! node checks/payload-residency.mjs
+	echo "DELETE FROM schema_migrations WHERE number = 9999;" | $(PSQL_PAYLOAD) -f -
+	node checks/payload-residency.mjs
 	@echo "check-red-db: planted violations fail as required and the databases are left as found"
