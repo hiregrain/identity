@@ -35,6 +35,36 @@
       "column": "applied_at",
       "type": "timestamp with time zone",
       "migration": "0001-migration-infrastructure"
+    },
+    {
+      "table": "cross_plane_outbox",
+      "column": "target_plane",
+      "type": "text",
+      "migration": "0020-cross-plane-outbox"
+    },
+    {
+      "table": "cross_plane_outbox",
+      "column": "instruction",
+      "type": "bytea",
+      "migration": "0020-cross-plane-outbox"
+    },
+    {
+      "table": "cross_plane_outbox_attempts",
+      "column": "attempt",
+      "type": "integer",
+      "migration": "0020-cross-plane-outbox"
+    },
+    {
+      "table": "cross_plane_outbox_attempts",
+      "column": "state",
+      "type": "text",
+      "migration": "0020-cross-plane-outbox"
+    },
+    {
+      "table": "cross_plane_outbox_attempts",
+      "column": "detail",
+      "type": "text",
+      "migration": "0020-cross-plane-outbox"
     }
   ]
 }
