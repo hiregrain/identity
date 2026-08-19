@@ -124,12 +124,34 @@ jobs:
       - run: make install
       - run: make ts-check
 
+  # The envelope acceptance suite (foundation/05): needs a live payload
+  # database AND the Go toolchain, which no existing job pairs; runs in
+  # its own runner with its own Postgres pair (see the header note — no
+  # job can reach another's databases). Once per key provider, swap by
+  # configuration only (make envelope-test).
+  envelope:
+    name: envelope suite (both key providers)
+    needs: [db-migrate]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5.6.0
+        with:
+          go-version-file: core/go.mod
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 24
+      - run: make db-up
+      - run: make migrate
+      - run: make envelope-test
+      - run: make db-down
+
   # Fan-in: the one status branch protection marks required, so every
   # stage above is required transitively.
   all-green:
     name: all stages green
     if: always()
-    needs: [metadata, red-paths, lint, db-migrate, go, ts]
+    needs: [metadata, red-paths, lint, db-migrate, go, ts, envelope]
     runs-on: ubuntu-latest
     steps:
       - run: |
