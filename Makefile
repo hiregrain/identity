@@ -1,20 +1,27 @@
-# Single-command check pipeline (foundation/01). Mirrors the CI dependency
-# graph: repo-metadata checks before any database, then db up -> migrate,
-# then the Go and TS suites. Runs entirely against local containers; no
-# cloud credentials exist or are required.
+# Single-command check pipeline (foundation/01; db stages foundation/02).
+# Mirrors the CI dependency graph: repo-metadata checks before any
+# database, then the two plane databases up -> replay-verified migrations
+# -> typegen check, then the Go and TS suites. Runs entirely against local
+# containers; no cloud credentials exist or are required.
 
 COMPOSE := docker compose
-PSQL := $(COMPOSE) exec -T postgres psql -v ON_ERROR_STOP=1 -U identity -d identity
+PSQL_SPINE := $(COMPOSE) exec -T spine psql -v ON_ERROR_STOP=1 -U identity -d spine
+PSQL_PAYLOAD := $(COMPOSE) exec -T payload psql -v ON_ERROR_STOP=1 -U identity -d payload
+# --restrict-key pins the token pg_dump 18 otherwise randomizes per run,
+# so two dumps of one schema are byte-identical.
+DUMP_SPINE := $(COMPOSE) exec -T spine pg_dump --schema-only --restrict-key=dump -U identity spine
+DUMP_PAYLOAD := $(COMPOSE) exec -T payload pg_dump --schema-only --restrict-key=dump -U identity payload
 
-.PHONY: check check-red metadata install lint fmt-check go-check ts-check db-up migrate db-down
+.PHONY: check check-red check-red-db metadata install lint fmt-check go-check ts-check db-up db-reset migrate migrate-verify typegen typegen-check db-down
 
-check: metadata install lint go-check db-up migrate ts-check
+check: metadata install lint go-check db-up migrate-verify typegen-check ts-check
 	$(COMPOSE) down
 	@echo "check: green"
 
 # Repo-metadata checks: validate files, need no database.
 metadata:
 	node checks/frontmatter.mjs plans
+	node checks/migration-numbers.mjs
 
 install:
 	pnpm install --frozen-lockfile
@@ -24,7 +31,7 @@ fmt-check:
 	if [ -n "$$unformatted" ]; then echo "gofmt needed on:"; echo "$$unformatted"; exit 1; fi
 
 lint: fmt-check
-	pnpm exec prettier --check "checks/**/*.mjs" "eslint.config.mjs" "surfaces/**/*.{ts,tsx,js,json}" --no-error-on-unmatched-pattern
+	pnpm exec prettier --check "checks/**/*.mjs" "db/**/*.mjs" "db/**/*.ts" "eslint.config.mjs" "surfaces/**/*.{ts,tsx,js,json}" --no-error-on-unmatched-pattern
 	pnpm exec eslint .
 
 go-check:
@@ -33,33 +40,64 @@ go-check:
 # workspace-scripts first: `pnpm -r run` silently skips packages without
 # the script, so the check fails any package missing typecheck/test and
 # states explicitly when zero packages matched (allowed while surfaces/
-# is an empty seed).
+# is an empty seed). The db tsconfig covers the generated plane types and
+# the plane-separation test, which live outside the workspace.
 ts-check:
 	node checks/workspace-scripts.mjs
+	pnpm exec tsc -p db/tsconfig.json
 	pnpm -r run typecheck
 	pnpm -r run test
 
 db-up:
 	$(COMPOSE) up -d --wait
 
-# Minimal ordered apply; the real runner with its bookkeeping table is
-# foundation/02. The chain is empty until 02's first migration lands.
+# No volumes are defined, so down && up is a from-empty pair of databases.
+db-reset:
+	$(COMPOSE) down
+	$(COMPOSE) up -d --wait
+
+# The migration runner (db/migrate.mjs): ordered apply recorded in each
+# database's schema_migrations, executing as the table owner.
 migrate:
-	@applied=0; \
-	for f in db/migrations/*.sql; do \
-		[ -e "$$f" ] || continue; \
-		echo "applying $$f"; \
-		$(PSQL) -f - < "$$f" || exit 1; \
-		applied=$$((applied + 1)); \
-	done; \
-	echo "migrate: applied $$applied migration(s)"
+	node db/migrate.mjs spine
+	node db/migrate.mjs payload
+
+# Layer criterion 2's mechanism: both chains replay from empty
+# deterministically, and a second replay is a no-op — proven by schema
+# dumps, not by trusting the runner's own output.
+migrate-verify:
+	@dumps="$$(mktemp -d)"; \
+	$(MAKE) db-reset && $(MAKE) migrate && \
+	$(DUMP_SPINE) > "$$dumps/spine-first.sql" && \
+	$(DUMP_PAYLOAD) > "$$dumps/payload-first.sql" && \
+	second="$$($(MAKE) migrate)" && echo "$$second" && \
+	echo "$$second" | grep -q "migrate(spine): applied 0 migration(s)" && \
+	echo "$$second" | grep -q "migrate(payload): applied 0 migration(s)" && \
+	$(DUMP_SPINE) > "$$dumps/spine-second.sql" && \
+	$(DUMP_PAYLOAD) > "$$dumps/payload-second.sql" && \
+	diff "$$dumps/spine-first.sql" "$$dumps/spine-second.sql" && \
+	diff "$$dumps/payload-first.sql" "$$dumps/payload-second.sql" && \
+	$(MAKE) db-reset && $(MAKE) migrate && \
+	$(DUMP_SPINE) > "$$dumps/spine-replay.sql" && \
+	$(DUMP_PAYLOAD) > "$$dumps/payload-replay.sql" && \
+	diff "$$dumps/spine-first.sql" "$$dumps/spine-replay.sql" && \
+	diff "$$dumps/payload-first.sql" "$$dumps/payload-replay.sql" && \
+	rm -rf "$$dumps" && \
+	echo "migrate-verify: second replay is a no-op and an independent replay from empty produces an identical schema"
+
+typegen:
+	node db/typegen.mjs
+
+typegen-check:
+	node db/typegen.mjs --check
 
 db-down:
 	$(COMPOSE) down
 
 # Red paths: prove each enforcement fails when pointed at a planted
 # violation, without touching the tree the green path checks. No database
-# is booted anywhere near these.
+# is booted anywhere near these; the database-dependent red path is
+# check-red-db below.
 check-red:
 	@echo "red path 1: broken plan file fails the metadata check (no database)"
 	! node checks/frontmatter.mjs test/fixtures/redpath/plans
@@ -69,4 +107,18 @@ check-red:
 	echo "flagged: $$unformatted"
 	@echo "red path 3: TS type error fails tsc"
 	! pnpm exec tsc -p test/fixtures/redpath/ts
+	@echo "red path 4: duplicate migration number across chains fails the numbering check (no database)"
+	! node checks/migration-numbers.mjs test/fixtures/redpath/migrations test/fixtures/redpath/plans
 	@echo "check-red: all red paths fail as required"
+
+# Database-dependent red path: a schema edit without regenerated types
+# must fail typegen --check. Needs migrated databases (make db-up +
+# migrate); plants a table, asserts the failure, drops it, and asserts
+# the check is green again so the databases are left as found.
+check-red-db:
+	@echo "red path db: a table edited without regenerated types fails typegen --check"
+	echo "CREATE TABLE planted_drift (id integer PRIMARY KEY);" | $(PSQL_SPINE) -f -
+	! node db/typegen.mjs --check
+	echo "DROP TABLE planted_drift;" | $(PSQL_SPINE) -f -
+	node db/typegen.mjs --check
+	@echo "check-red-db: schema/typegen drift fails as required"
