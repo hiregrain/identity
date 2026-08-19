@@ -152,3 +152,48 @@ migrations `0003`/`0004`, allow-list, the two checks, the split test,
 red-path fixtures, connection plumbing, comment-only justification edit
 to `0001` with matching allow-list exceptions, regenerated types, and
 CI/Makefile wiring the task called for. No scope creep found.
+
+## Delta re-verification — review-fix head `638a51aa69a4ff426e0190a6662bf7636c86cdef`
+
+One review-fix commit landed after the PASS above (`638a51a`,
+`fix(foundation/04): bind exception justifications to the declared
+migration file; a decoy block elsewhere is not a match`). Re-verified in
+a fresh clone at that SHA; CI green there (run 32306243967, all seven
+checks SUCCESS).
+
+**Delta confirmed exhaustive** — three files, nothing else:
+`checks/spine-schema.mjs` (an exception's justification now resolves
+ONLY from the migration file its `migration` field names, with two
+distinct failures: the declared file absent; the declared file blockless,
+naming any wrong-file block found), the decoy fixture
+`test/fixtures/redpath/spine-schema/decoy/9997-unrelated-decoy.sql`, and
+red path db 5b in the Makefile. A PR comment documents the fix. No scope
+creep.
+
+**Re-run outcomes:**
+- `make check` green end to end at `638a51a` (spine-schema "3 columns
+  checked" present; append-only 18 assertions both planes;
+  two-plane-split 8 assertions).
+- `make check-red-db`: every red path fails as designed, including 5b —
+  the decoy block fails with the message naming the decoy file as "not a
+  match".
+- Verifier's own decoy variant: a real exception
+  (`schema_migrations.number`) re-pointed at
+  `0002-roles-and-default-privileges` (exists, blockless) while its
+  block sits in `0001` → lint exit 1, naming the decoy location
+  (`db/migrations/0001-migration-infrastructure.sql ... is not a
+  match`). Second variant naming a nonexistent migration file → exit 1
+  with the declared-file-absent message. Reverted; baseline green.
+
+**Deviation judged legitimate, not a dodge:** the decoy red path lives
+in `check-red-db` rather than `check-red` because the lint iterates live
+spine columns from `information_schema` — without the planted live
+column, the justification branch is unreachable (the stale-exception
+failure would fire instead, which is a different rule). The placement
+follows from the lint's structure.
+
+**Criterion 8 stands unchanged:** the delta touches no schema — no
+migration, no domain, no column. The adjudication above applies verbatim
+at `638a51a`.
+
+**Verdict at `638a51a`: PASS.**
