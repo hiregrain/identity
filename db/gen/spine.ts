@@ -25,6 +25,14 @@ export interface CrossPlaneOutboxAttemptsRow {
   noted_at: string;
 }
 
+/** One row of spine.deletion_journal. */
+export interface DeletionJournalRow {
+  readonly [spinePlane]: "spine";
+  person_id: string;
+  requester_class: string;
+  recorded_at: string;
+}
+
 /** One row of spine.schema_migrations. */
 export interface SchemaMigrationsRow {
   readonly [spinePlane]: "spine";

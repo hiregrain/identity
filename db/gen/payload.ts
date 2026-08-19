@@ -24,6 +24,27 @@ export interface DekRegistryRow {
   residency_region: string;
 }
 
+/** One row of payload.purge_audit. */
+export interface PurgeAuditRow {
+  readonly [payloadPlane]: "payload";
+  run_id: string;
+  purged_table: string;
+  rows_deleted: string;
+  initiated_by: string;
+  executed_as: string;
+  executed_at: string;
+  residency_region: string;
+}
+
+/** One row of payload.restore_gate. */
+export interface RestoreGateRow {
+  readonly [payloadPlane]: "payload";
+  restore_id: string;
+  event: string;
+  noted_at: string;
+  residency_region: string;
+}
+
 /** One row of payload.schema_migrations. */
 export interface SchemaMigrationsRow {
   readonly [payloadPlane]: "payload";

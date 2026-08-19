@@ -1,0 +1,5 @@
+{
+  "about": "Red-path fixture (make check-red): a policy whose purge_interval_days (7) the copy never states, while the copy states a 90-day window nothing enforces. Never used by the green path.",
+  "backup_retention_days": 30,
+  "purge_interval_days": 7
+}

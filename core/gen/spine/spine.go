@@ -25,6 +25,13 @@ type CrossPlaneOutboxAttemptsRow struct {
 	NotedAt time.Time
 }
 
+// DeletionJournalRow is one row of spine.deletion_journal.
+type DeletionJournalRow struct {
+	PersonId       string
+	RequesterClass string
+	RecordedAt     time.Time
+}
+
 // SchemaMigrationsRow is one row of spine.schema_migrations.
 type SchemaMigrationsRow struct {
 	Number    int32

@@ -24,6 +24,25 @@ type DekRegistryRow struct {
 	ResidencyRegion string
 }
 
+// PurgeAuditRow is one row of payload.purge_audit.
+type PurgeAuditRow struct {
+	RunId           string
+	PurgedTable     string
+	RowsDeleted     int64
+	InitiatedBy     string
+	ExecutedAs      string
+	ExecutedAt      time.Time
+	ResidencyRegion string
+}
+
+// RestoreGateRow is one row of payload.restore_gate.
+type RestoreGateRow struct {
+	RestoreId       string
+	Event           string
+	NotedAt         time.Time
+	ResidencyRegion string
+}
+
 // SchemaMigrationsRow is one row of payload.schema_migrations.
 type SchemaMigrationsRow struct {
 	Number          int32
