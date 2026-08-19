@@ -1,6 +1,6 @@
 # The worker app — information architecture
 
-Settled 2026-08-19 (decision 041). This is what the app *is*: its structure, its
+Settled 2026-08-19 (decision 035). This is what the app *is*: its structure, its
 surfaces, and what sits on each. It is not a spec — `model/record-schema.md`
 owns the fields and `DESIGN.md` owns the grammar.
 
@@ -9,7 +9,7 @@ Companion documents: [`../DESIGN.md`](../DESIGN.md) ·
 this implements) · [`01-banned-patterns.md`](01-banned-patterns.md) ·
 [`../plans/worker-surface/LAYER.md`](../plans/worker-surface/LAYER.md).
 
-Where a ruling here supersedes an earlier document, decision 041 §B says so.
+Where a ruling here supersedes an earlier document, decision 035 §B says so.
 
 ---
 
