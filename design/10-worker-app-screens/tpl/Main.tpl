@@ -13,7 +13,10 @@
     /* the figure spans the plate's full width so its centre is the screen's
        centre; the text column keeps its asymmetric margin, which is fine for
        ragged text and wrong for a circle */
-    .fig{display:block;width:calc(100% + 20px);margin-right:-20px}
+    /* No bleed. `main` reserves a 40px right gutter for the section index; the
+       figure used to take 20px of it back, so the index's rotated labels and
+       ticks were drawn on top of the imprint. */
+    .fig{display:block;width:100%}
     .idx-tick{height:1px;background:var(--rule);transition:width 180ms cubic-bezier(0.2,0,0,1)}
     .sheet{position:absolute;left:0;right:0;bottom:0;background:var(--paper);
            border-top:1px solid var(--ink);padding:20px 20px 24px}
