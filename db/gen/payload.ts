@@ -13,6 +13,17 @@ export interface DatabaseResidencyRow {
   residency_region: string;
 }
 
+/** One row of payload.dek_registry. */
+export interface DekRegistryRow {
+  readonly [payloadPlane]: "payload";
+  person_id: string;
+  event: string;
+  wrapped_dek: Uint8Array | null;
+  key_provider: string;
+  recorded_at: string;
+  residency_region: string;
+}
+
 /** One row of payload.schema_migrations. */
 export interface SchemaMigrationsRow {
   readonly [payloadPlane]: "payload";
