@@ -3,7 +3,7 @@ id: foundation/02
 type: task
 layer: foundation
 satisfies: [2]
-status: ready
+status: in_progress
 depends_on: [foundation/01]
 migrations: [0001-migration-infrastructure]
 evidence: []
