@@ -268,11 +268,20 @@ to reinstate a composite purely for filing is a counsel question. **[GAP]**
 The record is monochrome. There is no accent colour.
 
     ink         #1B2A44   structure, figures, every verified fact
-    paper       #F5F6F3   every surface of record
+    paper       #F8F5EE   every surface of record — warm, see below
     secondary   #5C6878   labels, captions, self-reported material
     rule        #7E8794   any line that carries meaning — state, selection, boundary
     hairline    #D3D7D6   pure separation only: the ledger grid, never a state
-    page        #E6E6E4   behind the paper; app chrome ground
+    page        #E9E5DE   behind the paper; app chrome ground
+
+**The paper is warm and the ink is cool — changed 2026-08-19 (decision 049).**
+Both grounds were faintly green (`#F5F6F3` and `#E6E6E4`, red minus blue of +2),
+which put the whole product on the cold side of neutral and read as clinical
+rather than as an instrument. The grounds are now warm (+10); **the ink and every
+line derived from it stay exactly as they were.** Warm paper under cool ink is
+what printed paper actually looks like, and it costs nothing: measured against
+§12's floors, ink on paper moves 13.25 → 13.20, secondary 5.22 → 5.20, `rule`
+3.35 → 3.34. No accent has been introduced and the state grammar is untouched.
 
 **`rule` versus `hairline` — added 2026-08-19 (design review, `design/07`).** One
 token was doing two jobs and failing one of them. `hairline` on `paper` computes

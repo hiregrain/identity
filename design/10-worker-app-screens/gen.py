@@ -132,6 +132,17 @@ for k, v in {"self_asserted": flat(True), "employment_verified": flat(),
 for name, px in (("mark-28", 28), ("mark-56", 56), ("mark-solid", 20)):
     open(os.path.join(OUT, name + ".svgfrag"), "w").write(mark.tier_for(px)(px))
 open(os.path.join(OUT,"pointer.svgfrag"),"w").write(mark.pointer(28))
+# §9's sine-modulated divider: a rule carrying a faint modulation at the figure's
+# OWN frequency, so a section break is made of the same wave as the imprint.
+# Specified in §9 and never drawn until now.
+def sine_rule(w=320.0, amp=1.15, h=6.0):
+    pts = ["%.1f %.2f" % (w*j/160.0, h/2.0 + amp*math.sin(TAU*LOBES*(j/160.0)))
+           for j in range(161)]
+    return ("<svg viewBox='0 0 %.0f %.0f' width='100%%' height='%.0f' preserveAspectRatio='none' "
+            "fill='none' stroke='#D3D7D6' stroke-width='1' vector-effect='non-scaling-stroke'>"
+            "<path d='M%s'/></svg>") % (w, h, h, " L".join(pts))
+open(os.path.join(OUT,"sine-rule.svgfrag"),"w").write(sine_rule())
+
 # The lockup — mark plus the GRAIN wordmark (§4a). tier_for() inside lockup()
 # swaps the mark to its correct drawn reduction, so this is never a scaled master.
 LOCKUP_MARK_PX = 26

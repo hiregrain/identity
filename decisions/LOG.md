@@ -2467,3 +2467,89 @@ the space the plate footer vacated stays with the record.
 **Revisit when a third peer destination exists.** If **Work** lands, the count is
 three, the traffic pattern changes, and this entry should be reopened rather than
 worked around. Scoped to v1 deliberately.
+
+## 049 — Warm ground, cool ink; §9's texture primitives put to work (2026-08-19)
+
+The drawn record read as stale and cold. Diagnosed rather than restyled: roughly
+half of that is the thesis working — no accent, no elevation, square record
+surfaces, hairlines and an institutional voice are what make this an instrument
+rather than a social product, and `DESIGN.md`'s own summary calls it a banknote
+engraver's system. Banknotes are cold deliberately. The other half was ours.
+
+**The grounds were cool, and are now warm. The ink does not move.** `paper`
+`#F5F6F3` and `page` `#E6E6E4` both carried a red-minus-blue of +2 — faintly
+green — which put every surface on the cold side of neutral. They become
+`#F8F5EE` and `#E9E5DE`, at +10. **Ink, `secondary`, `rule` and `hairline` are
+untouched**, so warm paper sits under cool ink, which is what printed paper
+actually looks like. No accent is introduced and the state grammar is unchanged.
+
+**Measured against §12's floors, it costs nothing:** ink on paper 13.25 → 13.20,
+secondary 5.22 → 5.20, `rule` 3.35 → 3.34, `hairline` still pure separation at
+1.33. Every floor holds with the same headroom it had.
+
+**§9's texture primitives were specified and never drawn.** §9 defines dividers
+carrying a faint sine modulation at the figure's own frequency, and a graticule
+ground; the record screen used the plate and nothing else, which is most of why
+it read as bare. Both are now generated — the divider is a real sine at seven
+lobes, the figure's own frequency, emitted by `gen.py` rather than approximated
+in CSS — and the graticule sits under the figure inside the plate frame at low
+opacity. Nothing new was invented: this is the vocabulary the system already
+had, finally used.
+
+**The demo record stays sparse, deliberately.** It draws eight threads because
+two of its five chapters are unattested, and the founder declined to enrich it:
+a typical worker's record *is* thin, and designing against the best case is how
+a product lies to itself about what it will feel like in a stranger's hand. The
+figure looking faint here is the encoding telling the truth, and the fix for that
+is more attestation, not a better demo.
+
+**Not addressed here, and still open.** The record has no moment that
+acknowledges the person — §10's celebration economy fires on the seat and on an
+attestation landing, and the record at rest has none of it. And `design/07`
+counted 73 of 117 register applications at 12px or smaller, which is why the page
+reads as a form rather than a document. Both are live causes of the same
+complaint.
+
+## 050 — Four calls from the drawn-record review (2026-08-19)
+
+Founder rulings closing the questions 049 left open, plus the scope of the work
+that follows them.
+
+**The record names what changed since you last opened it, and the scribe animates
+only the band that moved.** §10's ceremony fires when an attestation lands and
+the record at rest had nothing, which is the live half of "this feels cold". The
+answer is not a greeting: a record that welcomes you is a record performing. It
+is that *the record is alive*, so it says what moved — a chapter signed, a grant
+about to end — and the figure redraws the one band that changed rather than
+re-scribing the whole thing. When nothing changed it says nothing.
+
+**Press physics belong to `Expanded`, not to the record.** The figure yielding
+under the thumb is aliveness in the object, and §7's rigidity rule — verified
+rows do not compress, because rigidity is how permanence is expressed — makes it
+meaningful rather than decorative. It is confined to the expanded view, where
+inspecting the figure is the task. On the record the figure is a plate you open,
+and a plate that squirms under the thumb is a worse plate.
+
+**Typography gets a full rebalance, not a floor raise.** `design/07` counted 73
+of 117 register applications at 12px or smaller and §6's two display registers
+are barely used — instrument numerals at 40px have **zero** applications across
+ten screens. Raising the floor alone would leave every screen with nothing large
+on it, which is why the product reads as a form rather than a document. Every
+screen gets one thing that is genuinely large, and the display registers §6
+already defines get used.
+
+**Gaps 8 and 13 are drawn.** The employer grant view and the two-tier share
+model — the public page and the expiring full-record link — plus the reduced page
+a crawler or logged-out visitor receives. Until they exist, `Sharing`'s controls
+are inert and `Public` carries two surfaces marked NOT DRAWN, so the destination
+045 created cannot be judged.
+
+**The account glyph stays a person pictogram.** Raised against it: §9's
+person-mark was deleted on the ground that a per-person figure implies a
+legibility it cannot deliver, and this product otherwise refuses to draw people.
+The founder ruled it fine, and the distinction holds — the deletion was about
+representing a *specific* person, where this is generic chrome pointing at your
+own account, and the pictogram is what makes it readable on sight.
+
+**Dark mode is explicitly out of this run** (gap 6, decision 037), and stays
+outstanding.

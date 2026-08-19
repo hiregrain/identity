@@ -16,7 +16,7 @@ import math
 
 TAU = 2.0 * math.pi
 INK = "#1B2A44"
-PAPER = "#F5F6F3"
+PAPER = "#F8F5EE"
 VIEWBOX = 600.0
 CENTRE = VIEWBOX / 2.0
 
@@ -27,6 +27,7 @@ BANDS = (                       # (mid radius, amplitude, sweep direction)
     (264.0, 30.0, +1),
 )
 PITCH_RATIO = 2.2               # thread pitch must exceed stroke by this factor or they fuse
+SAMPLE_PX = 1.5                 # chord length target when a render size is known
 SWEEP_PERIODS = 2               # how many lobe periods delta sweeps. The family's radial
                                 # spread is 2*a*sin(m*pi/k): at m=1 that is only 0.87a, which
                                 # is why the weave looked thin. m=2 gives 1.56a — nearly twice
@@ -48,7 +49,20 @@ def _amplitude_at(t: float, amp: float, broken: bool) -> float:
     return amp * (1.0 + BREAK_AMOUNT * math.exp(-(d * d) / (2 * BREAK_WIDTH ** 2)))
 
 
-def contour(R, amp, phase=0.0, broken=False, samples=560, t0=0.0, t1=TAU):
+def contour(R, amp, phase=0.0, samples=None, broken=False, t0=0.0, t1=TAU, px=None):
+    """One contour. `samples` follows the drawn arc length when `px` is given.
+
+    A fixed count is the defect `imprint.py` carried until decision 044: at 560
+    points a 28px glyph ships 560 vertices per band, ~16 KB of path data for a
+    lockup, while at large sizes the same count facets. Sampling by arc length
+    holds a chord near SAMPLE_PX device pixels at any size.
+    """
+    if samples is None:
+        if px is None:
+            samples = 560
+        else:
+            arc = (t1 - t0) * (R + amp) * (px / VIEWBOX)
+            samples = int(min(560, max(48, arc / SAMPLE_PX)))
     pts = []
     for j in range(samples + 1):
         t = t0 + (t1 - t0) * j / samples
@@ -58,7 +72,7 @@ def contour(R, amp, phase=0.0, broken=False, samples=560, t0=0.0, t1=TAU):
     return "M" + " L".join(pts) + closed
 
 
-def threads(R, amp, direction, weight, broken=False, pitch=PITCH_RATIO):
+def threads(R, amp, direction, weight, broken=False, pitch=PITCH_RATIO, px=None):
     """Threads at a pitch that actually separates them. Returns None if it cannot:
     the caller falls back to a single contour rather than drawing mush."""
     span = SWEEP_PERIODS * TAU / LOBES
@@ -67,7 +81,7 @@ def threads(R, amp, direction, weight, broken=False, pitch=PITCH_RATIO):
     if n < 3:
         return None
     return "".join(
-        "<path d='%s'/>" % contour(R, amp, direction * i * span / n, broken)
+        "<path d='%s'/>" % contour(R, amp, direction * i * span / n, broken=broken, px=px)
         for i in range(n)
     )
 
@@ -92,24 +106,25 @@ def tier_full(px, broken=True):
     w = stroke_for(px)
     parts = []
     for R, a, d in BANDS:
-        t = threads(R, a, d, w, broken)
-        parts.append(t if t is not None else "<path d='%s'/>" % contour(R, a, 0.0, broken))
+        t = threads(R, a, d, w, broken, px=px)
+        parts.append(t if t is not None else "<path d='%s'/>" % contour(R, a, 0.0, broken=broken, px=px))
     return "<g fill='none' stroke='%s' stroke-width='%.2f'>%s</g>" % (INK, w, "".join(parts))
 
 
 def tier_contour(px, broken=True):
-    """24-149px. Three bands, one contour each, no weave. Band count holds."""
+    """24-95px, per tier_for(). Three bands, one contour each, no weave."""
     w = stroke_for(px, 1.25)
     return "<g fill='none' stroke='%s' stroke-width='%.2f'>%s</g>" % (
         INK, w,
-        "".join("<path d='%s'/>" % contour(R, a, 0.0, broken) for R, a, _ in reversed(BANDS)))
+        "".join("<path d='%s'/>" % contour(R, a, 0.0, broken=broken, px=px)
+                for R, a, _ in reversed(BANDS)))
 
 
 def tier_solid(px, broken=True):
     """<= 23px. Mass, not line."""
     return "<path d='%s %s' fill='%s' fill-rule='evenodd'/>" % (
-        contour(BANDS[2][0], BANDS[2][1] * 0.9, 0.0, broken),
-        contour(BANDS[0][0] + 6, BANDS[0][1] * 0.9, 0.0, broken), INK)
+        contour(BANDS[2][0], BANDS[2][1] * 0.9, 0.0, broken=broken, px=px),
+        contour(BANDS[0][0] + 6, BANDS[0][1] * 0.9, 0.0, broken=broken, px=px), INK)
 
 
 def tier_for(px):
@@ -131,8 +146,8 @@ def pointer(px, weight=None):
     w = weight if weight is not None else stroke_for(px, 0.85)
     return "<g fill='none' stroke='%s' stroke-width='%.2f'>%s%s</g>" % (
         INK, w,
-        "<path d='%s'/>" % contour(240.0, 40.0, 0.0),
-        "<path d='%s'/>" % contour(106.0, 38.0, math.pi / LOBES))
+        "<path d='%s'/>" % contour(240.0, 40.0, 0.0, px=px),
+        "<path d='%s'/>" % contour(106.0, 38.0, math.pi / LOBES, px=px))
 
 
 # ------------------------------------------------------------------ output

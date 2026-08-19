@@ -169,3 +169,73 @@ foundation's criteria list) → FAIL at the planted line, naming CLAUDE.md.
 | AC 1 (mechanical): full run green on the real repo; correct frontier for the synthetic tree | PASS — re-run; frontier hand-derived and matched |
 | AC 2: each check fails a planted violation, one fixture per check, in CI | PASS — CI red-path jobs green at the SHA; both suites re-run locally; seven verifier-planted violations all caught |
 | AC 3 (mechanical): metadata group completes with no database | PASS — re-run with compose down |
+
+## Delta re-verification at the review-fix and integration head
+
+- Final head SHA verified: `bd9e97703b82f9d2bcbfa234ce8f538486117719`
+  (supersedes `97b90f1` above as the verified SHA). CI fully green at
+  this head, including the metadata and red-path jobs.
+- Verdict: **PASS** — every hunk in `97b90f1..bd9e977` partitions into
+  the three permitted buckets; nothing outside them.
+
+**Bucket partition.** The branch's own delta is one commit plus two
+merges:
+
+- *(a) Review fixes* — `29f1c34`, exactly as described: red path 1 now
+  writes the frontmatter failures to a file and red path 1b greps for
+  every foundation/06 validation message by name; new fixture
+  `test/fixtures/redpath/plans/broken-layer/03-done-unevidenced.md`
+  (done with empty evidence and null verified_by — both completion
+  rules); check-red-db gains a green path exercising
+  `node checks/run.mjs --schema` and the bare form, asserting the
+  frontier prints exactly once. Touches only the Makefile and the new
+  fixture.
+- *(b) Faithful main content* — everything else in the range arrived via
+  the merges `b9d237b` and `bd9e977` and is verbatim main (foundation/05
+  PR #5, the foundation/07 chain and PR #7, decisions 046–048, design
+  commits, the soft_blocks docs fix, the foundation/08 claim).
+  `--remerge-diff` on both merges shows hand-resolution confined to the
+  Makefile (merge 1) and Makefile + `checks/run.mjs` (merge 2); every
+  other file auto-merged.
+- *(c) Conflict resolutions* — unions, with nothing dropped: merge 1
+  keeps `scored-columns` (branch) alongside `envelope-test` (main);
+  merge 2 keeps both alongside `cross-plane-constructs`/
+  `cross-plane-outbox` (main), renumbers main's red path 7 → 12 and
+  db 8/8b → 9/9b, and — the coverage question — moves main's
+  `cross-plane-constructs.mjs` metadata-target line into the runner's
+  METADATA group in `checks/run.mjs`, so the check runs in
+  `make metadata` via the runner rather than being dropped. Set-diff of
+  Makefile targets and CI jobs/steps: the merged head is the exact union
+  of both parents on both counts (`scored-columns` retained in
+  db-migrate; `outbox` and `envelope` jobs retained from main).
+
+**Re-runs in a fresh clone at `bd9e977`** (ports override as before):
+
+- `make check-red` → exit 0; every red path 1b grep observed hitting its
+  message.
+- *The blocking fix proven by gutting*: with the empty-evidence
+  validation disabled in the clone's `frontmatter.mjs`, red path 1
+  still passes (the fixture trips other rules) but red path 1b fails at
+  exactly the `status done with empty evidence` grep — the per-message
+  greps catch what the aggregate exit code provably cannot. Restored;
+  green again.
+- `make check-red-db` → exit 0, including the new green path
+  (`--schema` group green; bare run's frontier printed exactly once).
+- `node checks/run.mjs` (bare, both planes up) → all checks green,
+  `cross-plane-constructs` now in the metadata group, frontier prints
+  `claimed (in_progress): foundation/08` — the correct queue now that
+  foundation/05, /06 and /07 are done and /08 is claimed.
+- `make check` → green end to end.
+
+**Judgment call in the PR body** — the invented `checks(pipeline)` scope
+is recorded there as an accepted deviation from the derived-names rule;
+it is disclosure, not drift, and the commit type itself (`checks`) is in
+the closed vocabulary. Accepted.
+
+**Recording note.** At recording time the main checkout carried six
+unpushed docs commits from a parallel design session
+(`3d616b4..c402ece`, decisions 049–050 and design prose). Binding prose
+goes straight to main by rule, a fast-forward push loses nothing, and an
+unpushed verification record would break the links this file's evidence
+carries — so this record's push carries them. Surfaced here and in the
+verifier's report rather than silently.

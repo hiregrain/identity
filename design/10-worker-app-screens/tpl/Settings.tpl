@@ -14,7 +14,11 @@
   </style>
 </helmet>
 
-<div style="width:360px;height:800px;position:relative;overflow:hidden;background:var(--paper)">
+<!-- Fluid in both axes: the record fills whatever safe area it is given, and
+     min-height carries the standalone case where height:100% has no sized
+     ancestor and would collapse to zero. 728 is the common safe box across
+     iOS (778) and Android (728). Decision 046. -->
+<div style="width:100%;height:100%;min-height:728px;position:relative;overflow:hidden;background:var(--paper)">
   <header style="height:52px;display:flex;align-items:center;justify-content:space-between;
                  padding:0 20px;border-bottom:1px solid var(--hairline);position:relative;z-index:3;
                  background:var(--paper)">
@@ -25,7 +29,7 @@
     </button>
   </header>
 
-  <main style="position:absolute;top:52px;bottom:26px;left:0;right:0;overflow-y:auto;padding:0 20px 40px">
+  <main style="position:absolute;top:52px;bottom:0;left:0;right:0;overflow-y:auto;padding:0 20px 40px">
     <sc-for list="{{ groups }}" as="g" hint-placeholder-count="5">
       <div class="grp">
         <h2 class="t-micro" style="display:block;color:var(--secondary);padding-bottom:6px;
@@ -65,12 +69,6 @@
     </div>
   </main>
 
-  <footer style="position:absolute;left:0;right:0;bottom:0;height:26px;display:flex;
-                 align-items:center;justify-content:space-between;padding:0 20px;
-                 border-top:1px solid var(--hairline);background:var(--paper);z-index:2">
-    <span class="t-micro" style="color:var(--secondary)">Grain</span>
-    <span class="t-data" style="color:var(--secondary);font-size:11px">Version 1.0</span>
-  </footer>
 </div>
 </x-dc>
 

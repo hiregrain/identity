@@ -12,20 +12,17 @@ PSQL_PAYLOAD := $(COMPOSE) exec -T payload psql -v ON_ERROR_STOP=1 -U identity -
 DUMP_SPINE := $(COMPOSE) exec -T spine pg_dump --schema-only --restrict-key=dump -U identity spine
 DUMP_PAYLOAD := $(COMPOSE) exec -T payload pg_dump --schema-only --restrict-key=dump -U identity payload
 
-.PHONY: check check-red check-red-db metadata install lint fmt-check go-check ts-check db-up db-reset migrate migrate-verify typegen typegen-check append-only spine-schema payload-residency two-plane-split envelope-test cross-plane-constructs cross-plane-outbox deletion-test db-down
+.PHONY: check check-red check-red-db metadata install lint fmt-check go-check ts-check db-up db-reset migrate migrate-verify typegen typegen-check append-only spine-schema payload-residency scored-columns two-plane-split envelope-test cross-plane-constructs cross-plane-outbox deletion-test db-down
 
-check: metadata install lint go-check db-up migrate-verify typegen-check append-only spine-schema payload-residency two-plane-split envelope-test cross-plane-constructs cross-plane-outbox deletion-test ts-check
+check: metadata install lint go-check db-up migrate-verify typegen-check append-only spine-schema payload-residency scored-columns two-plane-split envelope-test cross-plane-constructs cross-plane-outbox deletion-test ts-check
 	$(COMPOSE) down
 	@echo "check: green"
 
-# Repo-metadata checks: validate files, need no database.
+# Repo-metadata checks: validate files, need no database. The runner
+# (checks/run.mjs, foundation/06) owns the group's membership and prints
+# the workable frontier after a green run.
 metadata:
-	node checks/frontmatter.mjs plans
-	node checks/migration-numbers.mjs
-	node checks/serving-credentials.mjs
-	node checks/cross-schema-queries.mjs
-	node checks/cross-plane-constructs.mjs
-	node checks/deletion-copy.mjs
+	node checks/run.mjs --metadata
 
 install:
 	pnpm install --frozen-lockfile
@@ -112,6 +109,13 @@ spine-schema:
 payload-residency:
 	node checks/payload-residency.mjs
 
+# The schema-grep check (foundation/06): no fact-table column on either
+# plane stores a capability, tier, trajectory, reliability, trust, or
+# weighting judgment about a person (decision 025 withdrew the last
+# licensed use).
+scored-columns:
+	node checks/scored-columns.mjs
+
 # The physical-split proof (foundation/04): distinct clusters, no
 # spanning transaction, a role catalog per plane.
 two-plane-split:
@@ -165,7 +169,19 @@ db-down:
 # check-red-db below.
 check-red:
 	@echo "red path 1: broken plan file fails the metadata check (no database)"
-	! node checks/frontmatter.mjs test/fixtures/redpath/plans
+	! node checks/frontmatter.mjs test/fixtures/redpath/plans > /tmp/frontmatter-red.out 2>&1
+	@echo "red path 1b: every foundation/06 validation is individually proven to fire (an aggregate exit code proves only the oldest rule)"
+	grep -F 'status "shipped" is outside the ORDER.md vocabulary' /tmp/frontmatter-red.out
+	grep -F 'id "broken-layer/99" does not match its path-derived id' /tmp/frontmatter-red.out
+	grep -F 'layer "other-layer" does not match its directory' /tmp/frontmatter-red.out
+	grep -F 'field "priority" is outside the ORDER.md vocabulary for a task' /tmp/frontmatter-red.out
+	grep -F 'depends_on entry "not a ref" is not a <layer>/<NN> reference' /tmp/frontmatter-red.out
+	grep -F 'satisfies entry "first" is not a criterion number' /tmp/frontmatter-red.out
+	grep -F 'evidence entry "screenshot:proof.png" is not <kind>:<ref>' /tmp/frontmatter-red.out
+	grep -F 'verified_by "someone, probably" is neither null nor' /tmp/frontmatter-red.out
+	grep -F 'status done with empty evidence' /tmp/frontmatter-red.out
+	grep -F 'status done with verified_by null' /tmp/frontmatter-red.out
+	rm /tmp/frontmatter-red.out
 	@echo "red path 2: misformatted Go file fails gofmt"
 	@unformatted="$$(gofmt -l test/fixtures/redpath/go)"; \
 	if [ -z "$$unformatted" ]; then echo "fixture unexpectedly clean"; exit 1; fi; \
@@ -178,7 +194,30 @@ check-red:
 	! node checks/serving-credentials.mjs test/fixtures/redpath/serving
 	@echo "red path 6: planted query touching both members of a declared incompatible schema pair fails the cross-schema lint (no database)"
 	! node checks/cross-schema-queries.mjs test/fixtures/redpath/cross-schema/pairs.json test/fixtures/redpath/cross-schema/queries
-	@echo "red path 7: a planted FDW migration fails the cross-plane construct check (no database)"
+	@echo "red path 7: dependency cycles and a dangling reference fail the plan-graph check (no database)"
+	! node checks/plan-graph.mjs test/fixtures/redpath/plan-graph/plans
+	@echo "red path 7b: the plan-graph frontier is computed correctly for the synthetic fixture tree (workable and blocked both asserted)"
+	node checks/plan-graph.mjs test/fixtures/frontier/plans > /tmp/frontier-fixture.out
+	grep -qx "  alpha/02" /tmp/frontier-fixture.out
+	grep -qx "  beta/01" /tmp/frontier-fixture.out
+	grep -q "^blocked: alpha/03 — alpha/02 is ready" /tmp/frontier-fixture.out
+	grep -q "^blocked: beta/02 — epsilon/01 is unauthored" /tmp/frontier-fixture.out
+	grep -q "^blocked: delta/01 — layer gate: alpha is not done" /tmp/frontier-fixture.out
+	! grep -qx "  delta/01" /tmp/frontier-fixture.out
+	rm /tmp/frontier-fixture.out
+	@echo "red path 8: a duplicate entry number, an unmarked gap, and a contradicted never-assigned marker each fail the decisions-index check; a marked gap passes (no database)"
+	! node checks/decisions-index.mjs test/fixtures/redpath/decisions/duplicate.md
+	! node checks/decisions-index.mjs test/fixtures/redpath/decisions/unmarked-gap.md
+	! node checks/decisions-index.mjs test/fixtures/redpath/decisions/contradicted-marker.md
+	node checks/decisions-index.mjs test/fixtures/greenpath/decisions-marked-gap.md
+	@echo "red path 9: a migration referencing an object a higher-numbered migration creates fails the ordering check (no database)"
+	! node checks/migration-order.mjs test/fixtures/redpath/migration-order
+	@echo "red path 10: a labeled blockquote that drifted from its source fails the verbatim check; an exact copy with a marked splice passes (no database)"
+	! node checks/verbatim-copies.mjs test/fixtures/redpath/verbatim
+	node checks/verbatim-copies.mjs test/fixtures/greenpath/verbatim
+	@echo "red path 11: a hand-written count adjacent to an enumerable structure fails the counts check (no database)"
+	! node checks/counts.mjs test/fixtures/redpath/counts
+	@echo "red path 12: a planted FDW migration fails the cross-plane construct check (no database)"
 	! node checks/cross-plane-constructs.mjs test/fixtures/redpath/cross-plane-constructs
 	@echo "red path 8: deletion copy whose day counts drift from the retention config fails the disclosure check (no database)"
 	! node checks/deletion-copy.mjs test/fixtures/redpath/deletion-copy/copy.md test/fixtures/redpath/deletion-copy/policy.json
@@ -228,16 +267,26 @@ check-red-db:
 	! node checks/payload-residency.mjs
 	echo "DELETE FROM schema_migrations WHERE number = 9999;" | $(PSQL_PAYLOAD) -f -
 	node checks/payload-residency.mjs
-	@echo "red path db 8: a cross-database extension created live fails the cross-plane construct check"
+	@echo "red path db 8: a planted column carrying a judgment token fails the scored-columns check on either plane"
+	echo "CREATE TABLE planted_judgment (person_ref integer, trust_score integer, residency_region text NOT NULL DEFAULT 'us');" | $(PSQL_PAYLOAD) -f -
+	! node checks/scored-columns.mjs
+	echo "DROP TABLE planted_judgment;" | $(PSQL_PAYLOAD) -f -
+	node checks/scored-columns.mjs
+	@echo "green path db: the runner's --schema group and bare form both work while the databases are up, and the bare run prints the frontier exactly once"
+	node checks/run.mjs --schema
+	node checks/run.mjs > /tmp/run-bare.out
+	test "$$(grep -c '^frontier (' /tmp/run-bare.out)" = "1"
+	rm /tmp/run-bare.out
+	@echo "red path db 9: a cross-database extension created live fails the cross-plane construct check"
 	echo "CREATE EXTENSION postgres_fdw;" | $(PSQL_SPINE) -f -
 	! node checks/cross-plane-constructs.mjs --live
 	echo "DROP EXTENSION postgres_fdw;" | $(PSQL_SPINE) -f -
-	@echo "red path db 8b: a foreign server on the OTHER plane also fails it (the catalog net, not just the extension list)"
+	@echo "red path db 9b: a foreign server on the OTHER plane also fails it (the catalog net, not just the extension list)"
 	echo "CREATE EXTENSION postgres_fdw; CREATE SERVER planted_server FOREIGN DATA WRAPPER postgres_fdw;" | $(PSQL_PAYLOAD) -f -
 	! node checks/cross-plane-constructs.mjs --live
 	echo "DROP SERVER planted_server; DROP EXTENSION postgres_fdw;" | $(PSQL_PAYLOAD) -f -
 	node checks/cross-plane-constructs.mjs --live
-	@echo "red path db 9: a DELETE grant to the purge role on an unlicensed table fails the append-only standing proof"
+	@echo "red path db 10: a DELETE grant to the purge role on an unlicensed table fails the append-only standing proof"
 	echo "GRANT DELETE ON restore_gate TO identity_purge;" | $(PSQL_PAYLOAD) -f -
 	! node test/append-only.test.mjs
 	echo "REVOKE DELETE ON restore_gate FROM identity_purge;" | $(PSQL_PAYLOAD) -f -

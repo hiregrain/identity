@@ -19,12 +19,17 @@
   </style>
 </helmet>
 
-<div style="width:360px;height:800px;position:relative;overflow:hidden;background:var(--paper)">
+<!-- Fluid in both axes: the record fills whatever safe area it is given, and
+     min-height carries the standalone case where height:100% has no sized
+     ancestor and would collapse to zero. 728 is the common safe box across
+     iOS (778) and Android (728). Decision 046. -->
+<div style="width:100%;height:100%;min-height:728px;position:relative;overflow:hidden;background:var(--paper)">
 
   <header style="height:52px;display:flex;align-items:center;gap:10px;padding:0 20px;
                  border-bottom:1px solid var(--hairline);position:relative;z-index:2;background:var(--paper)">
-    <svg viewBox="0 0 600 600" width="28" height="28" aria-label="Grain">@@MARK28@@</svg>
-    <span class="t-serial">Work record</span>
+    <!-- The lockup: mark plus the GRAIN wordmark (§4a), generated so the mark
+         swaps to its drawn reduction rather than scaling a master. -->
+    <svg viewBox="0 0 160 26" width="160" height="26" role="img" aria-label="Grain">@@LOCKUP@@</svg>
   </header>
 
   <main style="position:absolute;top:52px;bottom:196px;left:0;right:0;overflow-y:auto;padding:0 20px 24px">
@@ -60,19 +65,13 @@
   </main>
 
   <!-- résumé-parsed chapters need the worker's confirmation before commit (schema §2) -->
-  <div style="position:absolute;left:0;right:0;bottom:26px;padding:16px 20px;background:var(--paper);
+  <div style="position:absolute;left:0;right:0;bottom:0;padding:16px 20px;background:var(--paper);
               border-top:1px solid var(--ink);z-index:2">
     <p class="t-body" style="margin:0 0 12px;text-wrap:pretty">
       Read from your résumé. Nothing here is confirmed, and none of it counts until it is.</p>
     <button class="btn-primary press">Commit these 5 chapters</button>
   </div>
 
-  <footer style="position:absolute;left:0;right:0;bottom:0;height:26px;display:flex;
-                 align-items:center;justify-content:space-between;padding:0 20px;
-                 border-top:1px solid var(--hairline);background:var(--paper);z-index:2">
-    <span class="t-micro" style="color:var(--secondary)">Append only</span>
-    <span class="t-micro" style="color:var(--secondary)">Not committed</span>
-  </footer>
 </div>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>

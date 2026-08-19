@@ -17,7 +17,7 @@ TAU = 2.0 * math.pi
 
 # ---------------------------------------------------------------- constants
 INK = "#1B2A44"
-PAPER = "#F5F6F3"
+PAPER = "#F8F5EE"
 VIEWBOX = 600.0
 CENTRE = VIEWBOX / 2.0
 

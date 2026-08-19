@@ -1,8 +1,8 @@
-# CI as a dependency graph (foundation/01; db stages foundation/02).
-# Repo-metadata checks validate files and need no schema, so they run
-# before any database boots; the database chain then gates the language
-# suites. Stages owned by later tasks (the checks port in foundation/06)
-# slot into this graph when those tasks land.
+# CI as a dependency graph (foundation/01; db stages foundation/02,
+# checks port foundation/06). Repo-metadata checks validate files and
+# need no schema, so they run before any database boots — `make
+# metadata` is `node checks/run.mjs --metadata`, which also prints the
+# workable frontier; the database chain then gates the language suites.
 #
 # The go/ts jobs' `needs: [db-migrate]` is ordering only, not a data
 # dependency: every job is an isolated runner, and db-migrate tears its
@@ -88,6 +88,10 @@ jobs:
       # The residency check (foundation/04): residency_region NOT NULL on
       # every payload table; no row disagrees with its database.
       - run: make payload-residency
+      # The schema-grep check (foundation/06): no fact-table column on
+      # either plane stores a capability, tier, trajectory, reliability,
+      # trust, or weighting judgment about a person.
+      - run: make scored-columns
       # The physical-split proof (foundation/04): distinct clusters, no
       # spanning transaction, a role catalog per plane.
       - run: make two-plane-split
