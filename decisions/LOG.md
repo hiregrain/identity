@@ -2155,3 +2155,136 @@ audit. The delegation is scoped: it covers `foundation/01`–`08` and expires
 when the layer closes. Any PR carrying an unresolved judgment call still
 waits for the founder. Raises park the task and the run continues where
 dependencies allow; they batch to the founder rather than pausing the run.
+
+## 044 — The imprint's density channel: relative, adaptive, and two states at small sizes (2026-08-19)
+
+Gap 10a asked where the imprint's drawn size tiers fall. Measuring the
+question dissolved it and exposed a larger one underneath, in the channel
+rather than the drawing.
+
+**The pitch rule was correct in a unit that never reaches the screen.**
+`imprint.py`'s `PITCH_RATIO = 2.2` is asserted against `STROKE` in viewbox
+units, and it passes: the dense reference record's outermost band carries ten
+threads at 1.67 units of pitch against a required 1.54. At the 296 px the
+core screen actually renders, that pitch is **0.82 CSS px** with a 0.35 px
+stroke — adjacent threads less than one pixel apart, which is why the band
+paints as a dark ring rather than as threads. This is the defect gap 10a
+already found in the *stroke*, one level up, and fixing the stroke alone
+makes it worse: crisper strokes at sub-pixel spacing merge sooner than pale
+ones do. Measured across the same record at 296 px, the four bands draw
+2 / 7 / 4 / 10 threads into budgets of 1 / 5 / 5 / 8 at dpr 2 and
+0 / 2 / 2 / 4 at dpr 1.
+
+**Thread density is a contrast, never a count.** §2 assigns density to
+corroboration tier. Nobody counts ten hairlines, `imprint/README.md` §7.4
+records that no human has ever been tested on this channel at size, and no
+absolute reading has ever had evidence behind it. Density is therefore read
+*relatively* — a band against its neighbours inside one figure — and
+`TIER_FRACTION`'s 1.0 / 0.5 / 0.18 is preserved as a ratio of whatever budget
+the size allows. A thread count is not a claim and never travels between
+figures or between sizes.
+
+**Recorded consequence, because it degrades an epistemic channel:** below a
+four-thread budget the low tier (0.18) and the mid tier (0.5) both round to
+one thread. Corroboration goes from three distinguishable states to two, on
+small surfaces, silently. Nothing in the encoding announces this and nothing
+yet decides what should. It is named here so it is not discovered again.
+
+**Thread count follows the rendered size, and there are no drawn tiers.**
+Decision 037 computes the imprint on-device from the record, and 040 renders
+it through Skia, whose `setStrokeWidth(0)` is one device pixel at any scale.
+The renderer knows the size at draw time and sets the count from a pitch
+budget. This supersedes gap 10a's call for purpose-drawn tiers in §3's sense:
+§3's tiers exist because the mark carries no data, so a band may be dropped;
+every band of the imprint is an engagement, and dropping one drops a person's
+job from their own record. One rule at every size.
+
+**Pitch is floored at two device pixels, and the figure is drawn as densely
+as the hardware can carry.** Two candidate floors were rendered through the
+Skia harness. Fixing pitch in *apparent* size (two CSS pixels) makes one record
+identical on every screen, at the cost of leaving most of the available
+resolution unused on the 2x and 3x hardware this population actually holds.
+Fixing it at two *device* pixels — the tightest pitch that can resolve as two
+threads at all — draws 9 / 17 / 27 threads at dpr 1 / 2 / 3 for the same 320 px
+on screen, and the rendered figure reads as engraving at 2x and 3x where the
+CSS-floored one reads as contour lines. **The founder call is density: the
+device floor.** Under this entry's own rule that is honest — density is a
+contrast between bands within one figure, never a count, so it does not have to
+be equal across devices to mean the same thing. Two people comparing phones see
+different richness of the same record, and that is the accepted cost.
+
+**The one-period phase sweep stays, and it is what caps density.** `mark.py`
+sweeps two lobe periods and records that m=2 gives 1.56a of radial spread
+against m=1's 0.87a — nearly twice the threads. Rendered for the imprint, the
+extra period braids threads across the lobe peaks: a lobe stops being a
+readable contour and becomes an envelope wider than the depth it encodes. The
+mark can afford this because it carries no data; **lobe depth is level attained**
+and the imprint cannot. §2's one-period rule is protecting a channel, not a
+taste, and this entry declines the 1.8x. The ceiling on the imprint's density
+is the depth channel, not the pixel grid.
+
+**Threads are cubic Beziers fitted to `r(t)`, closing decision 040's faceting
+item and its remedy together.** `thread_path` sampled at a fixed 760 points,
+which 040 measured as 8.3-device-pixel chords at 4x zoom with the guilloche
+visibly faceting into polygons; it called re-tessellation a correctness fix
+rather than an optimisation and estimated Bezier fitting at a further ~10x.
+Both are built. Segment count follows arc length, floored at eight segments per
+lobe because no fit recovers a wave it never sampled, and the tangents are
+analytic — `profile()` now returns `dL/dt` alongside `L`, since a numeric
+tangent spends the accuracy the fit exists to buy.
+
+**Verified, not asserted.** Every emitted curve was compared against the
+analytic thread at 180 combinations of band radius, level profile, phase and
+density: **worst deviation 0.062 device pixels** against a 0.25 budget. The
+per-lobe floor is load-bearing — at four segments per lobe the same test fails
+at 0.53 px.
+
+**Measured outcome.** A mature nine-chapter record at 320 px now costs 504 /
+1,410 / 3,011 curve segments and **21 / 59 / 124 KB** of path data at dpr
+1 / 2 / 3. The polyline at the same density cost 682 KB at 3x, and decision
+040's own worst-case baseline was 24,352 points and 364 KB. Maximum density is
+therefore cheaper than what the repo measured before this entry, not dearer.
+
+**The imprint is the same figure everywhere; `Expanded` explains it.** An
+earlier form of this entry made the core screen a portrait and `Expanded` the
+instrument. It is simpler and truer that both draw the real figure at the
+best their budget allows, and that `Expanded`'s work is annotation — the
+angular anchor, the axis controls, what each channel means — not resolution.
+`Expanded` carries more threads only because it is larger. Extends 035.
+
+**§9's person-mark is deleted, not replaced.** §9 requires every human to be
+drawn as their own mini-imprint rather than a photo or initials. At the
+20–28 px such a glyph occupies, each band is about two pixels of radius and
+seven lobes cannot separate at any device density; a unique but unreadable
+figure implies a legible identity it cannot deliver. **A person is their name
+and their imprint** — composed as one hero on the core screen, as already
+drawn. Attestor and party rows carry the name alone, which decision 007
+independently requires: those parties are frequently organisations, and
+organisations are never subjects, so no imprint exists for them.
+
+**Two code divergences closed with this entry.** `imprint.py`'s `STROKE`
+remained a viewbox-unit value emitting no `vector-effect`, contradicting the
+rule §13 had already resolved; and `render()` still concatenated `_core()` on
+every call, though 035 §B6 dropped the identity core and `imprint/README.md`
+§7.0 states no surface emits it.
+
+**The mark is sound, and §3 described it wrongly.** Taken to the same harness,
+`mark.py` does not carry the imprint's defect: `stroke_for(px)` derives the
+viewbox stroke from the render size, so it lands at 1.00 CSS px at every tier
+and pitch at 2.2–2.8 CSS px — arriving independently at roughly the floor this
+entry sets. `PITCH_RATIO` being a viewbox number is harmless there because the
+weight it is asserted against is already size-derived. **But `DESIGN.md` §3 was
+stale:** it specified dropping the outer and inner band from 40 to 79 px, where
+`tier_for()` reduces the *weave* and never the band count, on the argument —
+written in source — that dropping a band is what makes the mark unrecognisable.
+The code is right; §3 is rewritten to it. Left open: `tier_contour`'s docstring
+claims 24–149 px where the router gives it 24–95.
+
+**What this entry does not settle.** Every budget above is arithmetic —
+whether two adjacent device-pixel threads *read* as two threads to a person
+holding a phone is untested, and §7.4 stands. The figures here come from a
+browser render; `design/10-worker-app-screens` is SVG, which 040 disqualified
+from the product precisely because it cannot express hairline mode, so those
+artboards are not evidence about the imprint and are recorded as such. The
+CanvasKit harness built for this entry is the venue for the next imprint
+question; it is a scratch tool and is not committed.
