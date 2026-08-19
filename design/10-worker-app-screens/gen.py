@@ -3,6 +3,8 @@ REPO = "/Users/kylechoy/Desktop/Programming Projects/Personal/identity"
 sys.path.insert(0, os.path.join(REPO, "imprint"))
 import imprint
 from imprint import Engagement as E
+sys.path.insert(0, os.path.join(REPO, "mark"))
+import mark
 TAU, LOBES = imprint.TAU, imprint.LOBES
 OUT = sys.argv[1]
 
@@ -17,8 +19,14 @@ OUT = sys.argv[1]
 # so that is what is budgeted here, and `Expanded` at full bleed is consequently
 # drawn thinner than it has room for. One fragment cannot serve both; splitting
 # them is a canvas change and has not been made.
-FIGURE_PX = 296.0
-DPR = 1.0                              # the budget floor: what a 1x screen holds
+FIGURE_PX = 320.0                      # measured, not assumed: Main, Landing and
+                                       # Imported render the figure at 320 CSS px
+                                       # in a 360px frame; Expanded 298, Public
+                                       # 290. One fragment covers the range
+DPR = 2.0                              # these artboards preview the 2x phone the
+                                       # target population holds. A canvas opened
+                                       # on a 1x display shows the figure denser
+                                       # than that display would draw it
 PPU = FIGURE_PX / imprint.VIEWBOX      # CSS pixels per viewbox unit at that size
 
 # The 380-sample override that used to live here is gone: `thread_path` now
@@ -35,7 +43,7 @@ IMPORTED = [E(0,18,"self_asserted"),E(18,48,"self_asserted"),E(36,66,"self_asser
             E(66,88,"self_asserted"),E(88,107,"self_asserted")]
 
 def frag(rec):
-    s = imprint.render(rec, size=FIGURE_PX, background=False)
+    s = imprint.render(rec, size=FIGURE_PX, background=False, dpr=DPR)
     return s.split(">",1)[1].rsplit("</svg>",1)[0]
 for name, rec in {"working":WORKING, "imported":IMPORTED, "empty":[]}.items():
     open(os.path.join(OUT, name+".svgfrag"), "w").write(frag(rec))
@@ -54,6 +62,47 @@ for (dur, live), width in zip(segs, widths):
         else: base.append(imprint._strand(a, b, eng, PPU, DPR))
     r += width
 json.dump(hit, open(os.path.join(OUT,"hit.json"), "w"))
+
+# The expanded view's annotation overlay — the highlighted lobe and the level
+# ladder for every chapter/dimension pair. It used to be computed in the
+# artboard's own JavaScript, which meant a second copy of `profile()` and a
+# hardcoded stroke inset that no longer matched the generator: the highlighted
+# lobe traced a different amplitude than the band it was annotating. Precomputed
+# here instead, the way `hit.json` already is, so the geometry exists once.
+S = 0.86                               # the figure's scale inside Expanded's stage
+def _P(rad, ang):
+    return (300 + rad*S*math.cos(ang), 300 + rad*S*math.sin(ang))
+
+lobes = []
+for i, eng in enumerate(WORKING):
+    span = next(h for h in hit if h["ch"] == i)
+    r0, r1 = span["r0"], span["r1"]
+    mid = (r0 + r1) / 2.0
+    amp = (r1 - r0) / 2.0 - imprint.STROKE_PX / (PPU * DPR)
+    row = []
+    for dim in range(LOBES):
+        if eng.levels is None:
+            row.append({"d": "", "marks": [], "level": None}); continue
+        L = imprint.profile(eng.levels)
+        t0 = dim * (TAU / LOBES)
+        pts = []
+        for j in range(49):
+            t = t0 - math.pi/LOBES + (TAU/LOBES) * (j/48.0)
+            x, y = _P(mid + amp * L(t) * math.sin(LOBES*t + math.pi/2.0), t)
+            pts.append("%.1f %.1f" % (x, y))
+        level = eng.levels[dim]
+        marks = []
+        for lv in range(7):
+            x, y = _P(mid + amp * (imprint.LOBE_FLOOR
+                                   + (1 - imprint.LOBE_FLOOR) * (lv/6.0)), t0)
+            g = 1.9 if lv == level else 1.0
+            nx, ny = -math.sin(t0)*8*g, math.cos(t0)*8*g
+            marks.append({"d": "M%.1f %.1f L%.1f %.1f" % (x-nx, y-ny, x+nx, y+ny),
+                          "w": 2.8 if lv == level else 0.9,
+                          "o": 1 if lv == level else (0.8 if lv < level else 0.55)})
+        row.append({"d": "M" + " L".join(pts), "marks": marks, "level": level})
+    lobes.append(row)
+json.dump(lobes, open(os.path.join(OUT,"lobes.json"), "w"))
 
 chs = "".join("<g class='ch ch%d'>%s</g>" % (i,
         "".join(per[i]).replace("<path d=","<path pathLength='1' d=").replace("<circle ","<circle pathLength='1' "))
@@ -81,5 +130,17 @@ def flat(dash=False):
 for k, v in {"self_asserted": flat(True), "employment_verified": flat(),
              "peer_attested": unrolled(2), "party_single": unrolled(3), "party_multi": unrolled(5)}.items():
     open(os.path.join(OUT,"sw-"+k+".svgfrag"),"w").write(v)
+# The mark, at the sizes the screens actually set. `README.md` said gen.py ran
+# mark.py and it never did: the four mark fragments had no generator at all, so
+# the committed artboards could not be rebuilt from source. They can now.
+# tier_for() picks the drawn reduction; DESIGN.md section 3 records the breakpoints.
+# NOTE: mark.contour() samples at a fixed 560 points regardless of size, so a
+# 28px glyph carries 560 vertices per band. That is the defect imprint.py just
+# had, in the other file; it is not fixed here because mark.py is out of this
+# change's scope, and it costs ~16KB on every screen carrying the lockup.
+for name, px in (("mark-28", 28), ("mark-56", 56), ("mark-solid", 20)):
+    open(os.path.join(OUT, name + ".svgfrag"), "w").write(mark.tier_for(px)(px))
+open(os.path.join(OUT,"pointer.svgfrag"),"w").write(mark.pointer(28))
+
 print("after-paths(multi tier)=%d" % after.count("<path"))
 for h in hit: print(h)

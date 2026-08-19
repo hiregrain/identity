@@ -149,7 +149,12 @@
 // figure. Definitions are verbatim from imprint/README.md §3.
 // No ordinal is shown: design/07 §2.2 records four independent reviewers reading
 // "Step N of 6" as a rating of a person. The anchor sentence is the level.
-const TAU = Math.PI*2, LOBES = 7, S = 0.86, FLOOR = 0.04, STROKE = 1.0;
+const TAU = Math.PI*2, LOBES = 7, S = 0.86;
+// The highlighted lobe and the level ladder are generated, not computed here.
+// This file used to carry its own profile() and a hardcoded viewbox stroke that
+// stopped matching imprint.py, so the lobe traced a different amplitude than the
+// band it annotates. One copy of the geometry now, in imprint.py (decision 044).
+const LOBE_DATA = @@LOBES@@;
 const DIMS = [
  {n:'Discretion', s:'Discretion', d:'How much of the what-and-how you decided, rather than received.',
   a:['Not part of this work','Followed instructions for each task','Chose the order of the work',
@@ -242,15 +247,6 @@ class Component extends DCLogic {
     });
     this.setState({dim, ch});
   }
-  profile(levels){
-    return (t) => {
-      const u = ((t % TAU) + TAU) % TAU / (TAU/LOBES);
-      const i = Math.floor(u), f = u - i;
-      const a = levels[i % LOBES]/6, b = levels[(i+1) % LOBES]/6;
-      return FLOOR + (1-FLOOR)*(a + (b-a)*(0.5 - 0.5*Math.cos(Math.PI*f)));
-    };
-  }
-
   renderVals(){
     const {dim, ch, z, tx, ty} = this.state;
     const c = CHAPTERS[ch], D = DIMS[dim], k = ZOOMS[z];
@@ -258,25 +254,8 @@ class Component extends DCLogic {
     const P = (r, ang) => [300 + r*S*Math.cos(ang), 300 + r*S*Math.sin(ang)];
     const line = (r1, r2, ang) => { const [x1,y1]=P(r1,ang), [x2,y2]=P(r2,ang);
       return `M${x1.toFixed(1)} ${y1.toFixed(1)} L${x2.toFixed(1)} ${y2.toFixed(1)}`; };
-    const level = c.levels ? c.levels[dim] : null;
-    const mid = (c.r0+c.r1)/2, amp = (c.r1-c.r0)/2 - STROKE;
-
-    let lobe = '', marks = [];
-    if(level !== null){
-      const L = this.profile(c.levels), pts = [];
-      for(let i=0;i<=48;i++){
-        const t = t0 - Math.PI/LOBES + (TAU/LOBES)*(i/48);
-        const [x,y] = P(mid + amp*L(t)*Math.sin(LOBES*t + Math.PI/2), t);
-        pts.push(`${x.toFixed(1)} ${y.toFixed(1)}`);
-      }
-      lobe = 'M' + pts.join(' L');
-      for(let lv=0; lv<=6; lv++){
-        const [x,y] = P(mid + amp*(FLOOR + (1-FLOOR)*(lv/6)), t0);
-        const g = lv===level ? 1.9 : 1, nx = -Math.sin(t0)*8*g, ny = Math.cos(t0)*8*g;
-        marks.push({d:`M${(x-nx).toFixed(1)} ${(y-ny).toFixed(1)} L${(x+nx).toFixed(1)} ${(y+ny).toFixed(1)}`,
-                    w: lv===level ? 2.8 : 0.9, o: lv===level ? 1 : (lv<level ? .8 : .55)});
-      }
-    }
+    const cell = LOBE_DATA[ch][dim];
+    const level = cell.level, lobe = cell.d, marks = cell.marks;
 
     return {
       down:(e)=>this.down(e), move:(e)=>this.move(e), up:(e)=>this.up(e),
