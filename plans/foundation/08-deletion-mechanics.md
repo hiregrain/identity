@@ -5,7 +5,7 @@ layer: foundation
 satisfies: [6, 7]
 status: in_progress
 depends_on: [foundation/05, foundation/07]
-migrations: [0021-deletion-journal]
+migrations: [0021-deletion-journal, 0022-purge-role-and-restore-gate]
 binds: [decisions/LOG.md#017, decisions/LOG.md#014, design/ledger-design-0.1.md#2.5]
 evidence: []
 verified_by: null
