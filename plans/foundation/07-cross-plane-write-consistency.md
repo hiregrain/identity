@@ -3,7 +3,7 @@ id: foundation/07
 type: task
 layer: foundation
 satisfies: [5]
-status: ready
+status: in_progress
 depends_on: [foundation/04]
 migrations: [0020-cross-plane-outbox]
 binds: [decisions/LOG.md#011, decisions/LOG.md#017, decisions/LOG.md#005]
