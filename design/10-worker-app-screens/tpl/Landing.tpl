@@ -40,7 +40,7 @@
   </style>
 </helmet>
 
-<div class="{{ phase }}" style="width:360px;height:800px;position:relative;overflow:hidden;background:var(--paper)">
+<div class="{{ phase }}" style="width:100%;height:100%;min-height:728px;position:relative;overflow:hidden;background:var(--paper)">
   <div class="plate">
     <div class="reg" style="top:7px;left:7px;border-top-width:1px;border-left-width:1px"></div>
     <div class="reg" style="top:7px;right:7px;border-top-width:1px;border-right-width:1px"></div>
@@ -50,11 +50,12 @@
 
   <header style="height:52px;display:flex;align-items:center;gap:10px;padding:0 20px;
                  border-bottom:1px solid var(--hairline)">
-    <svg viewBox="0 0 600 600" width="28" height="28" aria-label="Grain">@@MARK28@@</svg>
-    <span class="t-serial">Work record</span>
+    <!-- The lockup: mark plus the GRAIN wordmark (§4a), generated so the mark
+         swaps to its drawn reduction rather than scaling a master. -->
+    <svg viewBox="0 0 160 26" width="160" height="26" role="img" aria-label="Grain">@@LOCKUP@@</svg>
   </header>
 
-  <main style="position:absolute;top:52px;bottom:26px;left:0;right:0;padding:20px 20px 0">
+  <main style="position:absolute;top:52px;bottom:0;left:0;right:0;padding:20px 20px 0">
     <svg viewBox="0 0 600 600" width="100%" role="img" aria-label="An attestation lands">
       @@CBASE@@
       <g class="before">@@CBEFORE@@</g>
@@ -92,12 +93,6 @@
     </div>
   </main>
 
-  <footer style="position:absolute;left:0;right:0;bottom:0;height:26px;display:flex;
-                 align-items:center;justify-content:space-between;padding:0 20px;
-                 border-top:1px solid var(--hairline)">
-    <span class="t-micro" style="color:var(--secondary)">Append only</span>
-    <span class="t-micro" style="color:var(--secondary)">{{ entries }}</span>
-  </footer>
 </div>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>

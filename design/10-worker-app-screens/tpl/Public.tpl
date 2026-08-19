@@ -16,7 +16,7 @@
   </style>
 </helmet>
 
-<div style="width:360px;height:800px;position:relative;overflow:hidden;background:var(--page)">
+<div style="width:100%;height:100%;min-height:728px;position:relative;overflow:hidden;background:var(--page)">
   <main style="position:absolute;inset:0;overflow-y:auto;padding:16px 12px">
     <div class="sheetpage" style="padding:28px 22px 22px">
 

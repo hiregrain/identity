@@ -47,7 +47,11 @@
 <!-- The reveal class lives on the stage, never on the root: a template hole in the
      ROOT element's class attribute stops the artboard mounting at all, which is
      why this screen rendered blank in the canvas from the day it was drawn. -->
-<div style="width:360px;height:800px;position:relative;overflow:hidden;background:var(--paper)">
+<!-- Fluid in both axes: the record fills whatever safe area it is given, and
+     min-height carries the standalone case where height:100% has no sized
+     ancestor and would collapse to zero. 728 is the common safe box across
+     iOS (778) and Android (728). Decision 046. -->
+<div style="width:100%;height:100%;min-height:728px;position:relative;overflow:hidden;background:var(--paper)">
   <header style="height:52px;display:flex;align-items:center;justify-content:space-between;
                  padding:0 20px;border-bottom:1px solid var(--hairline);position:relative;z-index:3;
                  background:var(--paper)">
@@ -100,7 +104,7 @@
   <!-- Reading matter, not a control. Every measure says what it means, what was
        attested, and where that sits on its scale — drawn, because design/07 2.2
        records four reviewers reading an ordinal as a rating of a person. -->
-  <div style="position:absolute;top:406px;left:0;right:0;bottom:26px;overflow-y:auto">
+  <div style="position:absolute;top:406px;left:0;right:0;bottom:0;overflow-y:auto">
     <div style="padding:14px 20px 10px">
       <span class="t-micro" style="display:block;color:var(--secondary)">{{ attestHead }}</span>
       <p class="t-meta" style="margin:6px 0 0;color:var(--secondary);text-wrap:pretty">
@@ -131,12 +135,6 @@
     <div style="height:24px"></div>
   </div>
 
-  <footer style="position:absolute;left:0;right:0;bottom:0;height:26px;display:flex;
-                 align-items:center;justify-content:space-between;padding:0 20px;
-                 border-top:1px solid var(--hairline);background:var(--paper);z-index:2">
-    <span class="t-micro" style="color:var(--secondary)">Grain</span>
-    <span class="t-micro" style="color:var(--secondary)">Seven measures, always in the same place</span>
-  </footer>
 </div>
 </x-dc>
 

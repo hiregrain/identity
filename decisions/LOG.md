@@ -2509,3 +2509,47 @@ attestation landing, and the record at rest has none of it. And `design/07`
 counted 73 of 117 register applications at 12px or smaller, which is why the page
 reads as a form rather than a document. Both are live causes of the same
 complaint.
+
+## 050 — Four calls from the drawn-record review (2026-08-19)
+
+Founder rulings closing the questions 049 left open, plus the scope of the work
+that follows them.
+
+**The record names what changed since you last opened it, and the scribe animates
+only the band that moved.** §10's ceremony fires when an attestation lands and
+the record at rest had nothing, which is the live half of "this feels cold". The
+answer is not a greeting: a record that welcomes you is a record performing. It
+is that *the record is alive*, so it says what moved — a chapter signed, a grant
+about to end — and the figure redraws the one band that changed rather than
+re-scribing the whole thing. When nothing changed it says nothing.
+
+**Press physics belong to `Expanded`, not to the record.** The figure yielding
+under the thumb is aliveness in the object, and §7's rigidity rule — verified
+rows do not compress, because rigidity is how permanence is expressed — makes it
+meaningful rather than decorative. It is confined to the expanded view, where
+inspecting the figure is the task. On the record the figure is a plate you open,
+and a plate that squirms under the thumb is a worse plate.
+
+**Typography gets a full rebalance, not a floor raise.** `design/07` counted 73
+of 117 register applications at 12px or smaller and §6's two display registers
+are barely used — instrument numerals at 40px have **zero** applications across
+ten screens. Raising the floor alone would leave every screen with nothing large
+on it, which is why the product reads as a form rather than a document. Every
+screen gets one thing that is genuinely large, and the display registers §6
+already defines get used.
+
+**Gaps 8 and 13 are drawn.** The employer grant view and the two-tier share
+model — the public page and the expiring full-record link — plus the reduced page
+a crawler or logged-out visitor receives. Until they exist, `Sharing`'s controls
+are inert and `Public` carries two surfaces marked NOT DRAWN, so the destination
+045 created cannot be judged.
+
+**The account glyph stays a person pictogram.** Raised against it: §9's
+person-mark was deleted on the ground that a per-person figure implies a
+legibility it cannot deliver, and this product otherwise refuses to draw people.
+The founder ruled it fine, and the distinction holds — the deletion was about
+representing a *specific* person, where this is generic chrome pointing at your
+own account, and the pictogram is what makes it readable on sight.
+
+**Dark mode is explicitly out of this run** (gap 6, decision 037), and stays
+outstanding.
