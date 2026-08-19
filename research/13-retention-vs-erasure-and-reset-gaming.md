@@ -1345,7 +1345,8 @@ decision `014`'s live-marker path, which produces a "usable-but-restricted
 account" and a steward flag on a match. That path is justified for the
 safety/fraud category and disclosed at collection; it must not bleed into the
 performance case, and AC-PI4a ("unmarked deletion — truly clean") is the criterion
-that keeps it separate. **It is now doing legal work as well as mechanical work.**
+that keeps it separate. *[The AC codes were retired on 2026-08-19 (decision 042);
+AC-PI4a is now `person-identity` criterion 4.]* **It is now doing legal work as well as mechanical work.**
 
 ### 6.5 What is cosmetic, and should not be built
 
