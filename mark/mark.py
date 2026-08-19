@@ -53,7 +53,11 @@ def contour(R, amp, phase=0.0, broken=False, samples=560, t0=0.0, t1=TAU):
 
 
 def threads(R, amp, direction, weight, broken=False, pitch=PITCH_RATIO):
-    n = max(2, int(2.0 * amp * math.sin(math.pi / LOBES) / (pitch * weight)))
+    """Threads at a pitch that actually separates them. Returns None if it cannot:
+    the caller falls back to a single contour rather than drawing mush."""
+    n = int(2.0 * amp * math.sin(math.pi / LOBES) / (pitch * weight))
+    if n < 3:
+        return None
     return "".join(
         "<path d='%s'/>" % contour(R, amp, direction * i * (TAU / LOBES) / n, broken)
         for i in range(n)
@@ -66,44 +70,44 @@ def stroke_for(px, base=1.0):
 
 
 # ------------------------------------------------------------------ size tiers
+# Reduce the WEAVE before the BANDS. Three concentric bands are the mark's
+# identity; the threading is only its finish. Dropping a band to buy a size is
+# what makes the mark unrecognisable, and it was the wrong order.
+
+WEAVE_MIN_PX = 150   # below this the pitch rule cannot separate threads on every
+                     # band — computed, not chosen; see README section 3
+SOLID_MAX_PX = 23    # below this line art has nothing to hold
+
+
 def tier_full(px, broken=True):
-    """>= 80px. Three threaded bands. This is the mark."""
+    """>= WEAVE_MIN_PX. Three threaded bands, per-band fallback if pitch fails."""
     w = stroke_for(px)
-    return "<g fill='none' stroke='%s' stroke-width='%.2f'>%s</g>" % (
-        INK, w, "".join(threads(R, a, d, w, broken) for R, a, d in BANDS))
+    parts = []
+    for R, a, d in BANDS:
+        t = threads(R, a, d, w, broken)
+        parts.append(t if t is not None else "<path d='%s'/>" % contour(R, a, 0.0, broken))
+    return "<g fill='none' stroke='%s' stroke-width='%.2f'>%s</g>" % (INK, w, "".join(parts))
 
 
-def tier_two(px, broken=True):
-    """40-79px. Outer and inner band; the middle band clogs first, so it goes first."""
-    w = stroke_for(px, 1.15)
-    return "<g fill='none' stroke='%s' stroke-width='%.2f'>%s</g>" % (
-        INK, w,
-        threads(BANDS[2][0], BANDS[2][1], +1, w, broken, pitch=3.0)
-        + threads(BANDS[0][0], BANDS[0][1], +1, w, broken, pitch=3.0))
-
-
-def tier_line(px, broken=True):
-    """24-39px. One contour per band, weave dropped."""
-    w = stroke_for(px, 1.5)
+def tier_contour(px, broken=True):
+    """24-149px. Three bands, one contour each, no weave. Band count holds."""
+    w = stroke_for(px, 1.25)
     return "<g fill='none' stroke='%s' stroke-width='%.2f'>%s</g>" % (
         INK, w,
-        "".join("<path d='%s'/>" % contour(R, a * 0.85, 0.0, broken)
-                for R, a, _ in reversed(BANDS)))
+        "".join("<path d='%s'/>" % contour(R, a, 0.0, broken) for R, a, _ in reversed(BANDS)))
 
 
 def tier_solid(px, broken=True):
-    """<= 23px. Mass, not line — below this size line art has nothing to hold."""
+    """<= 23px. Mass, not line."""
     return "<path d='%s %s' fill='%s' fill-rule='evenodd'/>" % (
         contour(BANDS[2][0], BANDS[2][1] * 0.9, 0.0, broken),
         contour(BANDS[0][0] + 6, BANDS[0][1] * 0.9, 0.0, broken), INK)
 
 
 def tier_for(px):
-    if px >= 80: return tier_full
-    if px >= 40: return tier_two
-    if px >= 24: return tier_line
+    if px >= WEAVE_MIN_PX: return tier_full
+    if px > SOLID_MAX_PX: return tier_contour
     return tier_solid
-
 
 # ------------------------------------------------------------------ the pointer
 def pointer(px, weight=None):
@@ -163,7 +167,7 @@ def app_icon(px, dark=False, inset=0.74, uid="mask"):
 CAP_RATIO = 0.690        # Archivo cap height / font-size, at weight 600 stretch 125%
 MARK_OPTICAL_CENTRE = 0.4875   # the mark's ink-bbox centre as a fraction of its height
 MARK_RATIO = 1.4         # mark height / cap height
-GAP_RATIO = 1.3          # gap / cap height
+GAP_RATIO = 0.75        # gap / cap height — 1.3 read as a gulf; 0.6 crowds
 CLEAR_SPACE = 1.0        # clear space on every side, in cap heights
 MIN_LOCKUP_MARK = 30     # below this the mark goes alone: the solid tier is a dense
                          # mass and reads wrong beside outline-weight type

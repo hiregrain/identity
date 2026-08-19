@@ -61,12 +61,24 @@ treat it as a choice about *which* association you accept.
 
 Scaling the master is what fails. Each tier is drawn for its range.
 
-| Tier | Range | What it is | What goes first |
-|---|---|---|---|
-| `tier_full` | ≥ 80px | three threaded bands | — |
-| `tier_two` | 40–79 | outer and inner band, weave thinned | the middle band clogs first |
-| `tier_line` | 24–39 | one contour per band, no weave | the weave |
-| `tier_solid` | ≤ 23 | solid body, counter knocked out | line art entirely |
+**Reduce the weave before the bands.** Three concentric bands are the mark's
+identity; the threading is only its finish. An earlier version dropped the middle
+band at 40–79px, which made the mark unrecognisable at exactly the sizes it is
+most used. That was the wrong order.
+
+| Tier | Range | What it is |
+|---|---|---|
+| `tier_full` | ≥ 150px | three threaded bands |
+| `tier_contour` | 24–149 | three bands, one contour each, no weave |
+| `tier_solid` | ≤ 23 | solid body, counter knocked out |
+
+**Why 150.** The pitch rule needs `2·a·sin(π/7) / n ≥ 2.2 × stroke`. Computing
+pitch-to-stroke per band across sizes: at 200px the ratios are 3.2 / 2.3 / 2.9 —
+threads separate. At 80px they are 1.3 / 2.3 / 1.7, and at 54px 0.7 / 1.4 / 1.0 —
+the threads have merged into solid ribbons. **150px is where all three bands still
+clear the rule.** `threads()` now returns `None` rather than forcing a minimum of
+two, and the caller falls back to a single contour; an earlier `max(2, …)` floor
+was drawing threads that could never be separated.
 
 **Dark is the stronger rendering** at every size below ~120px — light threads on
 ink hold contrast better than ink on paper. This is not a theme preference; it
@@ -127,7 +139,7 @@ Revisit only if the identity has to hold up on text-only surfaces.
 | `CAP_RATIO` | 0.690 | rendered `H` at a known size, measured ink to baseline |
 | `MARK_OPTICAL_CENTRE` | 0.4875 | the mark's ink-bbox centre as a fraction of its height — it is **not** 0.5, because the deliberate break shifts mass down-right |
 | `MARK_RATIO` | 1.4 | mark height ÷ cap height |
-| `GAP_RATIO` | 1.3 | gap ÷ cap height |
+| `GAP_RATIO` | 0.75 | gap ÷ cap height — 1.3 read as a gulf, 0.6 crowds; the mark's ink reaches 0.98 of its box at the cap band, so geometric and optical gap are nearly the same |
 | `CLEAR_SPACE` | 1.0 | cap heights on every side |
 | wordmark advance | 4.414 em | calibrated against a known-width reference in the same frame |
 
@@ -143,10 +155,14 @@ dense mass, and it reads wrong beside outline-weight type — verified in 1-bit,
 where the small lockup is a black blob next to a hairline word. Below 30px, use
 the mark alone.
 
-**Ratio testing.** 1.3–1.6 × cap against gaps of 0.9–1.5 were rendered as a matrix.
-At 1.5 and above the mark out-weighs five open letterforms and the eye lands on it
-first, which is wrong for a lockup where the name should lead. 1.4 with a 1.3 gap
-is where the word leads and the intricate mark still has air around it.
+**Ratio testing.** 1.3–1.6 × cap was rendered as a matrix; at 1.5 and above the
+mark out-weighs five open letterforms and the eye lands on it first, which is wrong
+when the name should lead. **1.4** is where the word leads.
+
+**The gap was tested twice.** The first pass moved it from 0.9 to 1.3 — but that
+judgement was made against a mark rendered by the broken tier logic, showing two
+bands instead of three. Re-tested against the corrected mark, 1.3 reads as a gulf
+and **0.75** is where mark and word read as one object.
 
 **The composite was cut.** An earlier version carried a "THE WORK RECORD"
 descriptor. It has a consequence worth stating: §4's recorded filing path was

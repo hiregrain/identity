@@ -208,11 +208,14 @@ Expanded because §6's own scale already uses it for the display registers; trac
 because tracking is how this system signals register; 600 because 700 and above is
 the consumer-software bracket.
 
-**The lockup:** mark at 1.4× cap height, gap at 1.3× cap height, clear space one
+**The lockup:** mark at 1.4× cap height, gap at 0.75× cap height, clear space one
 cap height all round, wordmark cap-band centred on the mark's *optical* centre
 (0.4875 of its height, not 0.5 — the deliberate break shifts mass). **Minimum
 lockup mark is 30px**; below that the mark goes alone, because `tier_solid` is a
-dense mass and reads wrong beside outline-weight type. Geometry, measured
+dense mass and reads wrong beside outline-weight type. The mark reduces by dropping
+the **weave** before the **bands** — three concentric bands hold down to 24px, and
+the threading only appears above 150px, where the pitch rule can actually separate
+it. Geometry, measured
 constants and the reasoning are in [`mark/README.md`](mark/README.md) §4a.
 
 **Recorded weakness.** Expanded tracked caps are the current default in crypto, AI
