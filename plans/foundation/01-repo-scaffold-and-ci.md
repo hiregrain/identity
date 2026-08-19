@@ -3,10 +3,10 @@ id: foundation/01
 type: task
 layer: foundation
 satisfies: []
-status: in_progress
+status: done
 depends_on: []
-evidence: []
-verified_by: null
+evidence: ["log:log/2026-08-19-foundation-01-verification.md", "diff:PR #1 @ 01aacc053ad4f5672ba63c5ddd7946ecd3bf26b2"]
+verified_by: clean-context-verifier@2026-08-19
 ---
 
 # Repo scaffold and CI
