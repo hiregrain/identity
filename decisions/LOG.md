@@ -1378,3 +1378,70 @@ Rationale for one scope rather than two: the ledger's reason to distinguish them
 is identical — a reader must know that a claim is evaluative before weighing it
 — while the difference between a reference and an assessment is a property of
 the instrument, which the discriminator carries.
+
+## 034 — Dispatch conventions bind; standardization pass (2026-08-19)
+
+Three read-only audits compared this repo against Dispatch across structure and
+documents, the plans and checks system, and git history. The binding
+declaration below is **proposed and awaits founder ratification**; everything
+else in this entry is already applied.
+
+**The contradiction, resolved.** `handoff/HANDOFF.md` offered Dispatch's
+conventions as "offered, not mandated"; `plans/ORDER.md` recorded the protocol
+as "adopted from Dispatch verbatim". Nothing stated which governed, and no
+`CLAUDE.md` or `AGENTS.md` existed to say. **They bind. ORDER.md governs.**
+Divergence from Dispatch remains legitimate — several existing ones are
+improvements — but an unrecorded divergence is drift, and a deliberate one now
+requires an entry stating its reason.
+
+**`CLAUDE.md` written, `AGENTS.md` symlinked to it**, matching Dispatch's
+arrangement. It carries the product test, the constraint that outranks
+convenience, the plan gate, the counts rule, and — the thing this repo most
+lacked — **a source-of-truth precedence list**: CLAUDE.md, then
+`decisions/LOG.md`, then `model/`, then `THESIS.md`, then code. An agent
+holding a draft thesis, a draft design system, a `model/` mixing RATIFIED with
+PROPOSED, and a 1,600-line log previously had no rule for which wins.
+
+**`plans/ORDER.md`'s naming section was a lossy copy and is now complete.** It
+had the branch pattern, the commit form and the type vocabulary; it dropped
+names-are-derived-never-invented, "no descriptive words", lowercase/present
+tense/no period, "a change with no clear type is two changes", the log-file
+rule, the migration rule, and all three verbatim PR-body headers, which existed
+nowhere in this repo. Added alongside them: the status fence (a tool may
+rewrite `status`, `evidence`, `verified_by` and nothing else) and the
+verification-record form, which was undefined and would have been invented by
+whoever verified first.
+
+**The grammar binds from today forward.** History conforms on 2 of 25 commits;
+Dispatch runs 95.3% across 193. The 22 non-conforming subjects are **not**
+being rewritten — that means force-pushing a published branch, and evidence
+cites SHAs rather than subjects, so nothing depends on them.
+
+**Applied elsewhere.** Every `research/` memo now carries the evidence-tier
+statement; thirteen lacked one and the rest used six different forms.
+`handoff/attestation-interface.md` is labelled superseded, as its sibling
+`founder-thesis.md` already was. `README.md` was the word "identity" three
+times and is now the repository map. The hand-written count in `mark/README.md`
+said three objects above a five-row table. `foundation/06` gains
+`verbatim-copies.mjs` — in Dispatch the precondition for quoting any constraint
+into a plan file, and its absence is what makes quoting look free — and a new
+counts check.
+
+**Six acceptance criteria repaired** (AC-V2, AC-V3, AC-TK3, AC-IS4, AC-PW2,
+AC-F3), each of which was neither mechanical nor adjudicable and so was not a
+criterion. AC-F3 is split: its mechanical half stays, and the judgment half
+becomes **AC-F8**, adjudicated, so the lint can no longer be reported as
+discharging the correlation review.
+
+**Open, and each needing a call rather than a fix.** Five criteria cite
+artifacts this repo does not contain — AC-DL4's SLOs, AC-AN4's slope
+disclosures, AC-ME4's conformance annex, AC-IS1's dependency on another repo's
+team, and worker-surface's, untouched here because a concurrent session holds
+that layer. `satisfies:` is absent from all 55 plan files, so no task claims
+any acceptance criterion and nothing computes whether a layer is discharged —
+the largest remaining gap. Also open: whether `decisions/LOG.md` splits into
+one file per entry as Dispatch does, which is what produced two numbering
+collisions in one day; whether a `model/invariants.md` promotes the fourteen
+unnumbered binding claims stranded in `plans/`; whether `design/` stays a
+catchall; and whether `contract/` should be renamed, since it collides with the
+boundary contract in `model/`.
