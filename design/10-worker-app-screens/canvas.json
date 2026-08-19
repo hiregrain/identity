@@ -110,18 +110,18 @@
     },
     {
       "file": "ShellIOS.dc.html",
-      "title": "iOS \u2014 iPhone 15/16",
+      "title": "iPhone 17 \u2014 402x874 @3x",
       "page": "page-3",
       "x": 0,
       "y": 0,
-      "w": 393,
-      "h": 852
+      "w": 426,
+      "h": 898
     },
     {
       "file": "ShellAndroid.dc.html",
       "title": "Android \u2014 common viewport",
       "page": "page-3",
-      "x": 480,
+      "x": 520,
       "y": 0,
       "w": 360,
       "h": 800
@@ -257,7 +257,7 @@
       "x": 0,
       "y": -300,
       "w": 880,
-      "text": "Verification frames, not designs. Nothing here paints fake chrome \u2014 no clock, no battery, no home-bar glyph \u2014 because on a real device the system draws into exactly that space and an imitation renders doubled. The insets are drawn as empty reserved bands carrying their measurements.\n\nWhat they show: iOS leaves 759 pt of 852 once the 59 pt status/Dynamic Island and 34 pt home indicator are taken. Android leaves 728 dp of 800 against a 24 dp status bar and 48 dp three-button navigation \u2014 the larger figure, because three-button nav still ships and users still choose it. Every screen in this repo is drawn 360x800, so the record is 41 pt too tall for iOS and 72 dp too tall for Android, and its header sits under the status bar at both ends.\n\ndesign/08 \u00a73 recorded this and nothing acted on it. Removing the plate footer made the bottom worse: scrollable content now runs to the edge where the gesture bar lives. Reflowing the ten screens is the next step and has not been done \u2014 these frames exist so it is decided against measurements rather than guesses.\n\nAlso unresolved and visible here: Android takes BOTH edges for the back gesture, and no screen draws a back affordance."
+      "text": "Verification frames, drawn from published device metrics. Neither paints fake chrome \u2014 no clock, no battery, no home-bar glyph \u2014 because on a real device the system draws into exactly that space and an imitation renders doubled. The insets are reserved bands carrying their measurements.\n\niPhone 17: 402x874 pt at 3x, status bar 54, portrait safe area top 62 / bottom 34. That leaves 778 pt, so a screen drawn 800 tall is 22 pt too tall \u2014 and 360 wide leaves 42 pt of the display unused, because every screen here has a hardcoded 360px root.\n\nAndroid, common viewport: 24 dp status bar and 48 dp three-button navigation \u2014 the larger figure, because three-button nav still ships and users still choose it. That leaves 728 dp, so 800 is 72 dp too tall.\n\nThe common safe box across both is 360 x 728, and that is the reflow target.\n\nAlso visible here and not fixed: Android takes BOTH edges for the back gesture, roughly 24 dp in. The record's section index sits at right:0, 32 px wide \u2014 entirely inside that strip, so dragging it navigates back. design/08 \u00a73 recorded the inset problem and nothing acted on it; removing the plate footer made the bottom worse by running scrollable content to the gesture-bar edge."
     },
     {
       "id": "n-native-brief",
