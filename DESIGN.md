@@ -354,6 +354,16 @@ contact line, never elevation shadow.
 
 ## 8. Components
 
+**Settled 2026-08-19 (decision 047): this language is used on both platforms.**
+Material and HIG components were drawn against it on the same screen and not
+adopted — a record that renders differently per operating system is what §5
+exists to prevent. Platform *mechanics* are a separate question and are owed in
+full: safe areas, back and the gesture zones, 200% font scaling, screen-reader
+order, haptics named per platform, deep links. The cost of an unfamiliar
+component language is carried in 047: form may be unconventional, placement and
+behaviour may not, and anything tappable must read as tappable without motion or
+colour.
+
 **Containers are deleted by default.** Hairlines and whitespace structure the
 page. A drawn container appears only for the credential surface, an embedded
 record, or a sheet.
@@ -466,10 +476,37 @@ marks and the record's semantics, not their chrome, type or layout.
 
 ## 12. Accessibility, voice, localisation
 
-**Accessibility.** Record text at or above 7:1 contrast; secondary at or above
-4.5:1; meaning-bearing hairlines at or above 3:1. Touch targets 44px minimum.
-Focus is a 2px ink outline at 2px offset and is never removed. Note that "never
+**The target is WCAG 2.2 AA, and the European Accessibility Act is why —
+named 2026-08-19 (decision 046).** This section previously carried floors with
+no standard behind them, which leaves "is it accessible" unanswerable at the
+moment somebody asks. The EAA has applied to consumer-facing digital services
+since June 2025, and a record an EU employer may read is in scope. AA is a
+compliance obligation here, not a preference, and the items below are the parts
+of it this design has to satisfy rather than the whole standard.
+
+**Already specified.** Record text at or above 7:1 contrast; secondary at or
+above 4.5:1; meaning-bearing hairlines at or above 3:1 (§5's `rule`). Touch
+targets 44px minimum — AA's own floor is 24×24 under 2.5.8, so 44 is stricter
+and stays. Focus is a 2px ink outline at 2px offset and is never removed. "Never
 signal by colour alone" is satisfied by construction, since there is no colour.
+
+**Specified nowhere, and required.** Each of these is a hole, not a nuance:
+
+- **Text scaling.** AA 1.4.4 requires 200% without loss of content or function.
+  Every screen in `design/10-worker-app-screens` is a fixed 360×800 with
+  absolutely positioned bands; none has been tested at any scale factor, and
+  iOS Dynamic Type and Android font scale both go well past 200%.
+- **Screen-reader order and naming.** The imprint is a figure whose meaning is
+  geometric. `aria-label` on the SVG is not a reading of it, and the seven
+  measures need names and levels a screen reader can traverse in a stated order.
+- **Reduced motion.** §10 handles duration; AA 2.3.3 is about the animation
+  being non-essential, which the ceremony's teaching role puts in question.
+- **Target spacing.** 2.5.8 governs adjacent targets, not only their size. The
+  section index's stops sit 14px apart.
+- **RTL** is claimed below and has never been rendered.
+
+**None of this is drawn, and no screen has been audited against it.** That is
+the state, recorded rather than implied.
 
 **Voice.** Present tense, active, plain. Labels are nouns, buttons are verbs,
 confirmations state what happened. Errors name the fix. No exclamation points,

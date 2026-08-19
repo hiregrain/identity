@@ -12,9 +12,9 @@ PSQL_PAYLOAD := $(COMPOSE) exec -T payload psql -v ON_ERROR_STOP=1 -U identity -
 DUMP_SPINE := $(COMPOSE) exec -T spine pg_dump --schema-only --restrict-key=dump -U identity spine
 DUMP_PAYLOAD := $(COMPOSE) exec -T payload pg_dump --schema-only --restrict-key=dump -U identity payload
 
-.PHONY: check check-red check-red-db metadata install lint fmt-check go-check ts-check db-up db-reset migrate migrate-verify typegen typegen-check append-only spine-schema payload-residency two-plane-split cross-plane-constructs cross-plane-outbox db-down
+.PHONY: check check-red check-red-db metadata install lint fmt-check go-check ts-check db-up db-reset migrate migrate-verify typegen typegen-check append-only spine-schema payload-residency two-plane-split envelope-test cross-plane-constructs cross-plane-outbox db-down
 
-check: metadata install lint go-check db-up migrate-verify typegen-check append-only spine-schema payload-residency two-plane-split cross-plane-constructs cross-plane-outbox ts-check
+check: metadata install lint go-check db-up migrate-verify typegen-check append-only spine-schema payload-residency two-plane-split envelope-test cross-plane-constructs cross-plane-outbox ts-check
 	$(COMPOSE) down
 	@echo "check: green"
 
@@ -115,6 +115,16 @@ payload-residency:
 # spanning transaction, a role catalog per plane.
 two-plane-split:
 	node test/two-plane-split.test.mjs
+
+# The envelope acceptance suite (foundation/05): runs against the live
+# payload plane once per key provider — the provider swap is
+# configuration only (GRAIN_KEY_PROVIDER) and the suite must pass under
+# both (criterion 6). Build tag db keeps these tests out of the
+# database-less go-check job; -count=1 defeats the test cache, since the
+# database is state the cache cannot see.
+envelope-test:
+	cd core && GRAIN_KEY_PROVIDER=software go test -tags db -count=1 ./envelope/...
+	cd core && GRAIN_KEY_PROVIDER=stub-kms go test -tags db -count=1 ./envelope/...
 
 # The FDW/dblink ban, live half (foundation/07): no cross-database
 # construct in either live database. The file half runs in `metadata`.

@@ -2329,3 +2329,96 @@ names a direction — a bottom navigation bar — and this repo has never decide
 whether the worker app has one, what destinations it carries, or how that
 squares with 035's single-scroll record. That is the next decision, and drawing
 a tab bar before it is made would be the failure `CLAUDE.md` describes.
+
+## 046 — WCAG 2.2 AA and the EAA are the accessibility target (2026-08-19)
+
+`DESIGN.md` §12 carried contrast ratios, a 44px target floor and a focus ring,
+with **no standard named**. Floors without a standard leave "is this
+accessible" unanswerable at the moment a partner, a regulator or a worker asks,
+and they let a gap look like a choice.
+
+**The target is WCAG 2.2 AA, with the European Accessibility Act named as the
+reason.** The EAA has applied to consumer-facing digital services since June
+2025; a portable worker record an EU employer may be handed is in scope, so AA
+is an obligation rather than a preference. Naming it also fixes which version
+governs, which matters because 2.2 added the target-size and focus-appearance
+criteria this design touches.
+
+**What the existing floors already clear.** 7:1 record text, 4.5:1 secondary,
+3:1 for meaning-bearing lines, and a 44px target against AA 2.5.8's own 24×24 —
+stricter, and it stays stricter.
+
+**What the audit found missing, and it is not nuance.** Text scaling to 200%
+(1.4.4) against ten fixed 360×800 artboards of absolutely positioned bands,
+none tested at any scale factor; screen-reader order and naming for a figure
+whose meaning is geometric, where an `aria-label` on an SVG is not a reading of
+it; reduced motion as a question about whether the ceremony is essential (2.3.3)
+rather than only about duration; target *spacing* under 2.5.8, where the section
+index's stops sit 14px apart; and RTL, claimed in §12 and never rendered.
+
+**Recorded honestly: none of it is drawn.** This entry sets the target and
+names the holes. It does not close them, and no screen in
+`design/10-worker-app-screens` has been audited against the standard it now
+declares.
+
+**Platform insets, measured the same day.** iOS leaves 759 pt of 852 once the
+59 pt status/Dynamic Island band and the 34 pt home indicator are taken; a
+common Android viewport leaves 728 dp of 800 against a 24 dp status bar and
+48 dp three-button navigation. Every screen here is drawn 360×800, so the record
+is **41 pt too tall for iOS and 72 dp too tall for Android**, and its header sits
+under the status bar on both. `design/08` §3 recorded this and nothing acted on
+it; removing the plate footer (045) made the bottom worse by running scrollable
+content to the gesture-bar edge. Two verification frames now carry the
+measurements on the canvas. Reflowing the screens is not done.
+
+**Left open deliberately: how native the components should be.** Platform
+*mechanics* — safe areas, back, gesture zones, font scaling, screen readers,
+haptics, deep links — are not in question and must be honoured. Platform
+*components* collide with this system as ratified: §8 deletes containers and
+forbids boxed fields, §7 forbids elevation, §5 forbids anyone theming states,
+§6 admits one typeface. Adopting Material and HIG components means the record
+renders differently per operating system, which is the thing §5 exists to
+prevent. The founder's instruction is that the app must be **highly intuitive**
+and that the call may be case by case. That is a decision this entry does not
+make.
+
+## 047 — Grain-native components on both platforms (2026-08-19)
+
+Closes the question 046 left open. Decided against three drawn variants of the
+same screen — `design/10-worker-app-screens/Handle{Grain,Platform,Split}` — with
+identical logic and an identical palette, so the comparison isolated component
+form and nothing else.
+
+**The component language stays Grain's own, on iOS and Android alike.** §5's
+prohibition on anyone theming states, §7's radius and depth rules, §8's deleted
+containers and ruled-line inputs, and §6's single family all stand as ratified.
+Material and HIG components are not adopted. The record renders identically on
+both platforms, which is what §5 exists to protect: a pending record must not be
+able to pass as a verified one because it is being read on a different phone.
+
+**Platform mechanics are not the same question and are not optional.** Safe
+areas, back and the gesture zones that own the screen edges, font scaling to
+200%, screen-reader order and naming, haptics named per platform, deep links.
+046 measured the current state: every screen is drawn 360×800, which is 41 pt
+too tall for iOS and 72 dp too tall for Android, with the header under the
+status bar on both. None of that is loosened by this entry; all of it is owed.
+
+**What this decision costs, since it is the losing case that has to be answered.**
+The population this product is for has been taught what an input is by every
+other app on their phone, and a hairline they type on is not it. Choosing an
+unfamiliar component language means intuitiveness has to be bought somewhere
+else, and this entry makes that an obligation rather than a hope:
+
+- **Form may be unconventional; placement and behaviour may not.** A primary
+  action sits where the platform puts a primary action. Back goes where back
+  goes. A field commits on the platform's own keyboard action.
+- **Anything tappable must read as tappable without motion or colour**, which is
+  the harder half of having neither. A ruled input at rest currently looks like
+  a rule.
+- **The claim is testable and untested.** Nobody in the target population has
+  been put in front of these screens. Until they have, "intuitive" is an
+  assertion, and this entry records it as one.
+
+**Kept as evidence, not as work.** The three variants stay on the canvas under a
+page marked settled. They are the record of how this was decided and should not
+be re-litigated without a superseding entry; they are not screens to build.

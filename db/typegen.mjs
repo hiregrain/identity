@@ -26,15 +26,16 @@ const CHECK = process.argv.includes("--check");
 // per justified type; an unknown type fails loudly rather than guessing.
 const TYPE_MAP = new Map([
   ["integer", ["int32", "number"]],
-  // uuid as string in both languages: no uuid type exists in either
-  // stdlib, and a dependency is not added for a value the application
-  // treats as an opaque key (spine_object_id, 0003/0020).
-  ["uuid", ["string", "string"]],
   ["bigint", ["int64", "string"]],
   ["text", ["string", "string"]],
   ["boolean", ["bool", "boolean"]],
   ["bytea", ["[]byte", "Uint8Array"]],
   ["timestamp with time zone", ["time.Time", "string"]],
+  // uuid: introduced by 0005-dek-registry's person_id (foundation/05)
+  // and used by 0020-cross-plane-outbox's entry ids (foundation/07).
+  // Ledger ids travel as their canonical lowercase string form in both
+  // languages; nothing computes on the bits.
+  ["uuid", ["string", "string"]],
 ]);
 
 const failures = [];
