@@ -12,12 +12,19 @@
 // the Makefile's db targets, test/append-only.test.mjs), none of which
 // live in a runtime tree.
 //
-// The check scans every file under the runtime trees for owner-credential
-// tokens and fails on the first hit. Today the trees hold no serving code,
-// so the scan passes while being shaped to catch the first violation: the
-// first serving process that embeds or reads the owner credential fails
-// CI here. Red path: `make check-red` points this check at a planted
-// fixture and asserts exit 1.
+// What this check is, exactly: a lexical lint. It scans every file under
+// the runtime trees for the literal owner-credential shapes listed below
+// and fails on any hit. That catches the ordinary failure — a hardcoded
+// owner DSN or `-U identity` in serving code — and nothing subtler: a
+// dynamically constructed DSN, or credentials fetched from an
+// environment this lint cannot see, pass it. The real enforcement layer
+// is the database-side role restriction: whatever credential a serving
+// process manages to hold, the application role it is supposed to run as
+// cannot UPDATE or DELETE (migration 0002, proven by
+// test/append-only.test.mjs, which also proves identity_app cannot
+// escalate to the owner). This lint exists to make the ordinary failure
+// loud early, not to be the boundary. Red path: `make check-red` points
+// it at a planted fixture and asserts exit 1.
 //
 // Usage: node checks/serving-credentials.mjs [rootDir]
 //   rootDir defaults to the repo root; the fixture red path passes
