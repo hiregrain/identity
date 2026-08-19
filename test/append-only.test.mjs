@@ -8,7 +8,9 @@
 //
 // What is proven, per plane (spine and payload):
 //   1. The set of UPDATE/DELETE/TRUNCATE grants to non-owner roles —
-//      table-level and column-level — equals EXEMPTIONS exactly.
+//      table-level, column-level, and on sequences (sequence UPDATE is
+//      setval/nextval, which rewrites sequence state) — equals
+//      EXEMPTIONS exactly.
 //   2. The application role cannot UPDATE or DELETE (raw statements fail
 //      with permission denied); SELECT and INSERT work, so the denial is
 //      a boundary and not a broken role.
@@ -95,10 +97,15 @@ function assertGrantSetEqualsExemptions(plane) {
            a.privilege_type
     FROM pg_class c
     JOIN pg_namespace n ON n.oid = c.relnamespace,
-    LATERAL aclexplode(coalesce(c.relacl, acldefault('r', c.relowner))) a
-    -- views ('v', 'm') and foreign tables ('f') are included: an
-    -- auto-updatable view with an UPDATE grant is a table-grant bypass.
-    WHERE c.relkind IN ('r', 'p', 'v', 'm', 'f')
+    LATERAL aclexplode(coalesce(c.relacl, acldefault(
+      (CASE WHEN c.relkind = 'S' THEN 'S' ELSE 'r' END)::"char",
+      c.relowner))) a
+    -- views ('v', 'm'), foreign tables ('f') and sequences ('S') are
+    -- included: an auto-updatable view with an UPDATE grant is a
+    -- table-grant bypass, and sequence UPDATE (setval) rewrites sequence
+    -- state. The owner's own implicit entries are filtered below, so the
+    -- owner legitimately keeping sequence UPDATE never trips this.
+    WHERE c.relkind IN ('r', 'p', 'v', 'm', 'f', 'S')
       AND n.nspname NOT IN ('pg_catalog', 'information_schema')
       AND a.privilege_type IN (${MUTATION_PRIVILEGES.map((p) => `'${p}'`).join(", ")})
       AND a.grantee <> c.relowner`;

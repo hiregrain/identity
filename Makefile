@@ -136,6 +136,10 @@ check-red-db:
 	echo "GRANT UPDATE ON schema_migrations TO identity_app;" | $(PSQL_SPINE) -f -
 	! node test/append-only.test.mjs
 	echo "REVOKE UPDATE ON schema_migrations FROM identity_app;" | $(PSQL_SPINE) -f -
+	@echo "red path db 2b: an unenumerated sequence UPDATE grant (setval) fails the append-only test"
+	echo "CREATE SEQUENCE planted_seq; GRANT UPDATE ON SEQUENCE planted_seq TO identity_app;" | $(PSQL_SPINE) -f -
+	! node test/append-only.test.mjs
+	echo "DROP SEQUENCE planted_seq;" | $(PSQL_SPINE) -f -
 	@echo "red path db 3: a SECURITY DEFINER function containing UPDATE fails the append-only test"
 	echo "CREATE FUNCTION planted_definer() RETURNS void LANGUAGE sql SECURITY DEFINER AS 'UPDATE schema_migrations SET name = name';" | $(PSQL_PAYLOAD) -f -
 	! node test/append-only.test.mjs
