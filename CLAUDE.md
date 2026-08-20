@@ -170,6 +170,19 @@ load-bearing and survives in this readable form (decision 042). Do not
 reintroduce opaque codes, and do not invent a replacement vocabulary for them
 either — a bare count in frontmatter is worse than the codes were.
 
+## Prose standard
+
+**Unslop binds everywhere** (decision 052): no em dashes as separators, no
+curly quotes, no decorative emoji, sentence-case headings, plain words over
+tell vocabulary. `checks/unslop.mjs` enforces the mechanical patterns; the
+judgment patterns (hedging, filler, restating labels) are review defects.
+UI copy is included, not exempt.
+
+**A comment states a constraint only beside its enforcement.** Name the
+check, test, or database constraint that makes the statement true, or
+write "enforced by reading". A comment whose claim has drifted from the
+code is a review defect, not a nitpick (decision 052).
+
 ## Agent skills
 
 ### Issue tracker
