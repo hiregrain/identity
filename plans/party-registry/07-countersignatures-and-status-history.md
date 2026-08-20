@@ -16,13 +16,13 @@ verified_by: null
 ## Objective
 
 Every month, each party signs a statement that our record of what they
-issued matches their own — converting "the party never noticed" into a
+issued matches their own, converting "the party never noticed" into a
 recurring, attributable claim.
 
 ## Scope
 
 - **Per-party issuance root: consumed from `trust-kernel/04`, not defined
-  here** (decision 019 relocated it under decision 015's boundary rule —
+  here** (decision 019 relocated it under decision 015's boundary rule:
   signing and tree math belong to the kernel, written once). This task
   requests the root for a period and verifies the party's signature over
   it. The global checkpoint root is not a substitute: a party cannot
@@ -38,7 +38,7 @@ recurring, attributable claim.
   automation that produces it ships in the partner kit
   (`integration-surface`), per the boundary rule in decision 015. **This
   task's acceptance therefore proves the protocol against a test harness,
-  never against the shipped kit** — the "a partner runs one install and it
+  never against the shipped kit**, the "a partner runs one install and it
   works" claim belongs to `integration-surface` criterion 1, and this layer
   cannot honestly assert it without depending on a layer that depends on it.
 - **Missed periods escalate; they never pass silently and never break a
@@ -52,9 +52,9 @@ recurring, attributable claim.
 - **Public per-party status history** at plain, guessable URLs: current
   state, transition history with reason classes, key validity windows,
   countersignature currency, and **prior legal names** from task 01's name
-  events — a party cannot shed a suspension history by rebranding, which is
+  events, a party cannot shed a suspension history by rebranding, which is
   what trust-list transparency is for. **The operator's own entry renders
-  the same way** — its key rotations appear in public history, which is the stated
+  the same way**: its key rotations appear in public history, which is the stated
   reason decision 015 chose a self-entry over a side table. The transparency claim is void if checking a
   party's standing requires asking us.
 - This task owns the **projection and its stable URL contract**;
@@ -63,11 +63,11 @@ recurring, attributable claim.
 
 ## Acceptance
 
-- AC (mechanical): the projection contains no internal-only field —
+- AC (mechanical): the projection contains no internal-only field,
   asserted against the shared fixture defined in `party-registry/05`, not
   a second copy of the list.
 - AC (mechanical): a party can recompute its issuance root from its own
-  issuance records alone — proven by an independent recomputation in the
+  issuance records alone, proven by an independent recomputation in the
   test that never reads the global tree.
 - AC (mechanical): the operator's key rotations appear in its public
   status history.

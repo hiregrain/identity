@@ -14,7 +14,7 @@ verified_by: null
 
 ## Objective
 
-Account recovery cannot be weaker than the assurance it recovers — and a
+Account recovery cannot be weaker than the assurance it recovers, and a
 successful takeover still cannot destroy the record.
 
 ## Scope
@@ -28,7 +28,7 @@ successful takeover still cannot destroy the record.
 - Recovery attempts, successes, and freezes recorded append-only and
   visible in the worker's own record.
 - Interaction with deletion: a deletion request placed during a freeze
-  queues — and **does not execute at expiry**. It requires a **fresh
+  queues, and **does not execute at expiry**. It requires a **fresh
   authenticated confirmation** after the freeze lifts (decision 020).
   Auto-execution at expiry was a time bomb: an attacker recovers the
   account, requests deletion, waits seven days, and the system destroys the
@@ -40,9 +40,9 @@ successful takeover still cannot destroy the record.
 ## Acceptance
 
 - AC (mechanical): a document-verified account cannot be recovered by
-  email/SMS code alone — proven by an attempted downgrade path.
+  email/SMS code alone, proven by an attempted downgrade path.
 - AC (mechanical): deletion attempted inside the freeze window does not
-  execute, and **does not execute at expiry either** — it waits for fresh
+  execute, and **does not execute at expiry either**. It waits for fresh
   confirmation, proven by advancing the clock past expiry with no further
   action and confirming the record survives.
 - AC: every recovery emits notifications to all channels, logged.

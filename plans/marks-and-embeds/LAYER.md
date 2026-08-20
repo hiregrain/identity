@@ -14,21 +14,21 @@ verified_by: null
 
 # marks-and-embeds
 
-The mark/glyph system and the embeddable trust-bearing components — one
+The mark/glyph system and the embeddable trust-bearing components, one
 mark system globally, invariant ledger chrome for trust flows.
 
 Scope: the mark vocabulary as a closed versioned enum mapping only to
 epistemic facts (identity-assurance ladder, provenance class,
-corroboration, dispute/supersession/issuer-state flags — never quality,
+corroboration, dispute/supersession/issuer-state flags, never quality,
 score, tier, or composite); `marks[]` derived server-side on every claim in
 packets and record reads (verticals never compute mark state); the three
-render tiers — SDK components (web component + React/RN) with fixed
+render tiers: SDK components (web component + React/RN) with fixed
 geometry and localized labels, the ledger-served badge endpoint for
 non-SDK surfaces, static glyph assets with conformance rules for the long
 tail; **every mark resolves** to a grant-scoped verification page on the
-ledger origin (QR for print) — an unresolvable mark is counterfeit by
+ledger origin (QR for print), an unresolvable mark is counterfeit by
 definition; entry-point components ("Continue with [ledger] ID") themable
-per published guidelines; **nobody re-inks the mark** — third-party embeds
+per published guidelines; **nobody re-inks the mark**: third-party embeds
 and Grain's own verticals alike (decision 024), so no surface may restyle,
 recolor, relabel, or re-render a mark, and the prohibition is symmetric
 because an ownership-based exemption is exactly what erodes the neutrality
@@ -40,7 +40,7 @@ anything the post-selection gate protects.
 
 Acceptance:
 1. **A mark shows the same state wherever it is rendered.** (mechanical) mark state in any rendering equals the
-   server-derived state for the same claim at the same instant — SDK, badge
+   server-derived state for the same claim at the same instant, SDK, badge
    endpoint, and resolution page cannot disagree.
 2. **Every mark resolves somewhere real.** every rendered mark carries a working resolution URL; the
    resolution page respects grants and shows citations.
@@ -49,6 +49,6 @@ Acceptance:
 4. **Every conformance rule is an automated check, not a paragraph.** the conformance annex's rules are each expressed as an automated
    check a party's integration can run.
 5. **Nobody can re-ink the marks, and the rule binds everyone identically.** (mechanical) the no-re-ink rule is enforced identically for a
-   Grain-operated surface and a third-party surface — the conformance suite
+   Grain-operated surface and a third-party surface. The conformance suite
    contains no first-party exemption, asserted by running it against a
    Grain vertical's own integration.

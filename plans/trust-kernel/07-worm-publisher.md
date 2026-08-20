@@ -16,7 +16,7 @@ verified_by: null
 ## Objective
 
 Checkpoints land somewhere nobody can alter them, including us, on two
-clouds — the part of D3 that makes the anchoring externally credible.
+clouds, the part of D3 that makes the anchoring externally credible.
 
 ## Scope
 

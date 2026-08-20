@@ -28,12 +28,12 @@ that must re-clear the account's derived assurance level, with time-locks
 blocking takeover-then-delete destruction; phone/email as decaying channel
 signals, never anchors; multi-field probabilistic duplicate detection
 (Fellegi-Sunter) with candidate scoring; merge/unmerge as append-only
-events with the permanent alias table — attestations keep their original
+events with the permanent alias table, attestations keep their original
 `subject_id` forever, resolution through the alias closure at read time;
 mandatory human steward review before any merge touching attested history
 (the review UI lands in `operator-console`); **nothing survives deletion by
 default, with one severity-gated safety marker as the exception** (decision
-014 superseding 009a) — matching a live marker yields a usable-but-restricted
+014 superseding 009a), matching a live marker yields a usable-but-restricted
 account pending review, never a denial, so this is not a clean fresh start
 and is not described as one; anti-fraud scoped to concurrent
 multi-accounting and synthetic identity.
@@ -43,7 +43,7 @@ Acceptance:
    either event stream; reads through the absorbed ID resolve correctly in
    both states.
 2. **Recovering a verified account re-clears the same bar it first cleared.** recovery of a document-verified account requires re-clearing
-   document verification; a fresh SMS OTP alone cannot take the account —
+   document verification; a fresh SMS OTP alone cannot take the account,
    **including through ordinary login**, since sensitive operations require a
    session whose assurance matches the account (decision 020).
 3. **Nothing auto-merges when either side carries a safety marker.** (mechanical) no auto-merge executes where either profile carries

@@ -17,8 +17,8 @@ verified_by: clean-context-verifier@2026-08-19
 
 ## Objective
 
-"Delete means gone" survives the scenario most likely to actually happen —
-a restore from backup — and has an answer to "the bytes are still on your
+"Delete means gone" survives the scenario most likely to actually happen,
+a restore from backup, and has an answer to "the bytes are still on your
 servers."
 
 ## Scope
@@ -29,7 +29,7 @@ servers."
 - **Crypto-shredding is recorded as a documented legal position, not as a
   mechanical proof** (decision 017). Key destruction is instant and
   irreversible; the reasoning for why that constitutes erasure is written
-  at the schema site, with decision 014's *EDPS v SRB* analysis cited —
+  at the schema site, with decision 014's *EDPS v SRB* analysis cited:
   the ledger cannot re-identify, and that is the load-bearing fact.
 - **Scheduled physical purge.** Shredded rows are physically removed on a
   stated schedule, so unreadable ciphertext does not accumulate forever.
@@ -39,12 +39,12 @@ servers."
   answer to foundation/04's placeholder ("exemptions where deletion
   requires it").
 - `0021-deletion-journal` (spine): an append-only record of every
-  destruction — person, instant, requester class — carrying **no
+  destruction (person, instant, requester class), carrying **no
   identifying content**, only what a replay needs.
 - **Backups cannot resurrect a deleted person** (decision 017): backup
   retention is bounded and stated as a number, and **any restore replays
   the deletion journal before the restored system accepts traffic**. The
-  replay is a gate, not a cleanup step — a restored system that has not
+  replay is a gate, not a cleanup step. A restored system that has not
   replayed does not serve.
 - The residual window between a backup and its expiry is **disclosed
   rather than hidden**: the worker-facing deletion copy states it, and the
@@ -57,7 +57,7 @@ servers."
 ## Acceptance
 
 - AC (mechanical): restoring a backup taken before a deletion, then
-  running the replay, leaves nothing readable for that person — proven by
+  running the replay, leaves nothing readable for that person, proven by
   attempting a read and by grepping a raw dump.
 - AC (mechanical): a restored system that has not completed the replay
   refuses traffic.
@@ -66,7 +66,7 @@ servers."
 - AC (mechanical): the retention window in the worker-facing copy and the
   retention window in config are the same value, asserted by a check that
   fails when they drift.
-- AC (mechanical): the deletion journal carries nothing identifying — a
+- AC (mechanical): the deletion journal carries nothing identifying, a
   schema assertion plus a raw-dump grep.
 - AC: a purge run is fully audited and attributable.
 

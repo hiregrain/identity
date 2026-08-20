@@ -16,12 +16,12 @@ verified_by: null
 ## Objective
 
 A party's public key enters the registry only after that party proves it
-holds the matching private key — and the ledger never holds one.
+holds the matching private key, and the ledger never holds one.
 
 ## Scope
 
 - `0015-party-keys` (spine): current-state projection over the kernel's
-  `0006-key-event-log` — `{party_id, key_id, public_key, valid_from,
+  `0006-key-event-log`: `{party_id, key_id, public_key, valid_from,
   valid_until, custody_model}`. The event log stays the source of truth;
   this is a read projection, rebuildable from events.
 - **Registration challenge, fully specified**: the registry issues a
@@ -36,11 +36,11 @@ holds the matching private key — and the ledger never holds one.
 - Validity windows: 30–90 days at registration, per D4 §3. A registration
   requesting a longer window is rejected, not clamped.
 - `custody_model` recorded per key. Vendors register with `none` and
-  have no key path at all (decision 015) — the registration endpoint
+  have no key path at all (decision 015). The registration endpoint
   rejects them rather than accepting an unused key.
 - **The no-party-key rule, enforced structurally** (trust-kernel/02
   deferred it): the signing provider's type and permission boundary makes a
-  non-operator `kid` unrepresentable at the call site — the control is the
+  non-operator `kid` unrepresentable at the call site. The control is the
   boundary, not vigilance. A regression test additionally proves the
   boundary has not been widened later; the test is the alarm, not the
   control.
@@ -56,7 +56,7 @@ holds the matching private key — and the ledger never holds one.
 - AC (mechanical): a request for a 120-day window is rejected with a
   structured error.
 - AC (mechanical): a non-operator party `kid` is unrepresentable at the
-  signing boundary — proven by a compile/type-level or permission-level
+  signing boundary, proven by a compile/type-level or permission-level
   assertion, with a regression test that fails if the boundary widens.
 - AC: the projection rebuilds byte-identically from the key-event log.
 

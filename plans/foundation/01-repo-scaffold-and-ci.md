@@ -17,8 +17,8 @@ The monorepo skeleton and the check pipeline every later task lands into.
 
 ## Scope
 
-- Layout: `core/` (Go module — kernel and services), `surfaces/` (TS
-  workspace — worker surface, console, public web), `contract/`
+- Layout: `core/` (Go module, kernel and services), `surfaces/` (TS
+  workspace, worker surface, console, public web), `contract/`
   (language-neutral schema + vectors; empty seed), `db/migrations/`,
   `checks/`, `test/`.
 - Toolchains pinned: Go (version file), pnpm + Node (packageManager
@@ -34,7 +34,7 @@ The monorepo skeleton and the check pipeline every later task lands into.
 - Pre-commit: gofmt + eslint/prettier config, enforced in CI not hooks.
 - Local Postgres is Docker Compose; **managed Postgres (D1) is not part of
   this task and `make check` never requires it.** The single check command
-  runs entirely against local containers — a fresh clone has no cloud
+  runs entirely against local containers. A fresh clone has no cloud
   credentials, and conflating local with managed is how "fresh clone works"
   becomes false for a new contributor.
 
@@ -43,7 +43,7 @@ The monorepo skeleton and the check pipeline every later task lands into.
 - AC: fresh clone → `make check` (or equivalent single command) passes
   green on an empty schema, locally and in CI.
 - AC (mechanical): the red paths are proven by **fixtures under a test
-  directory excluded from normal builds** — a misformatted Go file and a TS
+  directory excluded from normal builds**: a misformatted Go file and a TS
   type error the check pipeline is pointed at deliberately. Committing
   genuinely broken files to the tree to prove CI catches them would make
   the tree permanently red.

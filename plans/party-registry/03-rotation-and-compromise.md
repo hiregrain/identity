@@ -37,7 +37,7 @@ loudly rather than continuing on a stale key quietly.
   activation gate.
 - Compromise reporting: a party reports its own key compromised; the
   event lands in the kernel's key-event log. The kernel's existing rule
-  governs — signatures ledger-stamped before the report stay valid,
+  governs: signatures ledger-stamped before the report stay valid,
   after it are flagged suspect. This task adds the reporting path and its
   authorization, not the verification rule.
 - A party may hold overlapping valid keys during rotation; the
@@ -45,13 +45,13 @@ loudly rather than continuing on a stale key quietly.
   key."
 - **Key-loss recovery ceremony, written rather than improvised.** ACME-style
   renewal assumes the current key still signs. It cannot cover missed
-  expiry, cloud-account lockout, or admin compromise — and an unwritten
+  expiry, cloud-account lockout, or admin compromise, and an unwritten
   ceremony is not an absent one, it is one invented under pressure in the
   exact place where improvisation destroys the D4 argument. Recovery is
   therefore **re-registration, not recovery**: the party proves possession
   of a fresh key through the ordinary task-02 challenge, gated on operator
   review and recorded as a registry event with its reason. **No privileged
-  bypass path is created** — recovery reuses the same registration code as a
+  bypass path is created**. Recovery reuses the same registration code as a
   new party, so no new trusted path exists to audit.
 - Recovery never reinstates the lost key and never backdates: signatures
   under the lost key keep their original validity, and the new key's window
@@ -64,12 +64,12 @@ loudly rather than continuing on a stale key quietly.
 - AC (mechanical): with renewal blocked, ingestion for that party halts
   at expiry and returns a structured error naming the cause; other
   parties are unaffected.
-- AC (mechanical): no schema path stores halt state — a schema assertion
+- AC (mechanical): no schema path stores halt state, a schema assertion
   confirms the predicate is the only representation.
 - AC (mechanical): a compromise report by party A cannot be filed against
   party B's key.
 - AC (mechanical): recovery after total key loss goes through the ordinary
-  registration challenge — asserted by proving no code path registers a key
+  registration challenge, asserted by proving no code path registers a key
   without proof of possession, recovery included.
 - AC (mechanical): recovery neither reinstates the lost key nor backdates
   the new one; prior signatures keep their original validity.
@@ -80,5 +80,5 @@ loudly rather than continuing on a stale key quietly.
 Verifier runs a rotation, blocks renewal and advances the clock past
 expiry, confirms the halt is party-scoped, attempts a cross-party
 compromise report, then destroys a party's key entirely and walks the
-recovery ceremony end to end — confirming it produced a registry event, a
+recovery ceremony end to end, confirming it produced a registry event, a
 proof-of-possession challenge, and no backdated validity.

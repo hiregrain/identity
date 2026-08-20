@@ -13,18 +13,18 @@ verified_by: null
 
 # operator-console
 
-The ledger operator's surface — the first slice of the human-queues
+The ledger operator's surface, the first slice of the human-queues
 product line every school agreed is the real scaling wall. v1 is queues
 and review screens, not the product line.
 
-Scope: **merge steward queue** — candidate duplicate pairs with match
+Scope: **merge steward queue**: candidate duplicate pairs with match
 evidence, side-by-side records, approve/reject/defer, every action an
 append-only event; steward decisions feed the matcher as labels (the
-labeling flywheel, grain pattern); **dispute administration** — dispute
+labeling flywheel, grain pattern); **dispute administration**: dispute
 state tracking, deadline timers, unresponsive-issuer flagging;
-**party-vetting queue** — registration review, tier assignment, probation
+**party-vetting queue**: registration review, tier assignment, probation
 monitoring, the anomaly/reliability signals rendered internal-only (never
-exported, never a visible score); **deletion oversight** — saga progress,
+exported, never a visible score); **deletion oversight**: saga progress,
 copy-map acknowledgment status, stuck-deletion alerts; audit: every
 operator action logged and attributable; operator access itself under the
 read-log discipline (worker-visible reads logged like any other). Role
@@ -39,5 +39,5 @@ Acceptance:
    with actor attribution; a console session leaves a complete audit trail.
 3. **Dispute deadlines fire on their own, without a human remembering.** dispute deadlines fire notifications and state transitions
    without operator polling.
-4. **Reliability signals never leave the console.** reliability signals render only inside the console — asserted by
+4. **Reliability signals never leave the console.** reliability signals render only inside the console, asserted by
    a check that no API or packet field carries them.

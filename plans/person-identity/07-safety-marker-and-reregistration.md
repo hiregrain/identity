@@ -15,9 +15,9 @@ verified_by: null
 
 ## Objective
 
-Nothing survives deletion by default. The one exception — a
+Nothing survives deletion by default. The one exception, a
 severity-gated safety/fraud marker filed by the party that made the
-finding — is narrow, expiring, challengeable, and can never deny service
+finding, is narrow, expiring, challengeable, and can never deny service
 on its own.
 
 Supersedes the universal enrollment token (decision 014 over 013): a
@@ -39,7 +39,7 @@ and CNIL expressly excludes cross-party mutualised registers.
   Document identifiers are low-entropy and follow published per-country
   formats, so a plain hash is enumerable: generate every valid number for a
   jurisdiction, hash each, compare. That would make this table a
-  de-anonymizable list of who has been flagged — the structure the AEPD
+  de-anonymizable list of who has been flagged, the structure the AEPD
   fined over, and the precise re-identification capability decision 014's
   *EDPS v SRB* analysis says makes a value personal data. Required, in full:
   keyed hash (HMAC or equivalent) with **the key held in the key management
@@ -49,7 +49,7 @@ and CNIL expressly excludes cross-party mutualised registers.
   story** with its window stated, since re-keying needs the source document;
   a **collision policy**; and a written **brute-force analysis** against the
   weakest jurisdiction's format.
-- `0014-safety-markers` (spine): marker rows carrying **only** —
+- `0014-safety-markers` (spine): marker rows carrying **only**:
   `document_identifier_keyed_hash`, `filing_party_id`, `category` (closed
   enum, most-critical safety/fraud only, Uber/Lyft ISSP-scoped), `filed_at`,
   `expires_at` (fixed clock, no discretionary extension).
@@ -66,7 +66,7 @@ and CNIL expressly excludes cross-party mutualised registers.
   details could occupy.
 - **Filing is a party act, under an individually granted capability.**
   Only a party holding a live `may_file_safety_marker` grant may file
-  (decision 015 — the capability is granted per party, revocably, and
+  (decision 015: the capability is granted per party, revocably, and
   never implied by vetting tier), only against its own finding, and only
   on attestation that the evidential floor is met ("could confidently
   report to the police"). The grant itself requires a signed addendum on
@@ -83,7 +83,7 @@ and CNIL expressly excludes cross-party mutualised registers.
   attestations, or grants) pending steward review. No automatic hard
   block exists anywhere in the code path.
 - Re-registration mechanics independent of markers: new ledger id always
-  (tombstoned ids are never reissued — spine signatures reference them
+  (tombstoned ids are never reissued, spine signatures reference them
   forever); linkage recorded internally; steward flag raised.
 - Disclosure at collection (not merely at deletion): the consent
   instrument states that a party may file a safety marker meeting the
@@ -92,11 +92,11 @@ and CNIL expressly excludes cross-party mutualised registers.
 ## Acceptance
 
 - AC (mechanical): deleting a profile with no marker leaves nothing keyed
-  to the person anywhere in spine or payload — asserted through decision
+  to the person anywhere in spine or payload, asserted through decision
   017's evidence set (unreadable through every path, alias closure
   destroyed, purge run, restore replay honored), not by a dump grep alone.
 - AC (mechanical): the match key is a keyed hash whose key is absent from
-  the database — proven by attempting derivation with full database access
+  the database, proven by attempting derivation with full database access
   and failing.
 - AC (mechanical): the same document expressed two ways canonicalizes to
   one key; two different documents do not collide under the stated policy.
@@ -108,10 +108,10 @@ and CNIL expressly excludes cross-party mutualised registers.
   performance content, or a cause narrative on a marker.
 - AC (mechanical): a marker past `expires_at` is inert on every read
   path; expiry cannot be extended by any API.
-- AC (mechanical): no code path converts a marker match into a denial —
+- AC (mechanical): no code path converts a marker match into a denial,
   restriction plus review only.
 - AC (mechanical): a party without a live `may_file_safety_marker` grant
-  cannot file, including a fully vetted `external_standard` party — tier
+  cannot file, including a fully vetted `external_standard` party, tier
   confers nothing.
 - AC (mechanical): revoking the grant blocks new filings and leaves
   existing markers untouched.

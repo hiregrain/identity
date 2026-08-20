@@ -22,8 +22,8 @@ review, and never act on them automatically.
 
 - Multi-field probabilistic matching (Fellegi-Sunter): `name_index`
   candidates, contact channels, document identifiers where verification
-  captured them, and — as **triage evidence only, never identity proof**
-  — IP and device signals (grain prior art: cafés, offices, VPNs and
+  captured them, and, as **triage evidence only, never identity proof**,
+  IP and device signals (grain prior art: cafés, offices, VPNs and
   shared households produce false matches; PH/India populations use
   internet cafés heavily).
 - Runs at signup and continuously as new evidence arrives (a later
@@ -32,7 +32,7 @@ review, and never act on them automatically.
   and a total score, append-only, feeding the steward queue
   (`operator-console` owns the UI).
 - Worker-initiated linking: a pull-only path ("I have another account").
-  **No proactive disclosure of suspected duplicates** (decision 013 —
+  **No proactive disclosure of suspected duplicates** (decision 013:
   it leaks the existence of a matching account and teaches thresholds).
 - Auto-merge permitted only where both records are attestation-free and
   match on strong evidence (same verified document); everything else

@@ -1,4 +1,4 @@
-# T1 Spike — Agent-Fluency Measurement, Go vs. TypeScript (gate on decision 005 / D2)
+# T1 spike: agent-fluency measurement, Go vs. TypeScript (gate on decision 005 / D2)
 
 > **Discharged (decision 012): Go stands; the switch-triggers carry forward as
 > the guard.** This file is the spike's frozen specification, kept because the
@@ -9,7 +9,7 @@ Purpose: D2 (Go core) was ratified contingent on this spike. Pre-committed
 rule: **Go stands unless its measured defect rate is materially worse than
 TypeScript's** (working threshold: >1.5× oracle-detected defects, or any
 task where agents fail to reach a correct implementation at all). The spike
-measures our actual agent tooling on representative kernel work — it
+measures our actual agent tooling on representative kernel work. It
 replaces the litigation's contested fluency evidence with a measurement on
 our own stack.
 
@@ -24,7 +24,7 @@ fixes; humans only count.
 
 1. **Canonical JSON serialization + Ed25519/JWS sign and verify** against a
    fixture party registry, passing shared cross-language test vectors
-   (these vectors are a deliverable — they become part of the contract).
+   (these vectors are a deliverable, they become part of the contract).
 2. **Per-stream hash chain append + full-chain verification**, including
    detection of a single mutated historical record.
 3. **Merkle checkpoint construction** over N stream heads + inclusion-proof
@@ -37,7 +37,7 @@ fixes; humans only count.
    attestations.
 6. **Claim-class state machine**: self-asserted → frozen-on-verification
    lifecycle with illegal-transition rejection (the discriminated-union /
-   sealed-interface showcase — instrument how each language's idiom holds
+   sealed-interface showcase, instrument how each language's idiom holds
    up under agent edits).
 7. **Ingestion validation**: schema check including the sensitive-data ban
    (field and free-text), work_kind@version existence, issuer state,
@@ -50,7 +50,7 @@ fixes; humans only count.
    and no readable payload remains.
 10. **A deliberately underspecified task** (a realistic ticket with a gap):
     measures how each language's agent output fails when requirements are
-    incomplete — failure legibility matters as much as failure rate.
+    incomplete. Failure legibility matters as much as failure rate.
 
 ### Oracles and metrics
 

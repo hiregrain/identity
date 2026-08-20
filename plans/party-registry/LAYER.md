@@ -32,7 +32,7 @@ guessable URLs, carrying prior names; the
 operator's own single self-entry, enforced unique, so ledger-issued
 records verify through one lookup path; tiered vetting metadata held
 orthogonal to individually granted, revocable capabilities
-(`may_attest`, `may_request_packet`, `may_file_safety_marker` — the last
+(`may_attest`, `may_request_packet`, `may_file_safety_marker`, the last
 requiring a signed addendum on file per decision 015); key registration
 for party-held keys (D4): proof of possession, 30–90-day validity,
 ACME-style automated rotation with renewal failure halting that party's
@@ -43,7 +43,7 @@ to first external party per decision 005 sub-rulings; party principals as `party
 structurally unlinkable to persons; suspension flags computed at read,
 never written into attestations; invalidation *authority* for proven
 fraud (the mechanism lives in `ingestion`); the registry-enforced
-activation gate — **no external party can transition to `active` before
+activation gate: **no external party can transition to `active` before
 the witnessed transparency log exists** (D3), checked live and paired
 with the executed liability-shield instrument; mandatory monthly party
 countersignatures over their own issuance checkpoints, automated by the
@@ -54,8 +54,8 @@ Acceptance:
    attempting to activate an external-tier party without a live witnessed
    log, or without the recorded legal precondition, fails.
 2. **Key rotation runs unattended, and a compromise is reported.** rotation completes unattended and a compromise report is
-   filable only by the key's own party. (The *verification* rule — valid
-   iff active at signing and pre-compromise — is `trust-kernel`'s
+   filable only by the key's own party. (The *verification* rule, valid
+   iff active at signing and pre-compromise, is `trust-kernel`'s
    AC and is not restated here; one guarantee, one owner.)
 3. **Suspending a party does not retroactively break what it already signed.** a suspended party's prior attestations remain cryptographically
    valid and acquire the derived read-time flag everywhere they render.
@@ -66,7 +66,7 @@ Acceptance:
    *valid* addendum (signed, same party, effective, unrevoked, terms
    present), and no role can read both `party_users` and person tables.
 6. **A party parked in pending cannot outrun the witnessed-log deadline.** (mechanical) a party parked in `pending` cannot outrun the D3
-   deadline silently — crossing either limb without a witnessed log requires
+   deadline silently. Crossing either limb without a witnessed log requires
    a signed governance event.
 7. **Suspending a vendor flags its verifications without rewriting them.** (mechanical) a suspended vendor flags the verification records
    whose evidence it produced and does not flag the operator generally.

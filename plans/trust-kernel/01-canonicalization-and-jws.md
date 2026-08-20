@@ -36,7 +36,7 @@ cleanup; `contract/CONTRACT.md` preserves the normative rules).
   the signature and the key identifier used; key selection is internal to
   the operator provider. A `sign(kid, bytes)` shape would make "no
   non-operator key is invokable" a runtime string check someone can
-  regress — the exact regression decision 016 wanted structurally
+  regress, the exact regression decision 016 wanted structurally
   prevented. With no key parameter, the wrong key is unexpressible rather
   than rejected. Verification is a separate function taking a public key.
 - Key resolution for verification reads the registry (integration lands in
@@ -47,7 +47,7 @@ cleanup; `contract/CONTRACT.md` preserves the normative rules).
   plus a TS vector-runner so both languages exercise identical bytes in
   CI from day one.
 - Kernel governance seed: CODEOWNERS on `core/kernel/`, **plus the host
-  branch-protection rule that actually enforces two approvals** —
+  branch-protection rule that actually enforces two approvals**.
   CODEOWNERS alone requests reviewers, it does not require them, and a
   synthetic PR in local CI cannot prove a rule that lives in the repo
   host's settings. The acceptance below checks the host policy, not just
@@ -57,14 +57,14 @@ cleanup; `contract/CONTRACT.md` preserves the normative rules).
   construction and proofs. Schedulers, publishers, reconciliation, and
   per-party root assembly live in a kernel-adjacent package that calls in
   and is reviewed normally. The budget bounds what gets the expensive
-  treatment — two-human review, fuzzing, formal specs — rather than
-  measuring the layer.
+  treatment, namely two-human review, fuzzing, and formal specs, rather
+  than measuring the layer.
 
 ## Acceptance
 
 - AC (mechanical): kernel passes all regenerated vectors; the TS runner
   passes the identical files; a mutated vector fails both.
-- AC (mechanical): the signing function exposes no key parameter — proven
+- AC (mechanical): the signing function exposes no key parameter, proven
   by its type signature, so passing another party's key is not expressible.
 - AC (mechanical): the key identifier is inside the signed bytes; altering
   it invalidates the signature (vector case).

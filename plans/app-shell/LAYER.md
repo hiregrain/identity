@@ -23,29 +23,29 @@ verified_by: null
 The native iOS and Android clients, and the platform contract every surface
 inside them must satisfy. Split out of `worker-surface` on 2026-08-19 because
 that layer scopes *what the worker sees* and explicitly assumed "responsive web
-first, installable PWA before native" — a target that no longer holds, and a body
+first, installable PWA before native" (a target that no longer holds), and a body
 of work no layer owned.
 
 **This layer owns the runtime, never the content.** Screens belong to
 `worker-surface`, `peer-references` and `public-web`. What lives here is
 everything that is true of every screen on a real device.
 
-**The framework is ratified (decision 040): Expo SDK 57 — React Native 0.86,
-React 19.2.3 — with CNG and config plugins, expo-router, and
+**The framework is ratified (decision 040): Expo SDK 57, React Native 0.86,
+React 19.2.3, with CNG and config plugins, expo-router, and
 `@shopify/react-native-skia` as the imprint renderer.** Pin SDK 57; take 58
-deliberately. The New Architecture is not a decision — RN 0.82 made it the only
+deliberately. The New Architecture is not a decision: RN 0.82 made it the only
 architecture. `react-native-svg` is disqualified from source: it cannot express
 hairline mode at all (`strokeWidth == 0` returns early), and hairline mode is what
 `DESIGN.md` gap 10a requires.
 
 **Local Expo modules, not ejecting.** `setSystemGestureExclusionRects` has no
-wrapper anywhere in the ecosystem — verified against the published tarballs of
+wrapper anywhere in the ecosystem, verified against the published tarballs of
 `react-native-screens`, `react-native-gesture-handler` and `react-native-svg`, and
 react-native-gesture-handler closed the request `not_planned` in October 2024. It
 needs a local Expo module of roughly 25 lines of Kotlin, no-op on iOS and web. Its
 budget is also worse than the number suggests: 200dp **shared across every window
 on the display**, per edge, walked bottom-up, silently truncated with no error.
-Decision 037's second half — the index as an accelerator, never the only path —
+Decision 037's second half, the index as an accelerator, never the only path,
 is what actually satisfies criterion 2.
 
 **Haptics are named.** `.rigid` (`UIImpactFeedbackGenerator.FeedbackStyle`) on
@@ -54,21 +54,21 @@ on Android. Recorded correction: `DESIGN.md` §10's premise that reduced motion
 suppresses haptics is **unverified on both platforms** and is product policy, not
 platform behaviour.
 
-Scope: **the shells** — one design, three runtimes (iOS, Android, installable
+Scope: **the shells**: one design, three runtimes (iOS, Android, installable
 PWA), with the PWA remaining a first-class target rather than a fallback, since
 `06-worker-app-ia.md` §3 makes an arriving link the most common first session and
-a link must not require an install; **safe areas and system chrome** — top and
+a link must not require an install; **safe areas and system chrome**: top and
 bottom insets, status-bar appearance, the home indicator and the gesture bar,
-none of which the 360×800 design frame accounts for; **system navigation** —
+none of which the 360×800 design frame accounts for; **system navigation**:
 back on both platforms, and the edge-index collision recorded in
 `design/08-app-inventory.md` §0.2 (Android 10+ takes a back-swipe from *both*
 edges, and the app's only navigation sits on the right one); **dark mode**,
 which `DESIGN.md` gap 6 defines as a rule and has never rendered, and which both
-stores hand the app automatically; **text scaling** — iOS Dynamic Type and
+stores hand the app automatically; **text scaling**: iOS Dynamic Type and
 Android font scaling to 200%+, against a type scale expressed entirely in fixed
-px, and a reflow rule for the ledger row's `nowrap` figure column; **haptics** —
+px, and a reflow rule for the ledger row's `nowrap` figure column; **haptics**:
 §7's "one hard haptic at contact" named per platform, and retained under
-`prefers-reduced-motion` per §10; and **offline** — §12's rule that the record
+`prefers-reduced-motion` per §10; and **offline**: §12's rule that the record
 stays readable from cache, which needs a storage and staleness contract.
 
 **Reachability and distribution moved out (eng review, 2026-08-19).** Deep
@@ -90,7 +90,7 @@ Acceptance. Each of these is checkable from the code by someone who has never
 seen this layer before. Where a check genuinely needs a phone, it says so.
 
 1. **Nothing sits under the system's own furniture.** No interactive element's
-   layout rectangle overlaps the safe-area insets — the notch, the home
+   layout rectangle overlaps the safe-area insets: the notch, the home
    indicator, the Android gesture bar. Read from the layout tree, not from a
    screenshot.
 
@@ -115,7 +115,7 @@ seen this layer before. Where a check genuinely needs a phone, it says so.
 5. **The seat's haptic fires, including when motion is off.** `.rigid` on iOS,
    `HapticFeedbackConstants.CONFIRM` on Android, asserted at the call site.
    `DESIGN.md` §10 says the meaning survives without the motion, and this is
-   what makes that true — note that §10's assumption that reduced motion
+   what makes that true. Note that §10's assumption that reduced motion
    suppresses haptics is unverified on both platforms and is our policy, not the
    platform's behaviour.
 

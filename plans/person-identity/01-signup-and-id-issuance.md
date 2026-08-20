@@ -23,15 +23,15 @@ an opaque permanent `ledger_person_id` out.
 - `0010-person-core` (spine): `person` with opaque UUIDv7 id (hot-range-safe
   layout, rationale documented at the schema site), `created_at`,
   lifecycle state as write-once + transition rows (never an editable
-  column — Dispatch's proven correction), tombstone marker.
+  column, Dispatch's proven correction), tombstone marker.
 - Payload-side person row: contact channels with verified-at and
   channel-risk fields; `display_name` free-text Unicode, optional.
 - Email-primary signup with verified control of one channel (decision
-  013); phone optional and captured with line-type/assurance metadata —
+  013); phone optional and captured with line-type/assurance metadata,
   PH mobiles recorded at their higher RA 11934 assurance rather than
   flattened.
 - Channel risk scoring hook at signup (VOIP line-type, carrier
-  reputation, velocity) — the real anti-Sybil control; v1 records signals
+  reputation, velocity), the real anti-Sybil control; v1 records signals
   and thresholds, escalation policy lands with the anti-fraud work.
 - IDs are never reissued or recycled, including after deletion.
 - **"Instantly" is defined, because signup writes both planes** (decision

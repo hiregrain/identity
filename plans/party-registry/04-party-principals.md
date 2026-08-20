@@ -15,12 +15,12 @@ verified_by: null
 
 ## Objective
 
-The humans who administer a party can log in — without becoming, or
+The humans who administer a party can log in, without becoming, or
 becoming linkable to, subjects of the ledger.
 
 ## Scope
 
-- `0016-party-principals` (spine, **its own schema**): `party_users` —
+- `0016-party-principals` (spine, **its own schema**): `party_users`,
   auth records scoped to a party, with hardware-bound WebAuthn credentials
   (D4 §5, security-infra §4.4). No static API keys anywhere in this path.
 - **The invariant is unlinkability, not absence of identifying data.** An
@@ -36,17 +36,17 @@ becoming linkable to, subjects of the ledger.
   registered as a declared incompatible pair: no role holds SELECT on both,
   and the cross-schema lint fails any query touching both.
 - **Duplicate detection is barred from linking `party_users` to
-  persons** — now a consequence of the role split rather than a rule the
+  persons**, now a consequence of the role split rather than a rule the
   matcher must remember. The founder noted the same human may separately
   hold a worker record; matching across the two would reconstruct exactly
   the linkage decision 007 forbids.
 - Role model within a party: admin (manages principals and keys) and
-  member (reads the issuance feed). No role grants capability — party
+  member (reads the issuance feed). No role grants capability. Party
   capabilities are party-level grants (task 01), never delegated to a
   principal.
 - **Principals are erasable; their actions are not.** A party admin is a
   natural person with erasure rights, and the reason worker records are
-  append-only — attestations must survive to stay verifiable — does not
+  append-only, attestations must survive to stay verifiable, does not
   apply to a console login. Actions carry an opaque `actor_id` that
   outlives the principal record, so the audit trail keeps every row and
   keeps "the same actor did these things" without holding the person's
@@ -61,14 +61,14 @@ becoming linkable to, subjects of the ledger.
 - AC (mechanical): `party_users` carries no foreign key to a person and
   no shared identifier; a schema assertion enforces it.
 - AC (mechanical): no role can read both `party_users` and the person
-  tables — proven by attempting the join as every defined role and having
+  tables, proven by attempting the join as every defined role and having
   each fail at the permission layer.
 - AC (mechanical): the duplicate matcher, given a `party_user` and a
-  person with identical contact details, produces no candidate — proven
+  person with identical contact details, produces no candidate, proven
   against the live matcher, not a stub.
 - AC (mechanical): no authentication path accepts a static secret.
 - AC (mechanical): erasing a principal removes every identifying column
-  and leaves every action row intact, still grouped by `actor_id` —
+  and leaves every action row intact, still grouped by `actor_id`,
   proven by a raw-dump assertion plus an action-count check before and
   after.
 - AC (mechanical): the exemption grant is table-scoped; the append-only

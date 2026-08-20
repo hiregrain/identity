@@ -22,17 +22,17 @@ verified_by: null
 ## Objective
 
 Establish what the spine leaks by correlation, given that it leaks nothing
-by column — because the column-level lint can never answer this question.
+by column, because the column-level lint can never answer this question.
 
 ## Scope
 
 - The gap this closes: criterion 3 promises no readable personal data on the
   spine and enforces it with a type lint. The lint blocks a `text` column.
   It cannot prove an opaque `bytea` or id does not encode a name, and it
-  says nothing about the harder direction — **stable object ids,
+  says nothing about the harder direction: **stable object ids,
   timestamps, issuer ids, and commitment patterns can identify people by
   correlation with zero readable columns present**.
-- Deliverable: a written threat model covering, at minimum — id structure
+- Deliverable: a written threat model covering, at minimum: id structure
   and whether ordering leaks enrollment time; timestamp granularity and
   what activity patterns it exposes; issuer-id plus timing correlation
   against a known external roster; commitment and salt reuse across

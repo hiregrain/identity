@@ -18,13 +18,13 @@ verified_by: null
 # consent-and-deletion
 
 **Deletion mechanics settled 2026-08-19 across decisions 036, 038 and 040, and
-they moved twice in one day — read all three.** The end state: deletion is a
+they moved twice in one day, read all three.** The end state: deletion is a
 **support-executed** process with an **in-app control that files the request**
 (Apple App Review 5.1.1(v) requires in-app initiation; support-only is a
 rejection) **and a web page that files the same request** (Google Play requires
 both). Access stops the moment the request is filed; erasure follows a grace
 period; **cancelling is an explicit affirmative act**, never a side effect of
-signing in — the EDPB's deceptive-design guidelines name "dead ends" that
+signing in. The EDPB's deceptive-design guidelines name "dead ends" that
 interrupt a deletion process, and a worker signing in to check on their deletion
 must not thereby cancel it.
 
@@ -38,14 +38,14 @@ The worker's two ultimate controls, engineered as subsystems.
 
 Scope: the onboarding consent instrument (six-point plain-language
 coverage per design 0.1 §8.2, contextual re-affirmation at each
-verification request; final terms blocked on counsel brief 4 — the flow
+verification request; final terms blocked on counsel brief 4, the flow
 ships with placeholder copy, launch gates on returned terms); grant
-machinery — party-level grant/revoke as append-only event pairs, immediate
+machinery: party-level grant/revoke as append-only event pairs, immediate
 effect on future reads, full read log; whole-profile deletion (R2):
 anti-coercion confirmation window, immediate read stop + grant revocation,
 payload purge within the published window, DEK destruction, spine
 tombstones with no readable residue, party notification, provable
-`payload_purged` event; the copy-map as code — every store a datum reaches
+`payload_purged` event; the copy-map as code: every store a datum reaches
 (replicas, WAL, backups, caches, exports) enumerated with per-copy deletion
 SLOs and an acknowledgment saga; deletion propagation to derived state
 (recompute, grain-pattern).
@@ -65,7 +65,7 @@ Acceptance:
    readable personal data for the person; the tombstoned ID never reissues.
 2. **Revoking a grant stops the very next read.** (mechanical) a revoked grant blocks the next packet read in the
    same second; the read log shows the denial.
-3. **Every place data is copied is proven by a planted datum.** the copy-map is exercised by test — a datum planted in every
+3. **Every place data is copied is proven by a planted datum.** the copy-map is exercised by test: a datum planted in every
    enumerated store is gone within its SLO after deletion.
 4. **Deleting during an open dispute still completes.** deletion during an open dispute completes; the dispute record
    survives only in unreadable spine form.

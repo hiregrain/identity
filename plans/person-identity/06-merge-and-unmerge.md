@@ -15,7 +15,7 @@ verified_by: null
 
 ## Objective
 
-Two records become one — reversibly, without rewriting a single
+Two records become one, reversibly, without rewriting a single
 attestation or breaking a single signature.
 
 ## Scope
@@ -23,7 +23,7 @@ attestation or breaking a single signature.
 - `0013-merge-events-and-aliases`: `person_merged{survivor_id,
   absorbed_id, evidence_refs, actor, ts}` and `person_unmerged{...}` as
   append-only events; **alias state is derived from those events, never a
-  mutable pointer** — decision 017 dropped the blanket derived/cache
+  mutable pointer**. Decision 017 dropped the blanket derived/cache
   exemption, so the alias projection is licensed by name to a named role at
   its migration site like `stream_heads`, and "unmerge flips the pointer"
   becomes "unmerge appends an event and the projection follows";
@@ -41,14 +41,14 @@ attestation or breaking a single signature.
   time and never re-keyed: a merge moves no record between chains, and every
   attestation stays in the chain keyed to the id live when it was written.
   Both persons' subject streams continue independently. **The merge event
-  appends to both subject chains** (decision 020) — survivor and absorbed —
+  appends to both subject chains** (decision 020), survivor and absorbed,
   because the merge changed the absorbed chain's meaning more than the
   survivor's, and with membership now permanent, a merge absent from the
   absorbed chain would never be recorded there at all. An auditor walking
   either chain alone must see a complete story. Unmerge likewise appends to
   both.
 - **Deletion under merge** (decision 017): destroying a merged person
-  destroys every DEK in the alias closure — a surviving pre-merge key would
+  destroys every DEK in the alias closure. A surviving pre-merge key would
   leave the record readable. This task owns the closure, so it owns proving
   the deletion subsystem receives the correct one, including under a
   merge-or-unmerge racing a deletion.
@@ -64,7 +64,7 @@ attestation or breaking a single signature.
 - AC (mechanical): a merge appends to both subject chains; an auditor
   walking the absorbed chain alone sees the event that changed its
   resolution.
-- AC (mechanical): merge and unmerge move no record between chains —
+- AC (mechanical): merge and unmerge move no record between chains,
   membership is byte-identical before and after.
 - AC (mechanical): the alias projection rebuilds exactly from its events; no
   mutable pointer exists.
@@ -77,5 +77,5 @@ attestation or breaking a single signature.
 ## Outside check
 
 Verifier executes merge, verifies all signatures, unmerges, re-verifies,
-and confirms the re-assignment queue contents — then attempts the
+and confirms the re-assignment queue contents, then attempts the
 single-steward path.

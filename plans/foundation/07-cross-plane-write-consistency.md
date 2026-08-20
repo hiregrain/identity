@@ -29,7 +29,7 @@ retry. It never half-lands and stays that way.
   is content with no proof. No layer above foundation can solve this for
   itself without three layers inventing three answers.
 - **Spine-first with a transactional outbox** (decision 017). The spine
-  write and an outbox row commit in one local transaction — the spine is
+  write and an outbox row commit in one local transaction. The spine is
   the ordering and integrity authority, so its commit is what "recorded"
   means.
 - `0020-cross-plane-outbox` (spine): append-only outbox entries carrying
@@ -59,11 +59,11 @@ retry. It never half-lands and stays that way.
   payload apply leaves a recoverable state; the worker completes it on
   restart with no operator action and no duplicate payload row.
 - AC (mechanical): applying the same outbox entry twice produces one
-  payload row — asserted by row count, not by inspecting worker logic.
+  payload row, asserted by row count, not by inspecting worker logic.
 - AC (mechanical): a payload apply that fails permanently surfaces through
   the reconciler within its threshold; it never sits silent.
 - AC (mechanical): no FDW, dblink, or cross-database extension exists in
-  either chain — asserted by a schema check.
+  either chain, asserted by a schema check.
 - AC: nothing acknowledges before both planes are durable, proven with the
   payload apply artificially stalled.
 

@@ -17,16 +17,16 @@ The worker-authored half of the record, and its ingestion accelerants.
 
 **Added 2026-08-19:** claim CRUD and résumé import both populate
 `chapter.party_country` and `party_locality` whenever `party_ref` is null
-(`model/record-schema.md`). Import must ask rather than guess — an LLM inferring a
+(`model/record-schema.md`). Import must ask rather than guess: an LLM inferring a
 country from an employer name is exactly the silent resolution the schema forbids.
 
 Scope: self-asserted claim CRUD (work history, skills, credentials,
-education at credential-name/issuer grain only) — worker-editable with
+education at credential-name/issuer grain only), worker-editable with
 version history until first third-party verification, then frozen with the
 edit path closed (freeze warning shown at the moment verification is
 requested, per the consent design); **resume/profile import**: LLM
 extraction into the strict claim schema (OSS layout/OCR for PDF-to-text
-only — legacy OSS resume parsers rejected as abandonware), worker reviews
+only, legacy OSS resume parsers rejected as abandonware), worker reviews
 and confirms every extracted claim before save, everything lands as
 `self_asserted`; job-board/profile-link import through the same pipeline
 with source attribution kept vertical-side; import is a funnel accelerant,

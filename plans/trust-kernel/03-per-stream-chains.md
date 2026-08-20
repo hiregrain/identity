@@ -16,7 +16,7 @@ verified_by: null
 ## Objective
 
 Append-only per-subject and per-party chains over spine records, per
-contract rule 5 — the structure the D1/D3 verdicts called
+contract rule 5, the structure the D1/D3 verdicts called
 unretrofittable.
 
 ## Scope
@@ -27,14 +27,14 @@ unretrofittable.
 - **Streams cover every governing event, not only attestations** (decision
   019). D3's anchored contents are broader than the attestation record, and
   D4's dispositive argument depends on registry manipulation being visible
-  in the log — which is false if registry events are unchained. Streams:
+  in the log, which is false if registry events are unchained. Streams:
   per-subject and per-party attestation chains; **registry and party
   lifecycle events; key events; privileged operator actions; deletion
   journal entries**. An audited-but-unanchored operator action is alterable
   by the operator, and the operator is the party a dispute distrusts.
 - **Chain membership is fixed at write time and never re-keyed** (decision
   019). A record stays in the chain it was written into, keyed to the
-  `ledger_person_id` that was live at that moment — forever. Merge adds
+  `ledger_person_id` that was live at that moment, forever. Merge adds
   alias resolution *above* the chains; it never moves a record between
   them. Re-keying would mean rewriting records already hashed into
   published checkpoints, breaking every existing inclusion proof. Cost
@@ -42,8 +42,8 @@ unretrofittable.
   combined at the resolution layer, and unmerge is trivially correct
   because chain membership was never touched.
 - `0007-stream-heads`: current head per stream, rebuildable from the
-  records. **Granted as a named, role-scoped exemption in this migration**
-  — decision 017 dropped foundation/03's blanket derived/cache clause, so
+  records. **Granted as a named, role-scoped exemption in this migration.**
+  Decision 017 dropped foundation/03's blanket derived/cache clause, so
   this table is licensed by name to a named role with its rationale at the
   site, not by a general category. Generalized over the stream types above,
   not just subject and party.
@@ -59,7 +59,7 @@ unretrofittable.
   is detected at the correct position in every stream it belongs to,
   including a registry event, a key event, an operator action, and a
   deletion journal entry.
-- AC (mechanical): a merge moves no record between chains — chain
+- AC (mechanical): a merge moves no record between chains. Chain
   membership before and after is byte-identical; resolution changes, chains
   do not.
 - AC (mechanical): an unmerge restores prior resolution with zero chain

@@ -21,17 +21,17 @@ verified_by: clean-context-verifier@2026-08-19
 ## Objective
 
 Per-person data-encryption keys (DEKs) wrapping payload content, behind a
-key-provider interface — so R2 deletion can crypto-shred and the
+key-provider interface, so R2 deletion can crypto-shred and the
 software/KMS split from decision 011 is a config choice, not a code path.
 
 ## Scope
 
-- Key-provider interface: `wrap/unwrap/destroy` — two implementations:
+- Key-provider interface: `wrap/unwrap/destroy`, two implementations:
   software provider (local/CI; keys ephemeral, decision 011) and the KMS
   provider (production; stub-tested now, wired when the cloud ruling
   lands). **Business logic is provider-agnostic; operational code is not.**
   The invariant is that no business path branches on which provider is
-  active — not that the provider is invisible, because observability, audit
+  active, not that the provider is invisible, because observability, audit
   records, and incident response legitimately need to know which one served
   a request.
 - **Verification gap, named rather than discovered later:** decision 011
@@ -46,7 +46,7 @@ software/KMS split from decision 011 is a config choice, not a code path.
   update. Because state is derived from an append-only log, the derivation
   is specified rather than implied: **at most one active DEK per person at
   any instant** (enforced by constraint, not convention), current state
-  resolved by a single documented rule, and destruction **idempotent** — a
+  resolved by a single documented rule, and destruction **idempotent**: a
   second destroy is a no-op, not an error and not a second row.
 - **DEK ownership: subject-scoped, single owner** (decision 017). A payload
   row about a person is encrypted under **that person's key alone**, even
@@ -56,7 +56,7 @@ software/KMS split from decision 011 is a config choice, not a code path.
   parties holding their own work records outside the ledger; the partner
   agreement must state plainly that the ledger-side copy does not survive
   the subject's deletion. Rows concerning more than one person are keyed to
-  the **subject**, never dual-wrapped — a dual wrap leaves a readable copy
+  the **subject**, never dual-wrapped. A dual wrap leaves a readable copy
   of a deleted person's record, which is the structure decision 014
   rejected.
 - Payload write/read paths encrypt/decrypt through the person's DEK;
@@ -65,7 +65,7 @@ software/KMS split from decision 011 is a config choice, not a code path.
   which reads fail closed. Specified rather than assumed: it is
   **idempotent**, safe under **concurrent reads and writes** (an in-flight
   read either completes against the live key or fails closed, never returns
-  partial plaintext), and defined for **merged identities** — destroying a
+  partial plaintext), and defined for **merged identities**: destroying a
   merged person destroys the DEKs of every id in its alias closure, since a
   surviving pre-merge key would leave the record readable.
   `consent-and-deletion` owns the full saga; `foundation/08` owns purge,
@@ -76,7 +76,7 @@ software/KMS split from decision 011 is a config choice, not a code path.
 - AC (mechanical): after `destroy`, no payload row for the person is
   readable through any code path. Evidence is **stronger than a dump
   grep**: a grep only proves one planted literal string is absent. Also
-  asserted — every payload content column is ciphertext under the expected
+  asserted: every payload content column is ciphertext under the expected
   key scope, no plaintext appears in logs or error messages, no derived or
   denormalized plaintext column exists, and decryption fails after
   destruction rather than returning anything.

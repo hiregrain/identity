@@ -21,7 +21,7 @@ verified_by: clean-context-verifier@2026-08-19
 ## Objective
 
 Two physical databases from the first row of data (decision 011): the
-global spine and `payload-us` — so the residency seam is real, not a
+global spine and `payload-us`, so the residency seam is real, not a
 naming convention.
 
 ## Scope
@@ -30,39 +30,39 @@ naming convention.
   `db/migrations/payload/`) sharing **one global numbering sequence**
   (foundation/02, decision 017); the harness from foundation/02 runs both.
   Both carry the roles/append-only posture from foundation/03. **Payload
-  deletion is not a vague exemption here** — `foundation/08` defines
+  deletion is not a vague exemption here**: `foundation/08` defines
   exactly which payload tables are physically deletable and by which role;
   this task grants nothing.
-- `0003-spine-core`: the spine's base conventions — object-ID and
+- `0003-spine-core`: the spine's base conventions: object-ID and
   commitment column domains, ledger-timestamp column, and an **exhaustive
   allow-list of permitted spine column types/domains**, enumerated rather
   than described. "Readable-content type" was never defined, which left
   implementers to invent the boundary: the allow-list is the definition.
 - **Any spine column outside the allow-list requires a written
   justification in its migration**, reviewed by a human. The lint cannot prove
-  an opaque `bytea` or an id does not encode personal data (decision 017) — the
+  an opaque `bytea` or an id does not encode personal data (decision 017); the
   justification requirement covers exactly the case the lint is blind to.
 - **The correlation checklist** (replaces the cut `foundation/09`). The lint
   reasons per column; identification happens across columns, so the reviewer
   asks all five and the migration records the answers:
-  1. Does the column's **ordering** leak anything — enrollment time, sequence,
+  1. Does the column's **ordering** leak anything: enrollment time, sequence,
      volume?
   2. Does its **timestamp granularity** expose an activity pattern?
-  3. Can it be **joined against a known external roster** — a party's employee
-     list, a public directory — using issuer id plus timing?
+  3. Can it be **joined against a known external roster**, a party's employee
+     list, a public directory, using issuer id plus timing?
   4. Is any **commitment or salt reused** across streams, so two rows can be
      linked that should not be?
   5. What can an adversary holding a **partial external dataset** learn by
      joining it against this column?
-  A recorded "this risk is accepted, because —" is a valid answer. An
+  A recorded "this risk is accepted, because..." is a valid answer. An
   unexamined one is not.
-- `0004-payload-us-bootstrap`: the payload database's base conventions —
+- `0004-payload-us-bootstrap`: the payload database's base conventions:
   `residency_region` NOT NULL on every table (enforced by the lint, seeded
   `'us'`), payload rows keyed by spine object ID.
 - **The database is authoritative for residency; the column is a checked
   assertion** (decision 017). Two records of one fact needed a rule for
   which governs. The column exists because it is what survives a dump or a
-  restore — exactly when the database name is lost — and a check fails any
+  restore, exactly when the database name is lost, and a check fails any
   row whose column disagrees with the database it sits in, so a
   disagreement is a caught error rather than an open question.
 - The **spine schema lint** (CI): allow-listed column types/domains only
@@ -83,9 +83,9 @@ naming convention.
    adding a column of a type outside the spine allow-list fails CI via the
    lint, and a column outside the allow-list without a justification comment
    also fails. The criterion no longer claims to prove that opaque columns
-   carry no personal data — the correlation checklist and human review cover
+   carry no personal data. The correlation checklist and human review cover
    that.
-- AC (mechanical): the two planes are separate databases, not schemas —
+- AC (mechanical): the two planes are separate databases, not schemas,
   proven by showing a transaction cannot span them and that each has its
   own role set.
 4. (mechanical) a payload table without `residency_region` fails

@@ -16,22 +16,22 @@ verified_by: null
 # peer-references
 
 The `peer_attested` class made operational: references, confirmations,
-coworker/manager vouching — with Sybil resistance from day one, not
+coworker/manager vouching, with Sybil resistance from day one, not
 retrofitted.
 
-Scope: **the reference form itself is ledger-authored** — Grain designs the
+Scope: **the reference form itself is ledger-authored**. Grain designs the
 fields, and responses are structured throughout with **no free-response
 field**, because free text adds noise to every downstream use and is
 unusable as an analytics input (decision 025); request/confirm flows (a
-worker requests a reference; the referrer
-— themselves a ledger person — confirms under their account-bound key,
+worker requests a reference; the referrer,
+themselves a ledger person, confirms under their account-bound key,
 same envelope as party signatures, registry entry type distinguishes
 grade); manager confirmations where the manager's org is a registered
 party render as peer-attested with party-adjacent anchoring;
 transaction-anchored weighting (both parties attested into the same
 engagement weighs categorically more); ingestion-time signals recorded on
 the spine: reciprocity caps, velocity limits, device/IP clustering,
-verified-anchor weighting; grain's `excluded`-grade semantics — farmed or
+verified-anchor weighting; grain's `excluded`-grade semantics: farmed or
 suspect evidence is retained and rendered as what it is, excluded from
 downstream weighting, never deleted; the shadow/promotion-gate pattern
 (grain prior art) before any peer signal feeds anything consumed
@@ -54,7 +54,7 @@ Acceptance:
    and referrer assurance level into any packet that includes it.
 3. **A simulated farming ring is caught by the tests, not in production.** a simulated farming ring (shared device/IP, rapid reciprocal
    confirmations) lands with `excluded` weighting and appears in the
-   operator review queue — and nothing is deleted.
+   operator review queue, and nothing is deleted.
 4. **Peer signal stays out of packets until it is promoted.** no peer-derived signal reaches prior packets until the promotion
    gate's conditions are met and recorded.
 5. **The reference form has no free-text field at all.** (mechanical) the reference schema admits no free-text field; a

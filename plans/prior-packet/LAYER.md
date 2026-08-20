@@ -17,7 +17,7 @@ verified_by: null
 The read side: what a grantee sees, generated at read time, never stored,
 never cached at the edge.
 
-Scope: packet assembly per the ratified interface — alias-closure-resolved
+Scope: packet assembly per the ratified interface: alias-closure-resolved
 ID, `verification[]`, provenance-graded `credentials[]`,
 `dimension_standing[]`, `prior_attestations[]` with supersession/dispute/
 issuer-state flags; dimension-standing derivation: the published

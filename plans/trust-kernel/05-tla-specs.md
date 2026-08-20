@@ -20,14 +20,14 @@ specs stand, property-based suites are the recorded fallback).
 
 ## Scope
 
-- **Spec A — merge/unmerge under concurrent ingestion**: a merge executes
+- **Spec A, merge/unmerge under concurrent ingestion**: a merge executes
   while attestations arrive for both the survivor and the absorbed ID.
   Invariants to check: no attestation is lost or duplicated; every
   attestation remains resolvable through the alias closure in both merged
   and unmerged states; unmerge restores exactly the pre-merge resolution
   for records not issued during the merged window; chain integrity holds
   on every stream throughout.
-- **Spec B — deletion vs. the read path**, updated for decision 017's
+- **Spec B, deletion vs. the read path**, updated for decision 017's
   deletion mechanics, which this spec predates. A profile deletion executes
   while a prior packet is being assembled and while a grant check is in
   flight. Invariants: no packet is ever emitted containing payload for a
@@ -50,7 +50,7 @@ specs stand, property-based suites are the recorded fallback).
   Spec B models deletion, purge, restore replay, and alias-closure key
   destruction, so it depends on `foundation/08`, `person-identity/06`
   (merge/unmerge), and `consent-and-deletion/01`. Two of those are not yet
-  authored — a known dangling reference, discharged when those layers are
+  authored, a known dangling reference, discharged when those layers are
   decomposed.
 
 ## Acceptance

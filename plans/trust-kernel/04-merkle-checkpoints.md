@@ -15,8 +15,8 @@ verified_by: null
 
 ## Objective
 
-The ≤5-minute signed checkpoint cycle over all stream heads — the
-system's ordering authority (D3/D6) — with inclusion proofs.
+The ≤5-minute signed checkpoint cycle over all stream heads, the
+system's ordering authority (D3/D6), with inclusion proofs.
 
 ## Scope
 
@@ -25,7 +25,7 @@ system's ordering authority (D3/D6) — with inclusion proofs.
   hash** + coverage metadata, produced by a scheduler with jitter
   tolerance. The predecessor hash is what makes the checkpoint sequence a
   chain rather than a series of unrelated signatures, and D3 requires it
-  by name — it was missing, and it is a format decision, so deferring it
+  by name. It was missing, and it is a format decision, so deferring it
   would mean the first checkpoints are written in a format that must
   change.
 - **Anchoring happens at spine commit, not at acknowledgment** (decision
@@ -37,7 +37,7 @@ system's ordering authority (D3/D6) — with inclusion proofs.
   durability**, and the signed receipt to a party fires on the second
   (issued by `ingestion`, on the watermark from foundation/07).
 - **Per-party issuance root** (decision 016, relocated here by decision
-  019's boundary rule — signing and tree math belong to the kernel): a
+  019's boundary rule: signing and tree math belong to the kernel): a
   Merkle root over a single party's issuance stream for a period, built
   from the same stream-head machinery. `party-registry/07` consumes this
   API rather than defining it. The global root is not a substitute: a party
@@ -48,12 +48,12 @@ system's ordering authority (D3/D6) — with inclusion proofs.
   published, on a standing schedule. This is the job that proves the whole
   anchoring scheme actually holds, and D3 names it as launch-blocking.
 - `0008-checkpoint-log` (spine): the checkpoint sequence, append-only;
-  frozen canonical checkpoint format (recomputable byte-for-byte —
+  frozen canonical checkpoint format (recomputable byte-for-byte;
   genesis-consistency depends on this, per the D3 verdict).
 - Inclusion-proof generation and verification (kernel API; consumed later
   by inclusion receipts in ingestion and the resolution pages).
 - Publisher interface with a local-filesystem WORM emulation for dev/CI.
-  **The real publisher is `trust-kernel/07`** — dedicated compliance-mode
+  **The real publisher is `trust-kernel/07`**, dedicated compliance-mode
   object-lock account and second-cloud mirror, which cannot exist before
   the cloud provider ruling. Split there so everything buildable today is
   actually buildable, and the blocked part is visible in the graph rather

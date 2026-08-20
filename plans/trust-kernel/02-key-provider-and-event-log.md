@@ -23,7 +23,7 @@ compromise-vs-backdating rule enforceable.
 
 - Provider interface for ledger signing keys: **`sign(bytes)`** returning
   signature plus the key identifier used, and `publicKey(id)` for
-  verification (decision 019 — no key parameter on the signing path).
+  verification (decision 019: no key parameter on the signing path).
   Software provider now; KMS provider stubbed with the same tests, wired at
   provisioning (founder gate). Rotation is internal to the provider:
   `sign` always uses the current active key.
@@ -42,10 +42,10 @@ compromise-vs-backdating rule enforceable.
 ## Acceptance
 
 - AC (mechanical): a compromise event at T invalidates verification for
-  signatures ledger-stamped after T and leaves pre-T signatures valid —
-  table-driven test across boundary cases.
+  signatures ledger-stamped after T and leaves pre-T signatures valid,
+  proven with a table-driven test across boundary cases.
 - AC: provider swap is config-only; suite green under both.
-- AC (mechanical): rotation is invisible to callers — `sign` continues to
+- AC (mechanical): rotation is invisible to callers. `sign` continues to
   work across a rotation with no caller change, and reports the new key
   identifier.
 

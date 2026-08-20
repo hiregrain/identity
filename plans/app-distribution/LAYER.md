@@ -21,24 +21,24 @@ phone.
 
 Split out of `app-shell` on 2026-08-19 (engineering review). That layer scoped
 eleven items against `plans/ORDER.md`'s four-to-eight guidance, and these four
-gate on different things — the mark's open items and counsel, not on whether a
+gate on different things: the mark's open items and counsel, not on whether a
 screen behaves correctly on a device. `app-shell` owns the runtime; this owns
 reach.
 
-Scope: **deep links** — universal links on iOS and App Links on Android for
+Scope: **deep links**: universal links on iOS and App Links on Android for
 `hiregrain.com/u/<handle>`, with the hosted association files, and the rule that
 a link opens the app when installed and the reduced public page when not
-(decision 037); **push** — the three events `plans/worker-surface/LAYER.md`
+(decision 037); **push**: the three events `plans/worker-surface/LAYER.md`
 names, their written content, and the moment permission is asked; **launch
-identity** — app icon, launch screen and store listing assets; and **store
-submission** — privacy nutrition labels and Play data-safety declarations, plus
+identity**: app icon, launch screen and store listing assets; and **store
+submission**: privacy nutrition labels and Play data-safety declarations, plus
 the two store requirements that are product rulings rather than engineering
 ones (decision 038): Apple 5.1.1(v)'s in-app deletion initiation, and Play's
 separate requirement for a **web** deletion-request URL, which `public-web`
 carries.
 
 **Push content is a boundary, not a preference.** Decision 039 rules that a
-notification names the fact and never the content — "Sunrise Foods signed your
+notification names the fact and never the content: "Sunrise Foods signed your
 work record", never what was said. A lock screen is read by whoever holds the
 phone, which on a shared handset is not always the worker; this is the same
 reasoning that put biometric unlock on the app.
@@ -56,7 +56,7 @@ Acceptance:
    platform's own checker.
 2. **Every notification names the fact and never the content.** Each of the
    three push events has written content, every string read against decision
-   039 — and the permission prompt fires at a moment tied to the worker's own
+   039, and the permission prompt fires at a moment tied to the worker's own
    action, never at launch.
 3. **The store privacy declarations match the consent instrument line by
    line.** (mechanical) Matched against the consent instrument and decisions
@@ -69,7 +69,7 @@ Acceptance:
    change satisfies it).
 5. **The icon holds its silhouette at every size a store demands.** The icon
    renders at every store-required size, and its silhouette agrees between the
-   largest and smallest tiers — which `DESIGN.md` gap 1 lists as open and which
+   largest and smallest tiers, which `DESIGN.md` gap 1 lists as open and which
    this criterion forces closed.
 
 **Outside check.** A person who has never seen the product taps a shared link on
