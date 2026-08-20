@@ -10,8 +10,8 @@ import (
 )
 
 // Instruction is the payload-apply instruction an outbox entry carries:
-// one row for one payload table. The worker adds the idempotency key —
-// every outbox-written payload table carries an
+// one row for one payload table. The worker adds the idempotency key.
+// Every outbox-written payload table carries an
 // `outbox_entry_id spine_object_id` column with a UNIQUE constraint,
 // and the apply is INSERT ... ON CONFLICT (outbox_entry_id) DO NOTHING,
 // so idempotency is the database's unique index, not worker memory.
@@ -26,8 +26,8 @@ type Instruction struct {
 	Row   map[string]any `json:"row"`
 }
 
-// identifier is the only shape accepted for table and column names —
-// instructions are data from the outbox, and interpolating anything
+// identifier is the only shape accepted for table and column names.
+// Instructions are data from the outbox, and interpolating anything
 // fancier into SQL is an injection surface.
 var identifier = regexp.MustCompile(`^[a-z_][a-z0-9_]*$`)
 
@@ -95,8 +95,8 @@ func (in Instruction) ApplySQL(entryID string) (string, error) {
 
 // sqlLiteral renders one JSON value as a SQL literal. Strings are
 // single-quoted with quotes doubled; numbers and booleans render
-// bare; null renders NULL. Nested objects and arrays are rejected —
-// an instruction is one flat row.
+// bare; null renders NULL. Nested objects and arrays are rejected.
+// An instruction is one flat row.
 func sqlLiteral(value any) (string, error) {
 	switch v := value.(type) {
 	case nil:

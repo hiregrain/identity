@@ -1,7 +1,7 @@
 // Migration-number uniqueness under the one shared numbering sequence
 // (decision 017). The spine and payload chains draw from a single global
-// sequence: gaps within one chain are expected — the other chain's
-// numbers fall there — but a number used twice anywhere is a failure.
+// sequence: gaps within one chain are expected, since the other chain's
+// numbers fall there, but a number used twice anywhere is a failure.
 // Honors at-authoring claims: a `migrations:` list in task frontmatter
 // reserves its numbers, so two tasks cannot claim one number and a landed
 // file cannot squat on another task's claim. A claim matching its own
@@ -76,7 +76,7 @@ function walk(dir, out) {
   try {
     entries = readdirSync(dir, { withFileTypes: true });
   } catch {
-    return; // no migrations directory yet — nothing landed
+    return; // no migrations directory yet, nothing landed
   }
   for (const entry of entries) {
     const path = join(dir, entry.name);

@@ -1,8 +1,8 @@
-// checks/cross-schema-queries.mjs — the cross-schema lint (foundation/03,
+// checks/cross-schema-queries.mjs is the cross-schema lint (foundation/03,
 // decision 017).
 //
 // Some table pairs must be unlinkable, and "no query joins these" is
-// unenforceable by intent alone — someone will write the join. The
+// unenforceable by intent alone. Someone will write the join. The
 // declared incompatible schema pairs live in
 // db/incompatible-schema-pairs.json; this lint fails any file containing
 // qualified references to both members of a declared pair. Granularity is
@@ -19,7 +19,7 @@
 //
 // Usage: node checks/cross-schema-queries.mjs [pairsFile] [scanDir...]
 //   Defaults: db/incompatible-schema-pairs.json, scanning the trees where
-//   queries can live — db, surfaces, core, checks.
+//   queries can live: db, surfaces, core, checks.
 
 import { readdirSync, readFileSync, existsSync, statSync } from "node:fs";
 import { join, basename } from "node:path";

@@ -6,7 +6,7 @@
 //	outbox reconcile -threshold <seconds>
 //
 // Exit codes: 0 success; 1 failure; 2 usage; 3 injected crash. reconcile
-// exits 1 when any entry is past the threshold — that non-zero exit is
+// exits 1 when any entry is past the threshold. That non-zero exit is
 // the alert surface until real alerting infrastructure exists, and the
 // listed lines are the queue items.
 package main

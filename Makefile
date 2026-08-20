@@ -64,7 +64,7 @@ migrate:
 	node db/migrate.mjs payload
 
 # Layer criterion 2's mechanism: both chains replay from empty
-# deterministically, and a second replay is a no-op — proven by schema
+# deterministically, and a second replay is a no-op, proven by schema
 # dumps, not by trusting the runner's own output.
 migrate-verify:
 	@dumps="$$(mktemp -d)"; \
@@ -122,7 +122,7 @@ two-plane-split:
 	node test/two-plane-split.test.mjs
 
 # The envelope acceptance suite (foundation/05): runs against the live
-# payload plane once per key provider — the provider swap is
+# payload plane once per key provider. The provider swap is
 # configuration only (GRAIN_KEY_PROVIDER) and the suite must pass under
 # both (criterion 6). Build tag db keeps these tests out of the
 # database-less go-check job; -count=1 defeats the test cache, since the
@@ -151,9 +151,9 @@ cross-plane-outbox:
 # gate refusing traffic, the journal replay opening it, the purge role's
 # licensed DELETE and its audit trail. Build tag db like the envelope
 # suite; -count=1 because the database is state the test cache cannot
-# see. One provider run: everything this suite proves — journal, gate,
-# purge, replay — is provider-independent registry and grant state, and
-# the provider swap is already proven both ways by `envelope-test`.
+# see. One provider run: everything this suite proves, journal, gate,
+# purge, and replay, is provider-independent registry and grant state.
+# The provider swap is already proven both ways by `envelope-test`.
 # NOTE: the restore scenario recreates the payload container mid-run;
 # the suite leaves both planes migrated and consistent on the green
 # path, which is why this target runs last in the database stage.
@@ -168,6 +168,9 @@ db-down:
 # is booted anywhere near these; the database-dependent red path is
 # check-red-db below.
 check-red:
+	@echo "red path labels: every \"red path N\" / \"red path db N\" label in this file is unique"
+	@dupes="$$(grep -ohE 'red path( db)? [0-9]+[a-z]?' Makefile | sort | uniq -d)"; \
+	if [ -n "$$dupes" ]; then echo "duplicate red-path labels:"; echo "$$dupes"; exit 1; fi
 	@echo "red path 1: broken plan file fails the metadata check (no database)"
 	! node checks/frontmatter.mjs test/fixtures/redpath/plans > /tmp/frontmatter-red.out 2>&1
 	@echo "red path 1b: every foundation/06 validation is individually proven to fire (an aggregate exit code proves only the oldest rule)"
@@ -200,9 +203,9 @@ check-red:
 	node checks/plan-graph.mjs test/fixtures/frontier/plans > /tmp/frontier-fixture.out
 	grep -qx "  alpha/02" /tmp/frontier-fixture.out
 	grep -qx "  beta/01" /tmp/frontier-fixture.out
-	grep -q "^blocked: alpha/03 — alpha/02 is ready" /tmp/frontier-fixture.out
-	grep -q "^blocked: beta/02 — epsilon/01 is unauthored" /tmp/frontier-fixture.out
-	grep -q "^blocked: delta/01 — layer gate: alpha is not done" /tmp/frontier-fixture.out
+	grep -q "^blocked: alpha/03 due to alpha/02 is ready" /tmp/frontier-fixture.out
+	grep -q "^blocked: beta/02 due to epsilon/01 is unauthored" /tmp/frontier-fixture.out
+	grep -q "^blocked: delta/01 due to layer gate: alpha is not done" /tmp/frontier-fixture.out
 	! grep -qx "  delta/01" /tmp/frontier-fixture.out
 	rm /tmp/frontier-fixture.out
 	@echo "red path 8: a duplicate entry number, an unmarked gap, and a contradicted never-assigned marker each fail the decisions-index check; a marked gap passes (no database)"
@@ -221,6 +224,8 @@ check-red:
 	! node checks/cross-plane-constructs.mjs test/fixtures/redpath/cross-plane-constructs
 	@echo "red path 13: deletion copy whose day counts drift from the retention config fails the disclosure check (no database)"
 	! node checks/deletion-copy.mjs test/fixtures/redpath/deletion-copy/copy.md test/fixtures/redpath/deletion-copy/policy.json
+	@echo "red path 14: an em dash, a spaced en dash, curly quotes, a heading emoji, a JSON-escaped em dash, and both tell words each fail the unslop check (no database)"
+	! node checks/unslop.mjs test/fixtures/redpath/unslop
 	@echo "check-red: all red paths fail as required"
 
 # Database-dependent red path: a schema edit without regenerated types
@@ -253,7 +258,7 @@ check-red-db:
 	@echo "red path db 5: an allow-listed exception column whose migration lacks the justification block fails the spine schema lint (and passes with the block present)"
 	echo "CREATE TABLE planted_exception (blob bytea);" | $(PSQL_SPINE) -f -
 	! node checks/spine-schema.mjs test/fixtures/redpath/spine-schema/allow-list.json db/migrations db/migrations/spine test/fixtures/redpath/spine-schema/without-justification
-	@echo "red path db 5b: a justification block in the WRONG file (a decoy the declared migration field does not name) is not a match — the lint must still fail"
+	@echo "red path db 5b: a justification block in the WRONG file, a decoy the declared migration field does not name, is not a match, and the lint must still fail"
 	! node checks/spine-schema.mjs test/fixtures/redpath/spine-schema/allow-list.json db/migrations db/migrations/spine test/fixtures/redpath/spine-schema/without-justification test/fixtures/redpath/spine-schema/decoy
 	node checks/spine-schema.mjs test/fixtures/redpath/spine-schema/allow-list.json db/migrations db/migrations/spine test/fixtures/redpath/spine-schema/with-justification
 	echo "DROP TABLE planted_exception;" | $(PSQL_SPINE) -f -

@@ -9,4 +9,4 @@ evidence: []
 verified_by: null
 ---
 
-# alpha/02 (ready, dependency done — WORKABLE)
+# alpha/02 is ready with its dependency done, so it is WORKABLE

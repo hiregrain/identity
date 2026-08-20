@@ -9,4 +9,4 @@ evidence: []
 verified_by: null
 ---
 
-# beta/01 (ready, layer gate open, dependency done — WORKABLE)
+# beta/01 is ready with the layer gate open and its dependency done, so it is WORKABLE

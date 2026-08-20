@@ -5,11 +5,11 @@
 -- There is no shared transaction across the two physical databases
 -- (decision 011), so a spine+payload write can commit one side and lose
 -- the other. Decision 017's ruling: the spine write and an outbox row
--- commit in ONE local spine transaction — the spine is the ordering and
+-- commit in ONE local spine transaction. The spine is the ordering and
 -- integrity authority, so its commit is what "recorded" means. A worker
 -- (core/outbox) drains the outbox and applies each instruction to the
 -- payload plane idempotently; a reconciler surfaces entries past a
--- threshold. There is no compensation path — the spine is append-only,
+-- threshold. There is no compensation path. The spine is append-only,
 -- so recovery is retry forward, never undo.
 --
 -- Everything here is append-only under the identity_app posture
@@ -18,7 +18,7 @@
 -- This migration grants nothing and exempts nothing.
 --
 -- Acknowledgment semantics (owed to `ingestion`): an entry is
--- acknowledged only when both planes are durable — the spine outbox row
+-- acknowledged only when both planes are durable. The spine outbox row
 -- exists AND an attempt row with state 'applied' exists, that row being
 -- written only after the payload transaction committed. The view
 -- cross_plane_acknowledged is the queryable form of that state; it is a
@@ -26,7 +26,7 @@
 --
 -- The instruction column is bytea, opaque by type, like spine_commitment
 -- (0003): the lint cannot prove a bytea encodes nothing readable, so the
--- write-site rule is recorded here — once the per-subject DEK envelope
+-- write-site rule is recorded here. Once the per-subject DEK envelope
 -- (foundation/05) lands, instructions carrying subject content must ride
 -- as ciphertext under the subject's key, so the spine's append-only
 -- residue of an instruction dies with the key at deletion. Until content
@@ -90,8 +90,8 @@
 --   2 timestamp-granularity: not a timestamp.
 --   3 external-roster-join: values are error text from the payload
 --     database. The worker (core/outbox) writes only the first line,
---     truncated — Postgres first lines name relations, constraints and
---     privileges, not row values — and that write-site discipline is
+--     truncated, since Postgres first lines name relations, constraints
+--     and privileges, not row values, and that write-site discipline is
 --     the review point, since the lint cannot prove text content.
 --   4 commitment-salt-reuse: not a commitment; no salt.
 --   5 partial-dataset-adversary: an adversary learns why applies
@@ -110,7 +110,7 @@ CREATE TABLE cross_plane_outbox (
 
 -- The append-only progress trail. A completed entry is one with a
 -- following 'applied' row; a failed attempt is a 'failed' row. Nothing
--- here is ever updated — identity_app cannot (0002), and the worker
+-- here is ever updated. identity_app cannot (0002), and the worker
 -- never needs to. The (entry_id, attempt) key makes the attempt counter
 -- collision-safe: two workers racing the same attempt number conflict
 -- instead of double-recording.

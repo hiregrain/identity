@@ -1,5 +1,5 @@
-// checks/decision-citations.mjs — every citation of a decisions/LOG.md entry
-// points at an entry that exists.
+// checks/decision-citations.mjs verifies that every citation of a
+// decisions/LOG.md entry points at an entry that exists.
 //
 // Why this exists: decision numbers 029 and 030 were consumed in the
 // 2026-08-19 two-checkout collision and never assigned, and the log carries an
@@ -16,7 +16,7 @@
 // separates them:
 //
 //   * `decision 035` / `decisions 035` / `entry 035`
-//   * `035 §B4` — three digits immediately before a section sign
+//   * `035 §B4`, three digits immediately before a section sign
 //
 // Known limit, stated rather than hidden: a bare parenthesised `(029)` with no
 // section sign and no "decision" prefix is not matched, because `(402)` and

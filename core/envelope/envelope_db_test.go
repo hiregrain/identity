@@ -1,7 +1,7 @@
 //go:build db
 
 // The envelope acceptance tests (foundation/05), run against the live
-// payload plane under whichever provider GRAIN_KEY_PROVIDER names —
+// payload plane under whichever provider GRAIN_KEY_PROVIDER names.
 // `make envelope-test` runs the whole file once per provider, which is
 // acceptance criterion 6's mechanism. Requires both planes up and
 // migrated (make db-up && make migrate).
@@ -22,7 +22,7 @@ import (
 )
 
 // Criterion 1: after destroy, no payload row for the person is readable
-// through any code path — and the evidence is stronger than a dump grep.
+// through any code path. The evidence is stronger than a dump grep.
 func TestDestroyLeavesNothingReadable(t *testing.T) {
 	ctx := context.Background()
 	env, provider := newEnv(t)
@@ -58,8 +58,8 @@ func TestDestroyLeavesNothingReadable(t *testing.T) {
 	// Every content column is ciphertext under the expected key scope:
 	// the stored body authenticates under the subject's DEK (above) and
 	// under no other person's (asserted structurally in the two-person
-	// test); and no derived or denormalized plaintext column exists —
-	// the table's only content-bearing column is the one bytea.
+	// test); and no derived or denormalized plaintext column exists.
+	// The table's only content-bearing column is the one bytea.
 	cols := ownerSQL(t, `SELECT column_name || ':' || data_type FROM information_schema.columns
         WHERE table_schema='public' AND table_name='`+table+`' ORDER BY ordinal_position`)
 	want := "subject_person_id:uuid\ncounterparty_person_id:uuid\nbody:bytea\nresidency_region:text"
@@ -87,7 +87,7 @@ func TestDestroyLeavesNothingReadable(t *testing.T) {
 	}
 
 	// Path 3: bypassing the registry state and unwrapping the stored
-	// wrapped DEK directly at the provider fails — the crypto-shred, not
+	// wrapped DEK directly at the provider fails, the crypto-shred, not
 	// just bookkeeping.
 	wrappedHex := ownerSQL(t, fmt.Sprintf(
 		`SELECT wrapped_dek FROM dek_registry WHERE person_id = '%s' AND event = 'created'`, person))
@@ -101,7 +101,7 @@ func TestDestroyLeavesNothingReadable(t *testing.T) {
 	// Path 4: re-provisioning a destroyed person is refused, so the id
 	// can never carry a fresh key that would matter. Two fail-closed
 	// gates stand in the way; which one answers depends on process
-	// history — in this process the provider refuses the destroyed scope
+	// history. In this process the provider refuses the destroyed scope
 	// (keys.ErrScopeDestroyed); a fresh process's provider has never
 	// seen the scope, and the registry's destroyed row refuses instead
 	// (ErrAlreadyKeyed). Either refusal satisfies the criterion.
@@ -152,7 +152,7 @@ func TestTwoPersonRowKeyedToSubjectAlone(t *testing.T) {
 	}
 
 	// Schema level: the registry can hold one wrapped key per row and
-	// one row per person-event — there is no column a second wrap could
+	// one row per person-event. There is no column a second wrap could
 	// live in, and the partial unique indexes are present as CONSTRAINTS.
 	regCols := ownerSQL(t, `SELECT column_name FROM information_schema.columns
         WHERE table_schema='public' AND table_name='dek_registry' ORDER BY ordinal_position`)
@@ -166,7 +166,7 @@ func TestTwoPersonRowKeyedToSubjectAlone(t *testing.T) {
 	}
 
 	// Destroying the SUBJECT makes the two-person row unreadable to
-	// everyone — the issuing party included (decisions 014/017).
+	// everyone, the issuing party included (decisions 014/017).
 	if err := env.Destroy(ctx, []string{subject}); err != nil {
 		t.Fatalf("Destroy(subject): %v", err)
 	}
@@ -180,7 +180,7 @@ func TestTwoPersonRowKeyedToSubjectAlone(t *testing.T) {
 }
 
 // Criterion 3: destroy is idempotent, and a read racing a destroy either
-// completes or fails closed — never partial plaintext.
+// completes or fails closed, never partial plaintext.
 func TestDestroyIdempotentAndSafeUnderConcurrentReads(t *testing.T) {
 	ctx := context.Background()
 	env, _ := newEnv(t)
@@ -226,7 +226,7 @@ func TestDestroyIdempotentAndSafeUnderConcurrentReads(t *testing.T) {
 		}
 	}
 
-	// Idempotent: a second (and third) destroy is a no-op — no error,
+	// Idempotent: a second (and third) destroy is a no-op, no error,
 	// no second row.
 	if err := env.Destroy(ctx, []string{person}); err != nil {
 		t.Fatalf("second Destroy: %v", err)
@@ -246,7 +246,7 @@ func TestDestroyIdempotentAndSafeUnderConcurrentReads(t *testing.T) {
 
 // Criterion 4: destroying a merged person destroys every DEK in the
 // alias closure. The closure is an input set (the documented contract in
-// envelope.Destroy) — merge machinery belongs to person-identity, so the
+// envelope.Destroy). Merge machinery belongs to person-identity, so the
 // closure here is synthetic.
 func TestDestroyMergedPersonDestroysWholeClosure(t *testing.T) {
 	ctx := context.Background()
@@ -273,7 +273,7 @@ func TestDestroyMergedPersonDestroysWholeClosure(t *testing.T) {
 
 	for _, alias := range closure {
 		if _, err := env.Decrypt(ctx, alias, ciphertexts[alias]); err == nil {
-			t.Fatalf("alias %s still readable — a surviving pre-merge key", alias)
+			t.Fatalf("alias %s still readable, a surviving pre-merge key", alias)
 		}
 		wrapped := mustHex(t, ownerSQL(t, fmt.Sprintf(
 			`SELECT wrapped_dek FROM dek_registry WHERE person_id = '%s' AND event = 'created'`, alias)))
@@ -293,7 +293,7 @@ func TestDestroyMergedPersonDestroysWholeClosure(t *testing.T) {
 }
 
 // Criterion 5: at most one active DEK per person, enforced by the
-// DATABASE — a raw second 'created' insert as the serving role fails on
+// DATABASE. A raw second 'created' insert as the serving role fails on
 // the constraint, with no application code in the path.
 func TestOneActiveDEKEnforcedByConstraint(t *testing.T) {
 	ctx := context.Background()
@@ -328,7 +328,7 @@ func TestOneActiveDEKEnforcedByConstraint(t *testing.T) {
 		t.Fatal("a raw second 'destroyed' row was accepted; the constraint is missing")
 	}
 
-	// The registry records which provider wrapped the key — the
+	// The registry records which provider wrapped the key. This is the
 	// operational surface decision 017 allows; asserted here so the
 	// column cannot silently go stale.
 	recorded := ownerSQL(t, fmt.Sprintf(

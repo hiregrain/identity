@@ -1,8 +1,8 @@
-// checks/spine-schema.mjs — the spine schema lint (foundation/04,
+// checks/spine-schema.mjs is the spine schema lint (foundation/04,
 // decision 017; layer criterion foundation-3).
 //
 // The spine carries ordering and commitments, never content, and
-// "readable-content type" was never defined — so the boundary is the
+// "readable-content type" was never defined, so the boundary is the
 // enumerated allow-list in db/spine-allow-list.json, and this lint is
 // its enforcement. Against the live spine schema, every column must be
 // one of:
@@ -13,20 +13,20 @@
 //     introducing migration carries a written justification block
 //     answering foundation/04's five-question correlation checklist.
 //     The exception's `migration` field names that migration, and the
-//     block counts ONLY when it sits in the file that field names — a
+//     block counts ONLY when it sits in the file that field names. A
 //     block pasted into any other file, including one the runner never
 //     applies, is not a match.
 //
-// Anything else — a bare base type, a text/blob/JSON column, an unlisted
-// domain, an exception with no justification — fails with a message
-// naming the rule. The lint proves type discipline and justification
+// Anything else fails with a message naming the rule: a bare base type,
+// a text/blob/JSON column, an unlisted domain, or an exception with no
+// justification. The lint proves type discipline and justification
 // PRESENCE only; it does not claim an opaque bytea or an id encodes no
-// personal data — the justification content is human-reviewed, and the
+// personal data. The justification content is human-reviewed, and the
 // correlation judgment is layer criterion foundation-8.
 //
 // The justification block format (the lint's contract, detected here,
 // judged by humans) is a comment in the migration that introduces the
-// column — "risk accepted, because —" is a valid answer; absence is not:
+// column. "Risk accepted, because ..." is a valid answer; absence is not:
 //
 //   -- justify-column: <table>.<column> (<type>)
 //   --   1 ordering: <answer>
@@ -92,7 +92,7 @@ for (const line of rows) {
     if (allowedDomains.has(domain)) continue;
     failures.push(
       `spine column ${where} uses domain "${domain}", which is not in the ` +
-        `spine allow-list (${allowListFile}) — every spine column type is ` +
+        `spine allow-list (${allowListFile}). Every spine column type is ` +
         `enumerated, never described (foundation/04, decision 017)`,
     );
     continue;
@@ -104,7 +104,7 @@ for (const line of rows) {
   if (exception === undefined) {
     failures.push(
       `spine column ${where} has bare type "${dataType}": outside the spine ` +
-        `allow-list (${allowListFile}) and no declared exception — no ` +
+        `allow-list (${allowListFile}) and no declared exception. No ` +
         `unlisted type may sit on the spine (foundation/04, decision 017)`,
     );
     continue;
@@ -117,8 +117,8 @@ for (const line of rows) {
     failures.push(
       `spine column ${where} is a declared allow-list exception naming ` +
         `migration "${exception.migration}", but no ` +
-        `${exception.migration}.sql exists in [${migrationDirs.join(", ")}] ` +
-        `— the exception's migration field must name the migration that ` +
+        `${exception.migration}.sql exists in [${migrationDirs.join(", ")}]. ` +
+        `The exception's migration field must name the migration that ` +
         `introduces the column (foundation/04)`,
     );
     continue;
@@ -133,10 +133,10 @@ for (const line of rows) {
         `declared migration ${declaredPath} carries no justification block ` +
         `("-- justify-column: ${key} ...")` +
         (elsewhere.length > 0
-          ? ` — a block found only in [${elsewhere.join(", ")}] is not a ` +
+          ? `. A block found only in [${elsewhere.join(", ")}] is not a ` +
             `match; the justification lives in the migration that ` +
             `introduces the column`
-          : ` — every exception answers foundation/04's five-question ` +
+          : `. Every exception answers foundation/04's five-question ` +
             `correlation checklist in the migration that introduces it`),
     );
     continue;
@@ -147,8 +147,8 @@ for (const line of rows) {
   if (missing.length > 0) {
     failures.push(
       `spine column ${where}: justification block in ${block.source} is ` +
-        `incomplete — unanswered: ${missing.map((q) => `"${q}"`).join(", ")} ` +
-        `(foundation/04's correlation checklist; "risk accepted, because —" ` +
+        `incomplete. Unanswered: ${missing.map((q) => `"${q}"`).join(", ")} ` +
+        `(foundation/04's correlation checklist; "risk accepted, because ..." ` +
         `is a valid answer, absence is not)`,
     );
   }
@@ -158,7 +158,7 @@ for (const exception of allowList.exceptions) {
   if (matchedExceptions.has(exception)) continue;
   failures.push(
     `allow-list exception ${exception.table}.${exception.column} ` +
-      `(${exception.type}) matches no live spine column — a standing ` +
+      `(${exception.type}) matches no live spine column. A standing ` +
       `permission with nothing under it must be removed from ${allowListFile}`,
   );
 }

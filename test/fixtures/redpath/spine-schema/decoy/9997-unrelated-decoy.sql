@@ -7,7 +7,7 @@
 -- 9998 file present) must fail. Applied by nothing, ever.
 --
 -- justify-column: planted_exception.blob (bytea)
---   1 ordering: decoy — no ordering exists.
+--   1 ordering: decoy, no ordering exists.
 --   2 timestamp-granularity: not a timestamp.
 --   3 external-roster-join: decoy value, joins to nothing.
 --   4 commitment-salt-reuse: not a commitment; no salt.

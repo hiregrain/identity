@@ -1,4 +1,4 @@
-// test/cross-plane-outbox.test.mjs — the cross-plane write consistency
+// test/cross-plane-outbox.test.mjs proves the cross-plane write consistency
 // scenarios (foundation/07; layer criterion foundation-5).
 //
 // Drives the real worker binary (core/cmd/outbox, built here) against
@@ -17,8 +17,8 @@
 //   5. Manual replay: applying an already-acknowledged entry twice more
 //      produces one payload row, asserted by row count.
 //   6. A permanently failing apply surfaces through the reconciler
-//      within its threshold — a queue-item line per entry and a
-//      non-zero exit — and recovery is forward-only: fix the cause,
+//      within its threshold, producing a queue-item line per entry and a
+//      non-zero exit. Recovery is forward-only: fix the cause,
 //      drain again, reconciler goes quiet.
 //   7. Nothing acknowledges before both planes are durable: with the
 //      payload apply artificially stalled (an owner transaction holding
@@ -28,7 +28,7 @@
 //
 // The payload plane deliberately has no product content tables yet
 // (foundation/05 owns the DEK registry; later layers own content), so
-// the apply target is a test-scoped table created and dropped here —
+// the apply target is a test-scoped table created and dropped here,
 // carrying the two columns the outbox mechanism requires of any target:
 // a UNIQUE `outbox_entry_id spine_object_id` (the idempotency key) and
 // `residency_region` NOT NULL (foundation/04). Probe objects are
@@ -292,7 +292,7 @@ try {
   enqueue(e, instruction("stalled write"));
   // The stall: an owner transaction holds an exclusive lock on the
   // target table for 6 seconds, so the worker's INSERT blocks inside
-  // the payload plane — durable nowhere until the lock lifts.
+  // the payload plane, durable nowhere until the lock lifts.
   const stall = spawn(
     "docker",
     [

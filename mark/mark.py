@@ -1,10 +1,10 @@
-"""Grain mark — the logo, its size tiers, and the record pointer.
+"""Grain mark, the logo, its size tiers, and the record pointer.
 
 Three objects, one construction. Do not confuse them:
 
   THE MARK      Grain's logo. Invariant, carries no data. Three threaded bands.
   THE TIERS     Purpose-drawn reductions of the mark for small sizes. NOT scaled
-                copies — scaling the master is what fails below ~40px.
+                copies, since scaling the master is what fails below ~40px.
   THE POINTER   The glyph that says "this person has a record you can inspect".
                 It is NOT a verification badge and must never behave like one.
 
@@ -20,7 +20,7 @@ PAPER = "#F8F5EE"
 VIEWBOX = 600.0
 CENTRE = VIEWBOX / 2.0
 
-LOBES = 7                       # provisional — the whole system is parameterised on this
+LOBES = 7                       # provisional, the whole system is parameterised on this
 BANDS = (                       # (mid radius, amplitude, sweep direction)
     (90.0, 22.0, +1),
     (172.0, 40.0, -1),
@@ -30,8 +30,8 @@ PITCH_RATIO = 2.2               # thread pitch must exceed stroke by this factor
 SAMPLE_PX = 1.5                 # chord length target when a render size is known
 SWEEP_PERIODS = 2               # how many lobe periods delta sweeps. The family's radial
                                 # spread is 2*a*sin(m*pi/k): at m=1 that is only 0.87a, which
-                                # is why the weave looked thin. m=2 gives 1.56a — nearly twice
-                                # the thread count — and the lobed silhouette still survives.
+                                # is why the weave looked thin. m=2 gives 1.56a, nearly twice
+                                # the thread count, and the lobed silhouette still survives.
                                 # A full 2*pi sweep gives the densest weave and destroys the
                                 # lobes completely; it is a circle. Do not go there.
 
@@ -97,7 +97,7 @@ def stroke_for(px, base=1.0):
 # what makes the mark unrecognisable, and it was the wrong order.
 
 WEAVE_MIN_PX = 96    # below this the pitch rule cannot separate threads on every
-                     # band — computed, not chosen; see README section 3
+                     # band. Computed, not chosen; see README section 3
 SOLID_MAX_PX = 23    # below this line art has nothing to hold
 
 
@@ -190,7 +190,7 @@ def app_icon(px, dark=False, inset=0.74, uid="mask"):
 CAP_RATIO = 0.690        # Archivo cap height / font-size, at weight 600 stretch 125%
 MARK_OPTICAL_CENTRE = 0.4875   # the mark's ink-bbox centre as a fraction of its height
 MARK_RATIO = 1.4         # mark height / cap height
-GAP_RATIO = 0.75        # gap / cap height — 1.3 read as a gulf; 0.6 crowds
+GAP_RATIO = 0.75        # gap / cap height. 1.3 read as a gulf; 0.6 crowds
 CLEAR_SPACE = 1.0        # clear space on every side, in cap heights
 MIN_LOCKUP_MARK = 30     # below this the mark goes alone: the solid tier is a dense
                          # mass and reads wrong beside outline-weight type
@@ -201,7 +201,7 @@ WORDMARK = dict(text="GRAIN", weight=600, stretch=125, tracking=0.09)
 def lockup(mark_px, dark=False, font_family="Archivo"):
     """The horizontal lockup. Returns SVG fragment; caller supplies the viewBox.
 
-    The mark uses tier_for(), so it swaps to the correct reduction as it shrinks —
+    The mark uses tier_for(), so it swaps to the correct reduction as it shrinks,
     never a scaled master. Below MIN_LOCKUP_MARK, use the mark alone instead.
     """
     cap = mark_px / MARK_RATIO

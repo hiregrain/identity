@@ -3,7 +3,7 @@ package envelope_test
 // The no-plaintext-in-logs half of acceptance criterion 1 has two
 // enforcement points: the db-tagged tests assert every error surfaced
 // during the failure paths is marker-free, and this test asserts the
-// package cannot log at all — no logging or printing import exists in
+// package cannot log at all. No logging or printing import exists in
 // any non-test source file, so there is no sink for plaintext to leak
 // into. Pure (no database), so it runs in every `go test ./...`.
 
@@ -34,7 +34,7 @@ func TestPackageHasNoLoggingSink(t *testing.T) {
 		for _, imp := range file.Imports {
 			path := strings.Trim(imp.Path.Value, `"`)
 			if banned[path] {
-				t.Errorf("%s imports %q — the envelope package must have no logging or printing sink", name, path)
+				t.Errorf("%s imports %q, the envelope package must have no logging or printing sink", name, path)
 			}
 		}
 		// fmt is legitimately imported for error construction; printing
@@ -44,7 +44,7 @@ func TestPackageHasNoLoggingSink(t *testing.T) {
 			t.Fatal(err)
 		}
 		if strings.Contains(string(source), "fmt.Print") {
-			t.Errorf("%s calls fmt.Print* — the envelope package must have no printing sink", name)
+			t.Errorf("%s calls fmt.Print*, the envelope package must have no printing sink", name)
 		}
 	}
 }

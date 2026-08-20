@@ -2,13 +2,13 @@
 // software keys for local/CI, a real KMS in production, swapped by
 // configuration only. Business logic (core/envelope) holds a Provider
 // and never branches on which implementation is behind it; operational
-// code may know — observability, audit records, and incident response
-// legitimately need to (decision 017) — which is why Name exists.
+// code may know. Observability, audit records, and incident response
+// legitimately need to (decision 017), which is why Name exists.
 //
 // A provider manages one wrapping key per scope. The scope is the
 // person's ledger id: per-person wrapping keys are what make destroy a
 // crypto-shred (foundation/05) rather than a bookkeeping flag. A
-// destroyed scope is destroyed forever — Wrap and Unwrap against it fail
+// destroyed scope is destroyed forever. Wrap and Unwrap against it fail
 // from then on, and no call re-creates it. That matches decision 014's
 // never-reissue rule: a person id, once tombstoned, never carries key
 // material again.
@@ -16,7 +16,7 @@
 // The conformance suite (core/keys/conformance) states this contract as
 // executable checks. Both in-repo providers pass it in CI; the real KMS
 // provider must pass the same suite in an ephemeral environment before
-// first production use — the provisioning-gate mitigation for decision
+// first production use, the provisioning-gate mitigation for decision
 // 011's no-staging ruling.
 package keys
 
@@ -63,7 +63,7 @@ const (
 )
 
 // FromConfig returns the provider a configuration value names. This is
-// the one place a provider name is interpreted — the config seam of
+// the one place a provider name is interpreted, the config seam of
 // decision 011's software/KMS split. The real KMS provider registers
 // here when the cloud ruling lands and it has passed the conformance
 // suite.

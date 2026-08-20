@@ -1,4 +1,4 @@
-// checks/cross-plane-constructs.mjs — the FDW/dblink ban (foundation/07,
+// checks/cross-plane-constructs.mjs enforces the FDW/dblink ban (foundation/07,
 // decisions 011, 017; layer criterion foundation-5's fourth AC).
 //
 // The two planes are physically split (foundation/04) and the outbox
@@ -9,11 +9,11 @@
 // twice over:
 //
 //   * File mode (default; no database): every migration file in both
-//     chains is scanned for the banned constructs — CREATE EXTENSION of
+//     chains is scanned for the banned constructs. CREATE EXTENSION of
 //     a cross-database extension, FOREIGN DATA WRAPPER, CREATE SERVER,
 //     CREATE FOREIGN TABLE, IMPORT FOREIGN SCHEMA, and dblink calls.
 //     Runs under `make metadata`, before any database boots.
-//   * Live mode (--live): both live databases are introspected — any
+//   * Live mode (--live): both live databases are introspected. Any
 //     banned extension in pg_extension, any row in
 //     pg_foreign_data_wrapper or pg_foreign_server, any relation of
 //     relkind 'f' (foreign table) fails. This is the schema check the
@@ -21,8 +21,8 @@
 //     outside the migration chain too.
 //
 // The banned-extension list is the cross-database family shipped with
-// or commonly added to Postgres; the catalog assertions are the general
-// net — an FDW of ANY name is a failure, listed or not.
+// or commonly added to Postgres. The catalog assertions are the general
+// net, and an FDW of ANY name is a failure, listed or not.
 //
 // Red paths: `make check-red` points file mode at a planted fixture
 // migration; `make check-red-db` creates a real extension live and

@@ -1,4 +1,4 @@
-// checks/migration-order.mjs — cross-reference ordering under the one
+// checks/migration-order.mjs enforces cross-reference ordering under the one
 // shared numbering sequence (decision 017, foundation/06). When a
 // migration references an object another migration creates, the
 // referencing migration must carry the higher number; collisions
@@ -10,17 +10,17 @@
 //
 // Mechanism: each landed migration's created objects (CREATE TABLE/
 // DOMAIN/TYPE/SEQUENCE/FUNCTION/VIEW/INDEX) are collected, then every
-// migration that references a created name — comments stripped, since
-// prose may mention future objects while code may not — must carry a
+// migration that references a created name, with comments stripped since
+// prose may mention future objects while code may not, must carry a
 // number strictly above the creator's. Namespaces follow the physical
 // split: the root chain (db/migrations/*.sql) runs on both planes, and
-// each plane chain (spine/, payload/) sees only itself plus the root —
-// the same bare name created once per plane (0003 and 0004 both define
+// each plane chain (spine/, payload/) sees only itself plus the root.
+// The same bare name created once per plane (0003 and 0004 both define
 // spine_object_id) is two objects in two databases, not a reference.
 //
 // Ordering is deliberately NOT derived from task depends_on: the claim
 // ledger legitimately inverts it (person-identity/01 claims 0010 while
-// depending on foundation/07's 0020 — numbers were allocated per layer
+// depending on foundation/07's 0020; numbers were allocated per layer
 // block, not topologically), and db/migrate.mjs applies any unapplied
 // number in order, so a late-landing lower number is legal. Only an
 // actual reference constrains order, and references exist only in SQL.
@@ -68,7 +68,7 @@ for (const migration of landed) {
       if (new RegExp(`\\b${object}\\b`, "i").test(migration.sql)) {
         failures.push(
           `${migration.path}: references "${object}", created by the ` +
-            `higher-numbered ${creator.name} (${creator.path}) — a ` +
+            `higher-numbered ${creator.name} (${creator.path}). A ` +
             `migration referencing an object another migration creates ` +
             `must carry the higher number (decision 017's shared sequence)`,
         );
@@ -93,7 +93,7 @@ function walk(dir) {
   try {
     entries = readdirSync(dir, { withFileTypes: true });
   } catch {
-    return; // no migrations directory yet — nothing landed
+    return; // no migrations directory yet, nothing landed
   }
   for (const entry of entries) {
     const path = join(dir, entry.name);

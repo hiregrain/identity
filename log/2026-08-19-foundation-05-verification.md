@@ -89,9 +89,9 @@ host bindings (foundation/04 verifier precedent; the whole pipeline speaks
 - **Conformance suite sabotage test**: the suite runs against both in-repo
   providers in every plain `go test ./...`. Verifier temporarily broke the
   stub so `Unwrap` on a destroyed scope returned plaintext:
-  `TestStubKMSConformance` failed immediately ("Unwrap succeeded after
-  Destroy — destruction is not a crypto-shred"); reverted, green again. The
-  suite would catch the failure mode it exists for.
+  `TestStubKMSConformance` failed immediately
+  ("Unwrap succeeded after Destroy — destruction is not a crypto-shred");
+  reverted, green again. The suite would catch the failure mode it exists for.
 
 ## Judgment calls: assessed
 
