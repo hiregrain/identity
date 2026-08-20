@@ -3706,3 +3706,50 @@ A-2 shape, with the vendor reference held payload-side internally
 rather than a new interface field; and progressive proofing's
 never-gates-signup clause gets a grep-class discharge over the signup
 path.
+
+## 072 — Extraction grilled: commercial engine behind an agnostic seam, nothing self-hosted (2026-08-20)
+
+Founder rulings from the extraction grilling. Tasks are authored in the
+same session. This entry supersedes the self-hosted half of decisions
+062 and 066's extraction posture, deliberately and on the founder's
+ruling: **no model is self-hosted at this stage; it is not worth it.**
+
+**The engine is a cheap commercial API model behind a model-agnostic
+seam, and the seam is the durability ruling now.** The proposal schema,
+the traceability rule, and the confidence contract are engine
+independent; the engine is per-environment configuration. Switching
+vendors, or self-hosting later if scale ever justifies it, is an
+adapter and a config change, proven by a path-allowlist check. The
+eval harness scores engines on the same corpus so any switch is made
+on numbers.
+
+**The processor exposure this reopens is accepted and bounded.**
+Resumes flow to the model vendor as a processor; the engine
+configuration requires zero-data-retention API terms, cited at the
+configuration site, and the production engine choice is a founder
+ruling recorded as its own entry (the gated flip, the verification
+layer's pattern). The uploaded artifact remains ephemeral and nothing
+extracted persists beyond the staging TTL decision 062 set.
+
+**v0 proposes for born-digital documents only.** Traceability needs an
+independent text layer to verify spans against; born-digital PDFs
+carry one, extracted by a text library, not a model. Photographed and
+scanned documents yield no proposals and route to manual entry, the
+ruled fallback, until an OCR path earns its own entry. The same rule
+governs scripts: no proposals for a language or script without passing
+eval numbers.
+
+**The confidence contract has no invented scalar.** Field traceability
+is binary, the value literally appears in the source text layer or the
+field comes back blank; match confidence is Splink's calibrated
+probability, matching run locally as a library against the party
+registry and the institution registry, proposing and never asserting.
+Batch eligibility in self-asserted-record is every field traceable and
+every match above the published threshold, and the published contract
+renders from the live configuration so it cannot drift.
+
+**CI never runs a model.** Verifiers and CI run the stub and golden
+outputs; the eval harness is the only thing that calls engines, in its
+own environment. The contract belongs to the consumer:
+self-asserted-record's import task defines the proposal payload shape
+and extraction implements it (decision 067's seam, confirmed).
