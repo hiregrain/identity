@@ -65,7 +65,7 @@ Acceptance:
    readable personal data for the person; the tombstoned ID never reissues.
 2. **Revoking a grant stops the very next read.** (mechanical) a revoked grant blocks the next packet read in the
    same second; the read log shows the denial.
-3. **Every place data is copied is proven by a planted datum.** the copy-map is exercised by test: a datum planted in every
+3. **Every place data is copied is proven by a planted datum.** the copy-map is exercised by test. A datum planted in every
    enumerated store is gone within its SLO after deletion.
 4. **Deleting during an open dispute still completes.** deletion during an open dispute completes; the dispute record
    survives only in unreadable spine form.

@@ -22,7 +22,7 @@ recurring, attributable claim.
 ## Scope
 
 - **Per-party issuance root: consumed from `trust-kernel/04`, not defined
-  here** (decision 019 relocated it under decision 015's boundary rule:
+  here** (decision 019 relocated it under decision 015's boundary rule,
   signing and tree math belong to the kernel, written once). This task
   requests the root for a period and verifies the party's signature over
   it. The global checkpoint root is not a substitute: a party cannot
@@ -54,7 +54,7 @@ recurring, attributable claim.
   countersignature currency, and **prior legal names** from task 01's name
   events, a party cannot shed a suspension history by rebranding, which is
   what trust-list transparency is for. **The operator's own entry renders
-  the same way**: its key rotations appear in public history, which is the stated
+  the same way**. Its key rotations appear in public history, which is the stated
   reason decision 015 chose a self-entry over a side table. The transparency claim is void if checking a
   party's standing requires asking us.
 - This task owns the **projection and its stable URL contract**;

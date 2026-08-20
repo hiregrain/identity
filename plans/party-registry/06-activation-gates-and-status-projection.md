@@ -21,7 +21,7 @@ checkbox anyone can flip.
 
 ## Scope
 
-- **Limb 1, technical**: activation queries the kernel live: does a
+- **Limb 1, technical**: activation queries the kernel live. Does a
   witnessed transparency log exist and is it accepting entries. **No
   stored boolean** (decision 015: a cached flag is one UPDATE away from
   being flipped under deadline pressure).

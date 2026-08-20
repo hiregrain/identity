@@ -66,7 +66,7 @@ and CNIL expressly excludes cross-party mutualised registers.
   details could occupy.
 - **Filing is a party act, under an individually granted capability.**
   Only a party holding a live `may_file_safety_marker` grant may file
-  (decision 015: the capability is granted per party, revocably, and
+  (decision 015, the capability is granted per party, revocably, and
   never implied by vetting tier), only against its own finding, and only
   on attestation that the evidential floor is met ("could confidently
   report to the police"). The grant itself requires a signed addendum on

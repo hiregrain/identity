@@ -32,7 +32,7 @@ review, and never act on them automatically.
   and a total score, append-only, feeding the steward queue
   (`operator-console` owns the UI).
 - Worker-initiated linking: a pull-only path ("I have another account").
-  **No proactive disclosure of suspected duplicates** (decision 013:
+  **No proactive disclosure of suspected duplicates** (decision 013,
   it leaks the existence of a matching account and teaches thresholds).
 - Auto-merge permitted only where both records are attestation-free and
   match on strong evidence (same verified document); everything else

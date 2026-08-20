@@ -33,7 +33,7 @@ read the kernel, that must agree with it byte for byte.
   agree on being wrong.
 - Differential harness: randomized and fuzzed inputs through both
   implementations, comparing output bytes. Any divergence is a failure in
-  one of them and a finding either way: the contract is the referee.
+  one of them and a finding either way. The contract is the referee.
 - Fuzz corpus committed, so a divergence found once is a regression test
   forever.
 - Where the two disagree and the contract is ambiguous, the ambiguity is

@@ -30,14 +30,14 @@ naming convention.
   `db/migrations/payload/`) sharing **one global numbering sequence**
   (foundation/02, decision 017); the harness from foundation/02 runs both.
   Both carry the roles/append-only posture from foundation/03. **Payload
-  deletion is not a vague exemption here**: `foundation/08` defines
+  deletion is not a vague exemption here**. `foundation/08` defines
   exactly which payload tables are physically deletable and by which role;
   this task grants nothing.
 - `0003-spine-core`: the spine's base conventions: object-ID and
   commitment column domains, ledger-timestamp column, and an **exhaustive
   allow-list of permitted spine column types/domains**, enumerated rather
   than described. "Readable-content type" was never defined, which left
-  implementers to invent the boundary: the allow-list is the definition.
+  implementers to invent the boundary. The allow-list is the definition.
 - **Any spine column outside the allow-list requires a written
   justification in its migration**, reviewed by a human. The lint cannot prove
   an opaque `bytea` or an id does not encode personal data (decision 017); the

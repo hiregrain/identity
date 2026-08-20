@@ -61,7 +61,7 @@ attestation surface (`public-web`), the form itself is `peer-references`, and
 this layer sees an attester only later, as a person holding their own record.
 
 **The full screen and component inventory is
-[`design/08-app-inventory.md`](../../design/08-app-inventory.md)**: 52
+[`design/08-app-inventory.md`](../../design/08-app-inventory.md).** 52
 surfaces, of which 9 are drawn. Task decomposition follows that document,
 not this paragraph. Operator-side analytics are not shown (decision 002 §4,
 decision 022); the raw record always is.
@@ -99,7 +99,7 @@ of "code is written only against a `ready` plan layer."
 
 **The register is [`design/08-app-inventory.md`](../../design/08-app-inventory.md) §1**,
 which lists every surface with its status. It is the checklist the gate runs
-against, and it is also this layer's decomposition input: tasks derive from it,
+against, and it is also this layer's decomposition input. Tasks derive from it,
 not from prose here.
 
 **Nine of fifty-two surfaces are drawn.** Forty-three are listed with nothing

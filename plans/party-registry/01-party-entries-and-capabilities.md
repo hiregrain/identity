@@ -25,7 +25,7 @@ write.
 - `0009-party-core` (spine). Numbered below `0014-safety-markers`
   deliberately: that migration carries `filing_party_id` and cannot
   precede the table it references. **A check asserts this ordering
-  constraint**: foundation/06's migration check covers collisions and
+  constraint**. foundation/06's migration check covers collisions and
   gaps, not cross-layer reference ordering.
 - `party`: opaque id, `custody_model`
   (`party_kms | party_kms_provisioned | party_hsm | ledger_kms | none`),
@@ -56,7 +56,7 @@ write.
   This is the amended D4 invariant (decision 015) made structural.
 - `party_events`: append-only transitions across
   `pending → active → suspended | revoked | withdrawn`, each with a
-  closed-enum reason code. **`withdrawn` is not `revoked`**: an ended
+  closed-enum reason code. **`withdrawn` is not `revoked`**. An ended
   relationship carries no finding. **No free-text reason, detail, or
   narrative column exists on or adjacent to an adverse lifecycle event**;
   the enum is the whole vocabulary. (The invariant is scoped to
@@ -65,14 +65,14 @@ write.
 - **Freeze is a separate condition, not a lifecycle state.**
   `party_freezes` is append-only and composes with any lifecycle state: a
   frozen party is still `active`, still carries valid history, and is under
-  no finding (decision 015: freeze never auto-suspends). It blocks new
+  no finding (decision 015, freeze never auto-suspends). It blocks new
   writes only, lifts when its cause clears, and renders publicly as a
   pending review rather than an adverse mark. Folding it into the lifecycle
   enum would make it read as a mild suspension, which is what the ruling
   forbids.
 - `party_capabilities`: append-only grant/revoke events for
   `may_attest(scope)`, `may_request_packet`, `may_file_safety_marker`.
-  Capability is **never derived from vetting tier**: the tier column
+  Capability is **never derived from vetting tier**. The tier column
   does not appear in any capability check.
 - **No party may grant itself a capability.** Grants are operator acts;
   the grant path rejects a self-referential actor regardless of role.
@@ -81,7 +81,7 @@ write.
   instant, not revoked, and carrying the challenge-routing and joint-
   controller terms. A non-null pointer to an unvalidated row is satisfiable
   by garbage; the grant path checks every condition and rejects otherwise
-  (decision 015: joint controllership cannot be imposed on a party that
+  (decision 015, joint controllership cannot be imposed on a party that
   never accepted it).
 - Capability resolution is a function of (party, capability, instant), so
   "who could file on 2027-03-01" is answerable without replaying prose.

@@ -33,7 +33,7 @@ count of them is written here. Let a check count.
 **Two levels; tasks are files, not headings.** Each task carries its own
 `status`, `evidence`, `verified_by`; two agents working two tasks in one
 layer never contend on one document. **Dependencies are per task, not per
-layer**: a `prior-packet` task needing only the packet schema starts the
+layer**. A `prior-packet` task needing only the packet schema starts the
 moment that schema lands, without waiting for the rest of `ingestion`.
 This is the biggest lever on parallel agent count. **A task is one agent
 session with one done-condition**, roughly four to eight per layer.
@@ -115,9 +115,9 @@ in the diff the task did not call for is scope creep by definition.
 Binding prose (decisions, model changes, plan authoring) goes straight to
 `main`, never inside implementation diffs. Merge gates in order: CI green
 → clean-context verification recorded → human review of judgment calls.
-Merging is a human act. **Never squash**: evidence cites SHAs.
+Merging is a human act. **Never squash**. Evidence cites SHAs.
 
-**Naming.** *Names are derived, never invented*: every identifier already
+**Naming.** *Names are derived, never invented*. Every identifier already
 exists in a plan file, a date, or a task id, so two agents naming the same
 thing produce the same string. A name you had to invent means something
 upstream, a task or a decision, is missing. Naming friction is a scope alarm,
@@ -135,7 +135,7 @@ not a wording problem.
   directories is one commit per directory, so a contract change is never buried
   inside a research diff.
 - **PR titles:** `<task-id>: <the task file's H1, verbatim>`. No "Add", no
-  "Implement": a title you have to compose means no task exists for the work.
+  "Implement". A title you have to compose means no task exists for the work.
 - **PR bodies:** three sections, headers verbatim. `## Criteria`: one line per
   acceptance criterion, how it was discharged. `## Judgment calls`: deviations
   with rationale, or "None.", which is a claim the verifier can falsify.
@@ -249,8 +249,8 @@ rather than one discovery at a time.
 
 | Gate | Blocks | Owner state |
 |---|---|---|
-| T1 spike ruling (pre-committed rule in `t1-spike.md`) | none | **discharged (decision 012)**: Go stands; switch-triggers carry forward as the guard |
-| Counsel brief 4 → final worker-agreement terms | the first real worker; `durability-and-launch` criterion 3 config. Not the build | open, long lead: send the brief |
+| T1 spike ruling (pre-committed rule in `t1-spike.md`) | none | **discharged (decision 012).** Go stands; switch-triggers carry forward as the guard |
+| Counsel brief 4 → final worker-agreement terms | the first real worker; `durability-and-launch` criterion 3 config. Not the build | open, long lead. Send the brief |
 | Chrome/marks rulings (invariant ledger chrome; epistemic mark system) | `marks-and-embeds` going `ready`; `worker-surface` criterion 4 as written | open, drafted in session, awaiting ratification |
 | **Cloud provider ruling** (AWS vs. GCP mini-litigation, decision 011 open item) | real provisioning; nothing local | open, litigation starts on founder go |
 | **KMS conformance at provisioning** must include a cross-session destroy scenario: a scope destroyed by one client stays destroyed for a fresh client. The in-repo suite cannot prove durability across restarts (foundation/05 review) | first production use of the real KMS | open, runs with the provisioning gate |
@@ -271,20 +271,20 @@ rather than one discovery at a time.
 | Work-authorization rollout jurisdictions (decision 008 sets the shape; which jurisdictions ship in v1 is unruled) | `verification` work-authorization tasks only | open |
 | grain retrofit sequencing (research/10 migration list) | nothing in v1, grain attaches through `integration-surface` when ruled | open |
 | **The confidence threshold** below which analytics returns insufficient data, and whether it is published (decision 022 open item) | `analytics` going `ready` | open |
-| **The run-record pseudonym**: it cannot be the `ledger_person_id`, which decisions 013/020 make permanent and spine-referenced (decision 026) | `analytics` going `ready` | open |
-| **The run-record spine/payload fork**: inside the subject's DEK it dies at deletion and breaches AI Act Art. 19; outside it, it survives readable (decision 026) | `analytics`, and a `foundation` task nobody owns | open |
+| **The run-record pseudonym.** It cannot be the `ledger_person_id`, which decisions 013/020 make permanent and spine-referenced (decision 026) | `analytics` going `ready` | open |
+| **The run-record spine/payload fork.** Inside the subject's DEK it dies at deletion and breaches AI Act Art. 19; outside it, it survives readable (decision 026) | `analytics`, and a `foundation` task nobody owns | open |
 | **Worker-facing job suggestions.** 42 U.S.C. §2000e(c) defines an employment agency as one who procures "for employees opportunities to work for an employer"; the suggestion surface is that definition, and it would make Grain a covered entity rather than a vendor (`research/14` §1.2) | the suggestion surface; `THESIS.md` §8's matching position | open, founder, and it inverts the earlier reasoning |
 | **Antitrust.** A cross-employer performance register is a labour-market information exchange under the Jan 2025 DOJ/FTC guidelines, where third-party intermediation is expressly not a defence (`research/13` §6.6) | nothing in code; the thesis's risk section | open, founder, unscoped |
 | **Is R2 regional?** India DPDP Rule 8(3) compels one year of retention surviving account deletion from ~May 2027 (`research/14` §2) | the deletion promise, `consent-and-deletion` copy, and the India rail | open, counsel, long lead |
 
 ## Work that has no layer
 
-- **`checks/`**: ported from Dispatch in `foundation`, exempt from the
+- **`checks/`**. Ported from Dispatch in `foundation`, exempt from the
   plan gate because it verifies the repo rather than the product.
-- **Dispatch conformance**: the ratification notice
+- **Dispatch conformance.** The ratification notice
   (`handoff/ratification-notice-for-dispatch.md`) is Dispatch-repo work,
   tracked there, not here.
-- **The slope disclosure text**: the three failure modes carried on every
+- **The slope disclosure text.** The three failure modes carried on every
   trajectory output (decision 022). Product copy with a correctness
   obligation; drafted nowhere, owned by `analytics`.
 - **The Article 22 brief, rescoped.** `THESIS.md` §10 lists it as never
@@ -293,7 +293,7 @@ rather than one discovery at a time.
   requires inform, representations, human intervention, and contest. The
   brief's question is now who owes that duty, Grain or the deployer,
   (`research/14` §3).
-- **Counsel briefs 1–3**: inform design; block nothing in code. Brief 2
+- **Counsel briefs 1–3.** Inform design; block nothing in code. Brief 2
   (salted commitments) must return before checkpoints go *public*;
   private WORM anchoring is ungated.
 

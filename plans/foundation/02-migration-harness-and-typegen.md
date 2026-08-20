@@ -31,7 +31,7 @@ generated types that cannot drift.
 - **One shared numbering sequence across both chains** (decision 017).
   Numbers are globally unique across spine and payload; each chain
   therefore has gaps where the other's numbers fall. This is what makes a
-  cross-plane ordering constraint expressible: a payload migration
+  cross-plane ordering constraint expressible. A payload migration
   referencing a spine table can be required to follow it by number.
   Independent per-chain numbering cannot express that, and the constraint
   is real: `0014-safety-markers` references the party table created in

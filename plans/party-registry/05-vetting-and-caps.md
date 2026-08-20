@@ -31,8 +31,8 @@ only, and never leaks into an attestation or a packet.
   nothing to invalidate. A cached copy with its own lifetime is how a
   party ends up uncapped after a forgotten invalidation; a projection
   cannot drift.
-- **Accreditation re-check every 90 days** and on any registry event:
-  one scheduled job, sharing the key-renewal rhythm. Accreditation is
+- **Accreditation re-check every 90 days** and on any registry event.
+  One scheduled job, sharing the key-renewal rhythm. Accreditation is
   checked against closed external allowlists (DAPIP/CHEA-style where one
   exists), per research/06 §2: attackers fake the accreditor, not just
   the credential.

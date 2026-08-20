@@ -29,8 +29,8 @@ servers."
 - **Crypto-shredding is recorded as a documented legal position, not as a
   mechanical proof** (decision 017). Key destruction is instant and
   irreversible; the reasoning for why that constitutes erasure is written
-  at the schema site, with decision 014's *EDPS v SRB* analysis cited:
-  the ledger cannot re-identify, and that is the load-bearing fact.
+  at the schema site, with decision 014's *EDPS v SRB* analysis cited.
+  The ledger cannot re-identify, and that is the load-bearing fact.
 - **Scheduled physical purge.** Shredded rows are physically removed on a
   stated schedule, so unreadable ciphertext does not accumulate forever.
   The purge role is the *only* role holding DELETE on payload tables,

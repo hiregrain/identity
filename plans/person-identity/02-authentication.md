@@ -30,7 +30,7 @@ by device class.
   risk scoring as signup.
 - **Step-up: sensitive operations require a session whose assurance matches
   the account's derived level** (decision 020). Without this, recovery
-  hardening is bypassed through ordinary login: an attacker does not need
+  hardening is bypassed through ordinary login. An attacker does not need
   recovery if a code session reaches everything. The closed sensitive set:
   adding or removing credentials, changing contact channels, creating or
   revoking grants, requesting a packet, and initiating deletion. Credential

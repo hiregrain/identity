@@ -17,7 +17,7 @@ The worker-authored half of the record, and its ingestion accelerants.
 
 **Added 2026-08-19:** claim CRUD and résumé import both populate
 `chapter.party_country` and `party_locality` whenever `party_ref` is null
-(`model/record-schema.md`). Import must ask rather than guess: an LLM inferring a
+(`model/record-schema.md`). Import must ask rather than guess. An LLM inferring a
 country from an employer name is exactly the silent resolution the schema forbids.
 
 Scope: self-asserted claim CRUD (work history, skills, credentials,

@@ -21,7 +21,7 @@ phone.
 
 Split out of `app-shell` on 2026-08-19 (engineering review). That layer scoped
 eleven items against `plans/ORDER.md`'s four-to-eight guidance, and these four
-gate on different things: the mark's open items and counsel, not on whether a
+gate on different things, the mark's open items and counsel, not on whether a
 screen behaves correctly on a device. `app-shell` owns the runtime; this owns
 reach.
 

@@ -38,7 +38,7 @@ legacy-bridge modules against an RN line that has begun deleting legacy classes)
 neither ships an Expo config plugin, and both force a location permission prompt.
 
 **Counsel gate before contracting**: Persona lists 16 US subprocessors including
-Anthropic, OpenAI and Groq for "data extraction and analysis": identity documents
+Anthropic, OpenAI and Groq for "data extraction and analysis". Identity documents
 and selfies reaching three model providers. Decision 010 forbids document images
 in the *ledger* and says nothing about the vendor's onward processing. India DPDP
 residency is unproven for both vendors and must be answered in writing.

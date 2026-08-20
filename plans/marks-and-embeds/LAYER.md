@@ -28,7 +28,7 @@ non-SDK surfaces, static glyph assets with conformance rules for the long
 tail; **every mark resolves** to a grant-scoped verification page on the
 ledger origin (QR for print), an unresolvable mark is counterfeit by
 definition; entry-point components ("Continue with [ledger] ID") themable
-per published guidelines; **nobody re-inks the mark**: third-party embeds
+per published guidelines; **nobody re-inks the mark**, third-party embeds
 and Grain's own verticals alike (decision 024), so no surface may restyle,
 recolor, relabel, or re-render a mark, and the prohibition is symmetric
 because an ownership-based exemption is exactly what erodes the neutrality

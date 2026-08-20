@@ -37,7 +37,7 @@ system's ordering authority (D3/D6), with inclusion proofs.
   durability**, and the signed receipt to a party fires on the second
   (issued by `ingestion`, on the watermark from foundation/07).
 - **Per-party issuance root** (decision 016, relocated here by decision
-  019's boundary rule: signing and tree math belong to the kernel): a
+  019's boundary rule, signing and tree math belong to the kernel): a
   Merkle root over a single party's issuance stream for a period, built
   from the same stream-head machinery. `party-registry/07` consumes this
   API rather than defining it. The global root is not a substitute: a party

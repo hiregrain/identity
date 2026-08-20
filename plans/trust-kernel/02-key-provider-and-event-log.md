@@ -23,7 +23,7 @@ compromise-vs-backdating rule enforceable.
 
 - Provider interface for ledger signing keys: **`sign(bytes)`** returning
   signature plus the key identifier used, and `publicKey(id)` for
-  verification (decision 019: no key parameter on the signing path).
+  verification (decision 019, no key parameter on the signing path).
   Software provider now; KMS provider stubbed with the same tests, wired at
   provisioning (founder gate). Rotation is internal to the provider:
   `sign` always uses the current active key.

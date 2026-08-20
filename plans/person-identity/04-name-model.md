@@ -69,7 +69,7 @@ Every read specifies a purpose and a point in time.
   (MRZ is upper-case, diacritic-stripped, 39 chars at line-1 positions
   6–44), and no vendor documents a precedence rule.
 - Truncation handling: the ICAO truncation signal is **ambiguous by
-  design**: an alphabetic character at position 44 means "may have been
+  design**. An alphabetic character at position 44 means "may have been
   truncated" and cannot be distinguished from an exactly-fitting name.
   Store the raw MRZ and a `possibly_truncated` flag; never treat MRZ as
   authoritative over VIZ or DG11.

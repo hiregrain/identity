@@ -33,7 +33,7 @@ everything that is true of every screen on a real device.
 **The framework is ratified (decision 040): Expo SDK 57, React Native 0.86,
 React 19.2.3, with CNG and config plugins, expo-router, and
 `@shopify/react-native-skia` as the imprint renderer.** Pin SDK 57; take 58
-deliberately. The New Architecture is not a decision: RN 0.82 made it the only
+deliberately. The New Architecture is not a decision. RN 0.82 made it the only
 architecture. `react-native-svg` is disqualified from source: it cannot express
 hairline mode at all (`strokeWidth == 0` returns early), and hairline mode is what
 `DESIGN.md` gap 10a requires.

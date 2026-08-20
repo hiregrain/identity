@@ -38,7 +38,7 @@ course performance, structured references (`peer-references`), and
 observable meta-signals (average tenure in role, described responsibility,
 seniority); **provenance weighting**, so a `self_asserted` history and a
 `party_attested` one never carry equal weight for the same assertion;
-**party quality scores excluded** from every computation: `score_summary`
+**party quality scores excluded** from every computation. `score_summary`
 is readable by its own issuer and by a human reader, and never enters
 grading (thesis §4); **confidence gating**: the published threshold below
 which the product returns insufficient data plus a suggestion to take an

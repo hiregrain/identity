@@ -45,7 +45,7 @@ pattern (its migrations 0002/0006) verbatim in structure.
   is worthless if the application can step around it. Stated and enforced:
   the application never holds owner credentials at runtime; migration
   credentials are separate and unavailable to serving processes; and
-  **SECURITY DEFINER recording functions may only INSERT**: `ingestion`
+  **SECURITY DEFINER recording functions may only INSERT**. `ingestion`
   writes through them by design, so each one is asserted to contain no
   UPDATE or DELETE.
 - **Schema boundaries as a general posture** (decision 017). Some table
@@ -63,7 +63,7 @@ pattern (its migrations 0002/0006) verbatim in structure.
   earlier unqualified "any table" would have gone false the moment the
   first exemption landed, and a test trained to ignore exceptions is worse
   than no test.
-- `test/append-only.test`: the standing proof.
+- `test/append-only.test` is the standing proof.
 
 ## Acceptance
 

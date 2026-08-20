@@ -22,7 +22,7 @@ external partner attaches through this, self-serve. The success measure is
 that partner #2 integrates without talking to us.
 
 Scope: the OpenAPI spec + typed SDKs **generated from the language-neutral
-contract schema** (the same one the T1 vectors validate: the spec is
+contract schema** (the same one the T1 vectors validate; the spec is
 derived from the tested schema, never written beside it); endpoints:
 prior-packet read (grant-gated), attestation write, verification-status
 read, work-history/credentials/skills reads (all provenance-graded),
