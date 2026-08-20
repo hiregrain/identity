@@ -21,12 +21,12 @@
        drawn and budgeted at. */
     .fig{display:block;width:100%;max-width:320px;margin-inline:auto}
     /* The plate's registration corners, at the figure's own scale. Same object
-       as `.reg` on the record plate — the chart's mark for a framed thing. */
+       as `.reg` on the record plate, the chart's mark for a framed thing. */
     .figreg{position:absolute;width:13px;height:13px;border:0 solid var(--rule);
             pointer-events:none}
     /* 050: only the band that changed is re-scribed. Its resting state is the
        finished drawing, so an environment that suppresses animation shows the
-       whole figure rather than a blank one — the defect design/07 found in the
+       whole figure rather than a blank one, the defect design/07 found in the
        first build's ceremony, where rest was stroke-dashoffset:1. */
     .moved-band .ch4 path,.moved-band .ch4 circle{stroke-dasharray:1;stroke-dashoffset:1;
       animation:scribe-band 900ms cubic-bezier(0.2,0,0,1) 260ms forwards}
@@ -35,7 +35,7 @@
       .moved-band .ch4 path,.moved-band .ch4 circle{animation-duration:1ms;animation-delay:0ms}
     }
     /* §9's sine-modulated divider, carrying the figure's own frequency, and the
-       graticule ground. Both specified in §9 and unused until now — the record
+       graticule ground. Both specified in §9 and unused until now, the record
        had the plate and nothing else, which is most of why it read as bare. */
     /* The ground is clipped to the figure's own shape. Left square it stopped at
        a hard rectangle behind a circular drawing, which reads as a stray box. */
@@ -49,7 +49,7 @@
     .scrim{position:absolute;inset:0;background:rgba(230,230,228,.86)}
     /* Disclosure is a line quality on the plate's own header band (law 4).
        Grants are whole-record, so this is a property of the record and never of
-       a chapter — a per-chapter mark would be identical on every row. */
+       a chapter, since a per-chapter mark would be identical on every row. */
     .disclosed{border-bottom-width:1px}
     .disclosed::after{content:'';position:absolute;left:0;right:0;bottom:-4px;
                       height:1px;background:var(--rule)}
@@ -82,7 +82,7 @@
       <!-- Sharing is a destination now, not a section buried under the record
            (decision 045). This is its entry point. -->
       <!-- Sharing is where custody is exercised, so it carries more than the menu
-           does — but by ink and by saying a number out loud, not by a box. §8
+           does, but by ink and by saying a number out loud, not by a box. §8
            deletes containers; a border here would be the one thing the system
            forbids, put in to buy prominence it can get honestly. -->
       <button class="press" aria-label="{{ shareLabel }}" onClick="{{ openSharing }}"
@@ -96,7 +96,7 @@
         <span class="t-data" style="font-size:13px">{{ shareCount }}</span>
       </button>
       <!-- An account glyph, not a hamburger. The hamburger is the universal sign
-           for a menu of places to go, and this opens one screen — a bar carrying
+           for a menu of places to go, and this opens one screen. A bar carrying
            no navigation read as a navigation bar that did nothing (048). -->
       <button class="press" aria-label="Account and settings" onClick="{{ openSettings }}"
               style="min-width:44px;width:44px;height:44px;display:flex;align-items:center;
@@ -117,7 +117,7 @@
     <section id="sec-0" style="padding-top:20px">
       <!-- No portrait slot. It was a drawn container (§8 deletes those) holding a
            placeholder for a picture of a person, in a product that refuses to draw
-           people — and decision 044 settled that a person is their name and their
+           people, and decision 044 settled that a person is their name and their
            imprint. A box waiting for a face contradicts both. -->
       <div style="padding-bottom:20px">
         <div style="min-width:0">
@@ -132,7 +132,7 @@
            was not one of them. The corners are the plate's own mark for a framed
            object, which is what this is. -->
       <sc-if value="{{ hasNews }}" hint-placeholder-val="{{ true }}">
-        <!-- What moved since you last looked. Not a greeting — a record that
+        <!-- What moved since you last looked. Not a greeting. A record that
              welcomes you is a record performing (050). It states the fact and
              stops, and says nothing at all when nothing has changed. -->
         <p class="t-rec" style="margin:0 0 16px;text-wrap:pretty">{{ news }}</p>
@@ -240,7 +240,7 @@
          and work history, which is where a product puts what does not matter. -->
   </main>
 
-  <!-- No section index. It sat at right:0, 32px wide — entirely inside the
+  <!-- No section index. It sat at right:0, 32px wide, entirely inside the
        ~24dp strip Android gives the back gesture from both edges, so dragging it
        navigated back. 037 had already demoted it to an accelerator; an
        accelerator that fights the platform is worse than none. -->

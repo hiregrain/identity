@@ -40,7 +40,7 @@
     /* §7 press physics, on this screen only (decision 050). The figure yields
        under the thumb where inspecting it is the task; on the record it is a
        plate you open, and a plate that squirms is a worse plate. A band whose
-       chapter is attested does NOT yield — §7 makes rigidity the expression of
+       chapter is attested does NOT yield. §7 makes rigidity the expression of
        permanence, and it had been dead code in every file. */
     .stage{transition:transform 120ms cubic-bezier(0.2,0,0,1)}
     .stage.give:active{transform:scale(0.994)}
@@ -107,7 +107,7 @@
   </div>
 
   <!-- Reading matter, not a control. Every measure says what it means, what was
-       attested, and where that sits on its scale — drawn, because design/07 2.2
+       attested, and where that sits on its scale, drawn because design/07 2.2
        records four reviewers reading an ordinal as a rating of a person. -->
   <div class="dissolve" style="position:absolute;top:406px;left:0;right:0;bottom:0;overflow-y:auto">
     <div style="padding:14px 20px 10px">
@@ -144,7 +144,7 @@
 </x-dc>
 
 <script data-dc-script data-props='{"$preview":{"width":360,"height":800}}'>
-// The expanded imprint. Closes imprint/README.md §7.1 — nothing marked which
+// The expanded imprint. Closes imprint/README.md §7.1, nothing marked which
 // lobe was which measure. Labels are revealed by touch, never printed on the
 // figure. Definitions are verbatim from imprint/README.md §3.
 // No ordinal is shown: design/07 §2.2 records four independent reviewers reading
@@ -258,9 +258,9 @@ class Component extends DCLogic {
     const {ch, dim, z, tx, ty} = this.state;
     const c = CHAPTERS[ch], k = ZOOMS[z];
     const lobe = LOBES_D[ch][dim] || '';
-    // Why the level stands where it does. The model has no rationale field —
+    // Why the level stands where it does. The model has no rationale field.
     // `attestation` carries dimensions_exercised[] and a signature, nothing in
-    // free text — so what can honestly be said is how the level was DERIVED:
+    // free text, so what can honestly be said is how the level was DERIVED:
     // who asserted it, whether anyone agreed, and that disagreeing attesters are
     // never averaged (model/record-schema.md §4).
     const STANDING = {
@@ -287,7 +287,7 @@ class Component extends DCLogic {
         ? 'What ' + c.short + ' attested, on the seven measures'
         : 'Nothing about the work was attested on this chapter',
       // Every measure, every time. The value is the attested anchor in the
-      // worker's own words, and its position is seven drawn rungs — never an
+      // worker's own words, and its position is seven drawn rungs, never an
       // ordinal, which design/07 §2.2 records four reviewers reading as a rating
       // of a person.
       measures: DIMS.map((x, i) => {

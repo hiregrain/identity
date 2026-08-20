@@ -2,7 +2,7 @@ import os, re, sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 def rd(n): return open(os.path.join(HERE, n)).read()
 
-# graticule: the chart ground (DESIGN.md §9) — how "global" becomes structural
+# graticule, the chart ground (DESIGN.md §9), how "global" becomes structural
 def graticule(w, h, step=12):
     p = []
     for y in range(step, int(h), step):

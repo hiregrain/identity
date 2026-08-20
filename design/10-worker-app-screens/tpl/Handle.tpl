@@ -8,7 +8,7 @@
 @@CSS@@
 @@CHROME@@
     /* §8 inputs are ruled lines: a hairline you type on, focus thickens ink-ward.
-       An error thickens it further and speaks in ink — never paler (law 8). */
+       An error thickens it further and speaks in ink, never paler (law 8). */
     .ruled{display:flex;align-items:baseline;border-bottom:1px solid var(--rule);padding-bottom:10px}
     .ruled:focus-within{border-bottom:2px solid var(--ink)}
     .ruled.bad{border-bottom:2.5px solid var(--ink)}
@@ -76,10 +76,10 @@
 <script data-dc-script data-props='{"$preview":{"width":360,"height":800}}'>
 // Handle claim, in onboarding, after the record exists (029). Latin-only URLs
 // (029 §A), so a non-Latin name is TRANSLITERATED into a working address and
-// never rejected — design/07 §5 found the first build only claimed to do this.
+// never rejected. Design/07 §5 found the first build only claimed to do this.
 const MAP = {
-  // Devanagari, Bengali, Arabic, Cyrillic, Greek, Han, Kana — enough to show the
-  // mechanism. Production uses ICU; this is the mockup's stand-in.
+  // Devanagari, Bengali, Arabic, Cyrillic, Greek, Han, Kana, enough to show the
+  // mechanism. Production uses ICU, and this is the mockup's stand-in.
   'ল':'l','ি':'i','য':'y','া':'a','জ':'j','ে':'e','ল':'l','ম':'m','ন':'n','্':'','দ':'d','ো':'o','স':'s',
   'л':'l','и':'i','з':'z','е':'e','м':'m','н':'n','д':'d','о':'o','с':'s','а':'a','р':'r','в':'v','к':'k',
   'α':'a','β':'b','γ':'g','δ':'d','ε':'e','λ':'l','μ':'m','ν':'n','ο':'o','σ':'s','τ':'t','ρ':'r','ι':'i'
