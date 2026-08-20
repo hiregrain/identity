@@ -21,13 +21,17 @@ if the ask dies, and locks permanently the moment an attestation lands.
 ## Scope
 
 - `0024-verification-requests` (payload plane): the `verification_request`
-  table per schema §10: subject, claim ref (any of the four object
-  types), party ref, state enum, `requested_at`, mandatory `expires_at`.
+  table per schema §10: subject, claim ref (a chapter, education, or
+  credential; positions freeze with their chapter and are never a
+  claim ref), party ref, state enum, `requested_at`, mandatory
+  `expires_at`.
 - Freeze on request creation, enforced at the recording functions and by
   a database constraint, never UI-only: a frozen claim rejects edit and
   delete.
-- Thaw on `declined` and on expiry; a sweep marks past-due requests
-  `expired`. Permanent freeze on `attested`.
+- Thaw on `declined`, on expiry (a sweep marks past-due requests
+  `expired`), and on `withdrawn_before_send` (schema §10, decision
+  064). Permanent freeze on `attested`. Every enum state is either a
+  thaw, a permanent freeze, or `open`; no state is unhandled.
 - State transitions are append-only rows in the pattern of
   person-identity's lifecycle states, never an editable column.
 - Issuance flows (who may ask, party notification) belong to the
@@ -39,8 +43,11 @@ if the ask dies, and locks permanently the moment an attestation lands.
 1. AC (mechanical): creating a request freezes the whole claim at API
    and database; edits and deletes are rejected at both layers while
    frozen.
-2. AC (mechanical): decline and expiry each thaw the claim; edits and
-   deletes work again; version history spans the freeze unbroken.
+2. AC (mechanical): decline, expiry, and pre-send withdrawal each thaw
+   the claim; edits and deletes work again; the worker reads every
+   version row while the claim is frozen and after it thaws, and the
+   post-thaw version list equals the pre-freeze list plus any
+   post-thaw edits.
 3. AC (mechanical): a claim with an `attested` request rejects edits and
    deletes permanently; no transition out of `attested` exists.
 4. AC (mechanical): a request cannot be created without `expires_at`;
@@ -49,6 +56,6 @@ if the ask dies, and locks permanently the moment an attestation lands.
 
 ## Outside check
 
-Verifier runs the freeze fixture across all four object types and all
-three terminal states, and greps for any freeze check that lives only in
+Verifier runs the freeze fixture across the three freezable claim types
+and every enum state, and greps for any freeze check that lives only in
 application code.

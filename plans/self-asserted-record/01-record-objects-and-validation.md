@@ -6,7 +6,7 @@ satisfies: [4]
 status: ready
 depends_on: [person-identity/01]
 migrations: [0023-record-objects]
-binds: [decisions/LOG.md#062, decisions/LOG.md#063, model/record-schema.md, model/attestation-interface.md]
+binds: [decisions/LOG.md#008, decisions/LOG.md#010, decisions/LOG.md#062, decisions/LOG.md#063, decisions/LOG.md#064, model/record-schema.md, model/attestation-interface.md]
 evidence: []
 verified_by: null
 ---
@@ -28,8 +28,16 @@ can land.
   SECURITY-DEFINER pattern foundation/03 established; the application
   role has no direct INSERT.
 - CRUD for unfrozen claims: create, edit (a new version row, prior rows
-  never mutated), delete. Freeze enforcement itself is task 02; this
-  task leaves every claim unfrozen.
+  never mutated), and delete as a tombstone version row, because
+  foundation/03's ratified invariant permits recording functions to
+  INSERT only (decision 064); a tombstoned claim leaves the record and
+  its versions persist worker-only until profile deletion. Freeze
+  enforcement itself is task 02; this task leaves every claim unfrozen.
+- The confirmation-reference columns and constraints of schema §10
+  (decision 064) ship in `0023-record-objects` with the tables:
+  `origin: resume_parsed` requires a confirmation reference, and so do
+  `institution_ref` and `issuer_ref` writes. This task creates the
+  constraints; tasks 03, 05, and 08 exercise them.
 - Validation at the recording functions: month precision, enum
   membership, positions inside chapter bounds, `party_country`
   required when `party_ref` is null and the same rule for
@@ -44,9 +52,11 @@ can land.
 ## Acceptance
 
 1. AC (mechanical): each of the four object types round-trips create,
-   edit, and delete; every edit produces a version row; no code path
-   mutates a prior version, proven by the append-only test pattern from
-   foundation/03.
+   edit, and tombstone-delete; every edit produces a version row; a
+   tombstoned claim is absent from record reads and present in the
+   worker's version history; no code path mutates or removes a prior
+   version, proven by the append-only test pattern from foundation/03
+   with zero UPDATE or DELETE grants.
 2. AC (mechanical): a write violating schema shape, month precision,
    bounds, or a required-country rule is rejected with a structured
    error; a fixture exercises each rule per object type.

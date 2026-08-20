@@ -28,7 +28,9 @@ unretrofittable.
   019). D3's anchored contents are broader than the attestation record, and
   D4's dispositive argument depends on registry manipulation being visible
   in the log, which is false if registry events are unchained. Streams:
-  per-subject and per-party attestation chains; **registry and party
+  per-subject and per-party attestation chains; **worker record writes
+  (added by decision 063, so self-asserted claims chain from day one);
+  registry and party
   lifecycle events; key events; privileged operator actions; deletion
   journal entries**. An audited-but-unanchored operator action is alterable
   by the operator, and the operator is the party a dispute distrusts.
@@ -57,7 +59,8 @@ unretrofittable.
 
 - AC (mechanical): a mutated historical record (simulated as table owner)
   is detected at the correct position in every stream it belongs to,
-  including a registry event, a key event, an operator action, and a
+  including a worker record write (decision 063), a registry event, a key
+  event, an operator action, and a
   deletion journal entry.
 - AC (mechanical): a merge moves no record between chains. Chain
   membership before and after is byte-identical; resolution changes, chains

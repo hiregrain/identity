@@ -4,7 +4,7 @@ type: task
 layer: self-asserted-record
 satisfies: [6]
 status: ready
-depends_on: [self-asserted-record/01, trust-kernel/02]
+depends_on: [self-asserted-record/01, trust-kernel/03]
 migrations: []
 binds: [decisions/LOG.md#063]
 evidence: []
@@ -22,15 +22,17 @@ tamper-evident record of who, when, and why.
 
 - The version-history read path for operators goes through one function
   that emits a privileged-operator-action event into the trust kernel's
-  event log before returning data; the event carries operator identity,
+  chained operator-action stream (trust-kernel/03) before returning
+  data; the event carries operator identity,
   subject, claim ref, and a mandatory reason from a controlled reason
   list.
 - Impossible-without-event by construction: the history tables grant no
   read to operator roles except through that function, the same
   narrow-path pattern as the recording functions.
-- Version history is excluded from every packet assembly input; the
-  exclusion is asserted here and inherited by prior-packet when it
-  builds.
+- That version history never reaches a packet is prior-packet's
+  inherited criterion (decision 064), recorded in that layer's file;
+  this task exposes no history read path a packet assembler could
+  call, which is what the privilege inspection in AC2 proves.
 - Worker-facing rendering of these events is worker-surface's scope.
 
 ## Acceptance

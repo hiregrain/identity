@@ -4,7 +4,7 @@ type: task
 layer: self-asserted-record
 satisfies: [9]
 status: ready
-depends_on: [self-asserted-record/01, self-asserted-record/02, trust-kernel/03]
+depends_on: [self-asserted-record/01, self-asserted-record/02, self-asserted-record/05, trust-kernel/03]
 migrations: []
 binds: [decisions/LOG.md#009, decisions/LOG.md#063]
 evidence: []
@@ -34,9 +34,12 @@ commit, and deletion leaves no hash behind.
 
 ## Acceptance
 
-1. AC (mechanical): a CRUD-plus-import fixture across all four object
-   types produces a chain that passes trust-kernel verification; a
-   mutated historical record row is detected by the chain check.
+1. AC (mechanical): a CRUD-plus-import fixture across chapters,
+   education, and credentials, with position writes chaining through
+   their chapter's stream, produces a chain that passes trust-kernel
+   verification; a mutated historical record row is detected by the
+   chain check. Import commits come through task 05's flow, which is
+   why 05 is a dependency.
 2. AC (mechanical): the kernel's every-governing-event coverage check
    counts record writes and fails if any record write path skips the
    chain.

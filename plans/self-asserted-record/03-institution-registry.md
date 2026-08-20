@@ -20,26 +20,33 @@ confirmed by the worker, and the raw string survives either way.
 
 ## Scope
 
-- `0025-institution-registry` (payload plane, non-subject data): one row
-  per institution with name, country, and a mandatory per-row source
-  naming the accreditation list it came from.
-- Seed importers for the machine-readable registries: US DAPIP, UK
-  UKRLP, PH TESDA. India and the Philippine CHED wait on schema open
+- `0025-institution-registry` (global spine, decision 064: public
+  reference data with no personal data and no residency obligation; one
+  copy stays consistent where regional copies would drift): one row per
+  institution with name, country, and a mandatory per-row source naming
+  the accreditation list it came from.
+- Seed importers for the machine-readable registries, US DAPIP, UK
+  UKRLP, PH TESDA, running against fixture snapshots committed to the
+  repo, so the verifier's run reproduces the implementer's exactly;
+  refreshing a snapshot from the live source is an operational act
+  outside acceptance. India and the Philippine CHED wait on schema open
   item 6 (their regulators publish documents, not registries); the
   fallback raw-string path covers them, and no scraped source enters
   without a sourcing ruling.
-- The confirmation constraint: `institution_ref` cannot be written
-  without a confirmation reference, a database constraint, not
-  application discipline. `institution_asserted` is stored verbatim in
-  every case.
+- Exercising the confirmation constraint: `institution_ref` cannot be
+  written without a confirmation reference. The constraint itself ships
+  in `0023-record-objects` (task 01, decision 064); this task proves it
+  end to end and builds the confirm flow. `institution_asserted` is
+  stored verbatim in every case.
 - No fuzzy matching in this task: it lands the table, the seeds, and
   the constraint. Match proposal is `extraction`'s job.
 
 ## Acceptance
 
-1. AC (mechanical): each seed importer loads its list on a fresh clone;
-   every row carries its source; row counts are asserted against the
-   fetched list, never hand-written.
+1. AC (mechanical): each seed importer loads its committed fixture
+   snapshot on a fresh clone; every row carries its source; row counts
+   are asserted against the snapshot programmatically, never
+   hand-written.
 2. AC (mechanical): writing `institution_ref` without a confirmation
    reference fails at the database; with one, it lands and
    `institution_asserted` is still stored verbatim.
@@ -49,6 +56,6 @@ confirmed by the worker, and the raw string survives either way.
 
 ## Outside check
 
-Verifier runs the seeders against fixture copies of each list, attempts
+Verifier runs the seeders against the committed snapshots, attempts
 the unconfirmed write, and confirms the raw string survives a confirmed
 match byte-for-byte.

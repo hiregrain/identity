@@ -8,9 +8,12 @@ soft_depends_on: [extraction]
 binds:
   - design/ledger-design-0.1.md#2.2
   - decisions/LOG.md#002
+  - decisions/LOG.md#008
   - decisions/LOG.md#009
+  - decisions/LOG.md#010
   - decisions/LOG.md#062
   - decisions/LOG.md#063
+  - decisions/LOG.md#064
   - model/record-schema.md
   - model/attestation-interface.md
 gated_criteria: [3, 10]
@@ -34,7 +37,10 @@ Scope, per decisions 062 and 063:
   verification request freezes the object (schema §1 freeze rule and
   §10). Freeze at request creation; thaw on decline or expiry; permanent
   once attested. Unfrozen claims are deletable; delete is the far end of
-  edit.
+  edit, implemented as a tombstone version row because foundation/03's
+  ratified invariant permits recording functions to INSERT only
+  (decision 064); physical removal happens only at profile deletion
+  through foundation/08.
 - The `verification_request` table (schema §10), with mandatory expiry.
   This layer defines the table and the freeze/thaw transitions; the
   `verification` layer later owns issuance flows against it.
@@ -80,10 +86,11 @@ Acceptance:
    versions remain worker-readable throughout.
 2. **Nothing imported is saved until the worker confirms it.**
    (mechanical) an imported claim row cannot exist without a
-   confirmation reference, enforced by a database constraint, not
-   application discipline; every imported claim carries `self_asserted`
-   provenance and `origin: resume_parsed`. Verified against the stub
-   proposer.
+   confirmation reference, the constraint schema §10 defines (decision
+   064), not application discipline; every imported chapter, education,
+   and credential carries `self_asserted` provenance and
+   `origin: resume_parsed`, and positions ride their chapter. Verified
+   against the stub proposer.
 3. **Batch commit is earned, not default.** (mechanical, gated) a batch
    containing any field that is not source-span traceable, or whose
    extraction confidence is below the threshold the `extraction` layer
@@ -102,7 +109,9 @@ Acceptance:
    an operator read of a worker's version history emits a
    privileged-operator-action event into the trust kernel's chain,
    carrying a recorded reason; a read with no event is impossible by
-   construction; version history never appears in a prior packet.
+   construction. That version history never appears in a packet is
+   prior-packet's inherited criterion, provable only where packets are
+   built (decision 064).
 7. **A credential document never changes what the record claims.**
    (mechanical) attaching a document leaves `provenance` unchanged and
    the file is reachable only through the payload plane under the
@@ -113,10 +122,11 @@ Acceptance:
    verbatim in every case, match or no match.
 9. **Every record write is chained, and deletion leaves no hash
    behind.** (mechanical) every committed claim write, manual and
-   imported, across all four object types, appends to the subject's
-   per-stream chain and passes chain verification over a CRUD-plus-
-   import fixture; the fixture includes delete-after-chain, proving no
-   hash retention across deletion (decision 009).
+   imported, across chapters, education, and credentials, with position
+   writes chaining through their chapter's stream, appends to the
+   subject's per-stream chain and passes chain verification over a
+   CRUD-plus-import fixture; the fixture includes delete-after-chain,
+   proving no hash retention across deletion (decision 009).
 10. **Issuer matches are confirmed, never assumed.** (mechanical, gated)
     no `issuer_ref` is written without a confirmation reference,
     enforced the same way as criterion 8. Gated: matching requires the
