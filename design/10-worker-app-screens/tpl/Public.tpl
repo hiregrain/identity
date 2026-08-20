@@ -22,28 +22,34 @@
 
       <h1 class="t-title" style="margin:0;font-size:28px">Liezel Mendoza</h1>
       <p class="t-data" style="margin:8px 0 0;color:var(--secondary);text-wrap:pretty">
-        Philippines · Identity document checked, which says nothing about the work below</p>
+        Identity document checked, which says nothing about the work below</p>
 
       <svg class="imprint" viewBox="0 0 600 600" style="margin:18px auto 0" role="img"
            aria-label="Liezel Mendoza's imprint: five chapters, two signed by an employer, one by a coworker">@@WORKING@@</svg>
 
       <div style="border-top:1px solid var(--ink);padding-top:10px;margin-top:4px">
         <p class="t-data" style="margin:0;text-wrap:pretty">
-          Five chapters. Two signed by the employer, one by a coworker, one dates only,
-          one Liezel added herself.</p>
+          Five chapters, 2017 to now. Two attested by the business, one by a
+          coworker, one dates only, one with no attesting party.</p>
+        <!-- 059: a reader could not tell a chapter that was refused from one
+             that was never asked from one that was never entered, and that is
+             the difference they would most want. The record says what it is. -->
+        <p class="t-meta" style="margin:8px 0 0;color:var(--secondary);text-wrap:pretty">
+          A record holds the chapters its subject entered. Grain does not know of
+          any Liezel did not.</p>
       </div>
 
       <div style="padding-top:22px">
         <sc-for list="{{ chapters }}" as="c" hint-placeholder-count="5">
           <div class="prow">
-            <span class="gutter">
-              <svg viewBox="0 0 34 16" width="34" height="16" fill="none"
+            <span class="prov" tabindex="0">
+              <svg viewBox="0 0 34 16" width="34" height="16" fill="none" aria-hidden="true"
                    stroke="var(--ink)" stroke-width="1"><use href="{{ c.sw }}"></use></svg>
+              <span class="tip t-meta">{{ c.prov }}</span>
             </span>
             <span style="flex:1;min-width:0">
               <span class="t-rec" style="display:block">{{ c.party }}</span>
-              <span class="t-data" style="display:block;padding-top:3px">{{ c.state }}</span>
-              <span class="t-meta" style="display:block;color:var(--secondary);padding-top:2px">{{ c.kind }}</span>
+              <span class="t-meta" style="display:block;color:var(--secondary);padding-top:3px">{{ c.kind }}</span>
             </span>
             <span class="col-r">
               <span class="t-data" style="display:block">{{ c.from }}</span>
@@ -54,15 +60,15 @@
       </div>
 
       <p class="t-body" style="margin:18px 0 0;color:var(--secondary);text-wrap:pretty">
-        This page shows what each business confirmed, and what nobody has confirmed.
-        Grain checks that a business really signed a record. It never checks whether
-        the work was done well.</p>
+        This page shows who Liezel worked for, when, and which party attested
+        each chapter. Grain checks that a party really signed a record. It never
+        checks whether the work was done well.</p>
 
       <div style="padding-top:20px">
-        <button class="btn-secondary press">Ask Liezel for the full record</button>
+        <button class="btn-secondary press">Ask Liezel to send you her record</button>
         <p class="t-meta" style="margin:10px 0 0;color:var(--secondary);text-wrap:pretty">
-          The full record adds what each business wrote and her standing on seven measures.
-          It cannot be shared in part.</p>
+          She sends it to you by name, it ends on a date she sets, and she can end
+          it sooner. It cannot be sent in part.</p>
       </div>
 
       <div style="display:flex;align-items:center;gap:8px;border-top:1px solid var(--hairline);
@@ -73,7 +79,7 @@
       </div>
     </div>
     <p class="t-meta" style="text-align:center;color:var(--secondary);margin:14px 0 0;text-wrap:pretty">
-      Businesses sign what they confirm. Everything else here is Liezel’s own account, marked as such.</p>
+      Every chapter names the party that attested it, or names none.</p>
   </main>
 </div>
 
@@ -93,20 +99,20 @@
 class Component extends DCLogic {
   renderVals(){
     return { chapters: [
-      {party:'Bataan Poultry Processing', kind:'Processing operator, as Liezel gave it',
-       state:'Liezel added this. Nobody has confirmed it.',
+      {party:'Bataan Poultry Processing', kind:'Processing operator',
+       prov:'Recorded by Liezel Mendoza. No attesting party.',
        from:'Sep 2017', to:'Mar 2019', sw:'#sw-self'},
       {party:'Sunrise Foods Manufacturing', kind:'Two positions',
-       state:'Signed by Sunrise Foods, and a second party agrees.',
+       prov:'Attested by Sunrise Foods Manufacturing, and a second party agrees.',
        from:'Mar 2019', to:'Sep 2021', sw:'#sw-multi'},
       {party:'R. Santos Dry Goods', kind:'Stall assistant, Divisoria',
-       state:'Signed by a coworker. This business is not registered with Grain.',
+       prov:'Attested by a coworker who was there. The business is not registered with Grain.',
        from:'Sep 2020', to:'Mar 2023', sw:'#sw-peer'},
       {party:'Metro Manila Logistics', kind:'Warehouse coordinator',
-       state:'Signed by Metro Manila Logistics. Nobody else has agreed.',
+       prov:'Attested by Metro Manila Logistics. No second party has agreed.',
        from:'Mar 2023', to:'Jan 2025', sw:'#sw-single'},
-      {party:'Cebu Pacific Cargo Services', kind:'Cargo handling supervisor, as Liezel gave it',
-       state:'Cebu Pacific confirmed the dates and the employment only.',
+      {party:'Cebu Pacific Cargo Services', kind:'Cargo handling supervisor',
+       prov:'Cebu Pacific Cargo Services attested the dates and the employment. Nothing about the work.',
        from:'Jan 2025', to:'Present', sw:'#sw-emp'}
     ]};
   }

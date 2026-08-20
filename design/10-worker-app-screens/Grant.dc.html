@@ -70,8 +70,30 @@
        one screen's helmet: both are shared vocabulary, and a class defined in
        Main only meant every other screen rendered them unstyled. */
     .sinerule{margin-top:-1px;line-height:0;opacity:.9}
-    .rung{display:inline-flex;align-items:flex-end;gap:2px;height:14px;flex:none}
-    .rung i{display:block;width:3px}
+    /* No .rung. It drew the seven measures as a graded ladder, and decision 054
+       renders nothing derived from them: a ladder with a mark on it is an
+       ordinal whether or not the number is printed. */
+
+    /* Provenance is carried by the mark, and the sentence it stands for is
+       reachable on hover, tap and keyboard focus (055). The sentence also stays
+       in the DOM as the mark's accessible name, which is the text equivalent
+       §12 requires and the only provenance a crawler can read. One string
+       serves all three. Enforced by reading. */
+    .prov{position:relative;flex:0 0 auto;min-width:44px;min-height:44px;
+          display:inline-flex;align-items:center;justify-content:flex-start;
+          margin-left:-4px;padding-left:4px}
+    /* opacity, never visibility or display: a hidden-by-visibility tip leaves
+       the accessibility tree and the crawler gets nothing, which would defeat
+       the whole point of keeping one string. */
+    .prov .tip{position:absolute;left:0;top:calc(100% - 6px);z-index:6;
+               background:var(--ink);color:var(--paper);padding:9px 11px;
+               width:max-content;max-width:min(260px, 68vw);text-align:left;
+               opacity:0;pointer-events:none;transition:opacity 110ms linear}
+    .prov:hover .tip,.prov:focus-visible .tip{opacity:1;pointer-events:auto}
+    /* 1.4.13 wants the revealed content hoverable. It stays up while the
+       pointer is on it. Enforced by reading. */
+    .prov .tip:hover{opacity:1;pointer-events:auto}
+    @media (prefers-reduced-motion:reduce){ .prov .tip{transition:none} }
     /* The imprint is capped and centred wherever it appears. A fluid root with an
        uncapped figure grows until the figure swallows the display, the defect
        fixed on the record and still live on three other screens. 320 is the size
@@ -101,8 +123,6 @@
     }
 
     .prow{display:flex;gap:12px;align-items:flex-start;padding:14px 0;
-          border-bottom:1px solid var(--hairline)}
-    .mrow{display:flex;gap:12px;align-items:baseline;padding:11px 0;
           border-bottom:1px solid var(--hairline)}
     main::-webkit-scrollbar{width:0}
   </style>
@@ -135,7 +155,7 @@
     <div style="padding-top:24px">
       <h1 class="t-title" style="margin:0">Liezel Mendoza</h1>
       <p class="t-data" style="margin:8px 0 0;color:var(--secondary);text-wrap:pretty">
-        Philippines · Identity document checked, which says nothing about the work below</p>
+        Identity document checked, which says nothing about the work below</p>
     </div>
 
     <!-- What Grain is and is not saying, before any content. This is the sentence
@@ -153,14 +173,19 @@
       <div class="sinerule"><svg viewBox='0 0 320 6' width='100%' height='6' preserveAspectRatio='none' fill='none' stroke='#D3D7D6' stroke-width='1' vector-effect='non-scaling-stroke'><path d='M0.0 3.00 L2.0 3.31 L4.0 3.60 L6.0 3.84 L8.0 4.02 L10.0 4.13 L12.0 4.15 L14.0 4.08 L16.0 3.93 L18.0 3.71 L20.0 3.44 L22.0 3.14 L24.0 2.82 L26.0 2.52 L28.0 2.25 L30.0 2.04 L32.0 1.91 L34.0 1.85 L36.0 1.88 L38.0 2.00 L40.0 2.19 L42.0 2.44 L44.0 2.73 L46.0 3.05 L48.0 3.36 L50.0 3.64 L52.0 3.87 L54.0 4.04 L56.0 4.14 L58.0 4.14 L60.0 4.06 L62.0 3.90 L64.0 3.68 L66.0 3.40 L68.0 3.09 L70.0 2.78 L72.0 2.48 L74.0 2.22 L76.0 2.02 L78.0 1.89 L80.0 1.85 L82.0 1.89 L84.0 2.02 L86.0 2.22 L88.0 2.48 L90.0 2.78 L92.0 3.09 L94.0 3.40 L96.0 3.68 L98.0 3.90 L100.0 4.06 L102.0 4.14 L104.0 4.14 L106.0 4.04 L108.0 3.87 L110.0 3.64 L112.0 3.36 L114.0 3.05 L116.0 2.73 L118.0 2.44 L120.0 2.19 L122.0 2.00 L124.0 1.88 L126.0 1.85 L128.0 1.91 L130.0 2.04 L132.0 2.25 L134.0 2.52 L136.0 2.82 L138.0 3.14 L140.0 3.44 L142.0 3.71 L144.0 3.93 L146.0 4.08 L148.0 4.15 L150.0 4.13 L152.0 4.02 L154.0 3.84 L156.0 3.60 L158.0 3.31 L160.0 3.00 L162.0 2.69 L164.0 2.40 L166.0 2.16 L168.0 1.98 L170.0 1.87 L172.0 1.85 L174.0 1.92 L176.0 2.07 L178.0 2.29 L180.0 2.56 L182.0 2.86 L184.0 3.18 L186.0 3.48 L188.0 3.75 L190.0 3.96 L192.0 4.09 L194.0 4.15 L196.0 4.12 L198.0 4.00 L200.0 3.81 L202.0 3.56 L204.0 3.27 L206.0 2.95 L208.0 2.64 L210.0 2.36 L212.0 2.13 L214.0 1.96 L216.0 1.86 L218.0 1.86 L220.0 1.94 L222.0 2.10 L224.0 2.32 L226.0 2.60 L228.0 2.91 L230.0 3.22 L232.0 3.52 L234.0 3.78 L236.0 3.98 L238.0 4.11 L240.0 4.15 L242.0 4.11 L244.0 3.98 L246.0 3.78 L248.0 3.52 L250.0 3.22 L252.0 2.91 L254.0 2.60 L256.0 2.32 L258.0 2.10 L260.0 1.94 L262.0 1.86 L264.0 1.86 L266.0 1.96 L268.0 2.13 L270.0 2.36 L272.0 2.64 L274.0 2.95 L276.0 3.27 L278.0 3.56 L280.0 3.81 L282.0 4.00 L284.0 4.12 L286.0 4.15 L288.0 4.09 L290.0 3.96 L292.0 3.75 L294.0 3.48 L296.0 3.18 L298.0 2.86 L300.0 2.56 L302.0 2.29 L304.0 2.07 L306.0 1.92 L308.0 1.85 L310.0 1.87 L312.0 1.98 L314.0 2.16 L316.0 2.40 L318.0 2.69 L320.0 3.00'/></svg></div>
       <sc-for list="{{ chapters }}" as="c" hint-placeholder-count="5">
         <div class="prow">
-          <span class="gutter">
-            <svg viewBox="0 0 34 16" width="34" height="16" fill="none"
+          <!-- The mark carries provenance; the sentence it stands for is the
+               tip's text content, which is also what a screen reader reads and
+               what a crawler indexes (055). The line that stays visible is the
+               attesting party's own standing and signing date, which is a fact
+               about them rather than a note about her. -->
+          <span class="prov" tabindex="0">
+            <svg viewBox="0 0 34 16" width="34" height="16" fill="none" aria-hidden="true"
                  stroke="var(--ink)" stroke-width="1"><use href="{{ c.sw }}"></use></svg>
+            <span class="tip t-meta">{{ c.prov }}</span>
           </span>
           <span style="flex:1;min-width:0">
             <span class="t-rec" style="display:block">{{ c.party }}</span>
-            <span class="t-data" style="display:block;padding-top:3px">{{ c.state }}</span>
-            <span class="t-meta" style="display:block;color:var(--secondary);padding-top:2px">{{ c.registry }}</span>
+            <span class="t-meta" style="display:block;color:var(--secondary);padding-top:3px">{{ c.registry }}</span>
           </span>
           <span class="col-r">
             <span class="t-data" style="display:block">{{ c.from }}</span>
@@ -170,32 +195,11 @@
       </sc-for>
     </div>
 
-    <div style="padding-top:26px">
-      <div class="sechead"><h2 class="t-sec" style="margin:0">{{ measureHead }}</h2></div>
-      <div class="sinerule"><svg viewBox='0 0 320 6' width='100%' height='6' preserveAspectRatio='none' fill='none' stroke='#D3D7D6' stroke-width='1' vector-effect='non-scaling-stroke'><path d='M0.0 3.00 L2.0 3.31 L4.0 3.60 L6.0 3.84 L8.0 4.02 L10.0 4.13 L12.0 4.15 L14.0 4.08 L16.0 3.93 L18.0 3.71 L20.0 3.44 L22.0 3.14 L24.0 2.82 L26.0 2.52 L28.0 2.25 L30.0 2.04 L32.0 1.91 L34.0 1.85 L36.0 1.88 L38.0 2.00 L40.0 2.19 L42.0 2.44 L44.0 2.73 L46.0 3.05 L48.0 3.36 L50.0 3.64 L52.0 3.87 L54.0 4.04 L56.0 4.14 L58.0 4.14 L60.0 4.06 L62.0 3.90 L64.0 3.68 L66.0 3.40 L68.0 3.09 L70.0 2.78 L72.0 2.48 L74.0 2.22 L76.0 2.02 L78.0 1.89 L80.0 1.85 L82.0 1.89 L84.0 2.02 L86.0 2.22 L88.0 2.48 L90.0 2.78 L92.0 3.09 L94.0 3.40 L96.0 3.68 L98.0 3.90 L100.0 4.06 L102.0 4.14 L104.0 4.14 L106.0 4.04 L108.0 3.87 L110.0 3.64 L112.0 3.36 L114.0 3.05 L116.0 2.73 L118.0 2.44 L120.0 2.19 L122.0 2.00 L124.0 1.88 L126.0 1.85 L128.0 1.91 L130.0 2.04 L132.0 2.25 L134.0 2.52 L136.0 2.82 L138.0 3.14 L140.0 3.44 L142.0 3.71 L144.0 3.93 L146.0 4.08 L148.0 4.15 L150.0 4.13 L152.0 4.02 L154.0 3.84 L156.0 3.60 L158.0 3.31 L160.0 3.00 L162.0 2.69 L164.0 2.40 L166.0 2.16 L168.0 1.98 L170.0 1.87 L172.0 1.85 L174.0 1.92 L176.0 2.07 L178.0 2.29 L180.0 2.56 L182.0 2.86 L184.0 3.18 L186.0 3.48 L188.0 3.75 L190.0 3.96 L192.0 4.09 L194.0 4.15 L196.0 4.12 L198.0 4.00 L200.0 3.81 L202.0 3.56 L204.0 3.27 L206.0 2.95 L208.0 2.64 L210.0 2.36 L212.0 2.13 L214.0 1.96 L216.0 1.86 L218.0 1.86 L220.0 1.94 L222.0 2.10 L224.0 2.32 L226.0 2.60 L228.0 2.91 L230.0 3.22 L232.0 3.52 L234.0 3.78 L236.0 3.98 L238.0 4.11 L240.0 4.15 L242.0 4.11 L244.0 3.98 L246.0 3.78 L248.0 3.52 L250.0 3.22 L252.0 2.91 L254.0 2.60 L256.0 2.32 L258.0 2.10 L260.0 1.94 L262.0 1.86 L264.0 1.86 L266.0 1.96 L268.0 2.13 L270.0 2.36 L272.0 2.64 L274.0 2.95 L276.0 3.27 L278.0 3.56 L280.0 3.81 L282.0 4.00 L284.0 4.12 L286.0 4.15 L288.0 4.09 L290.0 3.96 L292.0 3.75 L294.0 3.48 L296.0 3.18 L298.0 2.86 L300.0 2.56 L302.0 2.29 L304.0 2.07 L306.0 1.92 L308.0 1.85 L310.0 1.87 L312.0 1.98 L314.0 2.16 L316.0 2.40 L318.0 2.69 L320.0 3.00'/></svg></div>
-      <p class="t-meta" style="margin:10px 0 4px;color:var(--secondary);text-wrap:pretty">
-        Seven measures, in the same order on every record. Each is what one
-        business asserted about the work, in their words, not a rating of a person.</p>
-      <sc-for list="{{ measures }}" as="m" hint-placeholder-count="7">
-        <div class="mrow">
-          <span style="flex:1;min-width:0">
-            <span class="t-rec" style="display:block">{{ m.name }}</span>
-            <span class="t-body" style="display:block;color:{{ m.color }};padding-top:2px;text-wrap:pretty">{{ m.value }}</span>
-          </span>
-          <span class="rung" aria-hidden="true">
-            <sc-for list="{{ m.scale }}" as="st" hint-placeholder-count="7">
-              <i style="height:{{ st.h }};background:{{ st.c }}"></i>
-            </sc-for>
-          </span>
-        </div>
-      </sc-for>
-    </div>
-
     <div style="margin-top:24px;border-top:1px solid var(--ink);padding-top:14px">
       <p class="t-meta" style="margin:0;color:var(--secondary);text-wrap:pretty">
-        Two of these chapters were signed by one party only, and stand at that
-        party's reading alone. One nobody has confirmed. Grain does not average
-        parties who disagree.</p>
+        Two of these chapters were attested by one party only, and stand at that
+        party's reading alone. One has no attesting party. This record holds the
+        chapters Liezel entered, and Grain does not know of any she did not.</p>
     </div>
   </main>
 </div>
@@ -211,43 +215,36 @@
 // decision. And it states its own limits before its content, not after.
 class Component extends DCLogic {
   renderVals(){
+    // Oldest first, everywhere. It ran newest first here and oldest first on the
+    // worker's own record, same label and same chapters in opposite order, which
+    // meant a worker and a reader walking the record together were on different
+    // rows. Oldest first is the direction the figure reads: the innermost band
+    // is the earliest chapter.
     const chapters = [
-      {party:'Cebu Pacific Cargo Services', state:'Dates and job confirmed. Nothing about the work.',
-       registry:'Registered business · signed 20 Jan 2026', sw:'#sw-employment_verified',
-       from:'Jan 2025', to:'present'},
-      {party:'Metro Manila Logistics', state:'Signed by the business. Nobody else has agreed.',
-       registry:'Registered business · signed 20 Jan 2025', sw:'#sw-party_single',
-       from:'Mar 2023', to:'Jan 2025'},
-      {party:'R. Santos Dry Goods', state:'Signed by a coworker, not the business.',
-       registry:'Individual · signed 2 Apr 2023', sw:'#sw-peer_attested',
-       from:'Sep 2020', to:'Mar 2023'},
-      {party:'Sunrise Foods Manufacturing', state:'Signed by the business, and a second party agreed.',
+      {party:'Bataan Poultry Processing',
+       prov:'Recorded by Liezel Mendoza. No attesting party.',
+       registry:'No attesting party', sw:'#sw-self_asserted',
+       from:'Sep 2017', to:'Mar 2019'},
+      {party:'Sunrise Foods Manufacturing',
+       prov:'Attested by Sunrise Foods Manufacturing, and a second party agrees.',
        registry:'Registered business · signed 14 Oct 2021', sw:'#sw-party_multi',
        from:'Mar 2019', to:'Sep 2021'},
-      {party:'Bataan Poultry Processing', state:'Liezel added this. Nobody has confirmed it.',
-       registry:'No attesting party', sw:'#sw-self_asserted',
-       from:'Sep 2017', to:'Mar 2019'}
-    ];
-    const DIMS = [
-      ['Discretion','Chose how, within a set what',3],
-      ['Direction of Others','Answerable for a small group',3],
-      ['Consequence Held','Mistakes cost time or schedule',3],
-      ['Counterparty Exposure','No dealings outside the team',1],
-      ['Method Authority','Adapted the method in practice',3],
-      ['Resource and Financial','Accountable for tools in hand',2],
-      ['Systems and Tooling','Kept a system running day to day',2]
+      {party:'R. Santos Dry Goods',
+       prov:'Attested by a coworker who was there. The business is not registered with Grain.',
+       registry:'Individual · signed 2 Apr 2023', sw:'#sw-peer_attested',
+       from:'Sep 2020', to:'Mar 2023'},
+      {party:'Metro Manila Logistics',
+       prov:'Attested by Metro Manila Logistics. No second party has agreed.',
+       registry:'Registered business · signed 20 Jan 2025', sw:'#sw-party_single',
+       from:'Mar 2023', to:'Jan 2025'},
+      {party:'Cebu Pacific Cargo Services',
+       prov:'Cebu Pacific Cargo Services attested the dates and the employment. Nothing about the work.',
+       registry:'Registered business · signed 20 Jan 2026', sw:'#sw-employment_verified',
+       from:'Jan 2025', to:'present'}
     ];
     return {
       daysLeft: 13, granted: '4 Aug 2026',
-      count: chapters.length, chapters,
-      measureHead: 'What Sunrise Foods attested',
-      measures: DIMS.map(([name, value, lv]) => ({
-        name, value, color: 'var(--ink)',
-        scale: Array.from({length: 7}, (_, r) => ({
-          h: (4 + r * 1.6).toFixed(0) + 'px',
-          c: r < lv ? 'var(--rule)' : (r === lv ? 'var(--ink)' : 'var(--hairline)')
-        }))
-      }))
+      count: chapters.length, chapters
     };
   }
 }

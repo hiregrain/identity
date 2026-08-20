@@ -70,8 +70,30 @@
        one screen's helmet: both are shared vocabulary, and a class defined in
        Main only meant every other screen rendered them unstyled. */
     .sinerule{margin-top:-1px;line-height:0;opacity:.9}
-    .rung{display:inline-flex;align-items:flex-end;gap:2px;height:14px;flex:none}
-    .rung i{display:block;width:3px}
+    /* No .rung. It drew the seven measures as a graded ladder, and decision 054
+       renders nothing derived from them: a ladder with a mark on it is an
+       ordinal whether or not the number is printed. */
+
+    /* Provenance is carried by the mark, and the sentence it stands for is
+       reachable on hover, tap and keyboard focus (055). The sentence also stays
+       in the DOM as the mark's accessible name, which is the text equivalent
+       §12 requires and the only provenance a crawler can read. One string
+       serves all three. Enforced by reading. */
+    .prov{position:relative;flex:0 0 auto;min-width:44px;min-height:44px;
+          display:inline-flex;align-items:center;justify-content:flex-start;
+          margin-left:-4px;padding-left:4px}
+    /* opacity, never visibility or display: a hidden-by-visibility tip leaves
+       the accessibility tree and the crawler gets nothing, which would defeat
+       the whole point of keeping one string. */
+    .prov .tip{position:absolute;left:0;top:calc(100% - 6px);z-index:6;
+               background:var(--ink);color:var(--paper);padding:9px 11px;
+               width:max-content;max-width:min(260px, 68vw);text-align:left;
+               opacity:0;pointer-events:none;transition:opacity 110ms linear}
+    .prov:hover .tip,.prov:focus-visible .tip{opacity:1;pointer-events:auto}
+    /* 1.4.13 wants the revealed content hoverable. It stays up while the
+       pointer is on it. Enforced by reading. */
+    .prov .tip:hover{opacity:1;pointer-events:auto}
+    @media (prefers-reduced-motion:reduce){ .prov .tip{transition:none} }
     /* The imprint is capped and centred wherever it appears. A fluid root with an
        uncapped figure grows until the figure swallows the display, the defect
        fixed on the record and still live on three other screens. 320 is the size
@@ -119,12 +141,17 @@
 
   <main class="dissolve" style="position:absolute;top:52px;bottom:120px;left:0;right:0;overflow-y:auto;padding:24px 20px">
     <h1 class="t-title" style="margin:0 0 8px">How this record works</h1>
+    <!-- Only what governs having a record at all is said here. The terms that
+         govern an action are said at that action, with a flag recorded there
+         (058): asking a party to attest is permanent, attaching your side has a
+         deadline, and what a reader keeps they keep. A term read at the moment
+         it binds is a term that was actually read. -->
     <p class="t-body" style="margin:0 0 8px;color:var(--secondary);text-wrap:pretty">
-      Seven things, all of them true before you add anything. A <b>chapter</b> is one job
-      or engagement with one business.</p>
+      What is true before you add anything. A <b>chapter</b> is one job or
+      engagement with one business.</p>
 
     <ol class="terms">
-      <sc-for list="{{ terms }}" as="t" hint-placeholder-count="7">
+      <sc-for list="{{ terms }}" as="t" hint-placeholder-count="4">
         <li>
           <span class="t-rec" style="display:block">{{ t.head }}</span>
           <span class="t-body" style="display:block;color:var(--secondary);padding-top:4px;text-wrap:pretty">{{ t.body }}</span>
@@ -132,6 +159,9 @@
       </sc-for>
     </ol>
 
+    <p class="t-meta" style="margin:16px 0 0;color:var(--secondary);text-wrap:pretty">
+      Everything else is said where it applies, and you agree to it there rather
+      than here.</p>
     <div style="padding-top:12px">
       <button class="btn-tertiary press" style="padding-left:0">Read the full text</button>
     </div>
@@ -151,21 +181,25 @@
 // §5: parties place you on seven set measures and nothing here said so.
 class Component extends DCLogic {
   renderVals(){
+    // Four, not seven (058). The three that moved describe consequences of
+    // actions nobody has taken here: asking for attestation, attaching your
+    // side, and what a reader keeps. The measures term is not restated and not
+    // rewritten: nothing derived from them renders (054), and what consent says
+    // about collecting them is an open decision gate in plans/ORDER.md. This
+    // screen does not ship until that gate closes.
+    //
+    // The economics were a clause inside the disclosure term, where a heading
+    // promising control introduced the sentence a reader would most object to.
+    // It is its own term now.
     return { terms: [
       {head:'Businesses write about your work',
        body:'A business you worked for signs a record of what you did. It is permanent, and you cannot edit it.'},
-      {head:'Asking for confirmation cannot be undone',
-       body:'Once you ask a business to confirm a chapter, that record is permanent for as long as your profile exists.'},
       {head:'You choose who reads, never what they read',
-       body:'Anyone you give access to reads your whole record: every chapter, everything each business wrote, and your imprint. There is no way to show them part of it. Every grant has an end date, and they can pay us to analyse what they read.'},
-      {head:'Businesses describe your work on seven set measures',
-       body:'They pick a description on each one, and Grain turns that into a level. It travels with your record to anyone you share it with, and onto your public page if you turn the imprint on.'},
-      {head:'You can attach your side to anything',
-       body:'The record stays as the business wrote it. Grain checks that they really signed it, never whether they were fair, and they can decline to change it. There is a deadline.'},
+       body:'Anyone you give access to reads your whole record: every chapter and every party who attested one. There is no way to show them part of it, and every grant has an end date.'},
+      {head:'Readers can pay us to analyse what they read',
+       body:'That is how Grain makes money. The record itself is free to you and free to read, permanently.'},
       {head:'You can have all of it deleted, at any time',
-       body:'Ask us and everything goes. Single chapters never come out on their own, so deleting all of it is the only way to remove any of it.'},
-      {head:'What a reader keeps, they keep',
-       body:'A business that has read your record may hold on to what it read. Deleting stops future reads, not past ones.'}
+       body:'Ask us and access stops the same day. Single chapters never come out on their own, so deleting all of it is the only way to remove any of it.'}
     ]};
   }
 }

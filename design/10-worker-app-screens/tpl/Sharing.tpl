@@ -45,8 +45,7 @@
     </div>
 
     <div class="grp">
-      <div class="sechead"><h2 class="t-sec" style="margin:0">Your public page</h2>
-        <span class="t-data" style="color:var(--secondary)">{{ pubState }}</span></div>
+      <div class="sechead"><h2 class="t-sec" style="margin:0">Your public page</h2></div>
       <div class="sinerule">@@SINERULE@@</div>
       <!-- Every row leads with the record voice and carries its detail beneath,
            so the address row and the rows under it are the same object. A row
@@ -70,13 +69,14 @@
            between. So this is one control, and the rest are statements. They were
            drawn as four identical toggles, which promised three settings that do
            not exist. -->
-      <button class="srow press" onClick="{{ noop }}" aria-pressed="{{ imprintOn }}">
+      <button class="srow press" onClick="{{ noop }}" aria-pressed="{{ pubOn }}">
         <span style="flex:1;min-width:0">
-          <span class="t-rec" style="display:block">Your imprint on the page</span>
+          <span class="t-rec" style="display:block">Your page</span>
           <span class="t-meta" style="display:block;color:var(--secondary);padding-top:2px;text-wrap:pretty">
-            The figure itself. It stays behind sign-in even when the page is public.</span>
+            Off until you turn it on. Nobody reaches your record by searching for
+            you while it is off.</span>
         </span>
-        <span class="t-data col-r">{{ imprintState }}</span>
+        <span class="t-data col-r">{{ pubState }}</span>
       </button>
 
       <div style="padding-top:14px">
@@ -117,12 +117,13 @@
     </div>
 
     <div class="grp">
-      <div class="sechead"><h2 class="t-sec" style="margin:0">Send your whole record</h2></div>
+      <div class="sechead"><h2 class="t-sec" style="margin:0">Send your record to someone</h2></div>
       <div class="sinerule">@@SINERULE@@</div>
       <p class="t-body" style="margin:0 0 12px;color:var(--secondary);text-wrap:pretty">
-        A private link to everything, including what each business wrote. It
-        expires. Send it to someone deciding about you, not to a job board.</p>
-      <button class="btn-secondary press" style="width:100%">Create an expiring link</button>
+        You send it to one person by name. They open it by confirming the address
+        you sent it to, so you always know who read it, and it ends on a date you
+        set.</p>
+      <button class="btn-secondary press" style="width:100%">Send your record</button>
     </div>
 
     <div class="grp">
@@ -156,28 +157,34 @@ class Component extends DCLogic {
     const noop = () => {};
     return {
       noop,
-      exposure: 'Your public page is on, and two businesses hold a grant to your whole record.',
-      pubState: 'On',
+      exposure: 'Your public page is off. Two parties hold a grant to your record.',
+      pubState: 'Off', pubOn: 'false',
       grantCount: '2',
-      imprintOn: 'true', imprintState: 'On',
+      // The measures row is gone rather than reworded. Nothing derived from them
+      // renders (054) and what consent and the packet say about collecting them
+      // is an open gate, so this screen says nothing about them at all.
       facts: [
-        {label:'Chapters, parties and dates', note:'Who you worked for, and when. This is what the page is for.',
+        {label:'Chapters, parties and dates', note:'Who you worked for, when, and in what position.',
          state:'Always', color:'var(--ink)'},
-        {label:'Who confirmed what', note:'Whether a business signed, a coworker signed, or nobody did.',
+        {label:'Which party attested each chapter', note:'The business, a coworker who was there, or none.',
          state:'Always', color:'var(--ink)'},
-        {label:'What each business wrote', note:'Only on an expiring link you send. Never here.',
+        {label:'Your imprint', note:'Drawn for anyone who opens the page. Never in search results.',
+         state:'Visitors', color:'var(--ink)'},
+        {label:'Your phone and email', note:'Never on a page and never in anything you send.',
          state:'Never', color:'var(--secondary)'}
       ],
+      // Two parties deciding about her, not a former employer. A demonstration
+      // showing an old employer holding a live grant to her current record
+      // taught the wrong thing whatever the mechanism allows.
       grants: [
-        {party:'Alorica Philippines', what:'Whole record, including what businesses wrote',
+        {party:'Alorica Philippines', what:'Your whole record',
          since:'Granted 4 Aug 2026', state:'Ends', until:'2 Sep', go:noop},
-        {party:'Sunrise Foods Manufacturing', what:'Whole record, including what businesses wrote',
+        {party:'Teleperformance Philippines', what:'Your whole record',
          since:'Granted 19 Jul 2026', state:'Ends', until:'17 Aug', go:noop}
       ],
       reads: [
         {party:'Alorica Philippines', when:'12 Aug'},
-        {party:'Sunrise Foods Manufacturing', when:'9 Aug'},
-        {party:'Public page', when:'3 this week'}
+        {party:'Teleperformance Philippines', when:'9 Aug'}
       ]
     };
   }

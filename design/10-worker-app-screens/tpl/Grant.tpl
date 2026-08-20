@@ -9,8 +9,6 @@
 @@CHROME@@
     .prow{display:flex;gap:12px;align-items:flex-start;padding:14px 0;
           border-bottom:1px solid var(--hairline)}
-    .mrow{display:flex;gap:12px;align-items:baseline;padding:11px 0;
-          border-bottom:1px solid var(--hairline)}
     main::-webkit-scrollbar{width:0}
   </style>
 </helmet>
@@ -42,7 +40,7 @@
     <div style="padding-top:24px">
       <h1 class="t-title" style="margin:0">Liezel Mendoza</h1>
       <p class="t-data" style="margin:8px 0 0;color:var(--secondary);text-wrap:pretty">
-        Philippines · Identity document checked, which says nothing about the work below</p>
+        Identity document checked, which says nothing about the work below</p>
     </div>
 
     <!-- What Grain is and is not saying, before any content. This is the sentence
@@ -60,14 +58,19 @@
       <div class="sinerule">@@SINERULE@@</div>
       <sc-for list="{{ chapters }}" as="c" hint-placeholder-count="5">
         <div class="prow">
-          <span class="gutter">
-            <svg viewBox="0 0 34 16" width="34" height="16" fill="none"
+          <!-- The mark carries provenance; the sentence it stands for is the
+               tip's text content, which is also what a screen reader reads and
+               what a crawler indexes (055). The line that stays visible is the
+               attesting party's own standing and signing date, which is a fact
+               about them rather than a note about her. -->
+          <span class="prov" tabindex="0">
+            <svg viewBox="0 0 34 16" width="34" height="16" fill="none" aria-hidden="true"
                  stroke="var(--ink)" stroke-width="1"><use href="{{ c.sw }}"></use></svg>
+            <span class="tip t-meta">{{ c.prov }}</span>
           </span>
           <span style="flex:1;min-width:0">
             <span class="t-rec" style="display:block">{{ c.party }}</span>
-            <span class="t-data" style="display:block;padding-top:3px">{{ c.state }}</span>
-            <span class="t-meta" style="display:block;color:var(--secondary);padding-top:2px">{{ c.registry }}</span>
+            <span class="t-meta" style="display:block;color:var(--secondary);padding-top:3px">{{ c.registry }}</span>
           </span>
           <span class="col-r">
             <span class="t-data" style="display:block">{{ c.from }}</span>
@@ -77,32 +80,11 @@
       </sc-for>
     </div>
 
-    <div style="padding-top:26px">
-      <div class="sechead"><h2 class="t-sec" style="margin:0">{{ measureHead }}</h2></div>
-      <div class="sinerule">@@SINERULE@@</div>
-      <p class="t-meta" style="margin:10px 0 4px;color:var(--secondary);text-wrap:pretty">
-        Seven measures, in the same order on every record. Each is what one
-        business asserted about the work, in their words, not a rating of a person.</p>
-      <sc-for list="{{ measures }}" as="m" hint-placeholder-count="7">
-        <div class="mrow">
-          <span style="flex:1;min-width:0">
-            <span class="t-rec" style="display:block">{{ m.name }}</span>
-            <span class="t-body" style="display:block;color:{{ m.color }};padding-top:2px;text-wrap:pretty">{{ m.value }}</span>
-          </span>
-          <span class="rung" aria-hidden="true">
-            <sc-for list="{{ m.scale }}" as="st" hint-placeholder-count="7">
-              <i style="height:{{ st.h }};background:{{ st.c }}"></i>
-            </sc-for>
-          </span>
-        </div>
-      </sc-for>
-    </div>
-
     <div style="margin-top:24px;border-top:1px solid var(--ink);padding-top:14px">
       <p class="t-meta" style="margin:0;color:var(--secondary);text-wrap:pretty">
-        Two of these chapters were signed by one party only, and stand at that
-        party's reading alone. One nobody has confirmed. Grain does not average
-        parties who disagree.</p>
+        Two of these chapters were attested by one party only, and stand at that
+        party's reading alone. One has no attesting party. This record holds the
+        chapters Liezel entered, and Grain does not know of any she did not.</p>
     </div>
   </main>
 </div>
@@ -118,43 +100,36 @@
 // decision. And it states its own limits before its content, not after.
 class Component extends DCLogic {
   renderVals(){
+    // Oldest first, everywhere. It ran newest first here and oldest first on the
+    // worker's own record, same label and same chapters in opposite order, which
+    // meant a worker and a reader walking the record together were on different
+    // rows. Oldest first is the direction the figure reads: the innermost band
+    // is the earliest chapter.
     const chapters = [
-      {party:'Cebu Pacific Cargo Services', state:'Dates and job confirmed. Nothing about the work.',
-       registry:'Registered business · signed 20 Jan 2026', sw:'#sw-employment_verified',
-       from:'Jan 2025', to:'present'},
-      {party:'Metro Manila Logistics', state:'Signed by the business. Nobody else has agreed.',
-       registry:'Registered business · signed 20 Jan 2025', sw:'#sw-party_single',
-       from:'Mar 2023', to:'Jan 2025'},
-      {party:'R. Santos Dry Goods', state:'Signed by a coworker, not the business.',
-       registry:'Individual · signed 2 Apr 2023', sw:'#sw-peer_attested',
-       from:'Sep 2020', to:'Mar 2023'},
-      {party:'Sunrise Foods Manufacturing', state:'Signed by the business, and a second party agreed.',
+      {party:'Bataan Poultry Processing',
+       prov:'Recorded by Liezel Mendoza. No attesting party.',
+       registry:'No attesting party', sw:'#sw-self_asserted',
+       from:'Sep 2017', to:'Mar 2019'},
+      {party:'Sunrise Foods Manufacturing',
+       prov:'Attested by Sunrise Foods Manufacturing, and a second party agrees.',
        registry:'Registered business · signed 14 Oct 2021', sw:'#sw-party_multi',
        from:'Mar 2019', to:'Sep 2021'},
-      {party:'Bataan Poultry Processing', state:'Liezel added this. Nobody has confirmed it.',
-       registry:'No attesting party', sw:'#sw-self_asserted',
-       from:'Sep 2017', to:'Mar 2019'}
-    ];
-    const DIMS = [
-      ['Discretion','Chose how, within a set what',3],
-      ['Direction of Others','Answerable for a small group',3],
-      ['Consequence Held','Mistakes cost time or schedule',3],
-      ['Counterparty Exposure','No dealings outside the team',1],
-      ['Method Authority','Adapted the method in practice',3],
-      ['Resource and Financial','Accountable for tools in hand',2],
-      ['Systems and Tooling','Kept a system running day to day',2]
+      {party:'R. Santos Dry Goods',
+       prov:'Attested by a coworker who was there. The business is not registered with Grain.',
+       registry:'Individual · signed 2 Apr 2023', sw:'#sw-peer_attested',
+       from:'Sep 2020', to:'Mar 2023'},
+      {party:'Metro Manila Logistics',
+       prov:'Attested by Metro Manila Logistics. No second party has agreed.',
+       registry:'Registered business · signed 20 Jan 2025', sw:'#sw-party_single',
+       from:'Mar 2023', to:'Jan 2025'},
+      {party:'Cebu Pacific Cargo Services',
+       prov:'Cebu Pacific Cargo Services attested the dates and the employment. Nothing about the work.',
+       registry:'Registered business · signed 20 Jan 2026', sw:'#sw-employment_verified',
+       from:'Jan 2025', to:'present'}
     ];
     return {
       daysLeft: 13, granted: '4 Aug 2026',
-      count: chapters.length, chapters,
-      measureHead: 'What Sunrise Foods attested',
-      measures: DIMS.map(([name, value, lv]) => ({
-        name, value, color: 'var(--ink)',
-        scale: Array.from({length: 7}, (_, r) => ({
-          h: (4 + r * 1.6).toFixed(0) + 'px',
-          c: r < lv ? 'var(--rule)' : (r === lv ? 'var(--ink)' : 'var(--hairline)')
-        }))
-      }))
+      count: chapters.length, chapters
     };
   }
 }

@@ -39,7 +39,7 @@
            aria-label="Five chapters, none confirmed">@@IMPORTED@@</svg>
       <div style="display:flex;justify-content:space-between;align-items:baseline;padding:12px 0 0">
         <span class="t-micro" style="color:var(--secondary)">Liezel Mendoza</span>
-        <span class="t-micro">5 chapters · none attested</span>
+        <span class="t-micro">5 chapters · none attested yet</span>
       </div>
     </section>
 
@@ -51,7 +51,7 @@
         <span style="flex:1;min-width:0">
           <span class="t-rec" style="display:block;text-wrap:pretty">chapters, none of them confirmed</span>
           <span class="t-data" style="display:block;color:var(--secondary);padding-top:3px;text-wrap:pretty">
-            You wrote these. Ask each business to sign what you did.</span>
+            Yours so far. Ask a party who was there to attest one.</span>
         </span>
       </div>
 
@@ -80,9 +80,13 @@
   <!-- résumé-parsed chapters need the worker's confirmation before commit (schema §2) -->
   <div style="position:absolute;left:0;right:0;bottom:0;padding:16px 20px;background:var(--paper);
               border-top:1px solid var(--ink);z-index:2">
+    <!-- Not "commit". The word read as the irreversible step, and the
+         irreversible step is asking a party to attest, which happens later and
+         says so there (058). Adding your own account of where you worked is
+         reversible until someone signs it. -->
     <p class="t-body" style="margin:0 0 12px;text-wrap:pretty">
-      Read from your résumé. Nothing here is confirmed, and none of it counts until it is.</p>
-    <button class="btn-primary press">Commit these 5 chapters</button>
+      Read from your résumé. Yours to correct until a party attests one.</p>
+    <button class="btn-primary press">Add these 5 chapters</button>
   </div>
 
 </div>

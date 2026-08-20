@@ -99,9 +99,21 @@ json.dump(lobes, open(os.path.join(OUT,"lobes.json"), "w"))
 # it: Expanded supplied them and Main did not, so every woven chapter rendered as
 # a solid black shape on the record. A fragment that depends on its caller for
 # fill is a fragment that will be wrong the first time someone reuses it.
+def scribable(frag):
+    """Add pathLength='1' so the scribe animation can drive stroke-dashoffset.
+
+    Never to an element that already carries a stroke-dasharray. pathLength
+    normalises the path to one unit, so a self-asserted ring's `3.5 5` becomes a
+    single dash longer than the whole circle and the ring renders solid. The
+    dotted state is how absence is drawn, and it had been silently solid on
+    every surface that uses this fragment.
+    """
+    out = frag.replace("<path d=", "<path pathLength='1' d=")
+    return out if "stroke-dasharray" in out else out.replace("<circle ", "<circle pathLength='1' ")
+
 chs = "".join("<g class='ch ch%d' fill='none' stroke='#1B2A44' stroke-width='1.00' "
               "vector-effect='non-scaling-stroke'>%s</g>" % (i,
-        "".join(per[i]).replace("<path d=","<path pathLength='1' d=").replace("<circle ","<circle pathLength='1' "))
+        "".join(scribable(f) for f in per[i]))
       for i in range(5))
 open(os.path.join(OUT,"chapters.svgfrag"),"w").write(chs)
 

@@ -16,8 +16,30 @@
        one screen's helmet: both are shared vocabulary, and a class defined in
        Main only meant every other screen rendered them unstyled. */
     .sinerule{margin-top:-1px;line-height:0;opacity:.9}
-    .rung{display:inline-flex;align-items:flex-end;gap:2px;height:14px;flex:none}
-    .rung i{display:block;width:3px}
+    /* No .rung. It drew the seven measures as a graded ladder, and decision 054
+       renders nothing derived from them: a ladder with a mark on it is an
+       ordinal whether or not the number is printed. */
+
+    /* Provenance is carried by the mark, and the sentence it stands for is
+       reachable on hover, tap and keyboard focus (055). The sentence also stays
+       in the DOM as the mark's accessible name, which is the text equivalent
+       §12 requires and the only provenance a crawler can read. One string
+       serves all three. Enforced by reading. */
+    .prov{position:relative;flex:0 0 auto;min-width:44px;min-height:44px;
+          display:inline-flex;align-items:center;justify-content:flex-start;
+          margin-left:-4px;padding-left:4px}
+    /* opacity, never visibility or display: a hidden-by-visibility tip leaves
+       the accessibility tree and the crawler gets nothing, which would defeat
+       the whole point of keeping one string. */
+    .prov .tip{position:absolute;left:0;top:calc(100% - 6px);z-index:6;
+               background:var(--ink);color:var(--paper);padding:9px 11px;
+               width:max-content;max-width:min(260px, 68vw);text-align:left;
+               opacity:0;pointer-events:none;transition:opacity 110ms linear}
+    .prov:hover .tip,.prov:focus-visible .tip{opacity:1;pointer-events:auto}
+    /* 1.4.13 wants the revealed content hoverable. It stays up while the
+       pointer is on it. Enforced by reading. */
+    .prov .tip:hover{opacity:1;pointer-events:auto}
+    @media (prefers-reduced-motion:reduce){ .prov .tip{transition:none} }
     /* The imprint is capped and centred wherever it appears. A fluid root with an
        uncapped figure grows until the figure swallows the display, the defect
        fixed on the record and still live on three other screens. 320 is the size

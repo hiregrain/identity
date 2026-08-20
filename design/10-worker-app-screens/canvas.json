@@ -18,7 +18,7 @@
     },
     {
       "id": "page-5",
-      "name": "How native \u2014 settled"
+      "name": "How native, settled"
     }
   ],
   "artboards": [
@@ -69,7 +69,7 @@
     },
     {
       "file": "Imported.dc.html",
-      "title": "R\u00e9sum\u00e9 imported",
+      "title": "Résumé imported",
       "page": "page-2",
       "x": 440,
       "y": 0,
@@ -104,8 +104,8 @@
       "h": 752
     },
     {
-      "file": "ShareLink.dc.html",
-      "title": "Send the whole record \u2014 gap 13",
+      "file": "Send.dc.html",
+      "title": "Send your record to someone",
       "page": "page-3",
       "x": 440,
       "y": 0,
@@ -123,7 +123,7 @@
     },
     {
       "file": "PublicReduced.dc.html",
-      "title": "Public page, logged out \u2014 gap 13",
+      "title": "Public page, logged out, gap 13",
       "page": "page-3",
       "x": 1320,
       "y": 0,
@@ -132,7 +132,7 @@
     },
     {
       "file": "Grant.dc.html",
-      "title": "Employer grant view \u2014 gap 8",
+      "title": "Employer grant view, gap 8",
       "page": "page-3",
       "x": 1760,
       "y": 0,
@@ -141,7 +141,7 @@
     },
     {
       "file": "ShellIOS.dc.html",
-      "title": "iPhone 17 \u2014 402\u00d7874 @3x",
+      "title": "iPhone 17, 402×874 @3x",
       "page": "page-4",
       "x": 0,
       "y": 0,
@@ -150,7 +150,7 @@
     },
     {
       "file": "ShellAndroid.dc.html",
-      "title": "Android \u2014 common viewport",
+      "title": "Android, common viewport",
       "page": "page-4",
       "x": 506,
       "y": 0,
@@ -159,7 +159,7 @@
     },
     {
       "file": "HandleGrain.dc.html",
-      "title": "A \u00b7 Grain-native",
+      "title": "A · Grain-native",
       "page": "page-5",
       "x": 0,
       "y": 0,
@@ -168,7 +168,7 @@
     },
     {
       "file": "HandlePlatform.dc.html",
-      "title": "B \u00b7 Platform-native",
+      "title": "B · Platform-native",
       "page": "page-5",
       "x": 440,
       "y": 0,
@@ -177,9 +177,18 @@
     },
     {
       "file": "HandleSplit.dc.html",
-      "title": "C \u00b7 Split",
+      "title": "C · Split",
       "page": "page-5",
       "x": 880,
+      "y": 0,
+      "w": 360,
+      "h": 752
+    },
+    {
+      "file": "Ledger.dc.html",
+      "title": "Your record, in order",
+      "page": "page-1",
+      "x": 1760,
       "y": 0,
       "w": 360,
       "h": 752
@@ -192,7 +201,7 @@
       "x": 0,
       "y": -300,
       "w": 880,
-      "text": "Verification frames, drawn from published device metrics. Neither paints fake chrome \u2014 no clock, no battery, no home-bar glyph \u2014 because on a real device the system draws into exactly that space and an imitation renders doubled. The insets are reserved bands carrying their measurements.\n\niPhone 17: 402x874 pt at 3x, status bar 54, portrait safe area top 62 / bottom 34. That leaves 778 pt, so a screen drawn 800 tall is 22 pt too tall \u2014 and 360 wide leaves 42 pt of the display unused, because every screen here has a hardcoded 360px root.\n\nAndroid, common viewport: 24 dp status bar and 48 dp three-button navigation \u2014 the larger figure, because three-button nav still ships and users still choose it. That leaves 728 dp, so 800 is 72 dp too tall.\n\nThe common safe box across both is 360 x 728, and that is the reflow target.\n\nAlso visible here and not fixed: Android takes BOTH edges for the back gesture, roughly 24 dp in. The record's section index sits at right:0, 32 px wide \u2014 entirely inside that strip, so dragging it navigates back. design/08 \u00a73 recorded the inset problem and nothing acted on it; removing the plate footer made the bottom worse by running scrollable content to the gesture-bar edge."
+      "text": "Verification frames, drawn from published device metrics. Neither paints fake chrome, no clock, no battery, no home-bar glyph, because on a real device the system draws into exactly that space and an imitation renders doubled. The insets are reserved bands carrying their measurements.\n\niPhone 17: 402x874 pt at 3x, status bar 54, portrait safe area top 62 / bottom 34. That leaves 778 pt, so a screen drawn 800 tall is 22 pt too tall, and 360 wide leaves 42 pt of the display unused, because every screen here has a hardcoded 360px root.\n\nAndroid, common viewport: 24 dp status bar and 48 dp three-button navigation, the larger figure, because three-button nav still ships and users still choose it. That leaves 728 dp, so 800 is 72 dp too tall.\n\nThe common safe box across both is 360 x 728, and that is the reflow target.\n\nAlso visible here and not fixed: Android takes BOTH edges for the back gesture, roughly 24 dp in. The record's section index sits at right:0, 32 px wide, entirely inside that strip, so dragging it navigates back. design/08 §3 recorded the inset problem and nothing acted on it; removing the plate footer made the bottom worse by running scrollable content to the gesture-bar edge."
     },
     {
       "id": "n-native-brief",
@@ -200,7 +209,7 @@
       "x": 0,
       "y": -340,
       "w": 1240,
-      "text": "SETTLED \u2014 decision 047. A wins: the component language stays Grain's own on iOS and Android alike. Material and HIG components are not adopted, because a record that renders differently per operating system is what \u00a75 exists to prevent.\n\nThese three stay as the record of HOW that was decided, not as screens to build. They should not be re-litigated without a superseding entry.\n\nOne screen, three component grammars, identical logic sliced from the shipped Handle and an identical palette \u2014 so the comparison isolated form and nothing else.\n\nWhat the decision owes, and 047 makes it an obligation rather than a hope: platform MECHANICS in full (safe areas, back and the gesture zones, 200% font scaling, screen-reader order, haptics named per platform, deep links); placement and behaviour conventional even where form is not; and anything tappable reading as tappable without motion or colour, which is the harder half of having neither. Nobody in the target population has been put in front of these screens, so 'intuitive' is an assertion and 047 records it as one."
+      "text": "SETTLED, decision 047. A wins: the component language stays Grain's own on iOS and Android alike. Material and HIG components are not adopted, because a record that renders differently per operating system is what §5 exists to prevent.\n\nThese three stay as the record of HOW that was decided, not as screens to build. They should not be re-litigated without a superseding entry.\n\nOne screen, three component grammars, identical logic sliced from the shipped Handle and an identical palette, so the comparison isolated form and nothing else.\n\nWhat the decision owes, and 047 makes it an obligation rather than a hope: platform MECHANICS in full (safe areas, back and the gesture zones, 200% font scaling, screen-reader order, haptics named per platform, deep links); placement and behaviour conventional even where form is not; and anything tappable reading as tappable without motion or colour, which is the harder half of having neither. Nobody in the target population has been put in front of these screens, so 'intuitive' is an assertion and 047 records it as one."
     },
     {
       "id": "n-native-a",
@@ -208,7 +217,7 @@
       "x": 0,
       "y": 860,
       "w": 360,
-      "text": "A \u00b7 Grain-native \u2014 CHOSEN (047). This is the shipped screen, mounted rather than copied so the baseline cannot drift.\n\nFor: the record is an instrument and reads as one; one language on both platforms; \u00a75's rule that nobody themes states holds by construction.\n\nAgainst, and it is the cost now owed: a ruled line is not what a worker's other apps taught them an input is. At rest it looks like a rule. 047 turns that into work \u2014 tappable must read as tappable without motion or colour \u2014 rather than letting the win settle the objection."
+      "text": "A · Grain-native, CHOSEN (047). This is the shipped screen, mounted rather than copied so the baseline cannot drift.\n\nFor: the record is an instrument and reads as one; one language on both platforms; §5's rule that nobody themes states holds by construction.\n\nAgainst, and it is the cost now owed: a ruled line is not what a worker's other apps taught them an input is. At rest it looks like a rule. 047 turns that into work, tappable must read as tappable without motion or colour, rather than letting the win settle the objection."
     },
     {
       "id": "n-native-b",
@@ -216,7 +225,7 @@
       "x": 440,
       "y": 860,
       "w": 360,
-      "text": "B \u00b7 Platform-native, Material 3 \u2014 NOT ADOPTED (047).\n\n\nFor: instantly legible to an Android user. The filled field, the floating label, the chip and the pill button are the shapes their phone has trained them on. Lowest learning cost of the three.\n\nAgainst, and it is specific: the filled field is a CONTAINER, which \u00a78 deletes and whose boxed fields it says do not exist; the pill is 100px radius against \u00a77's 3px; the type is the system face against \u00a76's single family; and M3 carries error in colour, which \u00a75 forbids \u2014 faked here with weight, which is not what Material does. Adopting this means the record renders differently per operating system, which is the thing \u00a75 exists to prevent."
+      "text": "B · Platform-native, Material 3, NOT ADOPTED (047).\n\n\nFor: instantly legible to an Android user. The filled field, the floating label, the chip and the pill button are the shapes their phone has trained them on. Lowest learning cost of the three.\n\nAgainst, and it is specific: the filled field is a CONTAINER, which §8 deletes and whose boxed fields it says do not exist; the pill is 100px radius against §7's 3px; the type is the system face against §6's single family; and M3 carries error in colour, which §5 forbids, faked here with weight, which is not what Material does. Adopting this means the record renders differently per operating system, which is the thing §5 exists to prevent."
     },
     {
       "id": "n-native-c",
@@ -224,7 +233,7 @@
       "x": 880,
       "y": 860,
       "w": 360,
-      "text": "C \u00b7 Split \u2014 NOT ADOPTED (047).\n\n\nFor: navigation and commit feel ordinary while everything carrying the record keeps the ruled input, Archivo and error in ink. Familiarity where familiarity pays, instrument where evidence lives.\n\nAgainst: the seam has to be defended case by case, and 'chrome' has no definition yet. Is a consent sheet chrome or record? A dispute form? Without a rule this becomes drift wearing a decision's clothes \u2014 which is exactly what entry 046 left open."
+      "text": "C · Split, NOT ADOPTED (047).\n\n\nFor: navigation and commit feel ordinary while everything carrying the record keeps the ruled input, Archivo and error in ink. Familiarity where familiarity pays, instrument where evidence lives.\n\nAgainst: the seam has to be defended case by case, and 'chrome' has no definition yet. Is a consent sheet chrome or record? A dispute form? Without a rule this becomes drift wearing a decision's clothes, which is exactly what entry 046 left open."
     },
     {
       "id": "n-gap13",
@@ -232,7 +241,7 @@
       "x": 440,
       "y": 840,
       "w": 360,
-      "text": "NEW \u2014 gap 13, the sensitive tier. The whole record including the imprint, behind a link that expires. Its reading is the expiry, not the content: the number of days is the instrument figure, because how long it lives is the only thing about it a worker controls after sending.\nThe warning is ink inversion and explicit words, never red (\u00a75). It says the two things an interface usually implies the opposite of: it cannot be un-sent, and ending it early does not recall what was already read.\nDrawn but inert \u2014 what 'create' issues is undecided."
+      "text": "NEW, gap 13, the sensitive tier. The whole record including the imprint, behind a link that expires. Its reading is the expiry, not the content: the number of days is the instrument figure, because how long it lives is the only thing about it a worker controls after sending.\nThe warning is ink inversion and explicit words, never red (§5). It says the two things an interface usually implies the opposite of: it cannot be un-sent, and ending it early does not recall what was already read.\nDrawn but inert, what 'create' issues is undecided."
     },
     {
       "id": "n-gap13b",
@@ -240,7 +249,7 @@
       "x": 1320,
       "y": 840,
       "w": 360,
-      "text": "NEW \u2014 the other half of gap 13, and the first of Public's two NOT DRAWN surfaces: what a logged-out visitor or a crawler receives.\nNo imprint. Decision 035 keeps the figure behind sign-in even when the page is published, because an indexable figure is the one thing that cannot be taken back. \u00a79's graticule stands where it would be, doing the job it was defined for.\nDecision 037 gives this its own web layer: a client-painted render ranks badly and cannot serve a distinct crawler payload."
+      "text": "NEW, the other half of gap 13, and the first of Public's two NOT DRAWN surfaces: what a logged-out visitor or a crawler receives.\nNo imprint. Decision 035 keeps the figure behind sign-in even when the page is published, because an indexable figure is the one thing that cannot be taken back. §9's graticule stands where it would be, doing the job it was defined for.\nDecision 037 gives this its own web layer: a client-painted render ranks badly and cannot serve a distinct crawler payload."
     },
     {
       "id": "n-gap8",
@@ -248,7 +257,7 @@
       "x": 1760,
       "y": 840,
       "w": 360,
-      "text": "NEW \u2014 gap 8, the employer's disclosure-grant view, on Public's --page chassis so whoever reads it is reminded they are not the subject.\nIt states its limits BEFORE its content: Grain checks that a business really signed a record and never checks whether the work was done well. No composite, no score, no badge \u2014 the constraint that outranks convenience.\nThe first reading is days left on the grant, not a judgement of a person. The closing line says two chapters stand at one party's reading alone, one is unconfirmed, and disagreeing parties are never averaged."
+      "text": "NEW, gap 8, the employer's disclosure-grant view, on Public's --page chassis so whoever reads it is reminded they are not the subject.\nIt states its limits BEFORE its content: Grain checks that a business really signed a record and never checks whether the work was done well. No composite, no score, no badge, the constraint that outranks convenience.\nThe first reading is days left on the grant, not a judgement of a person. The closing line says two chapters stand at one party's reading alone, one is unconfirmed, and disagreeing parties are never averaged."
     },
     {
       "id": "n-record",
@@ -256,7 +265,7 @@
       "x": 0,
       "y": 840,
       "w": 360,
-      "text": "The record after the 2026-08-20 pass. Warm ground (#F8F5EE, decision 049) under unchanged ink. The GRAIN lockup replaces 'Work record' set as text. Sharing is a masthead control carrying the live grant count (045/048); the hamburger became an account glyph because it promised a menu of destinations and opened one screen.\nThe figure is the control, framed by the plate's own registration corners \u2014 expand arrows were a stock icon and \u00a79's vocabulary is closed. \u00a79's sine divider and graticule ground were specified and unused until now.\nThe line above the figure says what moved since you last looked, and only that band re-scribes (050). Nothing is said when nothing changed."
+      "text": "The record after the 2026-08-20 pass. Warm ground (#F8F5EE, decision 049) under unchanged ink. The GRAIN lockup replaces 'Work record' set as text. Sharing is a masthead control carrying the live grant count (045/048); the hamburger became an account glyph because it promised a menu of destinations and opened one screen.\nThe figure is the control, framed by the plate's own registration corners, expand arrows were a stock icon and §9's vocabulary is closed. §9's sine divider and graticule ground were specified and unused until now.\nThe line above the figure says what moved since you last looked, and only that band re-scribes (050). Nothing is said when nothing changed."
     }
   ],
   "launch": {

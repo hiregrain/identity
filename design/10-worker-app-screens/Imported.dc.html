@@ -73,8 +73,30 @@
        one screen's helmet: both are shared vocabulary, and a class defined in
        Main only meant every other screen rendered them unstyled. */
     .sinerule{margin-top:-1px;line-height:0;opacity:.9}
-    .rung{display:inline-flex;align-items:flex-end;gap:2px;height:14px;flex:none}
-    .rung i{display:block;width:3px}
+    /* No .rung. It drew the seven measures as a graded ladder, and decision 054
+       renders nothing derived from them: a ladder with a mark on it is an
+       ordinal whether or not the number is printed. */
+
+    /* Provenance is carried by the mark, and the sentence it stands for is
+       reachable on hover, tap and keyboard focus (055). The sentence also stays
+       in the DOM as the mark's accessible name, which is the text equivalent
+       §12 requires and the only provenance a crawler can read. One string
+       serves all three. Enforced by reading. */
+    .prov{position:relative;flex:0 0 auto;min-width:44px;min-height:44px;
+          display:inline-flex;align-items:center;justify-content:flex-start;
+          margin-left:-4px;padding-left:4px}
+    /* opacity, never visibility or display: a hidden-by-visibility tip leaves
+       the accessibility tree and the crawler gets nothing, which would defeat
+       the whole point of keeping one string. */
+    .prov .tip{position:absolute;left:0;top:calc(100% - 6px);z-index:6;
+               background:var(--ink);color:var(--paper);padding:9px 11px;
+               width:max-content;max-width:min(260px, 68vw);text-align:left;
+               opacity:0;pointer-events:none;transition:opacity 110ms linear}
+    .prov:hover .tip,.prov:focus-visible .tip{opacity:1;pointer-events:auto}
+    /* 1.4.13 wants the revealed content hoverable. It stays up while the
+       pointer is on it. Enforced by reading. */
+    .prov .tip:hover{opacity:1;pointer-events:auto}
+    @media (prefers-reduced-motion:reduce){ .prov .tip{transition:none} }
     /* The imprint is capped and centred wherever it appears. A fluid root with an
        uncapped figure grows until the figure swallows the display, the defect
        fixed on the record and still live on three other screens. 320 is the size
@@ -132,7 +154,7 @@
            aria-label="Five chapters, none confirmed"><g fill='none' stroke='#1B2A44' stroke-width='1.00' vector-effect='non-scaling-stroke'><circle cx='300.0' cy='300.0' r='76.7' fill='none' stroke='#1B2A44' stroke-width='1.40' vector-effect='non-scaling-stroke' stroke-dasharray='3.5 5'/><circle cx='300.0' cy='300.0' r='114.0' fill='none' stroke='#1B2A44' stroke-width='1.40' vector-effect='non-scaling-stroke' stroke-dasharray='3.5 5'/><circle cx='300.0' cy='300.0' r='138.9' fill='none' stroke='#1B2A44' stroke-width='1.40' vector-effect='non-scaling-stroke' stroke-dasharray='3.5 5'/><circle cx='300.0' cy='300.0' r='151.4' fill='none' stroke='#1B2A44' stroke-width='1.40' vector-effect='non-scaling-stroke' stroke-dasharray='3.5 5'/><circle cx='300.0' cy='300.0' r='176.3' fill='none' stroke='#1B2A44' stroke-width='1.40' vector-effect='non-scaling-stroke' stroke-dasharray='3.5 5'/><circle cx='300.0' cy='300.0' r='217.8' fill='none' stroke='#1B2A44' stroke-width='1.40' vector-effect='non-scaling-stroke' stroke-dasharray='3.5 5'/><circle cx='300.0' cy='300.0' r='260.3' fill='none' stroke='#1B2A44' stroke-width='1.40' vector-effect='non-scaling-stroke' stroke-dasharray='3.5 5'/></g></svg>
       <div style="display:flex;justify-content:space-between;align-items:baseline;padding:12px 0 0">
         <span class="t-micro" style="color:var(--secondary)">Liezel Mendoza</span>
-        <span class="t-micro">5 chapters · none attested</span>
+        <span class="t-micro">5 chapters · none attested yet</span>
       </div>
     </section>
 
@@ -144,7 +166,7 @@
         <span style="flex:1;min-width:0">
           <span class="t-rec" style="display:block;text-wrap:pretty">chapters, none of them confirmed</span>
           <span class="t-data" style="display:block;color:var(--secondary);padding-top:3px;text-wrap:pretty">
-            You wrote these. Ask each business to sign what you did.</span>
+            Yours so far. Ask a party who was there to attest one.</span>
         </span>
       </div>
 
@@ -173,9 +195,13 @@
   <!-- résumé-parsed chapters need the worker's confirmation before commit (schema §2) -->
   <div style="position:absolute;left:0;right:0;bottom:0;padding:16px 20px;background:var(--paper);
               border-top:1px solid var(--ink);z-index:2">
+    <!-- Not "commit". The word read as the irreversible step, and the
+         irreversible step is asking a party to attest, which happens later and
+         says so there (058). Adding your own account of where you worked is
+         reversible until someone signs it. -->
     <p class="t-body" style="margin:0 0 12px;text-wrap:pretty">
-      Read from your résumé. Nothing here is confirmed, and none of it counts until it is.</p>
-    <button class="btn-primary press">Commit these 5 chapters</button>
+      Read from your résumé. Yours to correct until a party attests one.</p>
+    <button class="btn-primary press">Add these 5 chapters</button>
   </div>
 
 </div>

@@ -7,6 +7,14 @@
   <style>
 @@CSS@@
 @@CHROME@@
+    /* §8 inputs are ruled lines: a hairline you type on, focus thickens
+       ink-ward. The touchable area is padded around the rule, since the rule
+       itself measured 18px and §12 floors a target at 44. */
+    .ruled{display:flex;align-items:center;border-bottom:1px solid var(--rule)}
+    .ruled:focus-within{border-bottom:2px solid var(--ink)}
+    .ruled input{border:0;outline:0;background:none;font:inherit;color:var(--ink);
+                 flex:1;min-width:0;padding:12px 0;font-weight:600;font-size:16px;
+                 min-height:44px;box-sizing:border-box}
     .srow{display:flex;gap:12px;align-items:baseline;padding:13px 0;
           border-bottom:1px solid var(--hairline);width:100%;min-height:44px;text-align:left}
     .grp{padding-top:26px}
@@ -34,10 +42,24 @@
     <div class="reading" style="padding:24px 0 18px;                border-bottom:1px solid var(--ink)">
       <span class="t-inst">{{ days }}</span>
       <span style="flex:1;min-width:0">
-        <span class="t-rec" style="display:block;text-wrap:pretty">days, then the link stops working</span>
+        <span class="t-rec" style="display:block;text-wrap:pretty">days, then their access ends</span>
         <span class="t-data" style="display:block;color:var(--secondary);padding-top:3px">
-          Expires {{ expiry }}</span>
+          Ends {{ expiry }}, and you can end it sooner</span>
       </span>
+    </div>
+
+    <div class="grp">
+      <div class="sechead"><h2 class="t-sec" style="margin:0">Who you are sending it to</h2></div>
+      <div class="sinerule">@@SINERULE@@</div>
+      <label class="t-micro" for="to" style="display:block;color:var(--secondary);padding:14px 0 8px">
+        Their email</label>
+      <div class="ruled">
+        <input id="to" value="{{ to }}" onInput="{{ onTo }}" aria-describedby="tn"
+               autocapitalize="none" autocorrect="off" spellcheck="false" inputmode="email">
+      </div>
+      <p id="tn" class="t-meta" style="margin:10px 0 0;color:var(--secondary);text-wrap:pretty">
+        They open it by confirming this address. No account, no password. Nobody
+        else can open it, and you see when they did.</p>
     </div>
 
     <div class="grp">
@@ -70,18 +92,18 @@
     <div class="grp">
       <div class="warn">
         <p class="t-rec" style="margin:0;color:var(--paper);text-wrap:pretty">
-          This is everything, including what each business wrote about you.</p>
+          This is your whole record. You choose who reads it, never what they read.</p>
         <p class="t-data" style="margin:8px 0 0;text-wrap:pretty">
-          Anyone holding the link can open it until it expires. It cannot be
-          un-sent, and ending it early does not recall what was already read.
-          Send it to someone deciding about you, not to a job board.</p>
+          Ending it early stops them reading it again. It does not recall what
+          they already read, and this screen says so rather than implying
+          otherwise.</p>
       </div>
     </div>
 
     <div class="grp">
-      <button class="btn-primary press" style="width:100%">Create the link</button>
-      <p class="t-meta" style="margin:12px 0 0;color:var(--secondary);text-align:center">
-        You will see it here, and in Sharing, until it expires.</p>
+      <button class="btn-primary press" style="width:100%">Send it to Ramil</button>
+      <p class="t-meta" style="margin:12px 0 0;color:var(--secondary);text-align:center;text-wrap:pretty">
+        It appears in Sharing under who holds a grant, with the date it ends.</p>
     </div>
 
   </main>
@@ -93,13 +115,15 @@
 // sensitive tier, the whole record including the imprint, against the public
 // page's reduced view. Drawn but inert: what "create" issues is undecided.
 class Component extends DCLogic {
-  constructor(p){ super(p); this.state = {span:1}; }
+  constructor(p){ super(p); this.state = {span:1, to:'ramil.antonio@alorica.com'}; }
   renderVals(){
     const SPANS = [{label:'7 days', days:7}, {label:'30 days', days:30}, {label:'90 days', days:90}];
     const i = this.state.span, cur = SPANS[i];
     const d = new Date(2026, 7, 20); d.setDate(d.getDate() + cur.days);
     const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     return {
+      to: this.state.to,
+      onTo: (e) => this.setState({to: e.target.value}),
       days: cur.days,
       expiry: d.getDate() + ' ' + MON[d.getMonth()] + ' ' + d.getFullYear(),
       spans: SPANS.map((s, j) => ({
@@ -109,15 +133,13 @@ class Component extends DCLogic {
         go: () => this.setState({span: j})
       })),
       contents: [
-        {label:'Every chapter, and its dates', note:'The whole history, not a selection.',
+        {label:'Every chapter, and its dates', note:'Everything on your record, not a selection.',
          state:'Shown', color:'var(--ink)'},
-        {label:'Who confirmed what', note:'Which business signed, which coworker, and which nobody did.',
-         state:'Shown', color:'var(--ink)'},
-        {label:'What each business wrote', note:'The seven measures, at the level each party attested.',
+        {label:'Which party attested each chapter', note:'The business, a coworker who was there, or none.',
          state:'Shown', color:'var(--ink)'},
         {label:'Your imprint', note:'The figure, at full size.',
          state:'Shown', color:'var(--ink)'},
-        {label:'Your phone and email', note:'Never in a link. They ask you for those.',
+        {label:'Your phone and email', note:'Never in anything you send. They ask you for those.',
          state:'Private', color:'var(--secondary)'}
       ]
     };

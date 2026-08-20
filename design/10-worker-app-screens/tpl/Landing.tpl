@@ -121,14 +121,14 @@ class Component extends DCLogic {
     const done = this.state.phase === 'done';
     return {
       phase: this.state.phase,
-      readout: done ? '4 chapters signed. 1 you added yourself.' : '3 chapters signed. 2 not yet.',
-      headline: done ? 'Cebu Pacific signed your work.' : 'Cebu Pacific is signing your work.',
+      readout: done ? '4 chapters attested. 1 recorded by you.' : '3 chapters attested. 2 not yet.',
+      headline: done ? 'Cebu Pacific attested your work.' : 'Cebu Pacific is attesting your work.',
       subhead: done
-        ? 'They confirmed the dates and the job. Nobody else has agreed yet, so it stands at their reading alone.'
+        ? 'They attested the dates and the employment. No second party has agreed, so it stands at their reading alone.'
         : 'Watch the ring for that chapter fill in.',
       sectionLabel: done ? 'Work history' : 'Outstanding verification',
-      rowState: done ? 'Cebu Pacific signed this. Nobody else has agreed yet.'
-                     : 'They confirmed the dates and the job. Not the work.',
+      rowState: done ? 'Attested by Cebu Pacific Cargo Services. No second party has agreed.'
+                     : 'They attested the dates and the employment. Nothing about the work.',
       sw: done ? '#sw-single' : '#sw-emp',
       entries: done ? '48 entries · last today' : '47 entries · last 12 Aug 2026',
       replay: () => { clearTimeout(this._u); this.setState({phase:'idle'});

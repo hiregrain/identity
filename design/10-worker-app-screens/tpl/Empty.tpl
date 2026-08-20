@@ -48,13 +48,18 @@
     </div>
     <div>
       <h1 class="t-title" style="margin:0 0 12px">Nothing<br>on it yet</h1>
+      <!-- One chapter, not a career. Two of the four cohorts this record layer
+           is for have no résumé to import, so the manual path is the only door
+           they have, and it asked for eight years before it gave anything back.
+           A minute is a promise the screen can keep. -->
       <p class="t-body" style="margin:0 0 28px;color:var(--secondary);max-width:280px;text-wrap:pretty">
-        Add where you have worked. Work nobody has confirmed is drawn plain. It fills in
-        when someone who was there signs for it.
+        Start with one job. It takes about a minute, and you can add the rest
+        whenever. A chapter nobody has attested is drawn plain, and it fills in
+        when a party who was there signs for it.
       </p>
       <div style="display:flex;flex-direction:column;gap:12px">
-        <button class="btn-primary press">Add where you worked</button>
-        <button class="btn-secondary press">Import a résumé</button>
+        <button class="btn-primary press">Add one job</button>
+        <button class="btn-secondary press">Import a résumé instead</button>
       </div>
     </div>
   </main>

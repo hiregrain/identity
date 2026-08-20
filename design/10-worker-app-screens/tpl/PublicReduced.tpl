@@ -24,27 +24,17 @@
 
       <h1 class="t-title" style="margin:0">Liezel Mendoza</h1>
       <p class="t-data" style="margin:8px 0 0;color:var(--secondary);text-wrap:pretty">
-        Philippines · Identity document checked, which says nothing about the work below</p>
+        Identity document checked, which says nothing about the work below</p>
 
-      <!-- No imprint. Decision 035: the figure is always behind sign-in, even when
-           the page is published, because an indexable imprint is the one thing
-           that cannot be taken back. The graticule stands where it would be,
-           §9's ground, doing the job it was defined for. -->
-      <div style="position:relative;height:132px;margin:22px 0 4px;overflow:hidden;
-                  border-block:1px solid var(--hairline)">
-        <!-- Half-scale so the mesh reads as ground rather than as a table: the
-             graticule is drawn on a 296 grid, and stretched across a wide short
-             box its cells become furniture. -->
-        <svg viewBox="0 0 592 264" preserveAspectRatio="xMidYMid slice" fill="none"
-             stroke="var(--rule)" stroke-width="0.7" style="position:absolute;inset:0;
-             width:100%;height:100%;opacity:.22">@@GRATICULE_LG@@</svg>
-        <div style="position:absolute;inset:0;display:flex;flex-direction:column;
-                    align-items:center;justify-content:center;gap:6px;padding:0 24px">
-          <span class="t-rec" style="text-align:center;text-wrap:pretty">Her imprint is not on this page</span>
-          <span class="t-meta" style="color:var(--secondary);text-align:center;text-wrap:pretty">
-            Sign in with a Grain account to see it.</span>
-        </div>
-      </div>
+      <!-- The imprint, to a human visitor and never to the crawler (056). 035
+           gated it for two reasons and only one survives: it no longer carries a
+           graded claim about the work (054), but an indexed figure is still
+           permanent, and a visitor who follows a link loses nothing by the
+           crawler payload omitting it. The real page renders this server-side
+           for people and drops it from the crawler variant that 037's web layer
+           exists to serve. -->
+      <svg class="imprint" viewBox="0 0 600 600" style="margin:20px auto 4px" role="img"
+           aria-label="Liezel Mendoza's imprint: five chapters, two attested by the business, one by a coworker">@@WORKING@@</svg>
 
       <div style="padding-top:20px">
         <div class="sechead"><h2 class="t-sec" style="margin:0">Work history</h2>
@@ -52,9 +42,14 @@
         <div class="sinerule">@@SINERULE@@</div>
         <sc-for list="{{ chapters }}" as="c" hint-placeholder-count="5">
           <div class="prow">
+            <span class="prov" tabindex="0">
+              <svg viewBox="0 0 34 16" width="34" height="16" fill="none" aria-hidden="true"
+                   stroke="var(--ink)" stroke-width="1"><use href="{{ c.sw }}"></use></svg>
+              <span class="tip t-meta">{{ c.prov }}</span>
+            </span>
             <span style="flex:1;min-width:0">
               <span class="t-rec" style="display:block">{{ c.party }}</span>
-              <span class="t-data" style="display:block;padding-top:3px">{{ c.state }}</span>
+              <span class="t-meta" style="display:block;color:var(--secondary);padding-top:3px">{{ c.kind }}</span>
             </span>
             <span class="col-r">
               <span class="t-data" style="display:block">{{ c.from }}</span>
@@ -65,9 +60,10 @@
       </div>
 
       <p class="t-meta" style="margin:18px 0 0;color:var(--secondary);text-wrap:pretty">
-        This page shows who she worked for and who confirmed it. It does not show
-        what any business wrote about her work, and Grain never checks whether the
-        work was done well.</p>
+        This page shows who she worked for, when, and which party attested each
+        chapter. Grain never checks whether the work was done well. A record holds
+        the chapters its subject entered, and Grain does not know of any she did
+        not.</p>
 
       <div style="margin-top:20px;border-top:1px solid var(--ink);padding-top:16px">
         <button class="btn-secondary press" style="width:100%">Sign in to see the full record</button>
@@ -78,6 +74,13 @@
       hiregrain.com/u/liezel-mendoza · a Grain record</p>
   </main>
 </div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <g id="sw-self">@@SW_SELF@@</g>
+  <g id="sw-emp">@@SW_EMP@@</g>
+  <g id="sw-peer">@@SW_PEER@@</g>
+  <g id="sw-single">@@SW_SINGLE@@</g>
+  <g id="sw-multi">@@SW_MULTI@@</g>
+</defs></svg>
 </x-dc>
 
 <script data-dc-script data-props='{"$preview":{"width":360,"height":800}}'>
@@ -90,17 +93,24 @@
 // indexable figure cannot be recalled), and anything a party wrote.
 class Component extends DCLogic {
   renderVals(){
+    // Oldest first, matching every other surface and the figure above, whose
+    // innermost band is the earliest chapter. This page ran newest first.
     const chapters = [
-      {party:'Cebu Pacific Cargo Services', state:'Employment confirmed by the business',
-       from:'Jan 2025', to:'present'},
-      {party:'Metro Manila Logistics', state:'Signed by the business',
-       from:'Mar 2023', to:'Jan 2025'},
-      {party:'R. Santos Dry Goods', state:'Signed by a coworker, not the business',
-       from:'Sep 2020', to:'Mar 2023'},
-      {party:'Sunrise Foods Manufacturing', state:'Signed by the business, and a second party agreed',
+      {party:'Bataan Poultry Processing', kind:'Processing operator', sw:'#sw-self',
+       prov:'Recorded by Liezel Mendoza. No attesting party.',
+       from:'Sep 2017', to:'Mar 2019'},
+      {party:'Sunrise Foods Manufacturing', kind:'Two positions', sw:'#sw-multi',
+       prov:'Attested by Sunrise Foods Manufacturing, and a second party agrees.',
        from:'Mar 2019', to:'Sep 2021'},
-      {party:'Bataan Poultry Processing', state:'Liezel added this. Nobody has confirmed it.',
-       from:'Sep 2017', to:'Mar 2019'}
+      {party:'R. Santos Dry Goods', kind:'Stall assistant, Divisoria', sw:'#sw-peer',
+       prov:'Attested by a coworker who was there. The business is not registered with Grain.',
+       from:'Sep 2020', to:'Mar 2023'},
+      {party:'Metro Manila Logistics', kind:'Warehouse coordinator', sw:'#sw-single',
+       prov:'Attested by Metro Manila Logistics. No second party has agreed.',
+       from:'Mar 2023', to:'Jan 2025'},
+      {party:'Cebu Pacific Cargo Services', kind:'Cargo handling supervisor', sw:'#sw-emp',
+       prov:'Cebu Pacific Cargo Services attested the dates and the employment. Nothing about the work.',
+       from:'Jan 2025', to:'present'}
     ];
     return {chapters, count: chapters.length};
   }

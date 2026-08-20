@@ -25,37 +25,24 @@
     /* unselected chapters recede to 3.4:1, not to invisibility. Selection is not
        provenance, so recession here does not collide with law 8. */
     .ch{transition:opacity 220ms cubic-bezier(0.2,0,0,1)}
-    /* The band the detail below is about is the one that reads. .55 was not far
-       enough from 1 to say which chapter the page was describing. */
     .sel0 .ch,.sel1 .ch,.sel2 .ch,.sel3 .ch,.sel4 .ch{opacity:.3}
     .sel0 .ch0,.sel1 .ch1,.sel2 .ch2,.sel3 .ch3,.sel4 .ch4{opacity:1}
-    .pick{display:flex;gap:8px;overflow-x:auto;padding:0 20px;scrollbar-width:none}
-    .pick::-webkit-scrollbar{height:0}
-    .pick button{min-height:44px;padding:12px 12px;white-space:nowrap;
-                 border-bottom:2px solid transparent}
-    .pick button[aria-pressed="true"]{border-bottom-color:var(--ink)}
-    .zoom{display:flex;height:44px;align-items:flex-end}
-    .zoom button{flex:1;height:44px;display:flex;align-items:flex-end;justify-content:center}
-    .zoom i{display:block;width:1px;background:var(--rule)}
     /* §7 press physics, on this screen only (decision 050). The figure yields
        under the thumb where inspecting it is the task; on the record it is a
        plate you open, and a plate that squirms is a worse plate. A band whose
-       chapter is attested does NOT yield. §7 makes rigidity the expression of
-       permanence, and it had been dead code in every file. */
+       chapter is attested does NOT yield: §7 makes rigidity the expression of
+       permanence. */
     .stage{transition:transform 120ms cubic-bezier(0.2,0,0,1)}
     .stage.give:active{transform:scale(0.994)}
-    .lrow{display:flex;gap:12px;align-items:flex-start;padding:8px 0}
-    .lmark{flex:0 0 20px;margin-top:8px}
+    .lrow{display:flex;gap:14px;align-items:flex-start;padding:10px 0;
+          border-bottom:1px solid var(--hairline)}
+    .lmark{flex:0 0 34px;margin-top:5px}
   </style>
 </helmet>
 
 <!-- The reveal class lives on the stage, never on the root: a template hole in the
      ROOT element's class attribute stops the artboard mounting at all, which is
      why this screen rendered blank in the canvas from the day it was drawn. -->
-<!-- Fluid in both axes: the record fills whatever safe area it is given, and
-     min-height carries the standalone case where height:100% has no sized
-     ancestor and would collapse to zero. 728 is the common safe box across
-     iOS (778) and Android (728). Decision 046. -->
 <div style="width:100%;height:100%;min-height:752px;position:relative;overflow:hidden;background:var(--paper)">
   <header style="height:52px;display:flex;align-items:center;justify-content:space-between;
                  padding:0 20px;border-bottom:1px solid var(--hairline);position:relative;z-index:3;
@@ -67,34 +54,35 @@
     </button>
   </header>
 
-  <div class="stage {{ phase }} {{ give }}" style="position:absolute;top:52px;left:0;right:0;height:298px"
+  <!-- Decision 054 emptied this screen of its old subject: it existed to name
+       which lobe was which measure, and no measure renders. What it does now is
+       the thing every reader wanted and none could do, which is read the figure.
+       Touching a ring selects its chapter. -->
+  <div class="stage {{ phase }} {{ give }}" style="position:absolute;top:52px;left:0;right:0;height:300px"
        onPointerDown="{{ down }}" onPointerMove="{{ move }}" onPointerUp="{{ up }}">
-    <svg viewBox="0 0 600 600" width="100%" height="100%" role="img" aria-label="{{ figureAlt }}">
+    <svg viewBox="0 0 600 600" width="100%" height="100%" role="img" aria-label="{{ figureAlt }}"
+         style="display:block">
       <g class="{{ selCls }}" transform="{{ view }}">
-        <g fill="none" stroke="var(--ink)" stroke-width="1"
-           transform="translate(42 42) scale(0.86)">@@CHAPTERS@@</g>
-        <!-- The chapter's band, and the lobe for the measure being read about.
-             Nothing else is drawn over the figure: spokes, sector lines and
-             level notches all read as damage across the engraving. -->
-        <g fill="none" stroke="var(--ink)">
-          <circle cx="300" cy="300" r="{{ selR0 }}" stroke-width="1.1"></circle>
-          <circle cx="300" cy="300" r="{{ selR1 }}" stroke-width="1.1"></circle>
-          <sc-if value="{{ hasLobe }}" hint-placeholder-val="{{ true }}">
-            <path d="{{ lobe }}" stroke-width="4"></path>
-          </sc-if>
+        <g transform="translate(42 42) scale(0.86)">@@CHAPTERS@@</g>
+        <!-- The selected chapter's band, drawn as two boundary circles. Nothing
+             else is drawn over the figure: spokes and sector lines read as
+             damage across the engraving. -->
+        <g fill="none" stroke="var(--ink)" stroke-width="1.2">
+          <circle cx="300" cy="300" r="{{ selR0 }}"></circle>
+          <circle cx="300" cy="300" r="{{ selR1 }}"></circle>
         </g>
-
       </g>
     </svg>
   </div>
 
-  <!-- The chapter. Touching its ring selects it, but a ring is 10-25px of stroke
-       and that is not a touch target, so the name is also a control. -->
-  <div style="position:absolute;top:350px;left:0;right:0;min-height:60px;display:flex;
+  <!-- A ring is 10 to 25px of stroke, which is not a touch target, so the name
+       is also a control. -->
+  <div style="position:absolute;top:352px;left:0;right:0;min-height:60px;display:flex;
               align-items:center;border-bottom:1px solid var(--ink)">
     <button class="press" aria-label="Previous chapter" onClick="{{ prevCh }}"
             style="width:44px;height:44px;display:flex;align-items:center;justify-content:center">
-      <svg width="16" height="16" viewBox="0 0 16 16" class="icon"><path d="M10 3 L5 8 L10 13"/></svg>
+      <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="var(--ink)"
+           stroke-width="1.4" stroke-linecap="round"><path d="M12 4 L6 10 L12 16"/></svg>
     </button>
     <span style="flex:1;min-width:0;text-align:center;padding:0 4px">
       <span class="t-sec" style="display:block;text-wrap:pretty;line-height:1.2">{{ party }}</span>
@@ -102,113 +90,100 @@
     </span>
     <button class="press" aria-label="Next chapter" onClick="{{ nextCh }}"
             style="width:44px;height:44px;display:flex;align-items:center;justify-content:center">
-      <svg width="16" height="16" viewBox="0 0 16 16" class="icon"><path d="M6 3 L11 8 L6 13"/></svg>
+      <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="var(--ink)"
+           stroke-width="1.4" stroke-linecap="round"><path d="M8 4 L14 10 L8 16"/></svg>
     </button>
   </div>
 
-  <!-- Reading matter, not a control. Every measure says what it means, what was
-       attested, and where that sits on its scale, drawn because design/07 2.2
-       records four reviewers reading an ordinal as a rating of a person. -->
-  <div class="dissolve" style="position:absolute;top:406px;left:0;right:0;bottom:0;overflow-y:auto">
-    <div style="padding:14px 20px 10px">
-      <span class="t-micro" style="display:block;color:var(--secondary)">{{ attestHead }}</span>
-      <p class="t-meta" style="margin:6px 0 0;color:var(--secondary);text-wrap:pretty">
-        Touch a measure to light its lobe on the figure.</p>
+  <div class="dissolve" style="position:absolute;top:414px;left:0;right:0;bottom:0;overflow-y:auto;padding:0 20px">
+    <div style="padding:16px 0 4px">
+      <span class="t-micro" style="display:block;color:var(--secondary)">This ring</span>
+      <p class="t-body" style="margin:7px 0 0;text-wrap:pretty">{{ prov }}</p>
+      <p class="t-meta" style="margin:8px 0 0;color:var(--secondary);text-wrap:pretty">{{ standing }}</p>
     </div>
-    <sc-for list="{{ measures }}" as="mm" hint-placeholder-count="7">
-      <button class="press" aria-pressed="{{ mm.on }}" onClick="{{ mm.go }}"
-              style="display:block;width:100%;text-align:left;padding:12px 20px 14px;
-                     border-bottom:1px solid {{ mm.border }}">
-        <span style="display:flex;align-items:baseline;justify-content:space-between;gap:12px">
-          <span style="font-weight:600;font-size:15px;line-height:1.3">{{ mm.name }}</span>
-          <span class="rung" aria-hidden="true">
-            <sc-for list="{{ mm.scale }}" as="st" hint-placeholder-count="7">
-              <i style="height:{{ st.h }};background:{{ st.c }}"></i>
-            </sc-for>
-          </span>
-        </span>
-        <span class="t-meta" style="display:block;margin-top:3px;color:var(--secondary);text-wrap:pretty">{{ mm.definition }}</span>
-        <span class="t-body" style="display:block;margin-top:7px;color:{{ mm.valueColor }};text-wrap:pretty">{{ mm.value }}</span>
-        <span class="t-meta" style="display:block;margin-top:6px;color:var(--secondary);text-wrap:pretty">{{ mm.standing }}</span>
-      </button>
-    </sc-for>
-    <div style="padding:16px 20px 0">
-      <span class="t-micro" style="display:block;color:var(--secondary);padding-bottom:6px">How this was set</span>
-      <p class="t-body" style="margin:0 0 8px;text-wrap:pretty">{{ setBy }}</p>
-      <p class="t-meta" style="margin:0;color:var(--secondary);text-wrap:pretty">{{ caveat }}</p>
-    </div>
-    <div style="height:24px"></div>
-  </div>
 
+    <!-- What the figure encodes, said once, on the only screen big enough to
+         say it. Every persona called the imprint the best thing in the product
+         and none of them could read it. Each line is a rule the ledger applies
+         the same way to every record. -->
+    <div style="padding-top:22px">
+      <div class="sechead"><h2 class="t-sec" style="margin:0">What the figure says</h2></div>
+      <div class="sinerule">@@SINERULE@@</div>
+      <sc-for list="{{ legend }}" as="l" hint-placeholder-count="5">
+        <div class="lrow">
+          <span class="lmark">
+            <sc-if value="{{ l.sw }}" hint-placeholder-val="{{ true }}">
+              <svg viewBox="0 0 34 16" width="34" height="16" fill="none" aria-hidden="true"
+                   stroke="var(--ink)" stroke-width="1"><use href="{{ l.sw }}"></use></svg>
+            </sc-if>
+          </span>
+          <span style="flex:1;min-width:0">
+            <span class="t-rec" style="display:block;text-wrap:pretty">{{ l.head }}</span>
+            <span class="t-meta" style="display:block;color:var(--secondary);padding-top:3px;text-wrap:pretty">{{ l.body }}</span>
+          </span>
+        </div>
+      </sc-for>
+      <p class="t-meta" style="margin:14px 0 0;color:var(--secondary);text-wrap:pretty">
+        The wave itself is the same on every chapter of every record. It is how
+        the figure is drawn, not something it is telling you.</p>
+    </div>
+    <div style="height:28px"></div>
+  </div>
 </div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <g id="sw-self">@@SW_SELF@@</g>
+  <g id="sw-emp">@@SW_EMP@@</g>
+  <g id="sw-peer">@@SW_PEER@@</g>
+  <g id="sw-single">@@SW_SINGLE@@</g>
+  <g id="sw-multi">@@SW_MULTI@@</g>
+</defs></svg>
 </x-dc>
 
 <script data-dc-script data-props='{"$preview":{"width":360,"height":800}}'>
-// The expanded imprint. Closes imprint/README.md §7.1, nothing marked which
-// lobe was which measure. Labels are revealed by touch, never printed on the
-// figure. Definitions are verbatim from imprint/README.md §3.
-// No ordinal is shown: design/07 §2.2 records four independent reviewers reading
-// "Step N of 6" as a rating of a person. The anchor sentence is the level.
-const TAU = Math.PI*2, LOBES = 7, S = 0.86;
-// The lobe highlight, generated rather than computed here. This file used to
-// carry its own profile() and a hardcoded viewbox stroke that no longer matched
-// imprint.py, so the highlight sat off the band it highlighted. One copy of the
-// geometry now, in imprint.py (decision 044).
-const LOBES_D = @@LOBES@@;
-const DIMS = [
- {n:'Discretion', s:'Discretion', d:'How much of the what-and-how you decided, rather than received.',
-  a:['Not part of this work','Followed instructions for each task','Chose the order of the work',
-     'Chose how, within a set what','Chose how, and part of the what','Set what the work was, within a remit',
-     'Set the remit']},
- {n:'Direction of Others', s:'Directing others', d:'How many people’s work you were answerable for.',
-  a:['Not part of this work','Answerable for your own work only','Showed new people the work',
-     'Answerable for a small group','Answerable for a shift or a crew','Answerable for a standing team',
-     'Answerable for people who direct others']},
- {n:'Consequence Held', s:'Consequence', d:'What happens if you get it wrong, and who catches it.',
-  a:['Not part of this work','Mistakes were caught before they mattered','Mistakes cost rework',
-     'Mistakes cost time or schedule','Mistakes cost money or stock','Mistakes reached the customer',
-     'Last check before something irreversible']},
- {n:'Counterparty Exposure', s:'Outside dealings',
-  d:'Direct dealings with people outside your own team: customers, suppliers, inspectors, other firms.',
-  a:['Not part of this work','No dealings outside the team','Occasional contact, to a script',
-     'Regular contact, on your own judgement','Handled disputes and exceptions','Held the relationship',
-     'Committed the business to it']},
- {n:'Method Authority', s:'Method', d:'Who decides how the work is correctly done, and who signs off.',
-  a:['Not part of this work','Followed the method given','Raised problems with the method',
-     'Adapted the method in practice','Decided how the work was done correctly','Set the method for others',
-     'Signed off on how others worked']},
- {n:'Resource and Financial', s:'Resource', d:'What resource was committed, and who answered for it.',
-  a:['Not part of this work','Committed no resource','Accountable for tools in hand',
-     'Accountable for materials and stock','Accountable for a budget line','Answered for the spend',
-     'Decided what was spent']},
- {n:'Systems and Tooling', s:'Systems', d:'Responsibility for the systems the work runs on.',
-  a:['Not part of this work','Used the systems as given','Kept a system running day to day',
-     'Fixed a system others depend on','Responsible for a system others depend on','Changed how the systems work',
-     'Owned the systems the work runs on']},
-];
+// The expanded imprint, rebuilt under decision 054. It used to name which lobe
+// carried which of the seven measures; nothing derived from the measures renders
+// now, so what it does is let a person read the figure they are looking at.
+// Touching a ring selects its chapter and the detail below follows.
+const S = 0.86;
 const CHAPTERS = [
-  {r0:58.00,  r1:95.35,  party:'Bataan Poultry Processing', short:'Bataan Poultry', span:'Sep 2017 to Mar 2019', corr:null,
-   levels:null, setBy:'Nobody has confirmed this chapter, so there is nothing attested about the work. It is your own account of it.'},
-  {r0:95.35,  r1:145.14, party:'Sunrise Foods Manufacturing', short:'Sunrise Foods', span:'Mar 2019 to Sep 2021', corr:'multi',
-   levels:[3,3,3,1,3,2,2],
-   setBy:'Sunrise Foods signed this on 14 October 2021, and a second party agreed.'},
-  {r0:145.14, r1:194.93, party:'R. Santos Dry Goods', short:'R. Santos', span:'Sep 2020 to Mar 2023', corr:'peer',
-   levels:[2,0,2,4,1,1,2],
-   setBy:'A coworker signed this on 2 April 2023. It stands at their reading, and nobody else has agreed.'},
-  {r0:194.93, r1:240.58, party:'Metro Manila Logistics', short:'Metro Manila', span:'Mar 2023 to Jan 2025', corr:'single',
-   levels:[4,3,4,3,3,3,4],
-   setBy:'Metro Manila Logistics signed this on 20 January 2025. Nobody else has agreed yet.'},
-  {r0:240.58, r1:280.00, party:'Cebu Pacific Cargo Services', short:'Cebu Pacific', span:'Jan 2025 to present', corr:null,
-   levels:null, setBy:'They confirmed the dates and the job, but nothing about the work, so there is nothing attested here yet.'},
+  {r0:58.00,  r1:95.35,  party:'Bataan Poultry Processing',   span:'Sep 2017 to Mar 2019', sw:'#sw-self',
+   attested:false,
+   prov:'Recorded by Liezel Mendoza. No attesting party.',
+   standing:'Nobody who was there has attested this chapter, so it stands as her own account of it. Its ring is drawn dotted, which is how the figure says that.'},
+  {r0:95.35,  r1:145.14, party:'Sunrise Foods Manufacturing', span:'Mar 2019 to Sep 2021', sw:'#sw-multi',
+   attested:true,
+   prov:'Attested by Sunrise Foods Manufacturing on 14 October 2021, and a second party agrees.',
+   standing:'Two parties attested this independently, which is the densest weave the figure draws.'},
+  {r0:145.14, r1:194.93, party:'R. Santos Dry Goods',         span:'Sep 2020 to Mar 2023', sw:'#sw-peer',
+   attested:true,
+   prov:'Attested by a coworker who was there, on 2 April 2023. The business is not registered with Grain.',
+   standing:'A person who was present attested this. The business itself has not, and it can, which is what the outstanding item on the record is for.'},
+  {r0:194.93, r1:240.58, party:'Metro Manila Logistics',      span:'Mar 2023 to Jan 2025', sw:'#sw-single',
+   attested:true,
+   prov:'Attested by Metro Manila Logistics on 20 January 2025. No second party has agreed.',
+   standing:'One party attested this, so it stands at their reading. The weave is lighter than a chapter two parties agree on.'},
+  {r0:240.58, r1:280.00, party:'Cebu Pacific Cargo Services', span:'Jan 2025 to present', sw:'#sw-emp',
+   attested:false,
+   prov:'Cebu Pacific Cargo Services attested the dates and the employment on 20 January 2026. Nothing about the work.',
+   standing:'Dates and employment only, so the ring is drawn plain and solid. That plainness is the statement.'}
 ];
-const ZOOMS = [1, 2.5];   // double-tap the figure. The old five-tick scale rule
-                         // was unlabelled, unevenly spaced and under the 44px floor
-// PLACEHOLDER caveat text: imprint/README.md §7.5 records the anchor set as
-// unvalidated. It is stated on the surface rather than in a document (design/07 §2.2).
-const CAVEAT = 'Grain wrote these seven descriptions. They have not been tested for whether two managers reading the same work pick the same one. Where parties disagree, the ledger takes the description at least two of them chose, and never averages them.';
+const LEGEND = [
+  {head:'One ring is one chapter, and the earliest is innermost',
+   body:'Reading outward from the middle is reading forward in time, which is the same order as the list on your record.'},
+  {head:'A ring is as wide as the time it covers',
+   body:'A long engagement takes a wide band. Two chapters that overlap share the width of the months they share.'},
+  {sw:'#sw-self',   head:'Dotted: nobody has attested it',
+   body:'Your own account of the work, drawn as your own account of the work.'},
+  {sw:'#sw-emp',    head:'Plain and solid: dates and employment only',
+   body:'A business confirmed you were there and when. It said nothing about the work.'},
+  {sw:'#sw-peer',   head:'Threaded: a party attested it, and the weave says how many',
+   body:'One coworker is the lightest weave, one business is heavier, and two parties who agree independently is the densest.'}
+];
+const ZOOMS = [1, 2.5];
 
 class Component extends DCLogic {
-  constructor(p){ super(p); this.state = {ch:1, dim:0, z:0, tx:0, ty:0, dragging:false, moved:0, phase:'opening'}; }
+  constructor(p){ super(p); this.state = {ch:1, z:0, tx:0, ty:0, dragging:false, moved:0, phase:'opening'}; }
   componentDidMount(){ this._t = setTimeout(() => this.setState({phase:''}), 1100); }
   componentWillUnmount(){ clearTimeout(this._t); }
 
@@ -255,60 +230,21 @@ class Component extends DCLogic {
     this.setState({ch});
   }
   renderVals(){
-    const {ch, dim, z, tx, ty} = this.state;
+    const {ch, z, tx, ty} = this.state;
     const c = CHAPTERS[ch], k = ZOOMS[z];
-    const lobe = LOBES_D[ch][dim] || '';
-    // Why the level stands where it does. The model has no rationale field.
-    // `attestation` carries dimensions_exercised[] and a signature, nothing in
-    // free text, so what can honestly be said is how the level was DERIVED:
-    // who asserted it, whether anyone agreed, and that disagreeing attesters are
-    // never averaged (model/record-schema.md §4).
-    const STANDING = {
-      multi:  'Two parties assert this level independently, so it stands corroborated. Where parties disagree the record keeps the highest level at least two of them assert, and never an average.',
-      single: 'One business asserts this. Nobody else has agreed, so it stands at their reading alone.',
-      peer:   'A coworker asserts this, not the business. It stands at their reading and carries no employer agreement.',
-      none:   'Nobody has attested this measure on this chapter, so the record says nothing about it.'
-    };
-
     return {
       down:(e)=>this.down(e), move:(e)=>this.move(e), up:(e)=>this.up(e),
       phase: this.state.phase, selCls: 'sel' + ch,
-      figureAlt: `Imprint. ${c.party}, with every measure named and its attested depth marked.`,
+      figureAlt: `Liezel Mendoza's imprint, five rings. The ring for ${c.party} is selected.`,
       view: `translate(${tx.toFixed(1)} ${ty.toFixed(1)}) translate(${(300*(1-k)).toFixed(1)} ${(300*(1-k)).toFixed(1)}) scale(${k})`,
       selR0: (c.r0*S).toFixed(1), selR1: (c.r1*S).toFixed(1),
-      hasLobe: lobe !== '', lobe,
-      // Attested chapters are rigid. Unattested ones yield, which is the whole
-      // point of §7's rule: the record gives where nothing holds it.
-      give: c.levels ? '' : 'give',
-      setBy: c.setBy, caveat: c.levels ? CAVEAT : '', party: c.party, span: c.span,
+      // Attested chapters are rigid. Unattested ones yield, which is §7's rule:
+      // the record gives where nothing holds it.
+      give: c.attested ? '' : 'give',
+      party: c.party, span: c.span, prov: c.prov, standing: c.standing,
       prevCh: () => this.setState({ch: (ch + CHAPTERS.length - 1) % CHAPTERS.length}),
       nextCh: () => this.setState({ch: (ch + 1) % CHAPTERS.length}),
-      attestHead: c.levels
-        ? 'What ' + c.short + ' attested, on the seven measures'
-        : 'Nothing about the work was attested on this chapter',
-      // Every measure, every time. The value is the attested anchor in the
-      // worker's own words, and its position is seven drawn rungs, never an
-      // ordinal, which design/07 §2.2 records four reviewers reading as a rating
-      // of a person.
-      measures: DIMS.map((x, i) => {
-        const lv = c.levels ? c.levels[i] : null;
-        const sel = i === dim;
-        return {
-          name: x.n,
-          definition: x.d,
-          value: lv === null ? 'Nothing attested here.' : x.a[lv],
-          valueColor: lv === null ? 'var(--secondary)' : 'var(--ink)',
-          standing: STANDING[lv === null ? 'none' : (c.corr || 'single')],
-          on: sel ? 'true' : 'false',
-          border: sel ? 'var(--ink)' : 'var(--hairline)',
-          go: () => this.setState({dim: i}),
-          scale: x.a.map((_, r) => ({
-            h: (4 + r*1.6).toFixed(0) + 'px',
-            c: lv === null ? 'var(--hairline)'
-                           : (r < lv ? 'var(--rule)' : (r === lv ? 'var(--ink)' : 'var(--hairline)'))
-          }))
-        };
-      })
+      legend: LEGEND
     };
   }
 }

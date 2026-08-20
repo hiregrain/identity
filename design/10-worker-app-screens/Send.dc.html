@@ -70,8 +70,30 @@
        one screen's helmet: both are shared vocabulary, and a class defined in
        Main only meant every other screen rendered them unstyled. */
     .sinerule{margin-top:-1px;line-height:0;opacity:.9}
-    .rung{display:inline-flex;align-items:flex-end;gap:2px;height:14px;flex:none}
-    .rung i{display:block;width:3px}
+    /* No .rung. It drew the seven measures as a graded ladder, and decision 054
+       renders nothing derived from them: a ladder with a mark on it is an
+       ordinal whether or not the number is printed. */
+
+    /* Provenance is carried by the mark, and the sentence it stands for is
+       reachable on hover, tap and keyboard focus (055). The sentence also stays
+       in the DOM as the mark's accessible name, which is the text equivalent
+       §12 requires and the only provenance a crawler can read. One string
+       serves all three. Enforced by reading. */
+    .prov{position:relative;flex:0 0 auto;min-width:44px;min-height:44px;
+          display:inline-flex;align-items:center;justify-content:flex-start;
+          margin-left:-4px;padding-left:4px}
+    /* opacity, never visibility or display: a hidden-by-visibility tip leaves
+       the accessibility tree and the crawler gets nothing, which would defeat
+       the whole point of keeping one string. */
+    .prov .tip{position:absolute;left:0;top:calc(100% - 6px);z-index:6;
+               background:var(--ink);color:var(--paper);padding:9px 11px;
+               width:max-content;max-width:min(260px, 68vw);text-align:left;
+               opacity:0;pointer-events:none;transition:opacity 110ms linear}
+    .prov:hover .tip,.prov:focus-visible .tip{opacity:1;pointer-events:auto}
+    /* 1.4.13 wants the revealed content hoverable. It stays up while the
+       pointer is on it. Enforced by reading. */
+    .prov .tip:hover{opacity:1;pointer-events:auto}
+    @media (prefers-reduced-motion:reduce){ .prov .tip{transition:none} }
     /* The imprint is capped and centred wherever it appears. A fluid root with an
        uncapped figure grows until the figure swallows the display, the defect
        fixed on the record and still live on three other screens. 320 is the size
@@ -100,6 +122,14 @@
       .dissolve{-webkit-mask-image:none;mask-image:none}
     }
 
+    /* §8 inputs are ruled lines: a hairline you type on, focus thickens
+       ink-ward. The touchable area is padded around the rule, since the rule
+       itself measured 18px and §12 floors a target at 44. */
+    .ruled{display:flex;align-items:center;border-bottom:1px solid var(--rule)}
+    .ruled:focus-within{border-bottom:2px solid var(--ink)}
+    .ruled input{border:0;outline:0;background:none;font:inherit;color:var(--ink);
+                 flex:1;min-width:0;padding:12px 0;font-weight:600;font-size:16px;
+                 min-height:44px;box-sizing:border-box}
     .srow{display:flex;gap:12px;align-items:baseline;padding:13px 0;
           border-bottom:1px solid var(--hairline);width:100%;min-height:44px;text-align:left}
     .grp{padding-top:26px}
@@ -127,10 +157,24 @@
     <div class="reading" style="padding:24px 0 18px;                border-bottom:1px solid var(--ink)">
       <span class="t-inst">{{ days }}</span>
       <span style="flex:1;min-width:0">
-        <span class="t-rec" style="display:block;text-wrap:pretty">days, then the link stops working</span>
+        <span class="t-rec" style="display:block;text-wrap:pretty">days, then their access ends</span>
         <span class="t-data" style="display:block;color:var(--secondary);padding-top:3px">
-          Expires {{ expiry }}</span>
+          Ends {{ expiry }}, and you can end it sooner</span>
       </span>
+    </div>
+
+    <div class="grp">
+      <div class="sechead"><h2 class="t-sec" style="margin:0">Who you are sending it to</h2></div>
+      <div class="sinerule"><svg viewBox='0 0 320 6' width='100%' height='6' preserveAspectRatio='none' fill='none' stroke='#D3D7D6' stroke-width='1' vector-effect='non-scaling-stroke'><path d='M0.0 3.00 L2.0 3.31 L4.0 3.60 L6.0 3.84 L8.0 4.02 L10.0 4.13 L12.0 4.15 L14.0 4.08 L16.0 3.93 L18.0 3.71 L20.0 3.44 L22.0 3.14 L24.0 2.82 L26.0 2.52 L28.0 2.25 L30.0 2.04 L32.0 1.91 L34.0 1.85 L36.0 1.88 L38.0 2.00 L40.0 2.19 L42.0 2.44 L44.0 2.73 L46.0 3.05 L48.0 3.36 L50.0 3.64 L52.0 3.87 L54.0 4.04 L56.0 4.14 L58.0 4.14 L60.0 4.06 L62.0 3.90 L64.0 3.68 L66.0 3.40 L68.0 3.09 L70.0 2.78 L72.0 2.48 L74.0 2.22 L76.0 2.02 L78.0 1.89 L80.0 1.85 L82.0 1.89 L84.0 2.02 L86.0 2.22 L88.0 2.48 L90.0 2.78 L92.0 3.09 L94.0 3.40 L96.0 3.68 L98.0 3.90 L100.0 4.06 L102.0 4.14 L104.0 4.14 L106.0 4.04 L108.0 3.87 L110.0 3.64 L112.0 3.36 L114.0 3.05 L116.0 2.73 L118.0 2.44 L120.0 2.19 L122.0 2.00 L124.0 1.88 L126.0 1.85 L128.0 1.91 L130.0 2.04 L132.0 2.25 L134.0 2.52 L136.0 2.82 L138.0 3.14 L140.0 3.44 L142.0 3.71 L144.0 3.93 L146.0 4.08 L148.0 4.15 L150.0 4.13 L152.0 4.02 L154.0 3.84 L156.0 3.60 L158.0 3.31 L160.0 3.00 L162.0 2.69 L164.0 2.40 L166.0 2.16 L168.0 1.98 L170.0 1.87 L172.0 1.85 L174.0 1.92 L176.0 2.07 L178.0 2.29 L180.0 2.56 L182.0 2.86 L184.0 3.18 L186.0 3.48 L188.0 3.75 L190.0 3.96 L192.0 4.09 L194.0 4.15 L196.0 4.12 L198.0 4.00 L200.0 3.81 L202.0 3.56 L204.0 3.27 L206.0 2.95 L208.0 2.64 L210.0 2.36 L212.0 2.13 L214.0 1.96 L216.0 1.86 L218.0 1.86 L220.0 1.94 L222.0 2.10 L224.0 2.32 L226.0 2.60 L228.0 2.91 L230.0 3.22 L232.0 3.52 L234.0 3.78 L236.0 3.98 L238.0 4.11 L240.0 4.15 L242.0 4.11 L244.0 3.98 L246.0 3.78 L248.0 3.52 L250.0 3.22 L252.0 2.91 L254.0 2.60 L256.0 2.32 L258.0 2.10 L260.0 1.94 L262.0 1.86 L264.0 1.86 L266.0 1.96 L268.0 2.13 L270.0 2.36 L272.0 2.64 L274.0 2.95 L276.0 3.27 L278.0 3.56 L280.0 3.81 L282.0 4.00 L284.0 4.12 L286.0 4.15 L288.0 4.09 L290.0 3.96 L292.0 3.75 L294.0 3.48 L296.0 3.18 L298.0 2.86 L300.0 2.56 L302.0 2.29 L304.0 2.07 L306.0 1.92 L308.0 1.85 L310.0 1.87 L312.0 1.98 L314.0 2.16 L316.0 2.40 L318.0 2.69 L320.0 3.00'/></svg></div>
+      <label class="t-micro" for="to" style="display:block;color:var(--secondary);padding:14px 0 8px">
+        Their email</label>
+      <div class="ruled">
+        <input id="to" value="{{ to }}" onInput="{{ onTo }}" aria-describedby="tn"
+               autocapitalize="none" autocorrect="off" spellcheck="false" inputmode="email">
+      </div>
+      <p id="tn" class="t-meta" style="margin:10px 0 0;color:var(--secondary);text-wrap:pretty">
+        They open it by confirming this address. No account, no password. Nobody
+        else can open it, and you see when they did.</p>
     </div>
 
     <div class="grp">
@@ -163,18 +207,18 @@
     <div class="grp">
       <div class="warn">
         <p class="t-rec" style="margin:0;color:var(--paper);text-wrap:pretty">
-          This is everything, including what each business wrote about you.</p>
+          This is your whole record. You choose who reads it, never what they read.</p>
         <p class="t-data" style="margin:8px 0 0;text-wrap:pretty">
-          Anyone holding the link can open it until it expires. It cannot be
-          un-sent, and ending it early does not recall what was already read.
-          Send it to someone deciding about you, not to a job board.</p>
+          Ending it early stops them reading it again. It does not recall what
+          they already read, and this screen says so rather than implying
+          otherwise.</p>
       </div>
     </div>
 
     <div class="grp">
-      <button class="btn-primary press" style="width:100%">Create the link</button>
-      <p class="t-meta" style="margin:12px 0 0;color:var(--secondary);text-align:center">
-        You will see it here, and in Sharing, until it expires.</p>
+      <button class="btn-primary press" style="width:100%">Send it to Ramil</button>
+      <p class="t-meta" style="margin:12px 0 0;color:var(--secondary);text-align:center;text-wrap:pretty">
+        It appears in Sharing under who holds a grant, with the date it ends.</p>
     </div>
 
   </main>
@@ -186,13 +230,15 @@
 // sensitive tier, the whole record including the imprint, against the public
 // page's reduced view. Drawn but inert: what "create" issues is undecided.
 class Component extends DCLogic {
-  constructor(p){ super(p); this.state = {span:1}; }
+  constructor(p){ super(p); this.state = {span:1, to:'ramil.antonio@alorica.com'}; }
   renderVals(){
     const SPANS = [{label:'7 days', days:7}, {label:'30 days', days:30}, {label:'90 days', days:90}];
     const i = this.state.span, cur = SPANS[i];
     const d = new Date(2026, 7, 20); d.setDate(d.getDate() + cur.days);
     const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     return {
+      to: this.state.to,
+      onTo: (e) => this.setState({to: e.target.value}),
       days: cur.days,
       expiry: d.getDate() + ' ' + MON[d.getMonth()] + ' ' + d.getFullYear(),
       spans: SPANS.map((s, j) => ({
@@ -202,15 +248,13 @@ class Component extends DCLogic {
         go: () => this.setState({span: j})
       })),
       contents: [
-        {label:'Every chapter, and its dates', note:'The whole history, not a selection.',
+        {label:'Every chapter, and its dates', note:'Everything on your record, not a selection.',
          state:'Shown', color:'var(--ink)'},
-        {label:'Who confirmed what', note:'Which business signed, which coworker, and which nobody did.',
-         state:'Shown', color:'var(--ink)'},
-        {label:'What each business wrote', note:'The seven measures, at the level each party attested.',
+        {label:'Which party attested each chapter', note:'The business, a coworker who was there, or none.',
          state:'Shown', color:'var(--ink)'},
         {label:'Your imprint', note:'The figure, at full size.',
          state:'Shown', color:'var(--ink)'},
-        {label:'Your phone and email', note:'Never in a link. They ask you for those.',
+        {label:'Your phone and email', note:'Never in anything you send. They ask you for those.',
          state:'Private', color:'var(--secondary)'}
       ]
     };

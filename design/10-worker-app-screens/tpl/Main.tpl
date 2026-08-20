@@ -122,7 +122,13 @@
       <div style="padding-bottom:20px">
         <div style="min-width:0">
           <h1 class="t-title" style="margin:0">Liezel Mendoza</h1>
-          <p class="t-data" style="margin:6px 0 0;color:var(--secondary)">Philippines · Identity verified</p>
+          <!-- The reader's sentence, verbatim. "Identity verified" was the
+               collapse 027 forbids, and it sat on the surface a worker
+               screenshots while the careful version sat where it cost Grain
+               something to say it (055). Country is gone: it says nothing about
+               the work, which is the test every other field on this surface
+               already passes. -->
+          <p class="t-data" style="margin:6px 0 0;color:var(--secondary);text-wrap:pretty">Identity document checked, which says nothing about the work below</p>
         </div>
       </div>
 
@@ -155,24 +161,9 @@
              The whole figure re-scribing on every open is a product performing;
              one band redrawing is the record saying what changed (050). -->
         @@CHAPTERS@@
-        <g fill="none" stroke="var(--ink)">
-          <sc-if value="{{ selBand }}" hint-placeholder-val="{{ true }}">
-            <circle cx="300" cy="300" r="{{ selR0 }}" stroke-width="1.2"></circle>
-            <circle cx="300" cy="300" r="{{ selR1 }}" stroke-width="1.2"></circle>
-          </sc-if>
-        </g>
-        <g fill="none" stroke="transparent" style="pointer-events:stroke;cursor:pointer">
-          <sc-for list="{{ bands }}" as="b" hint-placeholder-count="5">
-            <circle cx="300" cy="300" r="{{ b.mid }}" stroke-width="{{ b.w }}" onClick="{{ b.pick }}"></circle>
-          </sc-for>
-        </g>
       </svg>
       </button>
 
-      <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;
-                  min-height:22px;padding-top:8px">
-        <span class="t-data" aria-live="polite" style="flex:1;min-width:0">{{ readout }}</span>
-      </div>
     </section>
 
     <!-- ===== outstanding verification ===================================== -->
@@ -205,16 +196,17 @@
       </div>
       <div class="sinerule">@@SINERULE@@</div>
       <sc-for list="{{ chapters }}" as="c" hint-placeholder-count="5">
-        <button class="row {{ c.cls }} {{ c.give }}" aria-pressed="{{ c.sel }}" onClick="{{ c.pick }}">
-          <span class="gutter">
-            <svg viewBox="0 0 34 16" width="34" height="16" fill="none"
+        <div class="row {{ c.give }}">
+          <!-- The mark carries provenance and the sentence it stands for is one
+               string: the tip's text content is what a pointer reveals, what a
+               screen reader reads, and what a crawler indexes (055). -->
+          <span class="prov" tabindex="0">
+            <svg viewBox="0 0 34 16" width="34" height="16" fill="none" aria-hidden="true"
                  stroke="var(--ink)" stroke-width="1"><use href="{{ c.sw }}"></use></svg>
+            <span class="tip t-meta">{{ c.prov }}</span>
           </span>
           <span style="flex:1;min-width:0">
             <span class="t-rec" style="display:block">{{ c.party }}</span>
-            <!-- provenance in words, on the worker's own record, not only on the
-                 page employers read (design/07 §4) -->
-            <span class="t-data" style="display:block;padding-top:3px">{{ c.state }}</span>
             <span class="t-meta" style="display:block;color:var(--secondary);padding-top:2px">{{ c.kind }}</span>
             <sc-for list="{{ c.positions }}" as="p" hint-placeholder-count="2">
               <span style="display:flex;justify-content:space-between;gap:8px;
@@ -228,10 +220,10 @@
             <span class="t-data" style="display:block">{{ c.from }}</span>
             <span class="t-data" style="display:block;color:var(--secondary)">{{ c.to }}</span>
           </span>
-        </button>
+        </div>
       </sc-for>
       <p class="t-meta" style="color:var(--secondary);margin:12px 0 0;text-wrap:pretty">
-        A chapter cannot be removed once a party has signed it. Deleting your whole record is the only way out.
+        A chapter cannot be removed once a party has attested it. Deleting your whole record is the only way out.
       </p>
     </section>
 
@@ -287,7 +279,7 @@
 // outstanding verification, work history, sharing. Grants carry state only, no
 // read events (029 §B4). Revised against design/07.
 class Component extends DCLogic {
-  constructor(p){ super(p); this.state = {sel:null, active:0, sheet:null, touched:false}; }
+  constructor(p){ super(p); this.state = {active:0, sheet:null}; }
 
   componentDidMount(){
     const el = document.getElementById('scroll');
@@ -307,51 +299,45 @@ class Component extends DCLogic {
     if(el && this._on) el.removeEventListener('scroll', this._on);
   }
 
+  // Both sides state provenance and neither states doubt (055). A party's
+  // uncorroborated assertion and the worker's are the same strength of claim,
+  // and only one of them used to be marked. "As you gave it" is gone: it was
+  // not provenance, it was a credibility note, and no surface ever put one on a
+  // party. Order is oldest first, which is the direction the figure beside it
+  // reads: the innermost band is the earliest chapter.
   chapters(){
     return [
       {party:'Bataan Poultry Processing', kind:'Processing operator',
-       state:'You added this. Nobody has confirmed it.',
+       prov:'Recorded by Liezel Mendoza. No attesting party.',
        from:'Sep 2017', to:'Mar 2019', sw:'#sw-self', positions:[], attested:false},
       {party:'Sunrise Foods Manufacturing', kind:'Two positions',
-       state:'Sunrise Foods signed this, and a second party agrees.',
+       prov:'Attested by Sunrise Foods Manufacturing, and a second party agrees.',
        from:'Mar 2019', to:'Sep 2021', sw:'#sw-multi', attested:true,
        positions:[{title:'Packing line operator', span:'Mar 2019 – Jun 2020'},
                   {title:'Line lead', span:'Jun 2020 – Sep 2021'}]},
       {party:'R. Santos Dry Goods', kind:'Stall assistant, Divisoria',
-       state:'A coworker signed this. The business is not registered with Grain.',
+       prov:'Attested by a coworker who was there. The business is not registered with Grain.',
        from:'Sep 2020', to:'Mar 2023', sw:'#sw-peer', positions:[], attested:true},
       {party:'Metro Manila Logistics', kind:'Warehouse coordinator',
-       state:'Metro Manila Logistics signed this. Nobody else has agreed yet.',
+       prov:'Attested by Metro Manila Logistics. No second party has agreed.',
        from:'Mar 2023', to:'Jan 2025', sw:'#sw-single', positions:[], attested:true},
-      {party:'Cebu Pacific Cargo Services', kind:'Cargo handling supervisor, as you gave it',
-       state:'They confirmed the dates and the job. Not the work.',
+      {party:'Cebu Pacific Cargo Services', kind:'Cargo handling supervisor',
+       prov:'Cebu Pacific Cargo Services attested the dates and the employment. Nothing about the work.',
        from:'Jan 2025', to:'Present', sw:'#sw-emp', positions:[], attested:false}
     ];
   }
-  // hit zones run to the midpoint between chapter centres, so every tap lands on
-  // the nearest chapter. Five concentric zones across 320px cannot each reach
-  // 44px; the work-history rows are the equal path, and the accessible one.
-  zones(){ return [
-    {ch:0, mid:78.25,  w:40.5, r0:58.00,  r1:95.35},
-    {ch:1, mid:121.8,  w:46.6, r0:95.35,  r1:145.14},
-    {ch:2, mid:169.5,  w:48.8, r0:145.14, r1:194.93},
-    {ch:3, mid:216.45, w:45.1, r0:194.93, r1:240.58},
-    {ch:4, mid:259.5,  w:41.0, r0:240.58, r1:280.00} ]; }
-
   renderVals(){
-    const st = this.state, chs = this.chapters(), sel = st.sel;
+    const st = this.state, chs = this.chapters();
     const open = (s) => this.setState({sheet:s});
-    const z = this.zones();
-    const pick = (i) => this.setState({sel: sel === i ? null : i, touched:true});
 
     const outstanding = [
-      {i:4, gap:'They confirmed the dates. Ask them to say what you did.', sw:'#sw-emp',
+      {i:4, gap:'They attested the dates and the employment, not the work.', sw:'#sw-emp',
        kicker:'Request attestation', cta:'Send the request',
        body:'Cebu Pacific is registered with Grain. The request goes to their verified domain, and whoever answers it signs in first. They write what you did. You cannot edit it, and you can attach your side to it.'},
-      {i:2, gap:'Only a coworker has signed this.', sw:'#sw-peer',
+      {i:2, gap:'A coworker attested this. The business can attest it too.', sw:'#sw-peer',
        kicker:'Ask a manager', cta:'Ask a manager',
-       body:'A manager who confirms their work email at this business can sign for you more strongly than a coworker can. Confirming that email also confirms their own time there.'},
-      {i:0, gap:'Nobody has confirmed these dates.', sw:'#sw-self',
+       body:'A coworker who was there is a real witness, and a manager who confirms their work email at this business adds the business itself alongside them. Confirming that email also confirms their own time there.'},
+      {i:0, gap:'No party has attested these dates yet.', sw:'#sw-self',
        kicker:'Confirm dates', cta:'Ask the employer',
        body:'Ask the employer to confirm when you worked there, or leave the chapter as your own account of it.'}
     ].map(o => ({
@@ -364,39 +350,29 @@ class Component extends DCLogic {
     // What changed since the last open. In the product this comes from the
     // ledger; here it is the chapter that most recently gained an attestation.
     const movedCh = 4;
-    const news = 'Cebu Pacific signed your work since you last looked.';
+    const news = 'Cebu Pacific attested your work since you last looked.';
 
     return {
       headerCls: 'disclosed',
       hasNews: news !== '',
       news,
       movedCls: 'moved-band moved' + movedCh,
-      figureAlt: 'Your imprint. Five chapters: two signed by the employer, one by a coworker, one dates only, one you added yourself.',
-      bands: z.map(g => ({mid:g.mid, w:g.w, pick: () => pick(g.ch)})),
-      selBand: sel !== null,
-      selR0: sel === null ? 0 : z[sel].r0,
-      selR1: sel === null ? 0 : z[sel].r1,
-      // Nothing when nothing is selected. The masthead carries disclosure now
-      // (045/048), and repeating it here turned the record's readout into chrome.
-      readout: sel === null ? '' : chs[sel].party + '. ' + chs[sel].state,
+      figureAlt: 'Your imprint. Five chapters: two attested by the business, one by a coworker, one dates only, one you recorded yourself.',
       outstanding,
-      chapters: chs.map((c,i) => ({...c,
-        cls: i === sel ? 'row-sel' : '',
-        give: c.attested ? 'rigid' : 'press',   // §7 rigidity is permanence
-        sel: i === sel ? 'true' : 'false',
-        pick: () => pick(i)})),
+      chapters: chs.map((c) => ({...c,
+        give: c.attested ? 'rigid' : ''})),   // §7 rigidity is permanence
       openImprint: () => open({kicker:'Imprint', title:'Your imprint, full size',
-        body:'Every ring is one chapter. The weave shows who confirmed it. Open it to walk one measure of the work outward across your whole record.',
+        body:'Every ring is one chapter, drawn as wide as the time it covers. The weave shows who attested it. Open it to walk the rings and read each one.',
         cta:'Open it', dismiss:'Close'}),
       openSettings: () => open({kicker:'Account', title:'Your account',
         body:'Your name, phone, email, identity and address. Ask for an export, see who you have disclosed to, or ask us to delete everything.',
         cta:'Open account', dismiss:'Close'}),
       // The label states exposure rather than naming an action, so the control
       // never reads as "share" when the honest state is "already shared".
-      shareLabel: 'Sharing. Public page on, 2 parties hold a grant',
-      shareCount: '3',
-      openSharing: () => open({kicker:'Who can read this', title:'Two parties, and the public page',
-        body:'Alorica Philippines and Sunrise Foods Manufacturing each hold a grant to your whole record. Your public page is live and anyone with a Grain account can open it.',
+      shareLabel: 'Sharing. 2 parties hold a grant, public page off',
+      shareCount: '2',
+      openSharing: () => open({kicker:'Who can read this', title:'Two parties hold a grant',
+        body:'Alorica Philippines and Cebu Pacific Cargo Services each hold a grant to your whole record, and each grant ends on its own date. Your public page is off, so nobody can reach your record by searching for you.',
         cta:'Go to sharing', dismiss:'Close'}),
       sheet: st.sheet,
       close: () => this.setState({sheet:null})
