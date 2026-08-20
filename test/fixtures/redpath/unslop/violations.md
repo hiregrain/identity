@@ -10,5 +10,8 @@ This paragraph will delve into why utilize is banned, both tell words on one lin
 
 ## A heading with an emoji 🎉
 
-`make check-red` asserts checks/unslop.mjs flags all five: the em dash, the
-spaced en dash, the curly quotes, both tell words, and the heading emoji.
+This line has a JSON-escaped em dash \u2014 too, which the check must also flag.
+
+`make check-red` asserts checks/unslop.mjs flags all six: the em dash, the
+spaced en dash, the curly quotes, both tell words, the heading emoji, and
+the escaped em dash a JSON string value would carry.

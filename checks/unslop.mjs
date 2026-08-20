@@ -76,10 +76,13 @@ const DEFAULT_SCAN_ONLY_EXCLUDED_FILES = new Set([
   "test/fixtures/redpath/unslop/violations.md",
 ]);
 
+// Each pattern also matches its JSON/JS \uXXXX escape form: a JSON string
+// value commonly encodes a non-ASCII character that way instead of as a
+// raw UTF-8 byte, and the escaped form renders identically once parsed.
 const TELL_WORDS = /\b(delve|utilize)\b/gi;
-const EM_DASH = /—/g;
-const SPACED_EN_DASH = / – /g;
-const CURLY_QUOTE = /[‘’“”]/g;
+const EM_DASH = /—|\\u2014/gi;
+const SPACED_EN_DASH = / – | \\u2013 /gi;
+const CURLY_QUOTE = /[‘’“”]|\\u201[89cCdD]/gi;
 const HEADING_EMOJI =
   /[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\u{1F1E6}-\u{1F1FF}]/u;
 
