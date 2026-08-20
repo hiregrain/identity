@@ -45,7 +45,7 @@ correction is a superseding attestation, never an edit.
 | `volume` | Units completed in scope. |
 | `score_summary` | Scoring against the vertical's quality bar, aggregated from graded evaluations, **broken out by evaluation basis**. Customer acceptance and independent adjudication are never pooled into one number. |
 | `dimensions_exercised[]` | Which responsibility dimensions the work exercised, at what demonstrated level. |
-| `stretch_selections[]` | Deliberate above-level assignments taken in scope, and their outcomes. A below-bar stretch outcome carries its development context: it was a development bet, not a routing error, and must not read as evidence against the worker. |
+| `stretch_selections[]` | Deliberate above-level assignments taken in scope, and their outcomes. A below-bar stretch outcome carries its development context; it was a development bet, not a routing error, and must not read as evidence against the worker. |
 | `supersedes` | Optional. The attestation this one corrects. |
 | `issued_at` · `signature` | |
 
