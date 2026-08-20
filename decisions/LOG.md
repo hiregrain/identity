@@ -2899,3 +2899,62 @@ rides along on every grant, the freelancer cannot withhold a client under
 NDA, the engineer must transmit four months of delivery driving to reach
 an engineering role. The cost is real, it falls unevenly, and it is
 accepted.
+
+## 060 — Read events stay unsurfaced; marks differ by shape; citations are checkable (2026-08-20)
+
+Four corrections from an outside review of the canvas, three of which are
+defects in the pass that closed 053 to 059. The review argued from
+"decision 029 §B4", which does not exist; the ruling is real and lives at
+035 §B4. Both of us were reading a citation the log never assigned.
+
+**035 §B4 stands, and the read log comes off Sharing.** It reads: the
+worker sees the grant's state, issued, active, expired or revoked, "and no
+read events. Public-profile views are counted; full-record reads are not
+surfaced." The reason recorded there is that a read stream during a live
+application is an anxiety feed and surveillance of the employer.
+
+057 said reads become identified under named grants, and that is true of
+the ledger and false of the surface. Attribution is not disclosure, 057
+did not name 035 §B4 as superseded, and it is not superseded now. Named
+recipients make 035's reasoning stronger rather than weaker: "Alorica
+opened it three times today" is a worse anxiety feed than an anonymous
+count, not a better one.
+
+The pass had it exactly backwards. It deleted the public-page view count,
+which is the one thing 035 §B4 permits, and kept two per-party
+full-record read rows, which are what it forbids. The rows are gone and
+the count is back, sitting with the page it counts.
+
+**Provenance marks differ by shape, not by density.** Decision 055 made
+the mark the sole carrier of provenance. Rendered at the 34px they
+actually occupy, peer, single-party and multi-party were one small arch:
+they differed only by thread count at 2, 3 and 5, and count is invisible
+below a pitch floor. That is the defect 044 fixed once already in
+`imprint.py`, repeated in the swatch generator, and 055 had just made it
+load-bearing. Two of five states read; three did not.
+
+The replacement is a system, publishable in one sentence: **the baseline
+is the business, an arch is an attestation of the work, and the number of
+arches is the number of parties.** So a dotted rule is the worker's own
+account, a solid rule with no arch is a business confirming dates and
+employment and nothing about the work, an arch with no rule is a person
+who was there at a business Grain does not know, an arch on a rule is one
+business, and two arches on a rule is a business with a second party
+agreeing. It also gives `employment_verified` a glyph that means what the
+state means rather than an arbitrary one.
+
+**Rationale addressed to a reviewer is not UI copy.** "This screen says so
+rather than implying otherwise" shipped on Sharing and was then copied
+into Send. It is the copy form of the comment-drift defect 052 names: a
+sentence whose audience is a critic, in a surface a worker reads. Cut from
+both. The sentences before it already do the work.
+
+**A citation to an entry that does not exist is now mechanical.**
+`checks/decision-citations.mjs` fails the build on any reference to a
+number `decisions/LOG.md` never assigned. Four templates carried "029 §B1",
+"029 §B4", "029 §A" and "decision 030" through every review since, and
+reading did not catch them because a plausible number looks like a fact.
+The rulings were at 035 and 036 throughout, off by exactly the six the
+collision consumed. The check's precision limit is stated in its own
+header: a bare parenthesised number is not matched, because pixel values
+share that shape.
