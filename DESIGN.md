@@ -91,6 +91,19 @@ plain-versus-lobed = whether anything about the work is attested · core = a per
 trajectory, `work_kind`, `volume`, resource magnitude. All measured, all stored, all
 belonging to the record and the analytics layer where they can be labelled.
 
+**And, for v1, lobe depth (decision 054).** Nothing derived from the seven
+measures renders on any surface. Parties are still asked and the ledger still
+stores what they answer; every chapter draws a constant neutral profile, the
+same for every chapter of every person, which carries no claim because it cannot
+differ. The rest of the channel list above stands unchanged, and it is what a
+reader is actually reading: bands, width, overlap, plain-versus-lobed, thread
+density. Passing no levels was tried and collapses the figure to concentric
+rings, because lobe depth is level and the phase sweep only separates while
+amplitude is non-zero; `imprint/README.md` §3a carries the detail and the two
+risks. One consequence here: plain-versus-lobed becomes a question about
+provenance rather than about levels, so an attested chapter threads whether or
+not levels are stored against it.
+
 **Thread density is a contrast, never a count, decision 044.** A band is read
 against its neighbours inside one figure. The thread *count* is set by the pitch
 budget at the size and pixel density being drawn, floored at two device pixels,
@@ -110,9 +123,11 @@ time, so employment gaps take no space and stay invisible, a deliberate refusal,
 oversight, and not to be "improved" later.
 
 **Superseded, self-asserted and unattested.** Superseded material is removed, not struck;
-the ledger keeps it, the figure shows current truth. A chapter with no attested
-dimensions has no lobes and draws as a plain ring, dotted when self-asserted, solid when
-employment is verified. That plainness carries meaning and must never be decorated.
+the ledger keeps it, the figure shows current truth. A chapter nobody attested has no
+lobes and draws as a plain ring, dotted when self-asserted, solid when employment is
+verified. That plainness carries meaning and must never be decorated. Under 054 the
+test is provenance, not stored levels; before 054 it was both, and it read the same
+way because nothing else could attest.
 
 **Changed from the earlier draft**, and superseding it: `k` is no longer a variable
 (seven fixed slots, one per dimension); `phi` no longer encodes start month (angle
