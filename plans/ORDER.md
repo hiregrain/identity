@@ -169,7 +169,10 @@ Evidence cites SHAs, not subjects, so nothing depends on them.
 `ready` requires a founder grilling session on that layer's design tree,
 frontier questions with recommendations, jargon explained, rounds until
 empty, recorded as a decisions-log entry. Task files are authored only
-after the layer's grilling closes. First instance: decision 011
+after the layer's grilling closes, and **in the same session that
+grilled it, while its context is live**; a later cold session authoring
+tasks is the drift case this rule exists to prevent (founder ruling,
+2026-08-20, applied to self-asserted-record). First instance: decision 011
 (foundation + trust-kernel).
 
 **Grill-before-ready has a second half (added 2026-08-19).** A layer may not
