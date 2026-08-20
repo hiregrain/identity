@@ -112,13 +112,18 @@
        On is ink filled to the right, off is the rule alone: the same
        ink-versus-rule distinction every other state in the system uses, so
        nobody has to learn a second vocabulary for a setting. */
-    .sw{flex:0 0 auto;width:46px;height:26px;border:1px solid var(--rule);
-        border-radius:3px;position:relative;background:none;padding:0}
-    .sw i{position:absolute;top:3px;left:3px;width:18px;height:18px;
+    /* The control is 46x44 so it clears §12's target floor; the track it draws
+       is 26 tall and sits inside that. A 26px-high switch was the shape the
+       platform switches use and it fails 2.5.8 on both of them. */
+    .sw{flex:0 0 auto;width:46px;height:44px;border:0;background:none;padding:0;
+        position:relative}
+    .sw::before{content:'';position:absolute;left:0;right:0;top:9px;height:26px;
+                border:1px solid var(--rule);border-radius:3px;box-sizing:border-box}
+    .sw i{position:absolute;top:13px;left:4px;width:18px;height:18px;
           background:var(--rule);transition:left 140ms cubic-bezier(0.2,0,0,1),
           background-color 140ms linear}
-    .sw[aria-checked="true"]{border-color:var(--ink)}
-    .sw[aria-checked="true"] i{left:23px;background:var(--ink)}
+    .sw[aria-checked="true"]::before{border-color:var(--ink)}
+    .sw[aria-checked="true"] i{left:24px;background:var(--ink)}
     @media (prefers-reduced-motion:reduce){ .sw i{transition:none} }
 
     /* Nothing in the system acknowledged a completed action. Inline, in ink,

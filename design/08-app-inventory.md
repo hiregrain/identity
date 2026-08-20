@@ -81,16 +81,16 @@ figure column has `white-space:nowrap`.
 
 | | Screen | Status |
 |---|---|---|
-| A1 | Launch / splash | TO BUILD |
-| A2 | Signed-out lander | TO BUILD |
-| A3 | Identifier, email or phone, verified control of one (`research/11`) | TO BUILD |
-| A4 | One-time code entry | TO BUILD |
-| A5 | Welcome back, recalled identity, masked, one tap | TO BUILD |
+| A1 | Launch / splash | BUILT |
+| A2 | Signed-out lander | BUILT |
+| A3 | Identifier, email or phone, verified control of one (`research/11`) | BUILT |
+| A4 | One-time code entry | BUILT |
+| A5 | Welcome back, recalled identity, masked, one tap | BUILT |
 | A6 | Consent instrument, four mechanics at signup, the rest said where they bind (058) | BLOCKED, decision 054's gate: what consent says about measures collected and not rendered is unwritten |
-| A7 | Full name, one field, any script | TO BUILD |
+| A7 | Full name, one field, any script | BUILT |
 | A8 | Empty record | BUILT |
-| A9 | First chapter, add by hand, or import a résumé | TO BUILD |
-| A10 | Résumé upload and parse progress | TO BUILD |
+| A9 | First chapter, add by hand, or import a résumé | BUILT, the same screen as C1, reached from the empty record |
+| A10 | Résumé upload and parse progress | BUILT |
 | A11 | Imported chapters, review before commit | BUILT |
 | A12 | Claim the address | BUILT |
 
@@ -99,7 +99,7 @@ figure column has `white-space:nowrap`.
 | | Screen | Status |
 |---|---|---|
 | B1 | Core screen | BUILT |
-| B2 | **Chapter detail**, every raw fact, every attestation, superseded versions | TO BUILD |
+| B2 | **Chapter detail**, every raw fact, every attestation, superseded versions | BUILT |
 | B3 | Imprint, expanded. A chapter walker and a legend for what the figure encodes; measures no longer render (054) | BUILT |
 | B4 | Attestation landing ceremony | BUILT |
 
@@ -107,20 +107,20 @@ figure column has `white-space:nowrap`.
 
 | | Screen | Status |
 |---|---|---|
-| C1 | Add a chapter, party search, or a name we do not know | TO BUILD |
-| C2 | Add a position inside a chapter | TO BUILD |
-| C3 | Minor edits (028: only minor edits after commit) | TO BUILD |
-| C4 | Why a chapter cannot be removed | TO BUILD |
+| C1 | Add a chapter, party search, or a name we do not know | BUILT |
+| C2 | Add a position inside a chapter | BUILT |
+| C3 | Minor edits (028: only minor edits after commit) | BUILT |
+| C4 | Why a chapter cannot be removed | BUILT |
 
 ### D · Getting work verified
 
 | | Screen | Status |
 |---|---|---|
 | D1 | Outstanding verification (section of B1) | BUILT |
-| D2 | Request attestation, registered party | TO BUILD |
-| D3 | Ask a manager, invite, work-email path | TO BUILD |
-| D4 | Ask a coworker | TO BUILD |
-| D5 | Request sent, and its state afterwards | TO BUILD |
+| D2 | Request attestation, registered party | BUILT |
+| D3 | Ask a manager, invite, work-email path | BUILT |
+| D4 | Ask a coworker | BUILT |
+| D5 | Request sent, and its state afterwards | BUILT |
 
 ### E · The attester's side, moved to the web (decision 038)
 
@@ -140,20 +140,20 @@ their own chapter · the seven-measure form · submitted · their own empty reco
 
 | | Screen | Status |
 |---|---|---|
-| F1 | Why now, what is taken, what is kept | TO BUILD |
-| F2 | Document type and issuing country | TO BUILD |
-| F3 | Capture, in Grain's chrome, vendor named | TO BUILD |
-| F4 | Checking | TO BUILD |
-| F5 | Result, and what a partner now sees | TO BUILD |
-| F6 | Liveness, separate, declinable, after the document passes | TO BUILD |
-| F7 | Could not verify, what to do next | TO BUILD |
+| F1 | Why now, what is taken, what is kept | BUILT |
+| F2 | Document type and issuing country | BUILT |
+| F3 | Capture, in Grain's chrome, vendor named | BUILT |
+| F4 | Checking | BUILT |
+| F5 | Result, and what a partner now sees | BUILT |
+| F6 | Liveness, separate, declinable, after the document passes | BUILT |
+| F7 | Could not verify, what to do next | BUILT |
 
 ### G · Sharing
 
 | | Screen | Status |
 |---|---|---|
 | G1 | Sharing (section of B1) | BUILT |
-| G2 | Public page management, on/off, imprint on/off, preview | TO BUILD |
+| G2 | Public page management, on/off, imprint on/off, preview | BUILT |
 | G3 | The public page, signed-in view | BUILT |
 | G4 | The public page, logged-out and crawler view (041: reduced). Imprint to human visitors, never to the crawler (056) | BUILT |
 | G5 | Send the record to a named person, expiry, what they receive (057) | BUILT |
@@ -166,30 +166,30 @@ their own chapter · the seven-measure form · submitted · their own empty reco
 |---|---|---|
 | H1 | Account, read-only | BUILT |
 | H1a | The ledger, every entry in order (059) | BUILT |
-| H2 | Notification preferences | TO BUILD |
-| H3 | Language | TO BUILD |
-| H4 | Ask for an export, 24 hours, by email (036) | TO BUILD |
-| H5 | Ask who has read the record, the Art. 15(1)(c) disclosure record. Required by 035 B4, which surfaces no read events anywhere | TO BUILD |
-| H6 | Contact support, the route for every account change (036) | TO BUILD |
-| H7 | Ask us to delete everything, **files the request, never executes it** (038) | TO BUILD |
-| H7a | Deletion requested, the grace-period state, and what resets it | TO BUILD |
-| H7b | Unlock, biometrics or device passcode, declinable, default on (038) | TO BUILD |
-| H8 | Sign out | TO BUILD |
+| H2 | Notification preferences | BUILT |
+| H3 | Language | BUILT |
+| H4 | Ask for an export, 24 hours, by email (036) | BUILT |
+| H5 | Ask who has read the record, the Art. 15(1)(c) disclosure record. Required by 035 B4, which surfaces no read events anywhere | BUILT |
+| H6 | Contact support, the route for every account change (036) | BUILT |
+| H7 | Ask us to delete everything, **files the request, never executes it** (038) | BUILT |
+| H7a | Deletion requested, the grace-period state, and what resets it | BUILT |
+| H7b | Unlock, biometrics or device passcode, declinable, default on (038) | BUILT |
+| H8 | Sign out | BUILT |
 
 ### I · System and platform
 
 | | Screen | Status |
 |---|---|---|
-| I1 | Offline, the record still readable from cache (§12) | TO BUILD |
-| I2 | Something went wrong, with a retry | TO BUILD |
-| I3 | Address not found, a handle that does not resolve | TO BUILD |
-| I4 | Update required | TO BUILD |
-| I5 | Signed out unexpectedly | TO BUILD |
-| I6 | Camera permission | TO BUILD |
-| I7 | Notification permission | TO BUILD |
-| I8 | Push notification content, per event | TO BUILD |
+| I1 | Offline, the record still readable from cache (§12) | BUILT |
+| I2 | Something went wrong, with a retry | BUILT |
+| I3 | Address not found, a handle that does not resolve | BUILT |
+| I4 | Update required | BUILT |
+| I5 | Signed out unexpectedly | BUILT |
+| I6 | Camera permission | BUILT |
+| I7 | Notification permission | BUILT |
+| I8 | Push notification content, per event | BUILT |
 | I9 | App icon and launch screen | BLOCKED, `mark/README.md` lobe count and break angle are provisional |
-| I10 | Terms, privacy, how the record works | TO BUILD |
+| I10 | Terms, privacy, how the record works | BUILT |
 
 Six further surfaces sit on the web (§E).
 
@@ -225,31 +225,36 @@ tiers · the graticule ground.
 
 ### Not specified anywhere, and required
 
-- **One-time-code input** (A4), six boxes, paste handling, resend timer.
-- **Phone input with country selection** (A3). `research/11` says treat a
-  Philippine RA 11934 number as higher assurance, which the control must carry.
-- **Month picker** (C1, C2), month precision only, never day, per the schema.
-- **Party search** (C1), registered parties, plus a free-text fallback that
-  never auto-resolves to a `party_ref`.
-- **Toggle** (G2, H2). Must use the state grammar, not a platform switch.
-- **Toast or inline confirmation.** Nothing in the system acknowledges a
-  completed action.
-- **Skeleton or placeholder state** for every list.
-- **Camera frame** (F3), the plate's registration corners have an honest job
-  here, which is the one place they are not decoration.
+Everything struck below is now in the shared chassis (`tpl/_chrome.part`,
+`tpl/_icons.part`, `tpl/_swatches.part`) and drawn on the **Components** board,
+which exists so a screen never invents a second version of something the system
+already has.
+
+- ~~**One-time-code input** (A4), six boxes, paste handling, resend timer~~ **Built.** **One-time-code input.** Built as six ruled fields rather than six boxes: §8 deletes containers, and a box per digit is six of them.
+- ~~**Phone input with country selection** (A3)~~ **Built.** **Phone input with country selection.** Built into A3, showing the country, because `research/11` treats a Philippine RA 11934 number as higher assurance and a field that hides its country cannot carry that.
+- ~~**Month picker** (C1, C2), month precision only, never day, per the schema~~ **Built.** **Month picker.** Built into C1 and C2, month precision only.
+- ~~**Party search** (C1), registered parties, plus a free-text fallback that
+  never auto-resolves to a `party_ref`~~ **Built.** **Party search.** Built into C1, with a free-text fallback that never auto-resolves to a `party_ref`.
+- ~~**Toggle** (G2, H2)~~ **Built.** A 26px-high switch is the platform shape and it fails 2.5.8 on both platforms.
+- ~~**Toast or inline confirmation~~ **Built.** Under the thing that changed, never a floating toast, which steals focus and leaves before a slow reader has finished.
+- ~~**Skeleton or placeholder state** for every list~~ **Built.** Rules at the row rhythm, no shimmer, since §5 forbids a moving gradient.
+- ~~**Camera frame** (F3), the plate's registration corners have an honest job
+  here, which is the one place they are not decoration~~ **Built.** **Camera frame.** Built, and the registration corners have their one honest job in it.
 - **Pull to refresh**, or a deliberate refusal of it.
 - **Search within work history.** Probably a refusal; most records are small.
 - **Segmented control.** Probably a refusal; the state grammar covers it.
-- **Icons.** §8 allows roughly eight, drawn in-house, 24px grid, 1.5px hairline,
-  square terminals, never filled. Three exist (close, index, capture). The set
-  needs: back, add, camera, share, external link, check-free confirmation.
+- **Icons.** §8's set is drawn: back, add, camera, link, tick and alert in
+  `tpl/_icons.part`, with close, the chevron and share as inline paths in the
+  chassis. 24px grid, 1.5px hairline, square terminals, never filled.
 
 ### Every surface needs five states
 
-Currently drawn once, on one screen each, and missing everywhere else:
-**loading** (the scribing arc) · **empty** · **error with a retry** ·
-**offline** (§12: a micro-caption band, record still readable from cache) ·
-**permission denied**.
+All five are now drawn, each on its own board, and each is in the chassis
+rather than in one screen's helmet: **loading** (the scribing arc, and the
+closing band where the length is known) · **empty** · **error with a retry** ·
+**offline** (§12's micro-caption band, the record still readable from cache) ·
+**permission denied** (camera, and notifications). What remains is applying
+them per surface, which is a build concern rather than a design gap.
 
 ---
 

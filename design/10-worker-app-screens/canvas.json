@@ -14,10 +14,30 @@
     },
     {
       "id": "page-4",
-      "name": "Platform"
+      "name": "Getting work verified"
     },
     {
       "id": "page-5",
+      "name": "Identity"
+    },
+    {
+      "id": "page-6",
+      "name": "Account"
+    },
+    {
+      "id": "page-7",
+      "name": "System states"
+    },
+    {
+      "id": "page-8",
+      "name": "Components"
+    },
+    {
+      "id": "page-9",
+      "name": "Platform"
+    },
+    {
+      "id": "page-10",
       "name": "How native, settled"
     }
   ],
@@ -41,10 +61,28 @@
       "h": 752
     },
     {
+      "file": "ChapterDetail.dc.html",
+      "title": "Chapter detail",
+      "page": "page-1",
+      "x": 880,
+      "y": 0,
+      "w": 360,
+      "h": 752
+    },
+    {
       "file": "Landing.dc.html",
       "title": "An attestation lands",
       "page": "page-1",
-      "x": 880,
+      "x": 1320,
+      "y": 0,
+      "w": 360,
+      "h": 752
+    },
+    {
+      "file": "Ledger.dc.html",
+      "title": "Your record, in order",
+      "page": "page-1",
+      "x": 1760,
       "y": 0,
       "w": 360,
       "h": 752
@@ -53,14 +91,14 @@
       "file": "Settings.dc.html",
       "title": "Account",
       "page": "page-1",
-      "x": 1320,
-      "y": 0,
+      "x": 0,
+      "y": 812,
       "w": 360,
       "h": 752
     },
     {
-      "file": "Empty.dc.html",
-      "title": "Empty record",
+      "file": "Launch.dc.html",
+      "title": "Launch",
       "page": "page-2",
       "x": 0,
       "y": 0,
@@ -68,8 +106,8 @@
       "h": 752
     },
     {
-      "file": "Imported.dc.html",
-      "title": "R\u00e9sum\u00e9 imported",
+      "file": "Lander.dc.html",
+      "title": "Signed-out lander",
       "page": "page-2",
       "x": 440,
       "y": 0,
@@ -77,8 +115,8 @@
       "h": 752
     },
     {
-      "file": "Handle.dc.html",
-      "title": "Claim the address",
+      "file": "Identifier.dc.html",
+      "title": "Identifier, phone or email",
       "page": "page-2",
       "x": 880,
       "y": 0,
@@ -86,11 +124,83 @@
       "h": 752
     },
     {
-      "file": "Consent.dc.html",
-      "title": "Consent instrument",
+      "file": "Code.dc.html",
+      "title": "One-time code",
       "page": "page-2",
       "x": 1320,
       "y": 0,
+      "w": 360,
+      "h": 752
+    },
+    {
+      "file": "WelcomeBack.dc.html",
+      "title": "Welcome back",
+      "page": "page-2",
+      "x": 1760,
+      "y": 0,
+      "w": 360,
+      "h": 752
+    },
+    {
+      "file": "Name.dc.html",
+      "title": "Your name",
+      "page": "page-2",
+      "x": 0,
+      "y": 812,
+      "w": 360,
+      "h": 752
+    },
+    {
+      "file": "Consent.dc.html",
+      "title": "Consent instrument",
+      "page": "page-2",
+      "x": 440,
+      "y": 812,
+      "w": 360,
+      "h": 752
+    },
+    {
+      "file": "Empty.dc.html",
+      "title": "Empty record",
+      "page": "page-2",
+      "x": 880,
+      "y": 812,
+      "w": 360,
+      "h": 752
+    },
+    {
+      "file": "AddChapter.dc.html",
+      "title": "Add a chapter",
+      "page": "page-2",
+      "x": 1320,
+      "y": 812,
+      "w": 360,
+      "h": 752
+    },
+    {
+      "file": "Parsing.dc.html",
+      "title": "Reading a r\u00e9sum\u00e9",
+      "page": "page-2",
+      "x": 1760,
+      "y": 812,
+      "w": 360,
+      "h": 752
+    },
+    {
+      "file": "Imported.dc.html",
+      "title": "R\u00e9sum\u00e9 imported",
+      "page": "page-2",
+      "x": 0,
+      "y": 1624,
+      "w": 360,
+      "h": 752
+    },
+    {
+      "file": "Handle.dc.html",
+      "title": "Claim the address",
+      "page": "page-2",
+      "x": 440,
+      "y": 1624,
       "w": 360,
       "h": 752
     },
@@ -104,10 +214,19 @@
       "h": 752
     },
     {
+      "file": "PublicPage.dc.html",
+      "title": "Public page, on or off",
+      "page": "page-3",
+      "x": 440,
+      "y": 0,
+      "w": 360,
+      "h": 752
+    },
+    {
       "file": "Send.dc.html",
       "title": "Send your record to someone",
       "page": "page-3",
-      "x": 440,
+      "x": 880,
       "y": 0,
       "w": 360,
       "h": 752
@@ -116,7 +235,7 @@
       "file": "Public.dc.html",
       "title": "Public page, signed in",
       "page": "page-3",
-      "x": 880,
+      "x": 1320,
       "y": 0,
       "w": 360,
       "h": 752
@@ -125,7 +244,7 @@
       "file": "PublicReduced.dc.html",
       "title": "Public page, logged out, gap 13",
       "page": "page-3",
-      "x": 1320,
+      "x": 1760,
       "y": 0,
       "w": 360,
       "h": 752
@@ -134,7 +253,304 @@
       "file": "Grant.dc.html",
       "title": "Employer grant view, gap 8",
       "page": "page-3",
+      "x": 0,
+      "y": 812,
+      "w": 360,
+      "h": 752
+    },
+    {
+      "file": "RequestAttestation.dc.html",
+      "title": "Ask a registered business",
+      "page": "page-4",
+      "x": 0,
+      "y": 0,
+      "w": 360,
+      "h": 752
+    },
+    {
+      "file": "AskManager.dc.html",
+      "title": "Ask a manager",
+      "page": "page-4",
+      "x": 440,
+      "y": 0,
+      "w": 360,
+      "h": 752
+    },
+    {
+      "file": "AskCoworker.dc.html",
+      "title": "Ask a coworker",
+      "page": "page-4",
+      "x": 880,
+      "y": 0,
+      "w": 360,
+      "h": 752
+    },
+    {
+      "file": "RequestSent.dc.html",
+      "title": "Request sent, and after",
+      "page": "page-4",
+      "x": 1320,
+      "y": 0,
+      "w": 360,
+      "h": 752
+    },
+    {
+      "file": "AddPosition.dc.html",
+      "title": "Add a position",
+      "page": "page-4",
       "x": 1760,
+      "y": 0,
+      "w": 360,
+      "h": 752
+    },
+    {
+      "file": "MinorEdit.dc.html",
+      "title": "Correct an entry",
+      "page": "page-4",
+      "x": 0,
+      "y": 812,
+      "w": 360,
+      "h": 752
+    },
+    {
+      "file": "WhyPermanent.dc.html",
+      "title": "Why a chapter stays",
+      "page": "page-4",
+      "x": 440,
+      "y": 812,
+      "w": 360,
+      "h": 752
+    },
+    {
+      "file": "IdWhy.dc.html",
+      "title": "Why verify, and what is kept",
+      "page": "page-5",
+      "x": 0,
+      "y": 0,
+      "w": 360,
+      "h": 752
+    },
+    {
+      "file": "IdDocument.dc.html",
+      "title": "Country and document",
+      "page": "page-5",
+      "x": 440,
+      "y": 0,
+      "w": 360,
+      "h": 752
+    },
+    {
+      "file": "IdCapture.dc.html",
+      "title": "Photograph the document",
+      "page": "page-5",
+      "x": 880,
+      "y": 0,
+      "w": 360,
+      "h": 752
+    },
+    {
+      "file": "IdChecking.dc.html",
+      "title": "Checking",
+      "page": "page-5",
+      "x": 1320,
+      "y": 0,
+      "w": 360,
+      "h": 752
+    },
+    {
+      "file": "IdResult.dc.html",
+      "title": "Checked, and what a reader sees",
+      "page": "page-5",
+      "x": 1760,
+      "y": 0,
+      "w": 360,
+      "h": 752
+    },
+    {
+      "file": "IdLiveness.dc.html",
+      "title": "Liveness, declinable",
+      "page": "page-5",
+      "x": 0,
+      "y": 812,
+      "w": 360,
+      "h": 752
+    },
+    {
+      "file": "IdFailed.dc.html",
+      "title": "Could not check it",
+      "page": "page-5",
+      "x": 440,
+      "y": 812,
+      "w": 360,
+      "h": 752
+    },
+    {
+      "file": "Export.dc.html",
+      "title": "Send me everything",
+      "page": "page-6",
+      "x": 0,
+      "y": 0,
+      "w": 360,
+      "h": 752
+    },
+    {
+      "file": "DisclosureRecord.dc.html",
+      "title": "Who has read it, on request",
+      "page": "page-6",
+      "x": 440,
+      "y": 0,
+      "w": 360,
+      "h": 752
+    },
+    {
+      "file": "Notifications.dc.html",
+      "title": "Notifications",
+      "page": "page-6",
+      "x": 880,
+      "y": 0,
+      "w": 360,
+      "h": 752
+    },
+    {
+      "file": "Language.dc.html",
+      "title": "Language",
+      "page": "page-6",
+      "x": 1320,
+      "y": 0,
+      "w": 360,
+      "h": 752
+    },
+    {
+      "file": "Support.dc.html",
+      "title": "Message support",
+      "page": "page-6",
+      "x": 1760,
+      "y": 0,
+      "w": 360,
+      "h": 752
+    },
+    {
+      "file": "DeleteRequest.dc.html",
+      "title": "Delete everything",
+      "page": "page-6",
+      "x": 0,
+      "y": 812,
+      "w": 360,
+      "h": 752
+    },
+    {
+      "file": "DeletePending.dc.html",
+      "title": "Deletion requested",
+      "page": "page-6",
+      "x": 440,
+      "y": 812,
+      "w": 360,
+      "h": 752
+    },
+    {
+      "file": "Unlock.dc.html",
+      "title": "Unlock",
+      "page": "page-6",
+      "x": 880,
+      "y": 812,
+      "w": 360,
+      "h": 752
+    },
+    {
+      "file": "SignOut.dc.html",
+      "title": "Sign out",
+      "page": "page-6",
+      "x": 1320,
+      "y": 812,
+      "w": 360,
+      "h": 752
+    },
+    {
+      "file": "Legal.dc.html",
+      "title": "About, terms and privacy",
+      "page": "page-6",
+      "x": 1760,
+      "y": 812,
+      "w": 360,
+      "h": 752
+    },
+    {
+      "file": "Offline.dc.html",
+      "title": "Offline, the record still reads",
+      "page": "page-7",
+      "x": 0,
+      "y": 0,
+      "w": 360,
+      "h": 752
+    },
+    {
+      "file": "ErrorRetry.dc.html",
+      "title": "Something went wrong",
+      "page": "page-7",
+      "x": 440,
+      "y": 0,
+      "w": 360,
+      "h": 752
+    },
+    {
+      "file": "NotFound.dc.html",
+      "title": "Address not found",
+      "page": "page-7",
+      "x": 880,
+      "y": 0,
+      "w": 360,
+      "h": 752
+    },
+    {
+      "file": "UpdateRequired.dc.html",
+      "title": "Update required",
+      "page": "page-7",
+      "x": 1320,
+      "y": 0,
+      "w": 360,
+      "h": 752
+    },
+    {
+      "file": "SignedOut.dc.html",
+      "title": "Signed out",
+      "page": "page-7",
+      "x": 1760,
+      "y": 0,
+      "w": 360,
+      "h": 752
+    },
+    {
+      "file": "CameraPermission.dc.html",
+      "title": "Camera permission",
+      "page": "page-7",
+      "x": 0,
+      "y": 812,
+      "w": 360,
+      "h": 752
+    },
+    {
+      "file": "NotificationPermission.dc.html",
+      "title": "Notification permission",
+      "page": "page-7",
+      "x": 440,
+      "y": 812,
+      "w": 360,
+      "h": 752
+    },
+    {
+      "file": "PushContent.dc.html",
+      "title": "What a notification says",
+      "page": "page-7",
+      "x": 880,
+      "y": 812,
+      "w": 360,
+      "h": 752
+    },
+    {
+      "file": "Components.dc.html",
+      "title": "Components",
+      "page": "page-8",
+      "x": 0,
       "y": 0,
       "w": 360,
       "h": 752
@@ -142,25 +558,25 @@
     {
       "file": "ShellIOS.dc.html",
       "title": "iPhone 17, 402\u00d7874 @3x",
-      "page": "page-4",
+      "page": "page-9",
       "x": 0,
       "y": 0,
-      "w": 426,
-      "h": 990
+      "w": 360,
+      "h": 752
     },
     {
       "file": "ShellAndroid.dc.html",
       "title": "Android, common viewport",
-      "page": "page-4",
-      "x": 506,
+      "page": "page-9",
+      "x": 440,
       "y": 0,
-      "w": 384,
-      "h": 966
+      "w": 360,
+      "h": 752
     },
     {
       "file": "HandleGrain.dc.html",
       "title": "A \u00b7 Grain-native",
-      "page": "page-5",
+      "page": "page-10",
       "x": 0,
       "y": 0,
       "w": 360,
@@ -169,7 +585,7 @@
     {
       "file": "HandlePlatform.dc.html",
       "title": "B \u00b7 Platform-native",
-      "page": "page-5",
+      "page": "page-10",
       "x": 440,
       "y": 0,
       "w": 360,
@@ -178,17 +594,8 @@
     {
       "file": "HandleSplit.dc.html",
       "title": "C \u00b7 Split",
-      "page": "page-5",
+      "page": "page-10",
       "x": 880,
-      "y": 0,
-      "w": 360,
-      "h": 752
-    },
-    {
-      "file": "Ledger.dc.html",
-      "title": "Your record, in order",
-      "page": "page-1",
-      "x": 1760,
       "y": 0,
       "w": 360,
       "h": 752
@@ -197,7 +604,7 @@
   "annotations": [
     {
       "id": "n-platform",
-      "page": "page-4",
+      "page": "page-9",
       "x": 0,
       "y": -300,
       "w": 880,
@@ -205,7 +612,7 @@
     },
     {
       "id": "n-native-brief",
-      "page": "page-5",
+      "page": "page-10",
       "x": 0,
       "y": -340,
       "w": 1240,
@@ -213,7 +620,7 @@
     },
     {
       "id": "n-native-a",
-      "page": "page-5",
+      "page": "page-10",
       "x": 0,
       "y": 860,
       "w": 360,
@@ -221,7 +628,7 @@
     },
     {
       "id": "n-native-b",
-      "page": "page-5",
+      "page": "page-10",
       "x": 440,
       "y": 860,
       "w": 360,
@@ -229,7 +636,7 @@
     },
     {
       "id": "n-native-c",
-      "page": "page-5",
+      "page": "page-10",
       "x": 880,
       "y": 860,
       "w": 360,
