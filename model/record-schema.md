@@ -175,7 +175,7 @@ credential logic the thesis attacks.
 
 ---
 
-## 8. `education`: enrollment at an institution (PROPOSED, decision 062)
+## 8. `education`: enrollment at an institution (RATIFIED, decisions 062/063)
 
 One enrollment at one institution. A second degree at the same
 institution is a new record, parallel to the rehire rule on chapters.
@@ -201,7 +201,10 @@ institution is a new record, parallel to the rehire rule on chapters.
 accreditation lists (US DAPIP, UK UKRLP, PH TESDA and equivalents), each
 row carrying its source. The table and its seeding belong to the
 `self-asserted-record` layer (decision 063); `extraction` proposes
-against it and stores nothing. Coverage is honest, not global: India's
+against it and stores nothing. It lives in the global spine, not a
+regional payload database: public reference data about institutions
+carries no personal data and no residency obligation, and one copy
+stays consistent where regional copies would drift (decision 064). Coverage is honest, not global: India's
 UGC/AICTE and the Philippine CHED publish recognition data as documents,
 not queryable registries (research/17 §8), so resolution in the target
 population leans on the raw-string fallback. The registry proposes;
@@ -211,7 +214,7 @@ the worker confirms; unmatched stays raw.
 claim, and the thesis rejects self-asserted performance. No thesis title,
 no activities free text.
 
-## 9. `credential`: a certificate, license, or attested course (PROPOSED, decision 062)
+## 9. `credential`: a certificate, license, or attested course (RATIFIED, decisions 062/063)
 
 | Field | Type | Notes |
 |---|---|---|
@@ -255,9 +258,21 @@ against it. `ingestion`'s roster firewall already presumes this object
 | `state` | enum | `open \| attested \| declined \| expired \| withdrawn_before_send` |
 | `requested_at` · `expires_at` | | **Expiry is mandatory**, the grant precedent: no open-ended state may exist. An unanswered request to a dissolved employer expires and the claim thaws. |
 
-Freeze on create; thaw on `declined` or `expired`; permanent once
+Freeze on create; thaw on `declined`, `expired`, or
+`withdrawn_before_send` (a worker pulling back an unsent ask recovers
+the claim; the drawn "asking cannot be undone" copy describes the sent
+ask); permanent once
 `attested`. The expiry default is set at task level and is copy the
-worker sees at the moment of asking.
+worker sees at the moment of asking. Freezable claims are `chapter`,
+`education`, and `credential`; a `position` freezes with its chapter
+(§1) and is never a `claim_ref` itself.
+
+**Confirmation references (decision 064).** Three writes require a
+recorded worker confirmation, enforced as database constraints created
+with the record tables: an imported row's commit
+(`origin: resume_parsed` requires a non-null confirmation reference),
+an `institution_ref` write, and an `issuer_ref` write. The confirmation
+row records what was shown and when the worker accepted it.
 
 ---
 
