@@ -88,6 +88,7 @@
     </div>
   </main>
 </div>
+@@SWATCHES@@
 </x-dc>
 
 <script data-dc-script data-props='{"$preview":{"width":360,"height":800}}'>
@@ -108,23 +109,23 @@ class Component extends DCLogic {
     const chapters = [
       {party:'Bataan Poultry Processing',
        prov:'Recorded by Liezel Mendoza. No attesting party.',
-       registry:'No attesting party', sw:'#sw-self_asserted',
+       registry:'No attesting party', sw:'#sw-self',
        from:'Sep 2017', to:'Mar 2019'},
       {party:'Sunrise Foods Manufacturing',
        prov:'Attested by Sunrise Foods Manufacturing, and a second party agrees.',
-       registry:'Registered business · signed 14 Oct 2021', sw:'#sw-party_multi',
+       registry:'Registered business · signed 14 Oct 2021', sw:'#sw-multi',
        from:'Mar 2019', to:'Sep 2021'},
       {party:'R. Santos Dry Goods',
        prov:'Attested by a coworker who was there. The business is not registered with Grain.',
-       registry:'Individual · signed 2 Apr 2023', sw:'#sw-peer_attested',
+       registry:'Individual · signed 2 Apr 2023', sw:'#sw-peer',
        from:'Sep 2020', to:'Mar 2023'},
       {party:'Metro Manila Logistics',
        prov:'Attested by Metro Manila Logistics. No second party has agreed.',
-       registry:'Registered business · signed 20 Jan 2025', sw:'#sw-party_single',
+       registry:'Registered business · signed 20 Jan 2025', sw:'#sw-single',
        from:'Mar 2023', to:'Jan 2025'},
       {party:'Cebu Pacific Cargo Services',
        prov:'Cebu Pacific Cargo Services attested the dates and the employment. Nothing about the work.',
-       registry:'Registered business · signed 20 Jan 2026', sw:'#sw-employment_verified',
+       registry:'Registered business · signed 20 Jan 2026', sw:'#sw-emp',
        from:'Jan 2025', to:'present'}
     ];
     return {

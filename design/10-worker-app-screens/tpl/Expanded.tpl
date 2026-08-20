@@ -134,13 +134,7 @@
   </div>
 </div>
 
-<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
-  <g id="sw-self">@@SW_SELF@@</g>
-  <g id="sw-emp">@@SW_EMP@@</g>
-  <g id="sw-peer">@@SW_PEER@@</g>
-  <g id="sw-single">@@SW_SINGLE@@</g>
-  <g id="sw-multi">@@SW_MULTI@@</g>
-</defs></svg>
+@@SWATCHES@@
 </x-dc>
 
 <script data-dc-script data-props='{"$preview":{"width":360,"height":800}}'>

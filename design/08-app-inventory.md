@@ -1,7 +1,8 @@
 # The worker app, full inventory
 
-2026-08-19. Every screen, component and state the app needs end to end, with
-what exists, what does not, and what is blocked. Companion to
+2026-08-19, revised 2026-08-20 after decisions 053 to 060. Every screen,
+component and state the app needs end to end, with what exists, what does not,
+and what is blocked. Companion to
 [`06-worker-app-ia.md`](06-worker-app-ia.md) (the structure) and
 [`07-worker-app-design-review.md`](07-worker-app-design-review.md) (the defects
 found in round 1).
@@ -9,6 +10,10 @@ found in round 1).
 **Status key.** `BUILT` means an artboard exists and has survived review round 1.
 `TO BUILD` means specified here, not drawn. `BLOCKED` means needs a ruling or a gap
 closed first, named inline.
+
+**No count of screens appears in this file.** The original carried three that
+disagreed with each other within a day, which is the failure CLAUDE.md names.
+Read the tables, or let `ls design/10-worker-app-screens/*.dc.html` count.
 
 ---
 
@@ -81,7 +86,7 @@ figure column has `white-space:nowrap`.
 | A3 | Identifier, email or phone, verified control of one (`research/11`) | TO BUILD |
 | A4 | One-time code entry | TO BUILD |
 | A5 | Welcome back, recalled identity, masked, one tap | TO BUILD |
-| A6 | Consent instrument, seven mechanics | BUILT |
+| A6 | Consent instrument, four mechanics at signup, the rest said where they bind (058) | BLOCKED, decision 054's gate: what consent says about measures collected and not rendered is unwritten |
 | A7 | Full name, one field, any script | TO BUILD |
 | A8 | Empty record | BUILT |
 | A9 | First chapter, add by hand, or import a résumé | TO BUILD |
@@ -95,7 +100,7 @@ figure column has `white-space:nowrap`.
 |---|---|---|
 | B1 | Core screen | BUILT |
 | B2 | **Chapter detail**, every raw fact, every attestation, superseded versions | TO BUILD |
-| B3 | Imprint, expanded, measures and standing | BUILT |
+| B3 | Imprint, expanded. A chapter walker and a legend for what the figure encodes; measures no longer render (054) | BUILT |
 | B4 | Attestation landing ceremony | BUILT |
 
 ### C · Chapter management
@@ -150,19 +155,21 @@ their own chapter · the seven-measure form · submitted · their own empty reco
 | G1 | Sharing (section of B1) | BUILT |
 | G2 | Public page management, on/off, imprint on/off, preview | TO BUILD |
 | G3 | The public page, signed-in view | BUILT |
-| G4 | The public page, logged-out and crawler view (041: reduced) | TO BUILD |
-| G5 | Create a grant or a share link, expiry, what they receive | TO BUILD |
+| G4 | The public page, logged-out and crawler view (041: reduced). Imprint to human visitors, never to the crawler (056) | BUILT |
+| G5 | Send the record to a named person, expiry, what they receive (057) | BUILT |
 | G6 | Grant detail and revocation (sheet in B1) | BUILT |
+| G7 | The grant as its recipient reads it | BUILT |
 
 ### H · Account
 
 | | Screen | Status |
 |---|---|---|
 | H1 | Account, read-only | BUILT |
+| H1a | The ledger, every entry in order (059) | BUILT |
 | H2 | Notification preferences | TO BUILD |
 | H3 | Language | TO BUILD |
 | H4 | Ask for an export, 24 hours, by email (036) | TO BUILD |
-| H5 | Ask who has read the record, the Art. 15(1)(c) disclosure record | TO BUILD |
+| H5 | Ask who has read the record, the Art. 15(1)(c) disclosure record. Required by 035 B4, which surfaces no read events anywhere | TO BUILD |
 | H6 | Contact support, the route for every account change (036) | TO BUILD |
 | H7 | Ask us to delete everything, **files the request, never executes it** (038) | TO BUILD |
 | H7a | Deletion requested, the grace-period state, and what resets it | TO BUILD |
@@ -184,7 +191,7 @@ their own chapter · the seven-measure form · submitted · their own empty reco
 | I9 | App icon and launch screen | BLOCKED, `mark/README.md` lobe count and break angle are provisional |
 | I10 | Terms, privacy, how the record works | TO BUILD |
 
-**App count: 9 built, 36 to build, 1 blocked.** Six further surfaces sit on the web (§E).
+Six further surfaces sit on the web (§E).
 
 ---
 
@@ -202,13 +209,15 @@ tiers · the graticule ground.
 
 ### Specified in `DESIGN.md` §9 and never built
 
-- **The person-mark.** Every human rendered as their own mini-imprint rather
-  than a photo or initials. Needed the moment attesters exist (E4, E5) and on
-  chapter detail (B2). This is the element §9 calls the person-mark and it has
-  no drawing.
-- **Loading as an arc scribing.** §12 says loading is the scribing arc, never a
-  spinner. Nothing uses it; A10, F4 and I1 all need it.
-- **Progress as a band closing**, needed by A10 and F4.
+- ~~The person-mark.~~ **Deleted by decision 044**, not outstanding. A
+  per-person figure implies a per-person claim, and an attester is not a subject
+  of the record (entry 007). A party is named in words. This entry is struck
+  rather than removed because the deletion is the useful fact.
+- ~~Loading as an arc scribing.~~ **Built.** `.arc` in the chassis, one lobe
+  period of the figure's own wave scribed and released, carrying no percentage,
+  because an arc that claims to know how long is the lie a spinner tells.
+- ~~Progress as a band closing.~~ **Built.** `.band`, for the one case where the
+  length is genuinely known.
 - **The place mark** for any location reference.
 - **Rhumb connectors** for relationships, the attester-to-worker link in E and
   B2 is exactly this.
@@ -246,13 +255,15 @@ Currently drawn once, on one screen each, and missing everywhere else:
 
 ## 3. Platform chrome
 
-**Safe areas.** Every artboard is a 360×800 rectangle with no insets. Both
-platforms require top and bottom insets; the plate's footer band and the fixed
-CTA blocks all currently sit where the home indicator and the gesture bar go.
+**Safe areas.** Closed by decision 046. Every artboard is fluid in both axes on
+a 752 minimum, the common safe box across iOS and Android with gesture nav, and
+the device frames in `ShellIOS`/`ShellAndroid` reserve the insets rather than
+painting fake chrome. Verified at 402x874 and 360x640.
 
-**Back.** iOS takes the left edge; Android gesture nav takes both. See 0.2.
-Beyond the edge index, nothing in the app draws a back affordance. The sheets
-have a Close, the pushed screens do not exist yet.
+**Back.** iOS takes the left edge; Android gesture nav takes both. See 0.2. The
+edge index was removed (048) because it sat inside Android's gesture strip. The
+sheets have a Close; a pushed screen needs a back affordance that is not an edge
+swipe, which is why `.pushhead` exists in the chassis.
 
 **Haptics.** §7 requires "one hard haptic at contact" on the seat and §10
 requires the haptic survive `prefers-reduced-motion`. Nothing implements it, and
@@ -271,8 +282,8 @@ Nothing can ship in Hindi until a companion face is chosen, and §6's whole
 hierarchy rests on a width axis the fallback stack does not have.
 
 **Notifications.** Per `plans/worker-surface/LAYER.md`, three events: a party
-attested, a grant is about to expire, a dispute deadline. Decision 035 removes
-read events. Each needs written content, and the permission prompt needs a
+attested, a grant is about to expire, a dispute deadline. Decision 035 B4
+removes read events, from notifications and from every surface. Each needs written content, and the permission prompt needs a
 moment. Asking at launch is the pattern that gets denied.
 
 ---
@@ -288,6 +299,7 @@ the app's dependency on the product's scarcest action being completable on a
 phone. It is still the growth loop, and still not deferrable. It is simply
 `public-web`'s problem.
 
-**Nine of fifty-two screens are drawn.** The nine that exist are the ones that
-argue the thesis; the forty-two that do not are the ones that make it an app. The
-gap between "the design is settled" and "ready for deployment" is that ratio.
+**What is drawn is the argument. What is missing is the app.** The screens that
+exist are the ones that carry the thesis: the record, what a reader sees, what
+the worker controls. The ones that do not are the ones that let a person get in,
+put something on it, and ask anybody to sign it.

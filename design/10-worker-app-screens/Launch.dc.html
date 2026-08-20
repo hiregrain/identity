@@ -1,9 +1,6 @@
 <!doctype html>
 <html>
-<head>
-  <meta charset="utf-8">
-  <script src="./support.js"></script>
-</head>
+<head><meta charset="utf-8"><script src="./support.js"></script></head>
 <body>
 <x-dc>
 <helmet>
@@ -199,65 +196,44 @@
     .warn{background:var(--ink);color:var(--paper);padding:14px 16px}
     .warn .t-data{color:var(--paper)}
 
-    .plate{position:absolute;inset:0;pointer-events:none}
-    .reg{position:absolute;width:11px;height:11px;border:0 solid var(--ink);opacity:.55}
   </style>
 </helmet>
 
-<!-- Fluid in both axes: the record fills whatever safe area it is given, and
-     min-height carries the standalone case where height:100% has no sized
-     ancestor and would collapse to zero. 728 is the common safe box across
-     iOS (778) and Android (728). Decision 046. -->
+<!-- A1. The mark alone on paper. §12 says loading is the scribing arc,
+     never a spinner, so the launch state uses the same arc rather than a
+     second idiom nobody else in the app speaks. -->
 <div style="width:100%;height:100%;min-height:752px;position:relative;overflow:hidden;background:var(--paper)">
-  <div class="plate">
-    <div class="reg" style="top:7px;left:7px;border-top-width:1px;border-left-width:1px"></div>
-    <div class="reg" style="top:7px;right:7px;border-top-width:1px;border-right-width:1px"></div>
-    <div class="reg" style="bottom:7px;left:7px;border-bottom-width:1px;border-left-width:1px"></div>
-    <div class="reg" style="bottom:7px;right:7px;border-bottom-width:1px;border-right-width:1px"></div>
-  </div>
 
-  <header style="height:52px;display:flex;align-items:center;gap:10px;padding:0 20px;
-                 border-bottom:1px solid var(--hairline)">
-    <!-- The lockup: mark plus the GRAIN wordmark (§4a), generated so the mark
-         swaps to its drawn reduction rather than scaling a master. -->
-    <svg viewBox="0 0 160 26" width="160" height="26" role="img" aria-label="Grain"><svg x='0' y='0' width='26.00' height='26.00' viewBox='0 0 600 600'><g fill='none' stroke='#1B2A44' stroke-width='28.85'><path d='M564.00 300.00 L584.44 333.88 L586.74 369.29 L565.95 398.78 L529.42 417.75 L492.65 429.76 L470.47 446.91 L465.16 480.54 L462.52 526.50 L445.69 564.26 L412.09 576.40 L372.28 564.53 L336.52 544.65 L306.92 533.31 L278.76 538.27 L246.36 554.85 L209.17 568.68 L173.56 565.42 L147.91 540.91 L134.78 503.62 L127.29 467.66 L113.74 442.19 L87.12 425.73 L51.95 409.27 L22.38 384.78 L12.19 351.73 L24.39 316.36 L48.54 285.08 L68.13 258.33 L72.64 230.57 L64.85 196.42 L58.25 157.23 L66.57 121.80 L93.86 99.88 L132.54 93.62 L170.23 94.43 L199.36 88.73 L221.72 68.46 L244.89 38.19 L274.39 12.76 L308.69 6.77 L341.23 23.80 L367.28 53.79 L389.04 80.45 L414.04 93.15 L447.82 93.99 L487.44 95.10 L521.90 108.76 L540.00 138.35 L539.59 177.03 L530.41 214.41 L527.56 245.01 L540.14 271.40 L564.00 300.00 Z'/><path d='M472.00 300.00 L502.50 326.66 L505.12 354.96 L474.49 372.28 L428.29 374.07 L395.48 373.26 L393.79 393.79 L409.22 442.34 L409.74 490.08 L383.80 502.31 L347.64 477.78 L319.01 444.41 L300.00 430.65 L280.76 446.11 L252.79 476.17 L220.03 493.08 L196.68 478.96 L192.11 440.60 L198.38 401.62 L195.01 380.56 L168.36 376.00 L126.95 371.68 L96.54 354.52 L98.01 326.59 L128.00 300.00 L160.93 281.69 L171.18 265.48 L155.23 240.04 L133.72 204.00 L132.08 171.15 L158.38 158.38 L198.47 167.69 L231.32 181.04 L248.32 175.23 L258.16 143.86 L274.37 105.33 L300.00 88.00 L325.63 105.33 L341.84 143.86 L351.68 175.23 L368.68 181.04 L401.53 167.69 L441.62 158.38 L467.92 171.15 L466.28 204.00 L444.76 240.04 L428.81 265.49 L439.03 281.70 L472.00 300.00 Z'/><path d='M390.00 300.00 L406.81 314.06 L408.37 329.04 L391.72 337.99 L366.58 338.44 L348.86 337.49 L348.33 348.33 L357.27 374.63 L358.06 400.56 L344.33 407.02 L325.01 393.34 L309.86 374.86 L300.00 367.25 L290.02 375.80 L275.23 392.45 L257.77 401.94 L245.47 394.44 L243.46 373.68 L247.36 352.64 L245.90 341.51 L231.58 339.50 L209.07 337.66 L192.54 328.79 L193.47 314.03 L210.00 300.00 L228.07 290.53 L233.59 282.21 L224.63 268.78 L212.53 249.50 L211.29 231.93 L225.36 225.36 L246.96 230.88 L264.53 238.56 L273.34 235.63 L278.18 218.57 L286.50 197.49 L300.00 188.00 L313.50 197.49 L321.82 218.57 L326.66 235.63 L335.47 238.56 L353.04 230.88 L374.64 225.36 L388.71 231.93 L387.47 249.50 L375.37 268.78 L366.40 282.21 L371.91 290.53 L390.00 300.00 Z'/></g></svg><text x='39.93' y='21.96' font-family='Archivo' font-size='26.92' font-weight='600' font-stretch='125%' letter-spacing='2.42' fill='#1B2A44'>GRAIN</text></svg>
-  </header>
-
-  <main style="position:absolute;top:52px;bottom:0;left:0;right:0;padding:0 20px 28px;
-               display:flex;flex-direction:column;justify-content:center;gap:40px">
-    <!-- the fixed canvas, empty. The graticule ground (§9) carries it; there is no
-         identity core, and no boundary ring: absence is drawn as absence. -->
-    <div style="position:relative;width:296px;height:296px;align-self:center">
-      <svg viewBox="0 0 296 296" width="296" height="296" aria-label="Your record, empty">
-        <defs><clipPath id="canv"><circle cx="148" cy="148" r="139"></circle></clipPath></defs>
-        <g clip-path="url(#canv)" fill="none" stroke="var(--hairline)" stroke-width=".75">
-          <path d='M0 24 L296 24'/><path d='M0 48 L296 48'/><path d='M0 72 L296 72'/><path d='M0 96 L296 96'/><path d='M0 120 L296 120'/><path d='M0 144 L296 144'/><path d='M0 168 L296 168'/><path d='M0 192 L296 192'/><path d='M0 216 L296 216'/><path d='M0 240 L296 240'/><path d='M0 264 L296 264'/><path d='M0 288 L296 288'/><path d='M24.0 0 Q18.1 148.0 24.0 296'/><path d='M48.0 0 Q43.3 148.0 48.0 296'/><path d='M72.0 0 Q68.4 148.0 72.0 296'/><path d='M96.0 0 Q93.5 148.0 96.0 296'/><path d='M120.0 0 Q118.7 148.0 120.0 296'/><path d='M144.0 0 Q143.8 148.0 144.0 296'/><path d='M168.0 0 Q168.9 148.0 168.0 296'/><path d='M192.0 0 Q194.1 148.0 192.0 296'/><path d='M216.0 0 Q219.2 148.0 216.0 296'/><path d='M240.0 0 Q244.4 148.0 240.0 296'/><path d='M264.0 0 Q269.5 148.0 264.0 296'/><path d='M288.0 0 Q294.6 148.0 288.0 296'/>
-        </g>
-      </svg>
-    </div>
-    <div>
-      <h1 class="t-title" style="margin:0 0 12px">Nothing<br>on it yet</h1>
-      <!-- One chapter, not a career. Two of the four cohorts this record layer
-           is for have no résumé to import, so the manual path is the only door
-           they have, and it asked for eight years before it gave anything back.
-           A minute is a promise the screen can keep. -->
-      <p class="t-body" style="margin:0 0 28px;color:var(--secondary);max-width:280px;text-wrap:pretty">
-        Start with one job. It takes about a minute, and you can add the rest
-        whenever. A chapter nobody has attested is drawn plain, and it fills in
-        when a party who was there signs for it.
-      </p>
-      <div style="display:flex;flex-direction:column;gap:12px">
-        <button class="btn-primary press">Add one job</button>
-        <button class="btn-secondary press">Import a résumé instead</button>
-      </div>
-    </div>
+  <main class="dissolve" style="position:absolute;top:52px;bottom:0;left:0;right:0;overflow-y:auto;padding:0 20px 32px">
+  <main style="position:absolute;inset:0;display:flex;flex-direction:column;
+               align-items:center;justify-content:center;gap:26px">
+    <svg viewBox="0 0 600 600" width="72" height="72" role="img" aria-label="Grain"><g fill='none' stroke='#1B2A44' stroke-width='13.39'><path d='M564.00 300.00 L574.96 315.17 L583.47 331.37 L588.08 348.07 L587.84 364.51 L582.40 379.85 L572.04 393.39 L557.62 404.64 L540.44 413.47 L522.15 420.22 L504.50 425.71 L489.19 431.18 L477.47 438.13 L469.93 448.00 L466.25 461.73 L465.18 479.44 L464.85 500.17 L463.20 522.04 L458.50 542.60 L449.81 559.48 L437.09 570.89 L421.10 576.08 L403.10 575.36 L384.42 569.90 L366.21 561.44 L349.21 551.91 L333.71 543.12 L319.60 536.55 L306.43 533.25 L293.56 533.66 L280.31 537.63 L266.11 544.38 L250.65 552.62 L233.98 560.73 L216.49 566.99 L198.95 569.90 L182.26 568.41 L167.37 562.08 L155.01 551.13 L145.53 536.44 L138.82 519.30 L134.27 501.24 L130.87 483.73 L127.37 467.94 L122.51 454.58 L115.26 443.79 L105.05 435.18 L91.88 427.93 L76.39 421.01 L59.76 413.37 L43.54 404.16 L29.43 392.89 L18.93 379.48 L13.13 364.29 L12.50 347.97 L16.81 331.34 L25.13 315.17 L36.00 300.00 L47.67 286.08 L58.39 273.26 L66.70 261.07 L71.65 248.83 L73.00 235.81 L71.18 221.45 L67.27 205.47 L62.74 188.04 L59.25 169.71 L58.31 151.43 L61.05 134.32 L68.07 119.48 L79.32 107.81 L94.17 99.77 L111.53 95.26 L130.07 93.67 L148.48 93.86 L165.68 94.41 L180.99 93.87 L194.21 90.96 L205.63 84.87 L215.91 75.40 L225.88 63.03 L236.40 48.87 L248.13 34.46 L261.39 21.57 L276.13 11.87 L291.91 6.67 L308.09 6.67 L323.87 11.87 L338.61 21.57 L351.87 34.46 L363.60 48.87 L374.12 63.03 L384.09 75.40 L394.37 84.87 L405.79 90.96 L419.01 93.87 L434.32 94.41 L451.52 93.86 L469.93 93.67 L488.47 95.26 L505.83 99.77 L520.68 107.81 L531.93 119.48 L538.95 134.32 L541.69 151.43 L540.75 169.71 L537.26 188.04 L532.73 205.47 L528.82 221.45 L527.00 235.81 L528.34 248.83 L533.28 261.07 L541.57 273.26 L552.30 286.08 L564.00 300.00 Z'/><path d='M472.00 300.00 L492.08 314.75 L505.38 331.72 L507.77 348.62 L497.92 362.64 L477.58 371.57 L451.00 374.76 L424.04 373.74 L402.83 372.33 L391.92 375.80 L392.26 388.79 L400.38 412.63 L409.52 443.68 L412.83 474.23 L406.52 495.89 L391.17 503.37 L370.56 496.46 L349.31 479.45 L330.81 458.87 L316.31 441.26 L305.04 431.61 L294.93 432.36 L283.50 442.94 L269.00 459.85 L251.22 477.52 L231.75 490.02 L213.57 492.80 L199.84 484.18 L192.67 465.73 L192.03 441.65 L195.51 417.24 L198.99 397.21 L197.96 384.15 L189.17 377.96 L171.94 376.14 L148.60 374.96 L124.01 370.93 L104.01 362.03 L93.61 348.30 L95.29 331.62 L108.12 314.73 L128.00 300.00 L148.89 288.40 L164.74 279.11 L171.44 269.92 L168.03 258.23 L156.93 242.34 L143.12 222.32 L132.37 200.34 L129.46 180.05 L136.65 165.28 L153.15 158.67 L175.62 160.43 L199.43 168.07 L220.34 176.99 L235.82 181.97 L245.70 178.88 L251.96 166.23 L257.62 145.79 L265.52 122.20 L277.09 101.58 L291.93 89.58 L308.07 89.58 L322.91 101.58 L334.48 122.20 L342.38 145.79 L348.04 166.23 L354.30 178.88 L364.18 181.97 L379.66 176.99 L400.57 168.07 L424.38 160.43 L446.85 158.67 L463.35 165.28 L470.54 180.05 L467.63 200.34 L456.88 222.32 L443.07 242.34 L431.97 258.24 L428.54 269.92 L435.22 279.11 L451.07 288.40 L472.00 300.00 Z'/><path d='M390.00 300.00 L406.81 314.06 L408.37 329.04 L391.72 337.99 L366.58 338.44 L348.86 337.49 L348.33 348.33 L357.27 374.63 L358.06 400.56 L344.33 407.02 L325.01 393.34 L309.86 374.86 L300.00 367.25 L290.02 375.80 L275.23 392.45 L257.77 401.94 L245.47 394.44 L243.46 373.68 L247.36 352.64 L245.90 341.51 L231.58 339.50 L209.07 337.66 L192.54 328.79 L193.47 314.03 L210.00 300.00 L228.07 290.53 L233.59 282.21 L224.63 268.78 L212.53 249.50 L211.29 231.93 L225.36 225.36 L246.96 230.88 L264.53 238.56 L273.34 235.63 L278.18 218.57 L286.50 197.49 L300.00 188.00 L313.50 197.49 L321.82 218.57 L326.66 235.63 L335.47 238.56 L353.04 230.88 L374.64 225.36 L388.71 231.93 L387.47 249.50 L375.37 268.78 L366.40 282.21 L371.91 290.53 L390.00 300.00 Z'/></g></svg>
+    <svg class="arc" viewBox="0 0 120 24" width="120" height="24" fill="none"
+         stroke="var(--rule)" stroke-width="1.4" aria-label="Opening your record">
+      <path d="M0.0 12.00 L1.2 11.77 L2.5 11.54 L3.8 11.31 L5.0 11.09 L6.2 10.86 L7.5 10.63 L8.8 10.41 L10.0 10.19 L11.2 9.97 L12.5 9.75 L13.8 9.53 L15.0 9.32 L16.2 9.11 L17.5 8.90 L18.8 8.70 L20.0 8.50 L21.2 8.30 L22.5 8.11 L23.8 7.92 L25.0 7.74 L26.2 7.56 L27.5 7.38 L28.8 7.21 L30.0 7.05 L31.2 6.89 L32.5 6.74 L33.8 6.59 L35.0 6.45 L36.2 6.31 L37.5 6.18 L38.8 6.06 L40.0 5.94 L41.2 5.83 L42.5 5.72 L43.8 5.62 L45.0 5.53 L46.2 5.45 L47.5 5.37 L48.8 5.30 L50.0 5.24 L51.2 5.18 L52.5 5.13 L53.8 5.09 L55.0 5.06 L56.2 5.03 L57.5 5.01 L58.8 5.00 L60.0 5.00 L61.2 5.00 L62.5 5.01 L63.8 5.03 L65.0 5.06 L66.2 5.09 L67.5 5.13 L68.8 5.18 L70.0 5.24 L71.2 5.30 L72.5 5.37 L73.8 5.45 L75.0 5.53 L76.2 5.62 L77.5 5.72 L78.8 5.83 L80.0 5.94 L81.2 6.06 L82.5 6.18 L83.8 6.31 L85.0 6.45 L86.2 6.59 L87.5 6.74 L88.8 6.89 L90.0 7.05 L91.2 7.21 L92.5 7.38 L93.8 7.56 L95.0 7.74 L96.2 7.92 L97.5 8.11 L98.8 8.30 L100.0 8.50 L101.2 8.70 L102.5 8.90 L103.8 9.11 L105.0 9.32 L106.2 9.53 L107.5 9.75 L108.8 9.97 L110.0 10.19 L111.2 10.41 L112.5 10.63 L113.8 10.86 L115.0 11.09 L116.2 11.31 L117.5 11.54 L118.8 11.77 L120.0 12.00"/>
+    </svg>
+  </main>
   </main>
 
 </div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <!-- §8's set: 24px grid, 1.5px hairline, square terminals, never filled.
+       Close, index and capture existed; back, add, camera, link, tick and
+       alert are the rest of what the screens below actually reach for. -->
+  <g id="i-back"><path d="M14.5 5 L7.5 12 L14.5 19"/></g>
+  <g id="i-add"><path d="M12 5 L12 19"/><path d="M5 12 L19 12"/></g>
+  <g id="i-camera"><path d="M3.5 7.5 L8 7.5 L9.5 5.5 L14.5 5.5 L16 7.5 L20.5 7.5 L20.5 18.5 L3.5 18.5 Z"/><circle cx="12" cy="13" r="3.6"/></g>
+  <g id="i-link"><path d="M13 5.5 L18.5 5.5 L18.5 11"/><path d="M18.5 5.5 L10.5 13.5"/><path d="M15.5 14.5 L15.5 18.5 L5.5 18.5 L5.5 8.5 L9.5 8.5"/></g>
+  <g id="i-tick"><path d="M4.5 12.5 L9.5 17.5 L19.5 6.5"/></g>
+  <g id="i-alert"><path d="M12 4.5 L21 19.5 L3 19.5 Z"/><path d="M12 10 L12 14"/><path d="M12 16.4 L12 17.2"/></g>
+</defs></svg>
+
 </x-dc>
 
 <script data-dc-script data-props='{"$preview":{"width":360,"height":800}}'>
-class Component extends DCLogic { renderVals(){ return {}; } }
+class Component extends DCLogic {
+  renderVals(){ return {}; }
+}
 </script>
 </body>
 </html>

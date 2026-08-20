@@ -196,87 +196,120 @@
     .warn{background:var(--ink);color:var(--paper);padding:14px 16px}
     .warn .t-data{color:var(--paper)}
 
-    .prow{display:flex;gap:12px;align-items:flex-start;padding:14px 0;
+    .drow{display:flex;gap:14px;align-items:flex-start;padding:13px 0;
           border-bottom:1px solid var(--hairline)}
-    main::-webkit-scrollbar{width:0}
+    .dk{flex:0 0 108px;padding-top:1px}
   </style>
 </helmet>
 
-<!-- The employer's side, on the --page ground Public uses: whoever is reading
-     this is not the subject, and the chassis says so before the copy does. -->
-<div style="width:100%;height:100%;min-height:752px;position:relative;overflow:hidden;background:var(--page)">
-  <header style="height:52px;display:flex;align-items:center;justify-content:space-between;
-                 padding:0 20px;border-bottom:1px solid var(--ink);background:var(--page)">
-    <span style="display:flex;align-items:center;gap:10px">
-      <svg viewBox="0 0 160 26" width="122" height="20" role="img" aria-label="Grain"><svg x='0' y='0' width='26.00' height='26.00' viewBox='0 0 600 600'><g fill='none' stroke='#1B2A44' stroke-width='28.85'><path d='M564.00 300.00 L584.44 333.88 L586.74 369.29 L565.95 398.78 L529.42 417.75 L492.65 429.76 L470.47 446.91 L465.16 480.54 L462.52 526.50 L445.69 564.26 L412.09 576.40 L372.28 564.53 L336.52 544.65 L306.92 533.31 L278.76 538.27 L246.36 554.85 L209.17 568.68 L173.56 565.42 L147.91 540.91 L134.78 503.62 L127.29 467.66 L113.74 442.19 L87.12 425.73 L51.95 409.27 L22.38 384.78 L12.19 351.73 L24.39 316.36 L48.54 285.08 L68.13 258.33 L72.64 230.57 L64.85 196.42 L58.25 157.23 L66.57 121.80 L93.86 99.88 L132.54 93.62 L170.23 94.43 L199.36 88.73 L221.72 68.46 L244.89 38.19 L274.39 12.76 L308.69 6.77 L341.23 23.80 L367.28 53.79 L389.04 80.45 L414.04 93.15 L447.82 93.99 L487.44 95.10 L521.90 108.76 L540.00 138.35 L539.59 177.03 L530.41 214.41 L527.56 245.01 L540.14 271.40 L564.00 300.00 Z'/><path d='M472.00 300.00 L502.50 326.66 L505.12 354.96 L474.49 372.28 L428.29 374.07 L395.48 373.26 L393.79 393.79 L409.22 442.34 L409.74 490.08 L383.80 502.31 L347.64 477.78 L319.01 444.41 L300.00 430.65 L280.76 446.11 L252.79 476.17 L220.03 493.08 L196.68 478.96 L192.11 440.60 L198.38 401.62 L195.01 380.56 L168.36 376.00 L126.95 371.68 L96.54 354.52 L98.01 326.59 L128.00 300.00 L160.93 281.69 L171.18 265.48 L155.23 240.04 L133.72 204.00 L132.08 171.15 L158.38 158.38 L198.47 167.69 L231.32 181.04 L248.32 175.23 L258.16 143.86 L274.37 105.33 L300.00 88.00 L325.63 105.33 L341.84 143.86 L351.68 175.23 L368.68 181.04 L401.53 167.69 L441.62 158.38 L467.92 171.15 L466.28 204.00 L444.76 240.04 L428.81 265.49 L439.03 281.70 L472.00 300.00 Z'/><path d='M390.00 300.00 L406.81 314.06 L408.37 329.04 L391.72 337.99 L366.58 338.44 L348.86 337.49 L348.33 348.33 L357.27 374.63 L358.06 400.56 L344.33 407.02 L325.01 393.34 L309.86 374.86 L300.00 367.25 L290.02 375.80 L275.23 392.45 L257.77 401.94 L245.47 394.44 L243.46 373.68 L247.36 352.64 L245.90 341.51 L231.58 339.50 L209.07 337.66 L192.54 328.79 L193.47 314.03 L210.00 300.00 L228.07 290.53 L233.59 282.21 L224.63 268.78 L212.53 249.50 L211.29 231.93 L225.36 225.36 L246.96 230.88 L264.53 238.56 L273.34 235.63 L278.18 218.57 L286.50 197.49 L300.00 188.00 L313.50 197.49 L321.82 218.57 L326.66 235.63 L335.47 238.56 L353.04 230.88 L374.64 225.36 L388.71 231.93 L387.47 249.50 L375.37 268.78 L366.40 282.21 L371.91 290.53 L390.00 300.00 Z'/></g></svg><text x='39.93' y='21.96' font-family='Archivo' font-size='26.92' font-weight='600' font-stretch='125%' letter-spacing='2.42' fill='#1B2A44'>GRAIN</text></svg>
-    </span>
-    <span class="t-micro" style="color:var(--secondary)">Granted access</span>
+<!-- B2. Every raw fact, every attestation, and what a correction did to
+     what it corrected. The record is append-only, so a superseded value is
+     shown struck with the entry that replaced it beside it: removing it would
+     make the ledger's central promise unreadable on the one screen where a
+     worker would check it. -->
+<div style="width:100%;height:100%;min-height:752px;position:relative;overflow:hidden;background:var(--paper)">
+  <header class="pushhead">
+    <button class="iconbtn press" aria-label="Back to your record">
+      <svg width="22" height="22" viewBox="0 0 24 24"><use href="#i-back"></use></svg>
+    </button>
+    <h1 class="t-serial" style="margin:0">Chapter</h1>
   </header>
 
-  <main class="dissolve" style="position:absolute;top:52px;bottom:0;left:0;right:0;overflow-y:auto;padding:0 20px 40px">
-
-    <!-- The reading an employer needs first is not a score. It is how long they
-         have, and who is accountable for what they are about to read. -->
-    <div class="reading" style="padding:24px 0 18px;                border-bottom:1px solid var(--ink)">
-      <span class="t-inst">{{ daysLeft }}</span>
-      <span style="flex:1;min-width:0">
-        <span class="t-rec" style="display:block;text-wrap:pretty">days left on this grant</span>
-        <span class="t-data" style="display:block;color:var(--secondary);padding-top:3px">
-          Liezel Mendoza granted it on {{ granted }}. She can end it at any time.</span>
-      </span>
+  <main class="dissolve" style="position:absolute;top:52px;bottom:0;left:0;right:0;overflow-y:auto;padding:0 20px 32px">
+    <div style="padding:24px 0 18px;border-bottom:1px solid var(--ink)">
+      <h2 class="t-title" style="margin:0;font-size:24px;text-wrap:pretty">Sunrise Foods Manufacturing</h2>
+      <p class="t-data" style="margin:8px 0 0;color:var(--secondary)">Mar 2019 to Sep 2021 · Two positions</p>
+      <div style="display:flex;align-items:center;gap:10px;padding-top:12px">
+        <span class="prov" tabindex="0">
+          <svg viewBox="0 0 34 16" width="34" height="16" fill="none" aria-hidden="true"
+               stroke="var(--ink)" stroke-width="1"><use href="#sw-multi"></use></svg>
+          <span class="tip t-meta">Attested by Sunrise Foods Manufacturing, and a second party agrees.</span>
+        </span>
+        <span class="t-meta" style="color:var(--secondary);flex:1;min-width:0;text-wrap:pretty">
+          Two parties attested this independently.</span>
+      </div>
     </div>
 
-    <div style="padding-top:24px">
-      <h1 class="t-title" style="margin:0">Liezel Mendoza</h1>
-      <p class="t-data" style="margin:8px 0 0;color:var(--secondary);text-wrap:pretty">
-        Identity document checked, which says nothing about the work below</p>
-    </div>
-
-    <!-- What Grain is and is not saying, before any content. This is the sentence
-         the whole product exists to be able to write. -->
-    <div style="margin-top:18px;border-block:1px solid var(--ink);padding:14px 0">
-      <p class="t-body" style="margin:0;text-wrap:pretty">
-        Grain checks that a business really signed a record. It never checks
-        whether the work was done well. What each party asserted is below, at
-        their own reading, and the decision is yours.</p>
-    </div>
-
-    <div style="padding-top:26px">
-      <div class="sechead"><h2 class="t-sec" style="margin:0">Work history</h2>
-        <span class="t-data" style="color:var(--secondary)">{{ count }}</span></div>
+    <div class="grp">
+      <div class="sechead"><h3 class="t-sec" style="margin:0">What the record holds</h3></div>
       <div class="sinerule"><svg viewBox='0 0 320 6' width='100%' height='6' preserveAspectRatio='none' fill='none' stroke='#D3D7D6' stroke-width='1' vector-effect='non-scaling-stroke'><path d='M0.0 3.00 L2.0 3.31 L4.0 3.60 L6.0 3.84 L8.0 4.02 L10.0 4.13 L12.0 4.15 L14.0 4.08 L16.0 3.93 L18.0 3.71 L20.0 3.44 L22.0 3.14 L24.0 2.82 L26.0 2.52 L28.0 2.25 L30.0 2.04 L32.0 1.91 L34.0 1.85 L36.0 1.88 L38.0 2.00 L40.0 2.19 L42.0 2.44 L44.0 2.73 L46.0 3.05 L48.0 3.36 L50.0 3.64 L52.0 3.87 L54.0 4.04 L56.0 4.14 L58.0 4.14 L60.0 4.06 L62.0 3.90 L64.0 3.68 L66.0 3.40 L68.0 3.09 L70.0 2.78 L72.0 2.48 L74.0 2.22 L76.0 2.02 L78.0 1.89 L80.0 1.85 L82.0 1.89 L84.0 2.02 L86.0 2.22 L88.0 2.48 L90.0 2.78 L92.0 3.09 L94.0 3.40 L96.0 3.68 L98.0 3.90 L100.0 4.06 L102.0 4.14 L104.0 4.14 L106.0 4.04 L108.0 3.87 L110.0 3.64 L112.0 3.36 L114.0 3.05 L116.0 2.73 L118.0 2.44 L120.0 2.19 L122.0 2.00 L124.0 1.88 L126.0 1.85 L128.0 1.91 L130.0 2.04 L132.0 2.25 L134.0 2.52 L136.0 2.82 L138.0 3.14 L140.0 3.44 L142.0 3.71 L144.0 3.93 L146.0 4.08 L148.0 4.15 L150.0 4.13 L152.0 4.02 L154.0 3.84 L156.0 3.60 L158.0 3.31 L160.0 3.00 L162.0 2.69 L164.0 2.40 L166.0 2.16 L168.0 1.98 L170.0 1.87 L172.0 1.85 L174.0 1.92 L176.0 2.07 L178.0 2.29 L180.0 2.56 L182.0 2.86 L184.0 3.18 L186.0 3.48 L188.0 3.75 L190.0 3.96 L192.0 4.09 L194.0 4.15 L196.0 4.12 L198.0 4.00 L200.0 3.81 L202.0 3.56 L204.0 3.27 L206.0 2.95 L208.0 2.64 L210.0 2.36 L212.0 2.13 L214.0 1.96 L216.0 1.86 L218.0 1.86 L220.0 1.94 L222.0 2.10 L224.0 2.32 L226.0 2.60 L228.0 2.91 L230.0 3.22 L232.0 3.52 L234.0 3.78 L236.0 3.98 L238.0 4.11 L240.0 4.15 L242.0 4.11 L244.0 3.98 L246.0 3.78 L248.0 3.52 L250.0 3.22 L252.0 2.91 L254.0 2.60 L256.0 2.32 L258.0 2.10 L260.0 1.94 L262.0 1.86 L264.0 1.86 L266.0 1.96 L268.0 2.13 L270.0 2.36 L272.0 2.64 L274.0 2.95 L276.0 3.27 L278.0 3.56 L280.0 3.81 L282.0 4.00 L284.0 4.12 L286.0 4.15 L288.0 4.09 L290.0 3.96 L292.0 3.75 L294.0 3.48 L296.0 3.18 L298.0 2.86 L300.0 2.56 L302.0 2.29 L304.0 2.07 L306.0 1.92 L308.0 1.85 L310.0 1.87 L312.0 1.98 L314.0 2.16 L316.0 2.40 L318.0 2.69 L320.0 3.00'/></svg></div>
-      <sc-for list="{{ chapters }}" as="c" hint-placeholder-count="5">
-        <div class="prow">
-          <!-- The mark carries provenance; the sentence it stands for is the
-               tip's text content, which is also what a screen reader reads and
-               what a crawler indexes (055). The line that stays visible is the
-               attesting party's own standing and signing date, which is a fact
-               about them rather than a note about her. -->
-          <span class="prov" tabindex="0">
-            <svg viewBox="0 0 34 16" width="34" height="16" fill="none" aria-hidden="true"
-                 stroke="var(--ink)" stroke-width="1"><use href="{{ c.sw }}"></use></svg>
-            <span class="tip t-meta">{{ c.prov }}</span>
-          </span>
+      <sc-for list="{{ facts }}" as="f" hint-placeholder-count="6">
+        <div class="drow">
+          <span class="dk t-meta" style="color:var(--secondary)">{{ f.k }}</span>
           <span style="flex:1;min-width:0">
-            <span class="t-rec" style="display:block">{{ c.party }}</span>
-            <span class="t-meta" style="display:block;color:var(--secondary);padding-top:3px">{{ c.registry }}</span>
-          </span>
-          <span class="col-r">
-            <span class="t-data" style="display:block">{{ c.from }}</span>
-            <span class="t-data" style="display:block;color:var(--secondary)">{{ c.to }}</span>
+            <span class="t-body" style="display:block;text-wrap:pretty">{{ f.v }}</span>
+            <sc-if value="{{ f.was }}" hint-placeholder-val="{{ true }}">
+              <span class="t-meta" style="display:block;color:var(--secondary);padding-top:3px;text-wrap:pretty">
+                <s>{{ f.was }}</s> corrected {{ f.when }}, by a new entry</span>
+            </sc-if>
           </span>
         </div>
       </sc-for>
     </div>
 
-    <div style="margin-top:24px;border-top:1px solid var(--ink);padding-top:14px">
-      <p class="t-meta" style="margin:0;color:var(--secondary);text-wrap:pretty">
-        Two of these chapters were attested by one party only, and stand at that
-        party's reading alone. One has no attesting party. This record holds the
-        chapters Liezel entered, and Grain does not know of any she did not.</p>
+    <div class="grp">
+      <div class="sechead"><h3 class="t-sec" style="margin:0">Who attested it</h3>
+        <span class="t-data" style="color:var(--secondary)">{{ n }}</span></div>
+      <div class="sinerule"><svg viewBox='0 0 320 6' width='100%' height='6' preserveAspectRatio='none' fill='none' stroke='#D3D7D6' stroke-width='1' vector-effect='non-scaling-stroke'><path d='M0.0 3.00 L2.0 3.31 L4.0 3.60 L6.0 3.84 L8.0 4.02 L10.0 4.13 L12.0 4.15 L14.0 4.08 L16.0 3.93 L18.0 3.71 L20.0 3.44 L22.0 3.14 L24.0 2.82 L26.0 2.52 L28.0 2.25 L30.0 2.04 L32.0 1.91 L34.0 1.85 L36.0 1.88 L38.0 2.00 L40.0 2.19 L42.0 2.44 L44.0 2.73 L46.0 3.05 L48.0 3.36 L50.0 3.64 L52.0 3.87 L54.0 4.04 L56.0 4.14 L58.0 4.14 L60.0 4.06 L62.0 3.90 L64.0 3.68 L66.0 3.40 L68.0 3.09 L70.0 2.78 L72.0 2.48 L74.0 2.22 L76.0 2.02 L78.0 1.89 L80.0 1.85 L82.0 1.89 L84.0 2.02 L86.0 2.22 L88.0 2.48 L90.0 2.78 L92.0 3.09 L94.0 3.40 L96.0 3.68 L98.0 3.90 L100.0 4.06 L102.0 4.14 L104.0 4.14 L106.0 4.04 L108.0 3.87 L110.0 3.64 L112.0 3.36 L114.0 3.05 L116.0 2.73 L118.0 2.44 L120.0 2.19 L122.0 2.00 L124.0 1.88 L126.0 1.85 L128.0 1.91 L130.0 2.04 L132.0 2.25 L134.0 2.52 L136.0 2.82 L138.0 3.14 L140.0 3.44 L142.0 3.71 L144.0 3.93 L146.0 4.08 L148.0 4.15 L150.0 4.13 L152.0 4.02 L154.0 3.84 L156.0 3.60 L158.0 3.31 L160.0 3.00 L162.0 2.69 L164.0 2.40 L166.0 2.16 L168.0 1.98 L170.0 1.87 L172.0 1.85 L174.0 1.92 L176.0 2.07 L178.0 2.29 L180.0 2.56 L182.0 2.86 L184.0 3.18 L186.0 3.48 L188.0 3.75 L190.0 3.96 L192.0 4.09 L194.0 4.15 L196.0 4.12 L198.0 4.00 L200.0 3.81 L202.0 3.56 L204.0 3.27 L206.0 2.95 L208.0 2.64 L210.0 2.36 L212.0 2.13 L214.0 1.96 L216.0 1.86 L218.0 1.86 L220.0 1.94 L222.0 2.10 L224.0 2.32 L226.0 2.60 L228.0 2.91 L230.0 3.22 L232.0 3.52 L234.0 3.78 L236.0 3.98 L238.0 4.11 L240.0 4.15 L242.0 4.11 L244.0 3.98 L246.0 3.78 L248.0 3.52 L250.0 3.22 L252.0 2.91 L254.0 2.60 L256.0 2.32 L258.0 2.10 L260.0 1.94 L262.0 1.86 L264.0 1.86 L266.0 1.96 L268.0 2.13 L270.0 2.36 L272.0 2.64 L274.0 2.95 L276.0 3.27 L278.0 3.56 L280.0 3.81 L282.0 4.00 L284.0 4.12 L286.0 4.15 L288.0 4.09 L290.0 3.96 L292.0 3.75 L294.0 3.48 L296.0 3.18 L298.0 2.86 L300.0 2.56 L302.0 2.29 L304.0 2.07 L306.0 1.92 L308.0 1.85 L310.0 1.87 L312.0 1.98 L314.0 2.16 L316.0 2.40 L318.0 2.69 L320.0 3.00'/></svg></div>
+      <sc-for list="{{ atts }}" as="a" hint-placeholder-count="2">
+        <div class="drow">
+          <span style="flex:1;min-width:0">
+            <span class="t-rec" style="display:block">{{ a.party }}</span>
+            <span class="t-meta" style="display:block;color:var(--secondary);padding-top:3px;text-wrap:pretty">{{ a.kind }}</span>
+          </span>
+          <span class="t-data col-r" style="color:var(--secondary)">{{ a.when }}</span>
+        </div>
+      </sc-for>
+      <p class="t-meta" style="margin:12px 0 0;color:var(--secondary);text-wrap:pretty">
+        Grain checks that each party really signed. It never checks whether they
+        were right, and it never averages parties who disagree.</p>
+    </div>
+
+    <div class="grp">
+      <div class="sechead"><h3 class="t-sec" style="margin:0">What you can do</h3></div>
+      <div class="sinerule"><svg viewBox='0 0 320 6' width='100%' height='6' preserveAspectRatio='none' fill='none' stroke='#D3D7D6' stroke-width='1' vector-effect='non-scaling-stroke'><path d='M0.0 3.00 L2.0 3.31 L4.0 3.60 L6.0 3.84 L8.0 4.02 L10.0 4.13 L12.0 4.15 L14.0 4.08 L16.0 3.93 L18.0 3.71 L20.0 3.44 L22.0 3.14 L24.0 2.82 L26.0 2.52 L28.0 2.25 L30.0 2.04 L32.0 1.91 L34.0 1.85 L36.0 1.88 L38.0 2.00 L40.0 2.19 L42.0 2.44 L44.0 2.73 L46.0 3.05 L48.0 3.36 L50.0 3.64 L52.0 3.87 L54.0 4.04 L56.0 4.14 L58.0 4.14 L60.0 4.06 L62.0 3.90 L64.0 3.68 L66.0 3.40 L68.0 3.09 L70.0 2.78 L72.0 2.48 L74.0 2.22 L76.0 2.02 L78.0 1.89 L80.0 1.85 L82.0 1.89 L84.0 2.02 L86.0 2.22 L88.0 2.48 L90.0 2.78 L92.0 3.09 L94.0 3.40 L96.0 3.68 L98.0 3.90 L100.0 4.06 L102.0 4.14 L104.0 4.14 L106.0 4.04 L108.0 3.87 L110.0 3.64 L112.0 3.36 L114.0 3.05 L116.0 2.73 L118.0 2.44 L120.0 2.19 L122.0 2.00 L124.0 1.88 L126.0 1.85 L128.0 1.91 L130.0 2.04 L132.0 2.25 L134.0 2.52 L136.0 2.82 L138.0 3.14 L140.0 3.44 L142.0 3.71 L144.0 3.93 L146.0 4.08 L148.0 4.15 L150.0 4.13 L152.0 4.02 L154.0 3.84 L156.0 3.60 L158.0 3.31 L160.0 3.00 L162.0 2.69 L164.0 2.40 L166.0 2.16 L168.0 1.98 L170.0 1.87 L172.0 1.85 L174.0 1.92 L176.0 2.07 L178.0 2.29 L180.0 2.56 L182.0 2.86 L184.0 3.18 L186.0 3.48 L188.0 3.75 L190.0 3.96 L192.0 4.09 L194.0 4.15 L196.0 4.12 L198.0 4.00 L200.0 3.81 L202.0 3.56 L204.0 3.27 L206.0 2.95 L208.0 2.64 L210.0 2.36 L212.0 2.13 L214.0 1.96 L216.0 1.86 L218.0 1.86 L220.0 1.94 L222.0 2.10 L224.0 2.32 L226.0 2.60 L228.0 2.91 L230.0 3.22 L232.0 3.52 L234.0 3.78 L236.0 3.98 L238.0 4.11 L240.0 4.15 L242.0 4.11 L244.0 3.98 L246.0 3.78 L248.0 3.52 L250.0 3.22 L252.0 2.91 L254.0 2.60 L256.0 2.32 L258.0 2.10 L260.0 1.94 L262.0 1.86 L264.0 1.86 L266.0 1.96 L268.0 2.13 L270.0 2.36 L272.0 2.64 L274.0 2.95 L276.0 3.27 L278.0 3.56 L280.0 3.81 L282.0 4.00 L284.0 4.12 L286.0 4.15 L288.0 4.09 L290.0 3.96 L292.0 3.75 L294.0 3.48 L296.0 3.18 L298.0 2.86 L300.0 2.56 L302.0 2.29 L304.0 2.07 L306.0 1.92 L308.0 1.85 L310.0 1.87 L312.0 1.98 L314.0 2.16 L316.0 2.40 L318.0 2.69 L320.0 3.00'/></svg></div>
+      <button class="srow press">
+        <span style="flex:1;min-width:0">
+          <span class="t-rec" style="display:block">Attach your side of it</span>
+          <span class="t-meta" style="display:block;color:var(--secondary);padding-top:2px;text-wrap:pretty">
+            The record stays as the party wrote it. Your account is written beside
+            it, permanently, and travels with it.</span>
+        </span>
+        <span class="chev" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="var(--rule)"
+               stroke-width="1.2" stroke-linecap="round"><path d="M8 4 L14 10 L8 16"/></svg>
+        </span>
+      </button>
+      <button class="srow press">
+        <span style="flex:1;min-width:0">
+          <span class="t-rec" style="display:block">Correct a date or a title</span>
+          <span class="t-meta" style="display:block;color:var(--secondary);padding-top:2px;text-wrap:pretty">
+            Written as a new entry that cites the old one. Both stay readable.</span>
+        </span>
+        <span class="chev" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="var(--rule)"
+               stroke-width="1.2" stroke-linecap="round"><path d="M8 4 L14 10 L8 16"/></svg>
+        </span>
+      </button>
+      <p class="t-meta" style="margin:12px 0 0;color:var(--secondary);text-wrap:pretty">
+        A chapter a party has attested cannot be removed. Deleting your whole
+        record is the only way any of it comes out.</p>
     </div>
   </main>
+
 </div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <!-- §8's set: 24px grid, 1.5px hairline, square terminals, never filled.
+       Close, index and capture existed; back, add, camera, link, tick and
+       alert are the rest of what the screens below actually reach for. -->
+  <g id="i-back"><path d="M14.5 5 L7.5 12 L14.5 19"/></g>
+  <g id="i-add"><path d="M12 5 L12 19"/><path d="M5 12 L19 12"/></g>
+  <g id="i-camera"><path d="M3.5 7.5 L8 7.5 L9.5 5.5 L14.5 5.5 L16 7.5 L20.5 7.5 L20.5 18.5 L3.5 18.5 Z"/><circle cx="12" cy="13" r="3.6"/></g>
+  <g id="i-link"><path d="M13 5.5 L18.5 5.5 L18.5 11"/><path d="M18.5 5.5 L10.5 13.5"/><path d="M15.5 14.5 L15.5 18.5 L5.5 18.5 L5.5 8.5 L9.5 8.5"/></g>
+  <g id="i-tick"><path d="M4.5 12.5 L9.5 17.5 L19.5 6.5"/></g>
+  <g id="i-alert"><path d="M12 4.5 L21 19.5 L3 19.5 Z"/><path d="M12 10 L12 14"/><path d="M12 16.4 L12 17.2"/></g>
+</defs></svg>
+
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
   <!-- The five provenance marks, once. Four screens referenced them with no
        defs block of their own and rendered nothing at all in the gutter, which
@@ -292,45 +325,22 @@
 </x-dc>
 
 <script data-dc-script data-props='{"$preview":{"width":360,"height":800}}'>
-// Gap 8: the employer's disclosure-grant view. What a business sees when a worker
-// grants them the whole record.
-//
-// Two constraints this screen exists to obey. It never renders a composite, a
-// score or a badge, CLAUDE.md's constraint that outranks convenience. Grain says
-// what is known and how well, the partner decides what it means and bears the
-// decision. And it states its own limits before its content, not after.
 class Component extends DCLogic {
   renderVals(){
-    // Oldest first, everywhere. It ran newest first here and oldest first on the
-    // worker's own record, same label and same chapters in opposite order, which
-    // meant a worker and a reader walking the record together were on different
-    // rows. Oldest first is the direction the figure reads: the innermost band
-    // is the earliest chapter.
-    const chapters = [
-      {party:'Bataan Poultry Processing',
-       prov:'Recorded by Liezel Mendoza. No attesting party.',
-       registry:'No attesting party', sw:'#sw-self',
-       from:'Sep 2017', to:'Mar 2019'},
-      {party:'Sunrise Foods Manufacturing',
-       prov:'Attested by Sunrise Foods Manufacturing, and a second party agrees.',
-       registry:'Registered business · signed 14 Oct 2021', sw:'#sw-multi',
-       from:'Mar 2019', to:'Sep 2021'},
-      {party:'R. Santos Dry Goods',
-       prov:'Attested by a coworker who was there. The business is not registered with Grain.',
-       registry:'Individual · signed 2 Apr 2023', sw:'#sw-peer',
-       from:'Sep 2020', to:'Mar 2023'},
-      {party:'Metro Manila Logistics',
-       prov:'Attested by Metro Manila Logistics. No second party has agreed.',
-       registry:'Registered business · signed 20 Jan 2025', sw:'#sw-single',
-       from:'Mar 2023', to:'Jan 2025'},
-      {party:'Cebu Pacific Cargo Services',
-       prov:'Cebu Pacific Cargo Services attested the dates and the employment. Nothing about the work.',
-       registry:'Registered business · signed 20 Jan 2026', sw:'#sw-emp',
-       from:'Jan 2025', to:'present'}
+    const atts = [
+      {party:'Sunrise Foods Manufacturing', kind:'Registered business, signed from their verified domain', when:'14 Oct 2021'},
+      {party:'A coworker who was there', kind:'Individual, confirmed a work email at this business', when:'2 Nov 2021'}
     ];
     return {
-      daysLeft: 13, granted: '4 Aug 2026',
-      count: chapters.length, chapters
+      n: atts.length, atts,
+      facts: [
+        {k:'Business', v:'Sunrise Foods Manufacturing'},
+        {k:'Registry', v:'Registered with Grain, verified domain'},
+        {k:'Dates', v:'Mar 2019 to Sep 2021'},
+        {k:'Positions', v:'Packing line operator, then Line lead'},
+        {k:'Title', v:'Line lead', was:'Line leader', when:'6 Nov 2021'},
+        {k:'Added', v:'By you, 28 Jun 2026, from a résumé'}
+      ]
     };
   }
 }

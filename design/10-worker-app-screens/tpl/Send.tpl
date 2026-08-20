@@ -15,13 +15,8 @@
     .ruled input{border:0;outline:0;background:none;font:inherit;color:var(--ink);
                  flex:1;min-width:0;padding:12px 0;font-weight:600;font-size:16px;
                  min-height:44px;box-sizing:border-box}
-    .srow{display:flex;gap:12px;align-items:baseline;padding:13px 0;
-          border-bottom:1px solid var(--hairline);width:100%;min-height:44px;text-align:left}
-    .grp{padding-top:26px}
     main::-webkit-scrollbar{width:0}
     /* Danger is ink inversion, explicit words and a two-step. Never red (§5). */
-    .warn{background:var(--ink);color:var(--paper);padding:14px 16px}
-    .warn .t-data{color:var(--paper)}
   </style>
 </helmet>
 

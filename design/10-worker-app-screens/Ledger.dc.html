@@ -122,6 +122,80 @@
       .dissolve{-webkit-mask-image:none;mask-image:none}
     }
 
+    /* A pushed screen, which is a shape the app did not have. `design/08` §3:
+       the sheets carry a Close and nothing drew a back affordance, because iOS
+       takes the left edge and Android's gesture nav takes both, so an edge
+       swipe is the platform's and not ours (048). A drawn back control is the
+       only honest answer. */
+    .pushhead{height:52px;display:flex;align-items:center;gap:4px;padding:0 8px 0 4px;
+              border-bottom:1px solid var(--hairline);position:relative;z-index:3;
+              background:var(--paper);flex:0 0 auto}
+    .pushhead .t-serial{flex:1;min-width:0}
+    .iconbtn{width:44px;height:44px;display:flex;align-items:center;justify-content:center;
+             flex:0 0 44px}
+    .iconbtn svg{stroke:var(--ink);stroke-width:1.5;fill:none;stroke-linecap:butt;
+                 stroke-linejoin:miter}
+    /* A fixed action band at the foot of a pushed screen. Sits above the
+       dissolve so a primary control is never faded by it. */
+    .actions{position:absolute;left:0;right:0;bottom:0;padding:16px 20px;
+             background:var(--paper);border-top:1px solid var(--ink);z-index:4}
+
+    /* §12 says loading is the scribing arc, never a spinner, and nothing drew
+       it. One lobe period of the figure's own wave, scribed and released. It
+       carries no percentage, because an arc that pretends to know how long is
+       the same lie as a spinner that pretends to make progress. */
+    .arc{display:block;margin-inline:auto}
+    .arc path{stroke-dasharray:1;stroke-dashoffset:1;
+              animation:arcscribe 1400ms cubic-bezier(0.4,0,0.2,1) infinite}
+    @keyframes arcscribe{
+      0%{stroke-dashoffset:1}
+      55%{stroke-dashoffset:0}
+      100%{stroke-dashoffset:-1}
+    }
+    /* Progress, where the length IS known: a band closing on the figure's
+       radius. §9 specifies it and nothing used it. */
+    .band{height:3px;background:var(--hairline);overflow:hidden}
+    .band i{display:block;height:100%;background:var(--ink);
+            transition:width 320ms cubic-bezier(0.2,0,0,1)}
+    @media (prefers-reduced-motion:reduce){
+      .arc path{animation:none;stroke-dashoffset:0}
+      .band i{transition:none}
+    }
+
+    /* The state grammar as a control, not a platform switch (`design/08` §2).
+       On is ink filled to the right, off is the rule alone: the same
+       ink-versus-rule distinction every other state in the system uses, so
+       nobody has to learn a second vocabulary for a setting. */
+    .sw{flex:0 0 auto;width:46px;height:26px;border:1px solid var(--rule);
+        border-radius:3px;position:relative;background:none;padding:0}
+    .sw i{position:absolute;top:3px;left:3px;width:18px;height:18px;
+          background:var(--rule);transition:left 140ms cubic-bezier(0.2,0,0,1),
+          background-color 140ms linear}
+    .sw[aria-checked="true"]{border-color:var(--ink)}
+    .sw[aria-checked="true"] i{left:23px;background:var(--ink)}
+    @media (prefers-reduced-motion:reduce){ .sw i{transition:none} }
+
+    /* Nothing in the system acknowledged a completed action. Inline, in ink,
+       under the thing that changed, never a floating toast that steals focus. */
+    .said{display:flex;gap:8px;align-items:flex-start;padding:10px 0 0}
+    .said svg{flex:0 0 16px;margin-top:2px;stroke:var(--ink);stroke-width:1.5;fill:none}
+
+    /* A list that has not arrived yet. Rules at the row rhythm, no shimmer:
+       §5 forbids a moving gradient and the rhythm alone reads as structure. */
+    .skel{border-bottom:1px solid var(--hairline);padding:14px 0}
+    .skel span{display:block;height:9px;background:var(--hairline)}
+    .skel span + span{margin-top:7px;width:58%}
+
+    /* Promoted from three screen helmets, where they had already drifted to two
+       different paddings. A settings-style group, its rows, and the one block
+       in the system that raises its voice. */
+    .grp{padding-top:26px}
+    .srow{display:flex;gap:12px;align-items:baseline;padding:13px 0;
+          border-bottom:1px solid var(--hairline);width:100%;min-height:44px;
+          text-align:left}
+    .warn{background:var(--ink);color:var(--paper);padding:14px 16px}
+    .warn .t-data{color:var(--paper)}
+
     .erow{display:flex;gap:14px;align-items:flex-start;padding:13px 0;
           border-bottom:1px solid var(--hairline)}
     .when{flex:0 0 62px;padding-top:2px}

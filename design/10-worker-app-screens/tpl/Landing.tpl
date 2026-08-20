@@ -102,10 +102,7 @@
 
 </div>
 
-<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
-  <g id="sw-emp">@@SW_EMP@@</g>
-  <g id="sw-multi">@@SW_MULTI@@</g>
-</defs></svg>
+@@SWATCHES@@
 </x-dc>
 
 <script data-dc-script data-props='{"$preview":{"width":360,"height":800}}'>

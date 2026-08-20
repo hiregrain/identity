@@ -91,9 +91,7 @@
 
 </div>
 
-<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
-  <g id="sw-self">@@SW_SELF@@</g>
-</defs></svg>
+@@SWATCHES@@
 </x-dc>
 
 <script data-dc-script data-props='{"$preview":{"width":360,"height":800}}'>

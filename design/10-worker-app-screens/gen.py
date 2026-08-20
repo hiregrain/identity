@@ -178,6 +178,15 @@ def sine_rule(w=320.0, amp=1.15, h=6.0):
             "<path d='M%s'/></svg>") % (w, h, h, " L".join(pts))
 open(os.path.join(OUT,"sine-rule.svgfrag"),"w").write(sine_rule())
 
+# §12's loading arc: one lobe period of the figure's own wave, as a path a CSS
+# dashoffset can scribe. It is the only loading idiom the design system allows,
+# and nothing had drawn it, so A10, F4 and I1 had no way to say "working".
+def arc_path(w=120.0, h=24.0, amp=7.0):
+    pts = ["%.1f %.2f" % (w*j/96.0, h/2.0 - amp*math.sin(math.pi*(j/96.0)))
+           for j in range(97)]
+    return "M" + " L".join(pts)
+open(os.path.join(OUT,"arc.svgfrag"),"w").write(arc_path())
+
 # The lockup, mark plus the GRAIN wordmark (§4a). tier_for() inside lockup()
 # swaps the mark to its correct drawn reduction, so this is never a scaled master.
 LOCKUP_MARK_PX = 26

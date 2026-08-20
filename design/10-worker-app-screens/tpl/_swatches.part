@@ -1,0 +1,11 @@
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <!-- The five provenance marks, once. Four screens referenced them with no
+       defs block of their own and rendered nothing at all in the gutter, which
+       is the same defect _chrome.part exists to prevent, in markup rather than
+       in CSS. One id set, short names, everywhere. -->
+  <g id="sw-self">@@SW_SELF@@</g>
+  <g id="sw-emp">@@SW_EMP@@</g>
+  <g id="sw-peer">@@SW_PEER@@</g>
+  <g id="sw-single">@@SW_SINGLE@@</g>
+  <g id="sw-multi">@@SW_MULTI@@</g>
+</defs></svg>

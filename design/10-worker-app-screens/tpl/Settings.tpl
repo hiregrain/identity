@@ -7,9 +7,6 @@
   <style>
 @@CSS@@
 @@CHROME@@
-    .srow{display:flex;gap:12px;align-items:baseline;padding:13px 0;
-          border-bottom:1px solid var(--hairline);width:100%;min-height:44px}
-    .grp{padding-top:24px}
     main::-webkit-scrollbar{width:0}
   </style>
 </helmet>

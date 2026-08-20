@@ -1,9 +1,6 @@
 <!doctype html>
 <html>
-<head>
-  <meta charset="utf-8">
-  <script src="./support.js"></script>
-</head>
+<head><meta charset="utf-8"><script src="./support.js"></script></head>
 <body>
 <x-dc>
 <helmet>
@@ -199,65 +196,107 @@
     .warn{background:var(--ink);color:var(--paper);padding:14px 16px}
     .warn .t-data{color:var(--paper)}
 
-    .plate{position:absolute;inset:0;pointer-events:none}
-    .reg{position:absolute;width:11px;height:11px;border:0 solid var(--ink);opacity:.55}
+    .ruled{display:flex;align-items:center;border-bottom:1px solid var(--rule)}
+    .ruled:focus-within{border-bottom:2px solid var(--ink)}
+    .ruled input{border:0;outline:0;background:none;font:inherit;color:var(--ink);
+                 flex:1;min-width:0;padding:12px 0;font-weight:600;font-size:16px;
+                 min-height:44px;box-sizing:border-box}
   </style>
 </helmet>
 
-<!-- Fluid in both axes: the record fills whatever safe area it is given, and
-     min-height carries the standalone case where height:100% has no sized
-     ancestor and would collapse to zero. 728 is the common safe box across
-     iOS (778) and Android (728). Decision 046. -->
+<!-- What the party is actually ASKED is not described on any of these
+     screens. Decision 054 renders nothing derived from the seven measures,
+     and what consent says about collecting them is an open gate in
+     plans/ORDER.md. These screens describe who can attest and what it
+     costs, which is settled, and say nothing that the gate would make a
+     promise. -->
+<!-- D4. The path that carries dissolved employers, informal work and
+     cross-border history, which is the population the record layer exists for.
+     Decision 055 stopped the copy calling it lesser; this screen states what
+     it is worth plainly instead. -->
 <div style="width:100%;height:100%;min-height:752px;position:relative;overflow:hidden;background:var(--paper)">
-  <div class="plate">
-    <div class="reg" style="top:7px;left:7px;border-top-width:1px;border-left-width:1px"></div>
-    <div class="reg" style="top:7px;right:7px;border-top-width:1px;border-right-width:1px"></div>
-    <div class="reg" style="bottom:7px;left:7px;border-bottom-width:1px;border-left-width:1px"></div>
-    <div class="reg" style="bottom:7px;right:7px;border-bottom-width:1px;border-right-width:1px"></div>
-  </div>
-
-  <header style="height:52px;display:flex;align-items:center;gap:10px;padding:0 20px;
-                 border-bottom:1px solid var(--hairline)">
-    <!-- The lockup: mark plus the GRAIN wordmark (§4a), generated so the mark
-         swaps to its drawn reduction rather than scaling a master. -->
-    <svg viewBox="0 0 160 26" width="160" height="26" role="img" aria-label="Grain"><svg x='0' y='0' width='26.00' height='26.00' viewBox='0 0 600 600'><g fill='none' stroke='#1B2A44' stroke-width='28.85'><path d='M564.00 300.00 L584.44 333.88 L586.74 369.29 L565.95 398.78 L529.42 417.75 L492.65 429.76 L470.47 446.91 L465.16 480.54 L462.52 526.50 L445.69 564.26 L412.09 576.40 L372.28 564.53 L336.52 544.65 L306.92 533.31 L278.76 538.27 L246.36 554.85 L209.17 568.68 L173.56 565.42 L147.91 540.91 L134.78 503.62 L127.29 467.66 L113.74 442.19 L87.12 425.73 L51.95 409.27 L22.38 384.78 L12.19 351.73 L24.39 316.36 L48.54 285.08 L68.13 258.33 L72.64 230.57 L64.85 196.42 L58.25 157.23 L66.57 121.80 L93.86 99.88 L132.54 93.62 L170.23 94.43 L199.36 88.73 L221.72 68.46 L244.89 38.19 L274.39 12.76 L308.69 6.77 L341.23 23.80 L367.28 53.79 L389.04 80.45 L414.04 93.15 L447.82 93.99 L487.44 95.10 L521.90 108.76 L540.00 138.35 L539.59 177.03 L530.41 214.41 L527.56 245.01 L540.14 271.40 L564.00 300.00 Z'/><path d='M472.00 300.00 L502.50 326.66 L505.12 354.96 L474.49 372.28 L428.29 374.07 L395.48 373.26 L393.79 393.79 L409.22 442.34 L409.74 490.08 L383.80 502.31 L347.64 477.78 L319.01 444.41 L300.00 430.65 L280.76 446.11 L252.79 476.17 L220.03 493.08 L196.68 478.96 L192.11 440.60 L198.38 401.62 L195.01 380.56 L168.36 376.00 L126.95 371.68 L96.54 354.52 L98.01 326.59 L128.00 300.00 L160.93 281.69 L171.18 265.48 L155.23 240.04 L133.72 204.00 L132.08 171.15 L158.38 158.38 L198.47 167.69 L231.32 181.04 L248.32 175.23 L258.16 143.86 L274.37 105.33 L300.00 88.00 L325.63 105.33 L341.84 143.86 L351.68 175.23 L368.68 181.04 L401.53 167.69 L441.62 158.38 L467.92 171.15 L466.28 204.00 L444.76 240.04 L428.81 265.49 L439.03 281.70 L472.00 300.00 Z'/><path d='M390.00 300.00 L406.81 314.06 L408.37 329.04 L391.72 337.99 L366.58 338.44 L348.86 337.49 L348.33 348.33 L357.27 374.63 L358.06 400.56 L344.33 407.02 L325.01 393.34 L309.86 374.86 L300.00 367.25 L290.02 375.80 L275.23 392.45 L257.77 401.94 L245.47 394.44 L243.46 373.68 L247.36 352.64 L245.90 341.51 L231.58 339.50 L209.07 337.66 L192.54 328.79 L193.47 314.03 L210.00 300.00 L228.07 290.53 L233.59 282.21 L224.63 268.78 L212.53 249.50 L211.29 231.93 L225.36 225.36 L246.96 230.88 L264.53 238.56 L273.34 235.63 L278.18 218.57 L286.50 197.49 L300.00 188.00 L313.50 197.49 L321.82 218.57 L326.66 235.63 L335.47 238.56 L353.04 230.88 L374.64 225.36 L388.71 231.93 L387.47 249.50 L375.37 268.78 L366.40 282.21 L371.91 290.53 L390.00 300.00 Z'/></g></svg><text x='39.93' y='21.96' font-family='Archivo' font-size='26.92' font-weight='600' font-stretch='125%' letter-spacing='2.42' fill='#1B2A44'>GRAIN</text></svg>
+  <header class="pushhead">
+    <button class="iconbtn press" aria-label="Back to your record">
+      <svg width="22" height="22" viewBox="0 0 24 24"><use href="#i-back"></use></svg>
+    </button>
+    <h1 class="t-serial" style="margin:0">Ask a coworker</h1>
   </header>
 
-  <main style="position:absolute;top:52px;bottom:0;left:0;right:0;padding:0 20px 28px;
-               display:flex;flex-direction:column;justify-content:center;gap:40px">
-    <!-- the fixed canvas, empty. The graticule ground (§9) carries it; there is no
-         identity core, and no boundary ring: absence is drawn as absence. -->
-    <div style="position:relative;width:296px;height:296px;align-self:center">
-      <svg viewBox="0 0 296 296" width="296" height="296" aria-label="Your record, empty">
-        <defs><clipPath id="canv"><circle cx="148" cy="148" r="139"></circle></clipPath></defs>
-        <g clip-path="url(#canv)" fill="none" stroke="var(--hairline)" stroke-width=".75">
-          <path d='M0 24 L296 24'/><path d='M0 48 L296 48'/><path d='M0 72 L296 72'/><path d='M0 96 L296 96'/><path d='M0 120 L296 120'/><path d='M0 144 L296 144'/><path d='M0 168 L296 168'/><path d='M0 192 L296 192'/><path d='M0 216 L296 216'/><path d='M0 240 L296 240'/><path d='M0 264 L296 264'/><path d='M0 288 L296 288'/><path d='M24.0 0 Q18.1 148.0 24.0 296'/><path d='M48.0 0 Q43.3 148.0 48.0 296'/><path d='M72.0 0 Q68.4 148.0 72.0 296'/><path d='M96.0 0 Q93.5 148.0 96.0 296'/><path d='M120.0 0 Q118.7 148.0 120.0 296'/><path d='M144.0 0 Q143.8 148.0 144.0 296'/><path d='M168.0 0 Q168.9 148.0 168.0 296'/><path d='M192.0 0 Q194.1 148.0 192.0 296'/><path d='M216.0 0 Q219.2 148.0 216.0 296'/><path d='M240.0 0 Q244.4 148.0 240.0 296'/><path d='M264.0 0 Q269.5 148.0 264.0 296'/><path d='M288.0 0 Q294.6 148.0 288.0 296'/>
-        </g>
-      </svg>
-    </div>
-    <div>
-      <h1 class="t-title" style="margin:0 0 12px">Nothing<br>on it yet</h1>
-      <!-- One chapter, not a career. Two of the four cohorts this record layer
-           is for have no résumé to import, so the manual path is the only door
-           they have, and it asked for eight years before it gave anything back.
-           A minute is a promise the screen can keep. -->
-      <p class="t-body" style="margin:0 0 28px;color:var(--secondary);max-width:280px;text-wrap:pretty">
-        Start with one job. It takes about a minute, and you can add the rest
-        whenever. A chapter nobody has attested is drawn plain, and it fills in
-        when a party who was there signs for it.
-      </p>
-      <div style="display:flex;flex-direction:column;gap:12px">
-        <button class="btn-primary press">Add one job</button>
-        <button class="btn-secondary press">Import a résumé instead</button>
+  <main class="dissolve" style="position:absolute;top:52px;bottom:88px;left:0;right:0;overflow-y:auto;padding:0 20px 32px">
+    <div style="padding-top:24px">
+      <h2 class="t-sec" style="margin:0 0 8px;font-size:19px;line-height:1.3">Someone who was there</h2>
+      <p class="t-body" style="margin:0 0 22px;color:var(--secondary);text-wrap:pretty">
+        A person who worked alongside you can attest this chapter. If the business
+        has closed, or nobody there answers, this is the witness that exists.</p>
+
+      <label class="t-micro" for="cw" style="display:block;color:var(--secondary);padding-bottom:8px">Their phone or email</label>
+      <div class="ruled">
+        <input id="cw" value="{{ v }}" onInput="{{ onV }}" autocapitalize="none"
+               autocorrect="off" spellcheck="false">
       </div>
+
+      <div style="margin-top:26px">
+        <span class="t-micro" style="display:block;color:var(--secondary);padding-bottom:8px">
+          What a reader is told</span>
+        <div style="display:flex;gap:14px;align-items:center;border-block:1px solid var(--hairline);padding:14px 0">
+          <span class="prov" tabindex="0">
+            <svg viewBox="0 0 34 16" width="34" height="16" fill="none" aria-hidden="true"
+                 stroke="var(--ink)" stroke-width="1"><use href="#sw-peer"></use></svg>
+            <span class="tip t-meta">Attested by a coworker who was there. The business is not registered with Grain.</span>
+          </span>
+          <span class="t-body" style="flex:1;min-width:0;text-wrap:pretty">
+            Attested by a coworker who was there, and the business named as not
+            registered. The mark says which, and does not say less of you for it.</span>
+        </div>
+      </div>
+
+      <p class="t-meta" style="margin:18px 0 0;color:var(--secondary);text-wrap:pretty">
+        A business that later registers can attest the same chapter alongside
+        them. Two parties who agree independently is the strongest a chapter gets.</p>
     </div>
   </main>
+  <div class="actions">
+    <button class="btn-primary press" disabled="{{ disabled }}">Send the request</button>
+    <p class="t-meta" style="margin:10px 0 0;color:var(--secondary);text-align:center;text-wrap:pretty">
+      Asking cannot be undone.</p>
+  </div>
 
 </div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <!-- §8's set: 24px grid, 1.5px hairline, square terminals, never filled.
+       Close, index and capture existed; back, add, camera, link, tick and
+       alert are the rest of what the screens below actually reach for. -->
+  <g id="i-back"><path d="M14.5 5 L7.5 12 L14.5 19"/></g>
+  <g id="i-add"><path d="M12 5 L12 19"/><path d="M5 12 L19 12"/></g>
+  <g id="i-camera"><path d="M3.5 7.5 L8 7.5 L9.5 5.5 L14.5 5.5 L16 7.5 L20.5 7.5 L20.5 18.5 L3.5 18.5 Z"/><circle cx="12" cy="13" r="3.6"/></g>
+  <g id="i-link"><path d="M13 5.5 L18.5 5.5 L18.5 11"/><path d="M18.5 5.5 L10.5 13.5"/><path d="M15.5 14.5 L15.5 18.5 L5.5 18.5 L5.5 8.5 L9.5 8.5"/></g>
+  <g id="i-tick"><path d="M4.5 12.5 L9.5 17.5 L19.5 6.5"/></g>
+  <g id="i-alert"><path d="M12 4.5 L21 19.5 L3 19.5 Z"/><path d="M12 10 L12 14"/><path d="M12 16.4 L12 17.2"/></g>
+</defs></svg>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <!-- The five provenance marks, once. Four screens referenced them with no
+       defs block of their own and rendered nothing at all in the gutter, which
+       is the same defect _chrome.part exists to prevent, in markup rather than
+       in CSS. One id set, short names, everywhere. -->
+  <g id="sw-self"><path d='M0 11.5 L34.0 11.5' stroke-dasharray='3 4'/></g>
+  <g id="sw-emp"><path d='M0 11.5 L34.0 11.5'/></g>
+  <g id="sw-peer"><path d='M0.0 11.5 L1.4 10.5 L2.8 9.6 L4.2 8.6 L5.7 7.8 L7.1 6.9 L8.5 6.2 L9.9 5.5 L11.3 5.0 L12.8 4.6 L14.2 4.3 L15.6 4.1 L17.0 4.0 L18.4 4.1 L19.8 4.3 L21.2 4.6 L22.7 5.0 L24.1 5.5 L25.5 6.2 L26.9 6.9 L28.3 7.8 L29.8 8.6 L31.2 9.6 L32.6 10.5 L34.0 11.5'/></g>
+  <g id="sw-single"><path d='M0.0 11.5 L1.4 10.5 L2.8 9.6 L4.2 8.6 L5.7 7.8 L7.1 6.9 L8.5 6.2 L9.9 5.5 L11.3 5.0 L12.8 4.6 L14.2 4.3 L15.6 4.1 L17.0 4.0 L18.4 4.1 L19.8 4.3 L21.2 4.6 L22.7 5.0 L24.1 5.5 L25.5 6.2 L26.9 6.9 L28.3 7.8 L29.8 8.6 L31.2 9.6 L32.6 10.5 L34.0 11.5'/><path d='M0 11.5 L34.0 11.5'/></g>
+  <g id="sw-multi"><path d='M0.0 11.5 L0.7 10.5 L1.4 9.6 L2.1 8.6 L2.8 7.8 L3.5 6.9 L4.2 6.2 L5.0 5.5 L5.7 5.0 L6.4 4.6 L7.1 4.3 L7.8 4.1 L8.5 4.0 L9.2 4.1 L9.9 4.3 L10.6 4.6 L11.3 5.0 L12.0 5.5 L12.8 6.2 L13.5 6.9 L14.2 7.8 L14.9 8.6 L15.6 9.6 L16.3 10.5 L17.0 11.5'/><path d='M17.0 11.5 L17.7 10.5 L18.4 9.6 L19.1 8.6 L19.8 7.8 L20.5 6.9 L21.2 6.2 L22.0 5.5 L22.7 5.0 L23.4 4.6 L24.1 4.3 L24.8 4.1 L25.5 4.0 L26.2 4.1 L26.9 4.3 L27.6 4.6 L28.3 5.0 L29.0 5.5 L29.8 6.2 L30.5 6.9 L31.2 7.8 L31.9 8.6 L32.6 9.6 L33.3 10.5 L34.0 11.5'/><path d='M0 11.5 L34.0 11.5'/></g>
+</defs></svg>
+
 </x-dc>
 
 <script data-dc-script data-props='{"$preview":{"width":360,"height":800}}'>
-class Component extends DCLogic { renderVals(){ return {}; } }
+class Component extends DCLogic {
+  constructor(p){ super(p); this.state = {v:''}; }
+  renderVals(){
+    const v = this.state.v.trim();
+    return { v: this.state.v, onV: (e) => this.setState({v:e.target.value}),
+             disabled: v.length > 4 ? null : 'disabled' };
+  }
+}
 </script>
 </body>
 </html>
