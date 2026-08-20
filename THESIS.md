@@ -24,9 +24,14 @@ worker-owned, cryptographically verifiable record of what a person has
 actually done, attested by the parties that observed it, visible to whoever
 the worker permits.
 
-**Identity is the platform.** It records an immense amount of information
-about a working life and codifies it in a highly legible way, which is what
-makes the data collectible and analysable at scale. Endpoints let partners and
+**Identity is the platform.** The résumé is a summary statistic. It transmits
+employer, title and dates, and it abstracts away the particulars that
+determine the specific decision a reader is making: what the conditions were,
+what this person's surface actually was, how much of the work was theirs, how
+it ended. Grain's function is that those particulars survive transmission,
+recorded by the party that observed them, at the time they observed them.
+Legibility follows from that, and where the two conflict the particular wins.
+Endpoints let partners and
 internal verticals read and write against it. An internal training program
 should be able to see where someone starts and write back how they performed.
 Everything else is secondary to that core.
@@ -92,12 +97,52 @@ that the proxy is displaced as attested facts accumulate. A title with nothing
 beneath it reads as a title with nothing beneath it. That is the whole claim,
 and it is a smaller claim than "we replaced proxies with truth."
 
+**On what cannot be attested, and the frontier that follows.** Part of what
+makes a worker valuable is knowledge of people, of local conditions and of
+particular circumstances, and some of that can never be stated by anyone,
+including the person who holds it. Nothing moves that: it is not a
+data-collection problem.
+
+**But the knowledge does not have to be transmitted for its magnitude to be
+estimated.** Unstatable expertise leaves a footprint in outcomes across
+repeated instances, which is why volume, cadence and outcome facts carry more
+of this than any description ever will. Nobody can write down what the
+arbitrageur knows. Everybody can observe that he is right more often than the
+market. Grain measures the footprint, not the content, and does not pretend
+the two are the same thing.
+
+**This is also why the residue is the asset rather than a limitation.** Hayek
+separates scientific knowledge, which a body of suitably chosen experts can
+command, from knowledge of the particular circumstances of time and place,
+which only the person on the spot holds. AI is the first credible completion
+of the first category. It leaves the second untouched, and Hayek's whole
+argument is that the second is the larger problem. A worker's edge over a
+general intelligence layer is precisely the category Hayek said could never be
+centralised, and estimating that edge against a standard the employer
+supplies, whether that standard is AI or a bar of their own, is what makes the
+reading worth paying for. **[GAP]** That use is a capability projection about
+a person and belongs in counsel brief 4 as a named use rather than as a
+general statement about analytics (§7). An AI-relative baseline is also
+non-stationary, which is a fourth way trajectory lies alongside §5's three,
+and it is disclosed nowhere.
+
 **Visibility is the worker's** (decision 024). The record is private by
 default and the
 worker controls who sees it: they consent to sharing with a specific party,
 they can publish a public record, and they can use it to apply for work.
 "Universally accessible" describes the right to hold a record, not default
 readability of its contents.
+
+**The worker controls who sees the record and never what it says.**
+Attestations are append-only and immutable once written
+(`model/record-schema.md` §1), grants are revocable, and the exit is deletion
+of the whole profile rather than removal of a line. The one exception is
+accuracy. A worker who believes a fact is wrong raises a `dispute`, which is
+resolved with the attesting party and renders on the chapter until it is. A
+correction is a new record and never a mutation of the old one, so the trail
+of what was asserted, disputed and settled survives the correction. A record
+that could be edited into shape would be a résumé with a signature on it, and
+a record that could not be corrected would be worse than one.
 
 Two entity types exist and only two: persons, who are subjects, and attesting
 parties, who are issuers. Organisations are never subjects (decision 007). AI
@@ -152,6 +197,32 @@ depends on neither.
 decides what it means and bears the decision. Restated for partners in one
 line: *the mark tells you how well-established the record is; it never tells
 you whether to hire.*
+
+### Why the seam is not a choice
+
+Hayek, "The Use of Knowledge in Society" (1945), §VII: the value of a factor of
+production does not follow from the valuation of what it produces, because it
+depends also on the conditions of supply and on the ends of the party
+deciding. Implication is a relation between propositions present to one and
+the same mind, and no such mind holds all three terms.
+
+That is the argument under the seam. Two of the three terms live inside the
+hiring party and move with their situation. Grain holds the third. A number
+claiming to state what a person is worth is therefore not merely presumptuous,
+it is not determined by the inputs any ledger can hold.
+
+What follows is not that Grain declines to compute. Grain computes, and the
+quality of what it computes is the commercial edge. What follows is that every
+reading is stated against an end the partner supplies. **No absolute
+person-level score is ever emitted.** A reading answers: against this role,
+under these conditions, here is what this record establishes and how well. The
+same record reads differently for different partners, and that is correct
+rather than an inconsistency to be normalised away.
+
+This is also the strongest available form of the answer to §7's social-scoring
+question, since a reading that cannot exist independently of a stated purpose
+is not a general-purpose score of a person. It is an argument, not counsel's
+opinion, and it goes in brief 4.
 
 ## 4. How the record becomes comparable
 
@@ -437,6 +508,14 @@ onto Grain. It does not make the surface unlawful; it changes who carries the
 duties and what it costs. **[GAP]** Unruled, and it inverts the reasoning that
 put worker-side ranking on the safe side of §2. Employer-side matching also
 remains unruled.
+
+**Charging for analytics over a free record layer.** The objection that Grain
+profits from knowledge others could have gathered themselves is the objection
+historically levelled at the arbitrageur and the estate agent, and Hayek
+answers it directly: making dispersed knowledge reach the decision is the
+service, and it is as socially useful as producing the thing being decided
+about. Whether the price is right is a commercial question; whether the
+activity is legitimate is not an open one.
 
 **Placement.** If Grain ever places trained specialists, it competes with the
 partners who hire from the same network and whose attestations fill the graph.
