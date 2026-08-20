@@ -38,10 +38,10 @@
 -- readable, which is the two-plane split doing its job.
 --
 -- What the journal deliberately does NOT carry: no name, no contact
--- channel, no content, no commitment, no reason text. None of it is
--- identifying. person_id is the tombstoned ledger id the spine retains
--- forever anyway (decision 014: never reissued), so the journal adds no
--- correlation surface the spine does not already have. A schema
+-- channel, no content, no commitment, no reason text. The journal holds
+-- nothing identifying. person_id is the tombstoned ledger id the spine
+-- retains forever anyway (decision 014: never reissued), so the journal
+-- adds no correlation surface the spine does not already have. A schema
 -- assertion and a raw-dump grep in the acceptance suite
 -- (core/deletion) hold the column set to exactly this.
 --
