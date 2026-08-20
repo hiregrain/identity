@@ -2627,3 +2627,275 @@ unknowingly break them:**
 4. Restore replay re-applies the entire deletion journal by design. An
    optimization that replays a subset must first prove the restored
    backup cannot contain data for any person it skips.
+
+## 053 — Worker-app persona critique recorded as evidence (2026-08-20)
+
+Four personas were run against rendered images of every worker-facing
+screen, walkthrough first and adversarial second, and the findings are
+recorded at `design/11-persona-critique/`. Entries 054 to 059 are the
+founder rulings that came out of it.
+
+**What the method can and cannot support.** It is synthetic. No person
+was interviewed. It finds comprehension failures, missing affordances,
+and places where the product's epistemics collide with what a reader
+expects, because those are visible in the artifact. It supports no claim
+about adoption, willingness to share, or frequency, and no number in it
+is a measurement. Convergence across four personas is evidence that a
+surface reads a certain way, never evidence that a market behaves a
+certain way.
+
+**It binds nothing,** on the same footing as `research/`. A finding is a
+reason to look, not a requirement to act. Where a finding changed
+something, the change is in the entries below and the finding is cited
+as what prompted it, never as what authorised it.
+
+**The personas were chosen to span the cohorts the record layer claims
+to serve**, not to represent a market: a credential-poor worker with no
+resume and a disputed employer, an early-career worker whose skill is
+impression management, an independent designer with roughly forty
+overlapping clients, and a cross-border engineer whose fourteen years
+cannot be checked in his new country.
+
+**Three accepted costs, recorded here so they are not rediscovered as
+defects.** Party names are public on a record the worker chooses to
+publish, which for an independent worker is their client list. Content
+sharing stays all-or-nothing under 035, so a disputed chapter travels
+with everything else. There is no reading path for someone who will not
+click a link in their own email (057).
+
+## 054 — The seven measures are collected and not rendered (2026-08-20)
+
+**No surface renders anything derived from the seven responsibility
+measures in v1.** Attesting parties are still asked for them and the
+ledger still stores them. Nothing draws a level, a lobe depth, a rung, or
+a comparison. This supersedes the rendering requirement in 039, which
+required chapter detail to show all seven including the zeros; with
+nothing rendered there is no absence for a reader to fill in, which was
+039's reason.
+
+**The evidence for holding them back was already in the repo.**
+`THESIS.md` §4 records that no level definitions exist for any of the
+seven, "which makes `dimensions_exercised` unusable by an attesting
+party today". The 006 verdict ratified the set "with the recorded caveat
+that the seven-axis set is a founder hypothesis without validated prior
+art". `imprint/README.md` §7.5 records that nobody has checked whether
+two managers scoring the same work produce the same numbers, and §7.6
+that Consequence Held may not survive legal review. Decision 022 already
+freed the first product from depending on any of it: analytics "runs on
+partially verified history", and `dimension_standing` is not among its
+inputs. A channel attesting parties cannot populate cannot carry
+differentiation, and drawing it anyway asserts a precision the ledger
+does not have.
+
+**The persona finding that made it urgent** (053): all four read the
+drawn scale as a rating of a person, including the one who designs
+instruments for a living. Removing the ordinal number in 042 did not
+remove the ordinal; a seven-position ladder with a mark on position four
+is the same claim rendered. That is the collapse CLAUDE.md forbids, on
+the channel Grain has least right to be confident about.
+
+**Every chapter draws a constant neutral profile.** Lobe depth is level,
+so switching levels off collapses the guilloché entirely: the phase sweep
+that produces the weave, `delta_i = i · (2π/7) / n_curves`, only separates
+when lobe amplitude is non-zero, and at zero every swept pass lands on the
+same circle. Rendered, the figure becomes plain concentric rings and the
+path data drops from 37,367 bytes to 1,130. A constant profile identical
+for every chapter of every person keeps the engraving and carries no
+claim, because it cannot differ. What the figure still encodes is real
+and deterministic: bands are chapters, band width is duration, split
+bands are overlap, dash against solid is provenance, weave density is
+corroboration tier.
+
+**Two risks, stated rather than mitigated.** A constant rosette still
+looks like a profile, so a reader may believe the shape says something.
+And when levels are eventually drawn, every record changes shape at once,
+which will read as a rescoring event unless it is announced as one.
+
+**This does not reopen 044.** The pitch rule, the device-pixel floor and
+the Bezier fit are untouched. What changes is the input to `profile()`.
+
+**Two different sets of seven are in the tree, and neither is chosen.**
+Ratified interface 0.2 (`model/attestation-interface.md`) names ambiguity
+handled, autonomy exercised, customer exposure, team size directed,
+machine leverage operated, budget controlled, P&L ownership. The imprint
+and every screen name Discretion, Direction of Others, Consequence Held,
+Counterparty Exposure, Method Authority, Resource and Financial, Systems
+and Tooling. Four of the seven are different constructs and no entry
+records the change, which makes it drift under CLAUDE.md. It is recorded
+here as an open divergence with both sets named. Collection continues on
+the imprint set because that is what the tree already does. Choosing
+between two hypotheses with no evidence for either is what the pilot
+exists to end, so the choice is deferred to a gate in `plans/ORDER.md`.
+
+**Gate.** What consent and the packet say about measures that are
+collected and not shown is not settled and is not written. `Consent`
+cannot ship while its fourth term promises levels that travel to a public
+page they no longer reach.
+
+## 055 — Provenance is carried by marks, and the language is symmetric (2026-08-20)
+
+**A worker's own assertion and a party's assertion are both stated as
+provenance, and neither is marked as doubt.** A row reads "Attested by
+Sunrise Foods" against "No attesting party". The forms "Liezel added
+this. Nobody has confirmed it" and "Processing operator, as Liezel gave
+it" are deleted everywhere they appear.
+
+**The reason is that the old language was asymmetric in one direction
+only.** An employer's uncorroborated assertion was stated neutrally; the
+worker's identical-strength assertion carried a credibility marker. No
+surface ever marked a party's claim as unverified. Three personas read
+the page as taking the employer's side, and the marks fall hardest on
+informal workers, whose employers are least likely to sign, which is the
+population the record layer exists for. CLAUDE.md requires that every
+claim carry its provenance and resolve to the evidence beneath it. It
+does not require that the absence of a signature be rendered as a
+statement about a person's character, and "as X gave it" is not
+provenance.
+
+**Provenance is carried by the drawn marks, not by a sentence on every
+row.** The vocabulary already exists in the row gutters: self-asserted,
+employment-verified, peer-attested, single-party, multi-party. The
+sentence moves to hover on the web, tap on touch, and focus for keyboard.
+
+**The sentence stays in the DOM as the mark's accessible name,** which
+serves §12's requirement for a text equivalent and the crawler payload
+with one string. There is no second payload and no divergence between
+what an index reads and what a person means. 037 gave the reduced page
+its own web layer precisely so this is possible.
+
+**Nowhere does a mark or a page-level badge say verified.** A page-level
+"Grain verified" was proposed and refused: it is the collapse of a graded
+epistemic claim into a yes, in two words, on the most widely seen
+surface, which is the credential logic the record layer exists to
+replace (entry 027). The row is the mark. "Attested by Sunrise Foods" is
+more informative than "verified" and takes the same glance.
+
+**Consequent copy changes.** The peer tier stops being disparaged: "Only
+a coworker has signed this" and "Signed by a coworker, not the business"
+told the reader that a human being present at the work is a lesser class
+of evidence than an HR system, and for dissolved employers, informal
+work and cross-border history a named coworker is the only witness that
+will ever exist. `Main` takes the reader-facing identity sentence
+verbatim, "Identity document checked, which says nothing about the work
+below", replacing "Identity verified"; the general rule is that the
+worker never sees a weaker qualification than the reader does.
+
+**Country of origin comes off every rendered surface** and stays an
+internal fact about which document was checked. It says nothing about the
+work, which is the test the reduced page already applies to everything
+else on it, and it had no row in Sharing's always-and-never table, so it
+was the field with the highest discrimination risk and no disclosure and
+no control. If jurisdiction proves load-bearing for a reader it belongs
+on the chapter, where the work happened, not on the person.
+
+## 056 — The public page is off by default, and what it carries (2026-08-20)
+
+**A worker's public page is off until the worker turns it on.** It was on
+from signup, and `Handle` presented the address as already derived with
+its permanence framed as a benefit. Three personas noticed they had been
+published without choosing. Custody is the product's first test, and a
+page the worker did not turn on is the reader's convenience.
+
+**Published, it carries employer, position and dates,** which is the
+detail a reader expects of a work history, plus provenance by mark per
+055. Provenance is what makes the page worth indexing at all; without it
+the page is a resume at a stable URL and 027's pointer has nothing to
+point at.
+
+**The imprint may appear on the public page to human visitors, and never
+in the crawler payload.** This supersedes 035's rule that the figure is
+always behind sign-in. 035 had two reasons and only one survives. The
+sensitivity reason is gone, because under 054 the figure no longer
+carries a graded claim about the work. The irrevocability reason stands:
+a figure a person loads is gone when they close the tab, a figure in an
+index is permanent, and holding it back from the index costs nothing a
+visitor wanted.
+
+## 057 — The expiring link becomes a grant to a named recipient (2026-08-20)
+
+**The worker sends access to a named person, who opens it by proving
+control of the address it was sent to.** One click, no account, no
+password. This replaces the expiring link in 035, which anyone holding
+could open.
+
+**It collapses two mechanisms into one.** `Grant` already existed as the
+recipient's view of a record granted to a named party, and the link was
+a weaker second path to the same place. Under the link, reads could not
+be attributed, which is why Sharing could only report "3 this week", and
+revocation was per link rather than per reader. Under a grant, reads are
+identified, revocation is per party, and the loudest copy in the product,
+the warning that anyone holding the link can open it and it cannot be
+un-sent, describes a hazard that no longer exists.
+
+**An account is required for analytics and for depth, never to read the
+record.** The record layer is free to everyone permanently, and putting
+the account wall on the product rather than on a worker's record is what
+keeps that true. Requiring an account to read would have cost the sends
+that matter most: the twelve-person operator who is the next employer of
+exactly the worker this is for is not going to create an account to look
+at somebody.
+
+**The two tiers converge in v1.** 035 separated a reduced public view
+from a sensitive full-record view, and what made the second sensitive was
+what each party wrote on the seven measures, which 054 no longer renders.
+The difference that remains is real but it is not payload: one is
+published, the other is sent to a named person and expires. Recorded so
+that nobody later reads the two-tier structure as doing work it is not
+doing.
+
+## 058 — Consent is said where it binds (2026-08-20)
+
+**Only what governs having a record at all is stated at signup. Every
+other term is stated at the moment of the action it governs,** and a
+consent flag is recorded at each point. This amends the seven-mechanic
+instrument in 038.
+
+**Four of the seven described consequences of actions the reader had not
+taken.** Asking for confirmation is permanent, a business writes and it
+cannot be edited, single chapters never come out, a reader keeps what
+they read. Every persona either skimmed the screen or was frightened by
+terms they would not meet for months, and the button already sat tappable
+at the bottom before the list was read. A term read at the moment it
+binds is a term that was actually read, so this is stronger consent, not
+weaker.
+
+**Whether the instrument can be split without weakening the consent
+Grain relies on is a question for `counsel/`,** which holds questions put
+and not advice received. The brief is written; the answer is not assumed.
+
+**`Imported` stops calling its action commit.** The word reads as the
+irreversible step, and the irreversible step is asking a party to attest,
+not recording your own account of where you worked.
+
+## 059 — The record says that it is a selection, and the ledger is reachable (2026-08-20)
+
+**A packet states that a record contains only the chapters the worker
+entered.** Two personas independently derived the same play: import, then
+commit only the chapters that will attest. Nothing on any surface told a
+reader that a selection had happened, so a reader could not distinguish
+asked and refused from never asked from never entered, and that
+difference is the one they would most want. A product whose claim is that
+provenance is legible cannot have an undisclosed selection step at the
+front.
+
+**The record does not compute or display unaccounted time.** Gap
+detection would convert unexplained months into a fresh accusation,
+computed by Grain, about a person, which is the credential logic this
+product exists to refuse. Disclosing the nature of the artifact is not
+the same as grading its subject.
+
+**The ledger is reachable from the account surface.** `Settings` stated
+"47 entries, and none removed" and showed none of them; one persona read
+the number as surveillance, five jobs against forty-seven entries written
+by somebody else. The count exists to make append-only checkable rather
+than claimed, and a number nobody can open is a claim. It is demoted from
+a headline figure to a quiet line that opens the list, and it is where a
+worker sees the consent flags 058 now records.
+
+**All-or-nothing content sharing stands.** A worker controls who reads,
+never what they read, and cannot edit a work history. Recorded here
+unchanged because the personas pressed hard on it: the disputed employer
+rides along on every grant, the freelancer cannot withhold a client under
+NDA, the engineer must transmit four months of delivery driving to reach
+an engineering role. The cost is real, it falls unevenly, and it is
+accepted.
