@@ -56,6 +56,17 @@ LEVEL_MAX = 6.0
 LOBES = 7               # one per responsibility dimension; see README
 LOBE_FLOOR = 0.04       # OPEN: should a level of 0 draw truly flat? see README
 
+# Decision 054: nothing derived from the seven measures renders in v1. The
+# ledger still stores levels; the figure draws a constant profile identical
+# for every chapter of every person, which carries no claim because it cannot
+# differ. Lobe depth IS level, so simply passing None collapses the guilloche:
+# the phase sweep only separates while amplitude is non-zero, and at zero every
+# swept pass lands on the same circle. Flip RENDER_LEVELS to restore the drawn
+# levels; nothing else has to change. Enforced by reading.
+RENDER_LEVELS = False
+NEUTRAL_LEVEL = 3.0                       # mid of the 0-6 scale, chosen by eye
+NEUTRAL = (NEUTRAL_LEVEL,) * LOBES
+
 # SVG's way of saying "this width is in device space, do not scale it with the
 # viewbox". Not an inherited property, so it goes on every stroked element.
 NON_SCALING = " vector-effect='non-scaling-stroke'"
@@ -99,7 +110,15 @@ class Engagement:
 
     @property
     def woven(self) -> bool:
-        return self.levels is not None and self.provenance in ("party_attested", "peer_attested")
+        """Whether this chapter threads.
+
+        Under decision 054 that is a question about provenance, not about
+        levels: a party attested or it did not. While RENDER_LEVELS is off the
+        stored levels say nothing about how the chapter draws.
+        """
+        if RENDER_LEVELS and self.levels is None:
+            return False
+        return self.provenance in ("party_attested", "peer_attested")
 
 
 # ---------------------------------------------------------------- geometry
@@ -257,7 +276,7 @@ def _strand(r_in, r_out, eng, css_per_unit, dpr):
         return ("<circle cx='%.1f' cy='%.1f' r='%.1f' fill='none' stroke='%s' "
                 "stroke-width='%.2f'%s%s/>"
                 % (CENTRE, CENTRE, mid, INK, DEGENERATE_PX["mid"], NON_SCALING, dash))
-    L = profile(eng.levels)
+    L = profile(eng.levels if RENDER_LEVELS else NEUTRAL)
     amplitude = width / 2.0 - stroke_units
     if width < STRAND_FLOOR:
         # degenerate case: too narrow to thread. Corroboration becomes line weight

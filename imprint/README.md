@@ -7,6 +7,14 @@ data. Both share a construction; only the imprint encodes anything.
 Status: **DRAFT**, 2026-08-18. The geometry below is settled enough to build against.
 The open items in §7 are not, and two of them are load-bearing.
 
+**Levels do not render in v1 (decision 054).** Attesting parties are still asked
+for the seven measures and the ledger still stores them. Every chapter draws a
+constant neutral profile, identical for every chapter of every person, which
+carries no claim because it cannot differ. §3 describes the encoding as designed
+and as it will draw when levels return; §3a states what draws today. Everything
+else in this document is unaffected: bands, widths, overlap, provenance states
+and weave tiers all stand.
+
 Companion documents: [`../DESIGN.md`](../DESIGN.md) §2 · [`../THESIS.md`](../THESIS.md) ·
 [`../model/attestation-interface.md`](../model/attestation-interface.md) ·
 [`../mark/README.md`](../mark/README.md) (the logo and the record pointer,
@@ -68,6 +76,32 @@ anchor and the ledger maps it to an integer. Per engagement the drawn level is t
 two parties agree on; a lone attester's claim draws at their level but carries the
 single-corroboration tier. Disagreeing attesters are never averaged. Averaging invents
 a level nobody asserted.
+
+## 3a. What draws today
+
+Under decision 054 no surface renders anything derived from the measures, so
+`imprint.py` sets `RENDER_LEVELS = False` and substitutes `NEUTRAL`, a constant
+profile at level 3 on every slot. Passing no levels at all was tried and does
+not work: lobe depth **is** level, the phase sweep `delta_i` only separates
+while amplitude is non-zero, and at zero every swept pass lands on the same
+circle. The figure collapses to plain concentric rings and the path data falls
+from 37,367 bytes to 1,130. A constant profile is what keeps the guilloché.
+
+One consequence in §4's table: `woven` becomes a question about provenance
+rather than about levels, since whether a party attested is provenance and the
+stored levels now say nothing about how a chapter draws. A `party_attested` or
+`peer_attested` chapter threads whether or not it carries levels.
+
+What the figure still encodes, all of it deterministic: bands are chapters,
+band width is duration, split bands are overlap, dash against solid is
+provenance, weave density is corroboration tier.
+
+Two risks, stated rather than mitigated. A constant rosette still looks like a
+profile, so a reader may believe the shape says something. And when levels
+return, every record changes shape at once, which will read as a rescoring
+event unless it is announced as one.
+
+Flipping `RENDER_LEVELS` restores §3 exactly; nothing else has to change.
 
 ## 4. Provenance states
 
