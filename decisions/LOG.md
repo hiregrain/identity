@@ -3559,3 +3559,55 @@ consumer (A-6 resolution happens at ingestion), the mapping is
 write-path infrastructure, and prior-packet reads the same table in
 v1. Derivation is keyed per partner and stable across merges through
 the alias closure.
+
+## 069 — Ingestion review: four rulings and the admission pipeline gets one shape (2026-08-20)
+
+The engineering review over ingestion returned twenty defects; sixteen
+were mechanical and are fixed in place. Four rulings:
+
+**The chain timestamp is issued at confirmation, and confirmation pins
+the request.** Every admission check (validation, signature, subject
+resolution, firewall) runs before the single confirmation, in that
+order, with enqueue last, which also makes partition-by-subject real
+since the subject is resolved before the queue sees the row. R-3's
+compromise comparison evaluates at the confirmation moment against the
+just-issued timestamp. A confirmed attestation's verification request
+can no longer expire out from under it; the expiry sweep skips pinned
+requests. After confirmation the remaining write is materialization
+that retries until done, and no re-check exists to re-reject.
+
+**Deletion wins the race.** If the subject deletes between
+confirmation and recording, the attestation is discarded as part of
+deletion and the party is notified through the deletion-notification
+path. The promise to parties is stated honestly: nothing acknowledged
+is ever lost except to the subject's own deletion, which the party is
+told about. Recording against a deleted profile would make deletion
+dishonest, the worse breach.
+
+**The work_kind vocabulary conflict closes: the ratified position
+wins.** Ledger-authored vocabulary with published crosswalks (decision
+006, interface R-1); decision 028's ESCO line is superseded on this
+point, for the reason the schema's open item already carried: ESCO's
+coverage of informal and platform work is thin and that is this
+product's population. Ingestion gains a task for the vocabulary table,
+immutable version bindings, and a seeded v1 term set; council
+governance arrives per the interface. Schema open item 1 closes.
+
+**The opened relationship is the attested request.** No new object:
+decision 031's worker-initiates-first rule becomes mechanical as
+"every attestation carries a request reference that is either live or
+already attested between the same party and subject." A follow-up
+attestation references the original request. Cap counting counts
+confirmed submissions only; a rejection never burns a probationary
+party's cap.
+
+With them, recorded: the idempotency key is (attesting party,
+attestation id) with a payload-hash mismatch rejected, so no party can
+collide into another's confirmation; the request-to-attested
+transition happens at the append, written by ingestion's licensed
+recording function into the schema §10 table; the invalidation record
+gets its own storage and its operator flow waits for operator-console;
+the pairwise pseudonym reaches a party inside the verification request
+it receives, derived from ingestion's mapping, which is the up
+direction's missing source; and roster-firewall §4's pre-pseudonym
+wording is corrected to the ratified contract.
