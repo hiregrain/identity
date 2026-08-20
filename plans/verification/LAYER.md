@@ -29,13 +29,18 @@ superseding 008's shape): not stored, not requested, not shown. An
 employer cannot outsource its own verification duty, so the field was a
 prior signal with no compliance value carrying sensitive status.
 
-One internal interface: `verify(person, method) → verification
-attestation {issuer, method, level, verified_at, expiry/decay,
-evidence_commitment}`. **Results enter the record through ingestion and
+One internal interface: `verify(person, method)` returning a
+verification attestation in the ratified A-2 shape `{issuer, method,
+level, verified_at, freshness/expiry}`; the vendor's transaction
+reference is held payload-side internally and is not an interface
+field (decision 071). **Results enter the record through ingestion and
 only through ingestion** (decision 070): vendors are registered
 attesting parties, a result is a signed attestation submitted through
-the same admission pipeline as any employer's, under the
-worker-initiated request that started the flow. No second door.
+the same admission pipeline as any employer's, under the request that
+started the flow. For identity verification that request is the
+implicit `identity_verification` kind of schema §10 (decision 071):
+no claim ref, no freeze, the vendor as party, so the single door
+stands without freezing a claim the flow was never about.
 
 **Vendor order per decision 040 §C: Persona primary, Sumsub secondary.**
 Neither vendor permits the capture step inside the host app's own
@@ -66,8 +71,12 @@ verification set under published one-sentence-per-level rules
 
 Out of scope: work authorization in any form; the live vendor contract
 (gated criterion 7); packet rendering of verification state
-(prior-packet); request-creation UX surfaces (worker-surface renders,
-this layer exposes the flows).
+(prior-packet, which carries the per-attestation list and never the
+derived level, decision 071); request-creation UX surfaces
+(worker-surface renders, this layer exposes the flows); sanctions
+screening, deferred with its owner: it is bought like verification and
+stores signed pass/fail only (decision 010), and it arrives with the
+party-vetting work that consumes it, not here.
 
 Acceptance:
 
@@ -90,7 +99,9 @@ Acceptance:
 4. **A failed verification leaves the account working at the level it
    already had.** (mechanical) a failed or abandoned verification flow
    leaves the account's derived assurance level byte-identical to its
-   pre-flow value; progressive proofing never gates signup.
+   pre-flow value; the signup path contains no call into the
+   verification package, asserted by a grep-class check, which is what
+   progressive-proofing-never-gates-signup means mechanically.
 5. **Results enter only through ingestion.** (mechanical) no adapter or
    verification code path writes to any fact table; the only egress is
    a signed attestation submitted to the ingestion pipeline, asserted
@@ -104,3 +115,17 @@ Acceptance:
    gated) production vendor credentials configure only alongside a
    recorded founder ruling entry; the satisfying task is draft until
    that ruling exists.
+8. **The derived level never crosses to a party.** (mechanical) no
+   packet or party-facing response schema carries the derived
+   assurance level, and the serializer check rejects a planted one,
+   the RF-1 pattern; what crosses is the per-attestation verification
+   list the ratified interface defines (decision 071); no person-level
+   assurance column exists in any plane, asserted by schema
+   inspection, the interface's per-attestation-never-per-person rule
+   made mechanical.
+9. **Every region resolves an explicit method ladder.** (mechanical)
+   the region fallback configuration resolves an ordered method list
+   per configured region and rejects an unconfigured region with a
+   structured error, never a silent default; pass rates in the
+   configuration are pilot-measured fields, not authored constants,
+   enforced by the configuration schema marking them measured.

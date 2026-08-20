@@ -4,7 +4,7 @@ type: task
 layer: verification
 satisfies: [5]
 status: ready
-depends_on: [ingestion/01, party-registry/01]
+depends_on: [ingestion/02, ingestion/03, ingestion/05, ingestion/07, party-registry/02, verification/01]
 migrations: []
 binds: [decisions/LOG.md#070, model/attestation-interface.md]
 evidence: []
@@ -22,9 +22,13 @@ write to the record any other way.
 ## Scope
 
 - The internal interface: `verify(person, method)` returning a
-  verification attestation `{issuer, method, level, verified_at,
-  expiry/decay, evidence_commitment}`; adapters register in a method
-  registry.
+  verification attestation in the ratified A-2 shape `{issuer, method,
+  level, verified_at, freshness/expiry}` (decision 071); the vendor
+  transaction reference is held payload-side internally, never an
+  interface field; adapters register in a method
+  registry. Each flow starts by creating the implicit
+  `identity_verification` request through verification/01's flows,
+  which is what the firewall admits the result against.
 - The synthetic adapter: a fixture provider implementing the full
   interface, which is what every downstream task tests against and
   half of criterion 3's proof.
@@ -47,6 +51,9 @@ write to the record any other way.
 3. AC (mechanical): an adapter returning a malformed result is
    rejected at ingestion validation and the failure surfaces to the
    flow, never a partial write.
+4. AC (mechanical): the signup path contains no call into the
+   verification package, asserted by a grep-class check with a
+   red-path fixture; progressive proofing never gates signup.
 
 ## Outside check
 

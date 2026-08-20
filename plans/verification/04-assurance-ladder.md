@@ -2,7 +2,7 @@
 id: verification/04
 type: task
 layer: verification
-satisfies: [2]
+satisfies: [2, 8]
 status: ready
 depends_on: [verification/02]
 migrations: []
@@ -32,6 +32,11 @@ rules anyone can read.
   composite.
 - The fixture table: (issuer, method, level, verified_at, expiry) rows
   to expected level, covering every level boundary and expiry edge.
+- The boundary rule (decision 071): the derived level is internal and
+  worker-facing only; no packet or party-facing response schema
+  carries it, the RF-1 serializer pattern with a planted-field red
+  path; what crosses is the per-attestation list the ratified
+  interface defines.
 
 ## Acceptance
 
@@ -41,9 +46,17 @@ rules anyone can read.
 2. AC (mechanical): an expired verification's removal from a fixture
    set changes nothing; its presence unexpired changes the level the
    table says it does.
-3. AC (mechanical): the published sentences render from the live
-   configuration; a configuration change changes the rendered
-   sentences, proven by the drift check.
+3. AC (mechanical): no party-facing response schema carries the
+   derived level and the serializer check rejects a planted one,
+   red-path fixture included.
+4. AC (mechanical): the published sentences render from the live
+   configuration; running the render at two configurations produces
+   two different sentence sets, and the check this task builds diffs
+   the published sentences against the rendered ones.
+5. AC (mechanical): no person-level assurance column exists in any
+   plane, asserted by schema inspection; the level is computed at
+   read and never stored, the interface's per-attestation rule made
+   mechanical (decision 071).
 
 ## Outside check
 

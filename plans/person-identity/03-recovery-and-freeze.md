@@ -4,7 +4,7 @@ type: task
 layer: person-identity
 satisfies: [2]
 status: ready
-depends_on: [person-identity/02, verification/01]
+depends_on: [person-identity/02]
 binds: [decisions/LOG.md#013, decisions/LOG.md#020]
 evidence: []
 verified_by: null
@@ -20,8 +20,12 @@ successful takeover still cannot destroy the record.
 ## Scope
 
 - Recovery flows per assurance tier: a channel-only account recovers by
-  channel; a document-verified account must **re-clear document
-  verification** (decision 013), biometric likewise.
+  channel. In first-product every account is channel-only by
+  construction, since the verification layer is excluded from the
+  milestone (decision 071). The document and biometric re-clear paths
+  (decision 013) arrive with verification tasks 03 and 04 and are
+  declared here as that gated extension, not built now; this task's
+  criteria cover channel recovery and the freeze.
 - The **7-day freeze** after any recovery: profile deletion, grant
   creation/revocation, and verification changes are blocked; notifications
   fire to every channel on file at recovery and at freeze expiry.

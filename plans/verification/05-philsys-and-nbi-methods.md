@@ -2,9 +2,9 @@
 id: verification/05
 type: task
 layer: verification
-satisfies: [3]
+satisfies: [3, 9]
 status: ready
-depends_on: [verification/02]
+depends_on: [verification/02, verification/04]
 migrations: []
 binds: [decisions/LOG.md#070, research/09-idv-vendor-landscape.md]
 evidence: []
@@ -26,8 +26,10 @@ else.
   results-only, no document image persisted, each producing its
   attestation through ingestion like every other method.
 - Criterion 3's proof rides this task: the diff that lands each
-  adapter touches an adapter module and a registry entry, and
-  `git diff` over `db/migrations/` for the change is empty; the
+  adapter touches only paths inside the adapter directory and the
+  method registry file, asserted by a path-allowlist check this task
+  builds over the landing commits, with `db/migrations/` empty as its
+  strictest case; the
   synthetic adapter from task 02 is the second half of the proof.
 - Per-region fallback ladder configuration: the ordered method list
   per region, with pass rates measured at pilot rather than assumed
@@ -36,14 +38,18 @@ else.
 
 ## Acceptance
 
-1. AC (mechanical): each adapter lands with an empty migrations diff,
-   asserted by the criterion 3 check over the landing commits.
+1. AC (mechanical): each adapter's landing diff touches only the
+   adapter directory and the registry file, asserted by the
+   path-allowlist check this task builds, migrations empty included.
 2. AC (mechanical): a valid PhilSys QR fixture yields an attestation
    with the method and level the fixture table expects; a tampered QR
-   is rejected with a structured error and nothing persists.
+   is rejected with a structured error and nothing persists; the
+   all-writes inspection during each flow finds no image payload.
 3. AC (mechanical): the region fallback configuration resolves an
-   ordered method list per region and rejects a region with no
-   configured ladder, never a silent default.
+   ordered method list per configured region and rejects an
+   unconfigured region with a structured error, never a silent
+   default; pass-rate fields are schema-marked measured and a
+   hand-authored constant fails validation.
 
 ## Outside check
 

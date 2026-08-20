@@ -53,7 +53,10 @@ anti-coercion confirmation window, immediate read stop + grant revocation,
 payload purge within the published window, DEK destruction, spine
 tombstones with no readable residue, party notification, provable
 `payload_purged` event; the copy-map as code: every store a datum reaches
-(replicas, WAL, backups, caches, exports) enumerated with per-copy deletion
+(replicas, WAL, backups, caches, exports, **and verification vendors:
+whole-profile deletion propagates through the vendor's deletion API,
+decision 071, since the vendor relationship the verification layer
+creates is a store a datum reaches**) enumerated with per-copy deletion
 SLOs and an acknowledgment saga; deletion propagation to derived state
 (recompute, grain-pattern).
 
