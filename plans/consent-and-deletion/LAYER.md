@@ -50,6 +50,16 @@ tombstones with no readable residue, party notification, provable
 SLOs and an acknowledgment saga; deletion propagation to derived state
 (recompute, grain-pattern).
 
+**Inherited requirement (foundation review, decision 052 context): the
+journaled-but-readable window gets a watcher.** foundation/08's Destroy
+commits the journal row before the payload shred; a crash between the two
+leaves a person promised deleted in the permanent record but still
+readable until a retry. This layer owns surfacing that state: a reconcile
+check joining the deletion journal against the registry's destroyed rows,
+with a threshold and a nonzero exit, in the shape core/outbox's reconciler
+set. The 72-hour confirmation window (decision 052) is also implemented
+here.
+
 Acceptance:
 1. **After deletion, a full scan of the database finds nothing left.** (mechanical) post-deletion, a full-database scan finds no
    readable personal data for the person; the tombstoned ID never reissues.
