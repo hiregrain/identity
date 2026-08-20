@@ -14,7 +14,7 @@
 --     owner or migration credentials (asserted by
 --     checks/serving-credentials.mjs and test/append-only.test.mjs).
 --   * Migrations keep running as the table owner (the compose `identity`
---     user), which retains UPDATE/DELETE — schema evolution stays
+--     user), which retains UPDATE/DELETE, so schema evolution stays
 --     ordinary tooling, per Dispatch's trigger-rejection reasoning.
 --   * UPDATE or DELETE for the application plane is granted only as a
 --     documented exemption: per table, by name, to a named role, in the

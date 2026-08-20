@@ -1,7 +1,7 @@
 // Backup of the payload plane (foundation/08, decision 017). A real
 // pg_dump, plain SQL format, taken through the compose container like
-// every other database access in this repo — and the enforcement site
-// of the bounded retention decision 017 ruled: every run prunes any
+// every other database access in this repo. It is also the enforcement
+// site of the bounded retention decision 017 ruled: every run prunes any
 // dump older than db/deletion-policy.json's backup_retention_days, so
 // the residual window the worker-facing copy states (copy/deletion.md,
 // held equal by checks/deletion-copy.mjs) is the window this script
@@ -10,7 +10,7 @@
 // separate maintenance step anyone could forget.
 //
 // The dump is data + schema of the payload database only. Roles are
-// cluster-level and outside pg_dump's scope — db/restore.mjs recreates
+// cluster-level and outside pg_dump's scope. db/restore.mjs recreates
 // the serving roles before applying a dump, and documents why. The
 // spine is deliberately not backed up here: this task owns the payload
 // promise, and the deletion journal (0021, spine) must OUTLIVE payload
@@ -18,7 +18,7 @@
 //
 // Plain format, deliberately: db/restore.mjs applies the dump and the
 // restore-gate row in ONE psql transaction, so at no instant does a
-// restored database hold data without the row that gates it — a
+// restored database hold data without the row that gates it. A
 // custom-format archive would force pg_restore, which cannot carry the
 // extra statement.
 //

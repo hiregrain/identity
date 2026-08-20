@@ -6,7 +6,7 @@
 // What a restore does, in order:
 //
 //   1. Recreates the payload container from empty (`docker compose rm`
-//      + `up`). The spine is untouched — it holds the deletion journal
+//      + `up`). The spine is untouched. It holds the deletion journal
 //      the replay will read, and the journal outliving payload backups
 //      is the whole design.
 //   2. Recreates the serving roles (identity_app, identity_purge) with
@@ -91,7 +91,7 @@ psql(
 );
 
 console.log(
-  `restore: complete and GATED — restore_id ${restoreID}. The payload ` +
+  `restore: complete and GATED. restore_id ${restoreID}. The payload ` +
     `plane refuses serving traffic until the deletion journal is ` +
     `replayed: run \`deletion replay\` (core/cmd/deletion).`,
 );

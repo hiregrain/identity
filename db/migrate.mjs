@@ -9,7 +9,7 @@
 // across chains is checks/migration-numbers.mjs's job, not this file's.
 //
 // Each migration runs in a single transaction together with its
-// bookkeeping INSERT — a failed migration records nothing. Migrations
+// bookkeeping INSERT. A failed migration records nothing. Migrations
 // execute as the table owner (the compose `identity` user); constraining
 // the application role is foundation/03.
 //
