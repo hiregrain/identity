@@ -3611,3 +3611,51 @@ the pairwise pseudonym reaches a party inside the verification request
 it receives, derived from ingestion's mapping, which is the up
 direction's missing source; and roster-firewall §4's pre-pseudonym
 wording is corrected to the ratified contract.
+
+## 070 — Verification grilled: work authorization is not stored at all, and counsel gates re-base to founder rulings (2026-08-20)
+
+Founder rulings from the verification grilling. Tasks are authored in
+the same session.
+
+**Work authorization is not stored, not requested, and not shown,
+anywhere.** This supersedes decision 008's post-selection attestation
+shape. The reasoning that killed it: a US employer cannot outsource its
+I-9 duty, so every employer must run the check itself regardless of
+anything Grain stores, which makes the stored field a prior signal with
+no compliance value, carrying legally sensitive status for nothing. The
+`work_authorization` packet field is removed from the attestation
+interface as amendment A-8, ratified under the subset precedent; the
+prior-packet criterion that gated its reads is removed with it; the
+work-authorization-jurisdictions decision gate closes as moot. If a
+jurisdiction ever appears where third-party verification is genuinely
+relied on, it returns with a demand case and its own entry.
+
+**Worker-initiated verification requests live in this layer.**
+Issuance, delivery to the party carrying the pairwise pseudonym
+(decision 069), party notification, and the expiry copy the worker
+sees. Self-asserted-record owns the table; this layer owns the flows.
+
+**Verification results enter through ingestion, and only through
+ingestion.** Vendors are registered attesting parties; a vendor result
+becomes a signed attestation submitted through the same admission
+pipeline as any employer's, under the worker-initiated request that
+started the flow. No second door into the record exists.
+
+**Sandbox-first, and the live flip is a founder ruling.** Every task
+builds and verifies against vendor sandboxes and the synthetic adapter.
+Production contracting is gated on the founder reading the vendor terms
+and ruling go, informed by internal legal research; there is no counsel
+and none is planned, so the gate names its real owner.
+
+**Counsel gates across ORDER.md re-base the same way.** Questions
+already put (worker agreements, consent splitting, documents, R2
+regionality) stay on file as briefs; each gate's owner becomes a
+founder ruling backed by an internal research memo in `research/`,
+which is the repo's evidence tier working as designed. A gate waiting
+on a person who is not coming is a silent permanent block, which is
+the failure this entry removes.
+
+**The assurance ladder is published and deterministic.** One sentence
+per level (none/channel/document/biometric), derived at read from the
+verification set, identical inputs always deriving identical levels,
+expired verifications contributing nothing.
