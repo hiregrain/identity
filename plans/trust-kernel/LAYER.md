@@ -40,7 +40,9 @@ parameter** so a non-operator key is unexpressible (decision 019); key
 custody behind the provider interface, software for local/CI, KMS in
 production (decision 011), with the offline-root ceremony a founder gate;
 hash chains over **every governing event**: per-subject and per-party
-attestations, registry and party lifecycle, key events, privileged operator
+attestations, worker record writes (added by decision 063, so
+self-asserted claims chain from day one), registry and party lifecycle,
+key events, privileged operator
 actions, and deletion journal entries, with **chain membership fixed at
 write time and never re-keyed by a merge**; Merkle checkpoint construction
 with ≤5-minute KMS-signed checkpoints each **naming its predecessor**, a

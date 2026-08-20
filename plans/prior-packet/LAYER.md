@@ -41,3 +41,9 @@ Acceptance:
    packets (Dispatch AC-REP-2 pattern).
 4. **Packets carry no banned data and no scores.** packets carry no sensitive-data-ban categories and no scores
    finer than the interface's coarse tiers.
+
+Inherited criterion candidate (decision 063), an obligation for this
+layer's grilling, not a suggestion: a packet rendering of a credential
+with an attached document says "document on file, self-asserted" and
+never carries or links the file. The storage half is proven in
+`self-asserted-record`; what a packet renders is provable only here.
