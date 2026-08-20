@@ -270,7 +270,19 @@ Freeze on create; thaw on `declined`, `expired`, or
 the claim; the drawn "asking cannot be undone" copy describes the sent
 ask); permanent once
 `attested`. The expiry default is set at task level and is copy the
-worker sees at the moment of asking. Freezable claims are `chapter`,
+worker sees at the moment of asking.
+
+Three ingestion rules bind this table (decision 069): a request is
+**pinned** the moment an attestation against it is confirmed, and the
+expiry sweep skips pinned requests, so nothing expires out from under
+an accepted attestation; the `attested` transition is written by
+ingestion's licensed recording function when the append completes; and
+an `attested` request is the standing relationship anchor, so a
+follow-up attestation from the same party about the same subject
+references it instead of a fresh request (decision 031's
+worker-initiates-first rule, made mechanical). The request delivered
+to the party carries the party's pairwise pseudonym for the subject,
+which is how a party first obtains the pseudonym it signs over. Freezable claims are `chapter`,
 `education`, and `credential`; a `position` freezes with its chapter
 (§1) and is never a `claim_ref` itself.
 
@@ -297,12 +309,11 @@ row records what was shown and when the worker accepted it.
    is set against the **false-merge rate**, never F1, because a false merge
    attributes one worker's employer to another's.
 
-1. **Vocabulary conflict.** Decision 028 records "ESCO for `work_kind`". Ratified
-   decision 006 / interface R-1 says the vocabulary is **ledger-authored** with
-   published crosswalks to O\*NET/ISCO/ESCO. This document follows the ratified
-   position. **The founder should close this**; the ratified position looks
-   correct, since ESCO's coverage of informal and platform work is thin and that
-   is precisely this product's population.
+1. ~~**Vocabulary conflict.**~~ **Closed by decision 069.** The ratified
+   position wins: the vocabulary is ledger-authored with published
+   crosswalks (decision 006, interface R-1); decision 028's ESCO line is
+   superseded on this point. Ingestion owns the vocabulary table and the
+   seeded v1 term set.
 2. **The chapter-boundary rule for dormancy.** `party_declared_dormant` exists so
    no record silently closes on a timeout, but nothing defines what a party must
    do to declare it.

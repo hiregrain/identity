@@ -94,8 +94,12 @@ load-bearing.
    on the employer's behalf from a store it holds for them.
 
 5. **The employer signs an attestation**: `party_attested`, scope `period`,
-   chained to the worker's `ledger_person_id`, carrying the
-   `verification_request_id`.
+   naming the worker by the employer's pairwise pseudonym (interface
+   A-6, ratified by decision 068; the pseudonym reaches the employer
+   inside the verification request it received, decision 069), carrying
+   the `verification_request_id`. The ledger resolves the pseudonym to
+   the `ledger_person_id` at ingestion; the employer never holds the
+   ledger id.
 
 6. **The attestation crosses; the roster row does not.** The row stays in the
    vertical plane and is never itself a ledger object. This preserves the
