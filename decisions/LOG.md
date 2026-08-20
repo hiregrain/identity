@@ -3659,3 +3659,50 @@ the failure this entry removes.
 per level (none/channel/document/biometric), derived at read from the
 verification set, identical inputs always deriving identical levels,
 expired verifications contributing nothing.
+
+## 071 — Verification review: identity requests get a kind, recovery is channel-only in first-product, the ladder never crosses (2026-08-20)
+
+The engineering review over verification returned eighteen defects;
+fifteen were mechanical and are fixed in place. Three rulings:
+
+**The verification request gains a kind.** Schema §10 now carries
+`request_kind: claim_attestation | identity_verification`. The claim
+kind is unchanged: claim ref required, freeze on create. The identity
+kind has no claim ref and freezes nothing; it is created implicitly
+when a worker starts an identity-verification flow, its party is the
+vendor, and the firewall admits verification-scope attestations only
+against it. Identity verification from Settings therefore rides the
+same single door as everything else without freezing a claim it was
+never about, which was the hole the review found at the center of the
+layer.
+
+**First-product recovery is channel-only by construction.**
+person-identity/03's edge into verification was wrong-shaped and
+dragged the excluded verification layer into the first-product
+milestone. Document-verified accounts cannot exist in first-product,
+so the document re-clear path in recovery is declared as arriving with
+verification (tasks 03 and 04), the dependency edge moves there as a
+gated declaration, and first-product recovery works by channel alone.
+Nothing is lost; a thing that cannot exist yet stops gating.
+
+**The derived assurance level never crosses to a partner.** Packets
+carry the per-attestation verification list the ratified interface
+defines, full provenance and no collapse; the none/channel/document/
+biometric ladder is internal and worker-facing, appears in no packet
+or party-facing payload, and a criterion now enforces that. Decision
+028's "only two surface to partners: identity verified, or not" is
+superseded on this line: a binary chip is a graded claim collapsed to
+a yes, which the constitution forbids, and the pointer rule (027)
+already carries the honest alternative.
+
+Folded with them: the declinable liveness step (decision 036) is the
+biometric method's shape in the Persona task; sanctions screening
+(decision 010) is declared deferred with an owner rather than left
+silent, arriving with the party-vetting work that consumes it; vendor
+deletion-API propagation joins consent-and-deletion's scope beside the
+copy-map, since the vendor relationship this layer creates is a store
+a datum reaches; the verification attestation conforms to the ratified
+A-2 shape, with the vendor reference held payload-side internally
+rather than a new interface field; and progressive proofing's
+never-gates-signup clause gets a grep-class discharge over the signup
+path.
