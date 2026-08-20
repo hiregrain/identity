@@ -260,7 +260,8 @@ against it. `ingestion`'s roster firewall already presumes this object
 |---|---|---|
 | `request_id` | opaque id | |
 | `subject_id` | `ledger_person_id` | |
-| `claim_ref` | chapter, education, or credential id | freeze scope is this whole object |
+| `request_kind` | enum | `claim_attestation \| identity_verification` (decision 071). The claim kind requires `claim_ref` and freezes it. The identity kind has a null `claim_ref`, freezes nothing, names the verification vendor as its party, and is created implicitly when the worker starts an identity-verification flow; the firewall admits verification-scope attestations only against it. |
+| `claim_ref` | chapter, education, or credential id; null iff `request_kind` is `identity_verification` | freeze scope is this whole object |
 | `party_ref` | registered party id | who is asked |
 | `state` | enum | `open \| attested \| declined \| expired \| withdrawn_before_send` |
 | `requested_at` · `expires_at` | | **Expiry is mandatory**, the grant precedent: no open-ended state may exist. An unanswered request to a dissolved employer expires and the claim thaws. |
