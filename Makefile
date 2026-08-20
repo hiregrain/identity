@@ -168,6 +168,9 @@ db-down:
 # is booted anywhere near these; the database-dependent red path is
 # check-red-db below.
 check-red:
+	@echo "red path labels: every \"red path N\" / \"red path db N\" label in this file is unique"
+	@dupes="$$(grep -ohE 'red path( db)? [0-9]+[a-z]?' Makefile | sort | uniq -d)"; \
+	if [ -n "$$dupes" ]; then echo "duplicate red-path labels:"; echo "$$dupes"; exit 1; fi
 	@echo "red path 1: broken plan file fails the metadata check (no database)"
 	! node checks/frontmatter.mjs test/fixtures/redpath/plans > /tmp/frontmatter-red.out 2>&1
 	@echo "red path 1b: every foundation/06 validation is individually proven to fire (an aggregate exit code proves only the oldest rule)"
