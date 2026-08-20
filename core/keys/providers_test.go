@@ -7,8 +7,8 @@ import (
 	"github.com/hiregrain/identity/core/keys/conformance"
 )
 
-// Both in-repo providers pass the conformance suite on every CI run —
-// the same suite the real KMS provider must pass at the provisioning
+// Both in-repo providers pass the conformance suite on every CI run.
+// This is the same suite the real KMS provider must pass at the provisioning
 // gate (core/keys/conformance).
 func TestSoftwareConformance(t *testing.T) {
 	conformance.Run(t, func() keys.Provider { return keys.NewSoftware() })

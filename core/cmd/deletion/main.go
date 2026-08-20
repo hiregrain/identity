@@ -7,12 +7,12 @@
 //
 // destroy journals every closure member on the spine, then destroys the
 // payload-plane keys (core/envelope). replay re-applies the whole
-// deletion journal and balances every open restore gate — the step a
+// deletion journal and balances every open restore gate, the step a
 // restored payload plane refuses traffic without. purge physically
 // removes shredded registry rows as identity_purge, audited in the same
 // transaction; run it on the schedule db/deletion-policy.json states.
-// status reports the restore gate: exit 0 serving, exit 1 gated — the
-// operational surface until real infrastructure exists, like the
+// status reports the restore gate: exit 0 serving, exit 1 gated. This is
+// the operational surface until real infrastructure exists, like the
 // outbox reconciler's exit code.
 //
 // Exit codes: 0 success (status: serving); 1 failure (status: gated);
@@ -69,7 +69,7 @@ func main() {
 		fail(err)
 		if len(open) > 0 {
 			for _, id := range open {
-				fmt.Printf("status: GATED — restore %s awaits the deletion replay\n", id)
+				fmt.Printf("status: GATED. restore %s awaits the deletion replay\n", id)
 			}
 			os.Exit(1)
 		}

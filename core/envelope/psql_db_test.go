@@ -3,7 +3,7 @@
 package envelope_test
 
 // The test-side Querier: psql over `docker compose exec`, matching the
-// rest of the local pipeline (db/migrate.mjs, the checks) — no driver
+// rest of the local pipeline (db/migrate.mjs, the checks). No driver
 // dependency exists in core yet, and adding one is not this task's call.
 // Envelope statements run as identity_app, the serving role, so every
 // assertion here also exercises the append-only posture: the whole
@@ -11,7 +11,7 @@ package envelope_test
 //
 // Args are substituted as quoted literals. That is safe here because
 // core/envelope validates every argument's shape before any SQL (uuid,
-// hex, provider name — see the Querier contract in envelope.go), and the
+// hex, provider name, see the Querier contract in envelope.go), and the
 // substitution still refuses a quote character outright.
 
 import (
@@ -67,7 +67,7 @@ func isHexLiteral(s string) bool {
 }
 
 // quoteLiteral renders a validated arg as a SQL literal. Hex bytea args
-// use E” escape-string form so the backslash survives.
+// use the E-prefixed escape-string form so the backslash survives.
 func quoteLiteral(s string) string {
 	if isHexLiteral(s) {
 		return `E'\\x` + s[2:] + `'`
@@ -87,7 +87,7 @@ func composePsql(role, sql string) (string, error) {
 	return string(out), nil
 }
 
-// ownerSQL runs a statement as the owner role — test harness setup and
+// ownerSQL runs a statement as the owner role, test harness setup and
 // out-of-band inspection only, never the path under test.
 func ownerSQL(t *testing.T, sql string) string {
 	t.Helper()
@@ -117,7 +117,7 @@ func payloadDump(t *testing.T) string {
 
 // newEnv builds the Envelope under the configured provider. The provider
 // is chosen by configuration alone (GRAIN_KEY_PROVIDER, default
-// software) — the tests never construct a concrete provider type, which
+// software). The tests never construct a concrete provider type, which
 // is the swap-by-config-only claim exercised.
 func newEnv(t *testing.T) (*envelope.Envelope, keys.Provider) {
 	t.Helper()
@@ -145,8 +145,8 @@ func newPersonID(t *testing.T) string {
 }
 
 // contentTable creates the test-scoped content table and registers its
-// drop. No payload content table exists in the migration chain yet —
-// later layers own product tables — so the read/write path is exercised
+// drop. No payload content table exists in the migration chain yet,
+// later layers own product tables, so the read/write path is exercised
 // against harness-scoped tables, plus the DEK registry which IS this
 // task's migration (foundation/05's stated boundary).
 func contentTable(t *testing.T) string {

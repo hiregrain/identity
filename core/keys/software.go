@@ -9,7 +9,7 @@ import (
 )
 
 // Software is the local/CI provider (decision 011): per-scope wrapping
-// keys generated in memory and held for the life of the process —
+// keys generated in memory and held for the life of the process,
 // ephemeral by ruling, so a restart forgets every key and nothing
 // persists outside the registry's wrapped blobs. Wrapping is
 // AES-256-GCM with the scope as additional authenticated data, so a
@@ -98,7 +98,7 @@ func gcmSeal(key []byte, scope string, plaintext []byte) ([]byte, error) {
 }
 
 // gcmOpen reverses gcmSeal. Every malformed or mismatched input is
-// ErrUnwrapFailed — the error never describes the blob.
+// ErrUnwrapFailed. The error never describes the blob.
 func gcmOpen(key []byte, scope string, blob []byte) ([]byte, error) {
 	aead, err := newAEAD(key)
 	if err != nil {

@@ -8,7 +8,7 @@
 //
 // Database access goes through `docker compose exec psql` as the
 // serving role identity_app, matching db/connections.json's posture and
-// the rest of this repo's dependency-free pipeline — a Postgres driver
+// the rest of this repo's dependency-free pipeline. A Postgres driver
 // dependency is a decision nobody has made, and real connections are a
 // managed-Postgres concern behind the founder gate in plans/ORDER.md.
 // identity_app holds SELECT+INSERT only (migration 0002), which is the
@@ -96,7 +96,7 @@ func rows(plane, query string) ([]string, error) {
 	return strings.Split(trimmed, "\n"), nil
 }
 
-// firstLine truncates error text to its sanitized first line — Postgres
+// firstLine truncates error text to its sanitized first line. Postgres
 // first lines name relations, constraints and privileges, not row
 // values, which is the write-site discipline the detail column's
 // justification (migration 0020) records.
@@ -170,7 +170,7 @@ type Entry struct {
 	Instruction []byte
 }
 
-// Get fetches one entry by id, acknowledged or not — the manual-replay
+// Get fetches one entry by id, acknowledged or not. This is the manual-replay
 // path: re-applying an acknowledged entry must be a payload no-op.
 func Get(entryID string) (Entry, error) {
 	if err := validUUID(entryID); err != nil {
@@ -236,7 +236,7 @@ func note(entryID, state, detail string) error {
 
 // Drain processes every pending entry once: apply to payload, then
 // acknowledge with an 'applied' row. A failed apply is recorded as a
-// 'failed' row and the drain moves on — surfacing persistent failures
+// 'failed' row and the drain moves on. Surfacing persistent failures
 // is Reconcile's job, and retrying is simply draining again. The return
 // counts what happened; the error is reserved for the worker's own
 // plumbing failing, not for entries failing.
@@ -268,8 +268,8 @@ func Drain(crashPoint string) (applied, failed int, err error) {
 
 // Reconcile surfaces every entry unacknowledged for longer than the
 // threshold: one queue-item line per entry and a non-zero result when
-// any exist. Silent backlog is the failure mode this exists to prevent
-// — until real alerting infrastructure exists, "surfaces as an alert"
+// any exist. Silent backlog is the failure mode this exists to prevent.
+// Until real alerting infrastructure exists, "surfaces as an alert"
 // means this command's non-zero exit in a pipeline, with the threshold
 // documented at the call site (Makefile).
 func Reconcile(thresholdSeconds int) (stragglers int, err error) {
