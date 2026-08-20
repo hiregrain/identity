@@ -23,18 +23,18 @@
   </header>
 
   <main class="dissolve" style="position:absolute;top:52px;bottom:88px;left:0;right:0;overflow-y:auto;padding:0 20px 32px">
-    <div class="reading" style="padding:26px 0 18px;border-bottom:1px solid var(--ink)">
+    <div class="reading" style="padding:24px 0 16px;border-bottom:1px solid var(--ink)">
       <span class="t-inst">{{ hours }}</span>
       <span style="flex:1;min-width:0">
         <span class="t-rec" style="display:block;text-wrap:pretty">hours left to change your mind</span>
-        <span class="t-data" style="display:block;color:var(--secondary);padding-top:3px">
+        <span class="t-data" style="display:block;color:var(--secondary);padding-top:4px">
           Filed {{ filed }}</span>
       </span>
     </div>
 
     <div class="grp">
       <sc-for list="{{ now }}" as="n" hint-placeholder-count="3">
-        <div style="display:flex;gap:12px;align-items:flex-start;padding:13px 0;
+        <div style="display:flex;gap:12px;align-items:flex-start;padding:12px 0;
                     border-bottom:1px solid var(--hairline)">
           <span style="flex:0 0 20px;padding-top:2px">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--ink)"

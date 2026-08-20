@@ -22,7 +22,7 @@
   </header>
 
   <main class="dissolve" style="position:absolute;top:52px;bottom:0;left:0;right:0;overflow-y:auto;padding:0 20px 32px">
-    <div style="padding-top:22px">
+    <div style="padding-top:24px">
       <sc-for list="{{ docs }}" as="d" hint-placeholder-count="4">
         <button class="srow press">
           <span style="flex:1;min-width:0">
@@ -35,7 +35,7 @@
           </span>
         </button>
       </sc-for>
-      <p class="t-meta" style="margin:18px 0 0;color:var(--secondary);text-wrap:pretty">
+      <p class="t-meta" style="margin:16px 0 0;color:var(--secondary);text-wrap:pretty">
         The plain-language version is written to be read. The full text is what
         binds, and where they differ the full text wins. Both are here so nobody
         has to take that on trust.</p>

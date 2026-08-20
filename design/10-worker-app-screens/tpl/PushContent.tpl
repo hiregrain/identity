@@ -23,8 +23,8 @@
   </header>
 
   <main class="dissolve" style="position:absolute;top:52px;bottom:0;left:0;right:0;overflow-y:auto;padding:0 20px 32px">
-    <div style="padding-top:22px">
-      <p class="t-body" style="margin:0 0 22px;color:var(--secondary);text-wrap:pretty">
+    <div style="padding-top:24px">
+      <p class="t-body" style="margin:0 0 24px;color:var(--secondary);text-wrap:pretty">
         A notification is read on a lock screen, sometimes by somebody else
         holding the phone. None of these say what was attested.</p>
       <sc-for list="{{ notes }}" as="n" hint-placeholder-count="3">
@@ -32,9 +32,9 @@
           <span class="t-micro" style="display:block;color:var(--secondary)">{{ n.when }}</span>
           <div style="border:1px solid var(--rule);border-radius:3px;padding:12px 14px;margin-top:10px">
             <span class="t-rec" style="display:block">Grain</span>
-            <span class="t-body" style="display:block;padding-top:3px;text-wrap:pretty">{{ n.text }}</span>
+            <span class="t-body" style="display:block;padding-top:4px;text-wrap:pretty">{{ n.text }}</span>
           </div>
-          <span class="t-meta" style="display:block;color:var(--secondary);padding-top:9px;text-wrap:pretty">{{ n.why }}</span>
+          <span class="t-meta" style="display:block;color:var(--secondary);padding-top:8px;text-wrap:pretty">{{ n.why }}</span>
         </div>
       </sc-for>
     </div>

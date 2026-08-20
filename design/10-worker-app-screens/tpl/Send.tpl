@@ -10,11 +10,6 @@
     /* §8 inputs are ruled lines: a hairline you type on, focus thickens
        ink-ward. The touchable area is padded around the rule, since the rule
        itself measured 18px and §12 floors a target at 44. */
-    .ruled{display:flex;align-items:center;border-bottom:1px solid var(--rule)}
-    .ruled:focus-within{border-bottom:2px solid var(--ink)}
-    .ruled input{border:0;outline:0;background:none;font:inherit;color:var(--ink);
-                 flex:1;min-width:0;padding:12px 0;font-weight:600;font-size:16px;
-                 min-height:44px;box-sizing:border-box}
     main::-webkit-scrollbar{width:0}
     /* Danger is ink inversion, explicit words and a two-step. Never red (§5). */
   </style>
@@ -34,11 +29,11 @@
   <main class="dissolve" style="position:absolute;top:52px;bottom:0;left:0;right:0;overflow-y:auto;padding:0 20px 40px">
 
     <!-- The reading: how long it lives. The whole object is its expiry. -->
-    <div class="reading" style="padding:24px 0 18px;                border-bottom:1px solid var(--ink)">
+    <div class="reading" style="padding:24px 0 16px;                border-bottom:1px solid var(--ink)">
       <span class="t-inst">{{ days }}</span>
       <span style="flex:1;min-width:0">
         <span class="t-rec" style="display:block;text-wrap:pretty">days, then their access ends</span>
-        <span class="t-data" style="display:block;color:var(--secondary);padding-top:3px">
+        <span class="t-data" style="display:block;color:var(--secondary);padding-top:4px">
           Ends {{ expiry }}, and you can end it sooner</span>
       </span>
     </div>

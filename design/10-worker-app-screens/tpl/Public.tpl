@@ -10,21 +10,19 @@
     /* A page, not the app: page ground behind a cut sheet, no plate, no
        registration corners, no edge index. It is what a person sends someone. */
     .sheetpage{background:var(--paper);border:1px solid var(--rule)}
-    .prow{display:flex;gap:12px;align-items:flex-start;padding:13px 0;
-          border-bottom:1px solid var(--hairline)}
     main::-webkit-scrollbar{width:0}
   </style>
 </helmet>
 
 <div style="width:100%;height:100%;min-height:752px;position:relative;overflow:hidden;background:var(--page)">
   <main class="dissolve" style="position:absolute;inset:0;overflow-y:auto;padding:16px 12px">
-    <div class="sheetpage" style="padding:28px 22px 22px">
+    <div class="sheetpage" style="padding:28px 24px 24px">
 
       <h1 class="t-title" style="margin:0;font-size:28px">Liezel Mendoza</h1>
       <p class="t-data" style="margin:8px 0 0;color:var(--secondary);text-wrap:pretty">
         Identity document checked, which says nothing about the work below</p>
 
-      <svg class="imprint" viewBox="0 0 600 600" style="margin:18px auto 0" role="img"
+      <svg class="imprint" viewBox="0 0 600 600" style="margin:16px auto 0" role="img"
            aria-label="Liezel Mendoza's imprint: five chapters, two signed by an employer, one by a coworker">@@WORKING@@</svg>
 
       <div style="border-top:1px solid var(--ink);padding-top:10px;margin-top:4px">
@@ -39,7 +37,7 @@
           any Liezel did not.</p>
       </div>
 
-      <div style="padding-top:22px">
+      <div style="padding-top:24px">
         <sc-for list="{{ chapters }}" as="c" hint-placeholder-count="5">
           <div class="prow">
             <span class="prov" tabindex="0">
@@ -49,7 +47,7 @@
             </span>
             <span style="flex:1;min-width:0">
               <span class="t-rec" style="display:block">{{ c.party }}</span>
-              <span class="t-meta" style="display:block;color:var(--secondary);padding-top:3px">{{ c.kind }}</span>
+              <span class="t-meta" style="display:block;color:var(--secondary);padding-top:4px">{{ c.kind }}</span>
             </span>
             <span class="col-r">
               <span class="t-data" style="display:block">{{ c.from }}</span>
@@ -59,7 +57,7 @@
         </sc-for>
       </div>
 
-      <p class="t-body" style="margin:18px 0 0;color:var(--secondary);text-wrap:pretty">
+      <p class="t-body" style="margin:16px 0 0;color:var(--secondary);text-wrap:pretty">
         This page shows who Liezel worked for, when, and which party attested
         each chapter. Grain checks that a party really signed a record. It never
         checks whether the work was done well.</p>
@@ -72,7 +70,7 @@
       </div>
 
       <div style="display:flex;align-items:center;gap:8px;border-top:1px solid var(--hairline);
-                  margin-top:22px;padding-top:12px">
+                  margin-top:24px;padding-top:12px">
         <svg viewBox="0 0 600 600" width="20" height="20" role="img" aria-label="Grain">@@MARK_SOLID@@</svg>
         <span class="t-data" style="color:var(--secondary);flex:1;font-size:11px">
           Grain · hiregrain.com/u/liezel-mendoza · updated 14 Aug 2026</span>

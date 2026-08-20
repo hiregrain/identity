@@ -24,7 +24,7 @@
 
   <main class="dissolve" style="position:absolute;top:52px;bottom:88px;left:0;right:0;overflow-y:auto;padding:0 20px 32px">
     <div style="padding-top:24px">
-      <h2 class="t-sec" style="margin:0 0 8px;font-size:19px;line-height:1.3">Ask for the disclosure record</h2>
+      <h2 class="t-lead" style="margin:0 0 8px;line-height:1.3">Ask for the disclosure record</h2>
       <p class="t-body" style="margin:0 0 20px;color:var(--secondary);text-wrap:pretty">
         Every party that has read your record, and when. Sent by email, and it is
         a right rather than a favour.</p>

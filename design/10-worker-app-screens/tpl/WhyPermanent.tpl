@@ -22,21 +22,21 @@
   </header>
 
   <main class="dissolve" style="position:absolute;top:52px;bottom:88px;left:0;right:0;overflow-y:auto;padding:0 20px 32px">
-    <div style="padding-top:26px">
-      <h2 class="t-title" style="margin:0 0 14px;font-size:25px;line-height:1.2;text-wrap:pretty">
+    <div style="padding-top:24px">
+      <h2 class="t-head" style="margin:0 0 14px;line-height:1.2;text-wrap:pretty">
         A chapter a party signed cannot be removed</h2>
-      <p class="t-body" style="margin:0 0 22px;color:var(--secondary);text-wrap:pretty">
+      <p class="t-body" style="margin:0 0 24px;color:var(--secondary);text-wrap:pretty">
         Not by you, and not by them. Here is the whole reason, because you should
         be able to weigh it rather than take it.</p>
 
       <sc-for list="{{ points }}" as="p" hint-placeholder-count="4">
-        <div style="padding:15px 0;border-bottom:1px solid var(--hairline)">
+        <div style="padding:16px 0;border-bottom:1px solid var(--hairline)">
           <span class="t-rec" style="display:block;text-wrap:pretty">{{ p.head }}</span>
-          <span class="t-body" style="display:block;color:var(--secondary);padding-top:5px;text-wrap:pretty">{{ p.body }}</span>
+          <span class="t-body" style="display:block;color:var(--secondary);padding-top:4px;text-wrap:pretty">{{ p.body }}</span>
         </div>
       </sc-for>
 
-      <div style="margin-top:22px;background:var(--ink);color:var(--paper);padding:16px">
+      <div style="margin-top:24px;background:var(--ink);color:var(--paper);padding:16px">
         <p class="t-body" style="margin:0;text-wrap:pretty">
           What you can always do: attach your side to anything, permanently, so
           it travels with the chapter. And you can have the whole record deleted,

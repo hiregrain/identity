@@ -40,7 +40,7 @@
       <button class="srow press" onClick="{{ noop }}" style="padding-top:0">
         <span style="flex:1;min-width:0">
           <span class="t-rec" style="display:block">Everything written to your record</span>
-          <span class="t-meta" style="display:block;color:var(--secondary);padding-top:3px;text-wrap:pretty">
+          <span class="t-meta" style="display:block;color:var(--secondary);padding-top:4px;text-wrap:pretty">
             {{ entries }} entries, none removed. A correction is a new entry rather
             than a replacement, so it reads back in order. Last change {{ lastChange }}.</span>
         </span>

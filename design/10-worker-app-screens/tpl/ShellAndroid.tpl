@@ -14,7 +14,7 @@
           -45deg, var(--page) 0 6px, var(--paper) 6px 12px);
           border-block:1px solid var(--rule);display:flex;align-items:center;
           justify-content:center;z-index:4}
-    .zone span{background:var(--paper);padding:1px 6px}
+    .zone span{background:var(--paper);padding:2px 6px}
     .punch{position:absolute;top:7px;left:50%;transform:translateX(-50%);
            width:11px;height:11px;border-radius:50%;background:var(--ink);z-index:6}
   </style>

@@ -18,10 +18,10 @@
     .m-btn[disabled]{background:var(--page);color:var(--secondary)}
     .ruled{display:flex;align-items:baseline;border-bottom:1px solid var(--rule);padding-bottom:10px}
     .ruled:focus-within{border-bottom:2px solid var(--ink)}
-    .ruled.bad{border-bottom:2.5px solid var(--ink)}
+    .ruled.bad{border-bottom:2.4px solid var(--ink)}
     .ruled input{border:0;outline:0;background:none;font:inherit;color:var(--ink);
                  flex:1;min-width:0;padding:0;font-weight:600;font-size:16px}
-    .alt{min-height:44px;padding:13px 12px;border:1px solid var(--rule);border-radius:0}
+    .alt{min-height:44px;padding:12px 12px;border:1px solid var(--rule);border-radius:0}
   </style>
 </helmet>
 

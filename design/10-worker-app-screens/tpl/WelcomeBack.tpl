@@ -17,9 +17,9 @@
 
   <main class="dissolve" style="position:absolute;top:52px;bottom:0;left:0;right:0;overflow-y:auto;padding:0 20px 32px">
   <main style="position:absolute;inset:0;display:flex;flex-direction:column;
-               justify-content:center;padding:0 20px 60px">
+               justify-content:center;padding:0 20px 56px">
     <svg viewBox="0 0 160 26" width="132" height="21" role="img" aria-label="Grain"
-         style="margin-bottom:34px">@@LOCKUP@@</svg>
+         style="margin-bottom:32px">@@LOCKUP@@</svg>
     <p class="t-data" style="margin:0 0 6px;color:var(--secondary)">This device holds a record for</p>
     <h1 class="t-title" style="margin:0">Liezel Mendoza</h1>
     <p class="t-data" style="margin:8px 0 0;color:var(--secondary)">+63 •• ••• 4471</p>

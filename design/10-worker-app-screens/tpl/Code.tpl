@@ -12,7 +12,7 @@
                color:var(--ink);background:none;border:0;border-bottom:1px solid var(--rule);
                border-radius:0;outline:0;padding:0}
     .otp input:focus{border-bottom:2px solid var(--ink)}
-    .otp input.filled{border-bottom:1.5px solid var(--ink)}
+    .otp input.filled{border-bottom:1.4px solid var(--ink)}
   </style>
 </helmet>
 
@@ -28,9 +28,9 @@
   </header>
 
   <main class="dissolve" style="position:absolute;top:52px;bottom:88px;left:0;right:0;overflow-y:auto;padding:0 20px 32px">
-    <div style="padding-top:26px">
-      <h2 class="t-sec" style="margin:0 0 8px;font-size:19px;line-height:1.3">Enter the code</h2>
-      <p class="t-body" style="margin:0 0 26px;color:var(--secondary);text-wrap:pretty">
+    <div style="padding-top:24px">
+      <h2 class="t-lead" style="margin:0 0 8px;line-height:1.3">Enter the code</h2>
+      <p class="t-body" style="margin:0 0 24px;color:var(--secondary);text-wrap:pretty">
         Sent to {{ sentTo }}. It works once, and for ten minutes.</p>
 
       <div class="otp" role="group" aria-label="Six digit code">

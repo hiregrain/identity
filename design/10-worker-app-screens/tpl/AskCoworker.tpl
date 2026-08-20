@@ -7,11 +7,6 @@
   <style>
 @@CSS@@
 @@CHROME@@
-    .ruled{display:flex;align-items:center;border-bottom:1px solid var(--rule)}
-    .ruled:focus-within{border-bottom:2px solid var(--ink)}
-    .ruled input{border:0;outline:0;background:none;font:inherit;color:var(--ink);
-                 flex:1;min-width:0;padding:12px 0;font-weight:600;font-size:16px;
-                 min-height:44px;box-sizing:border-box}
   </style>
 </helmet>
 
@@ -35,8 +30,8 @@
 
   <main class="dissolve" style="position:absolute;top:52px;bottom:88px;left:0;right:0;overflow-y:auto;padding:0 20px 32px">
     <div style="padding-top:24px">
-      <h2 class="t-sec" style="margin:0 0 8px;font-size:19px;line-height:1.3">Someone who was there</h2>
-      <p class="t-body" style="margin:0 0 22px;color:var(--secondary);text-wrap:pretty">
+      <h2 class="t-lead" style="margin:0 0 8px;line-height:1.3">Someone who was there</h2>
+      <p class="t-body" style="margin:0 0 24px;color:var(--secondary);text-wrap:pretty">
         A person who worked alongside you can attest this chapter. If the business
         has closed, or nobody there answers, this is the witness that exists.</p>
 
@@ -46,7 +41,7 @@
                autocorrect="off" spellcheck="false">
       </div>
 
-      <div style="margin-top:26px">
+      <div style="margin-top:24px">
         <span class="t-micro" style="display:block;color:var(--secondary);padding-bottom:8px">
           What a reader is told</span>
         <div style="display:flex;gap:14px;align-items:center;border-block:1px solid var(--hairline);padding:14px 0">
@@ -61,7 +56,7 @@
         </div>
       </div>
 
-      <p class="t-meta" style="margin:18px 0 0;color:var(--secondary);text-wrap:pretty">
+      <p class="t-meta" style="margin:16px 0 0;color:var(--secondary);text-wrap:pretty">
         A business that later registers can attest the same chapter alongside
         them. Two parties who agree independently is the strongest a chapter gets.</p>
     </div>

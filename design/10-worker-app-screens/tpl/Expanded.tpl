@@ -36,7 +36,7 @@
     .stage.give:active{transform:scale(0.994)}
     .lrow{display:flex;gap:14px;align-items:flex-start;padding:10px 0;
           border-bottom:1px solid var(--hairline)}
-    .lmark{flex:0 0 34px;margin-top:5px}
+    .lmark{flex:0 0 34px;margin-top:4px}
   </style>
 </helmet>
 
@@ -101,7 +101,7 @@
   <div class="dissolve" style="position:absolute;top:420px;left:0;right:0;bottom:0;overflow-y:auto;padding:0 20px">
     <div style="padding:16px 0 4px">
       <span class="t-micro" style="display:block;color:var(--secondary)">This ring</span>
-      <p class="t-body" style="margin:7px 0 0;text-wrap:pretty">{{ prov }}</p>
+      <p class="t-body" style="margin:8px 0 0;text-wrap:pretty">{{ prov }}</p>
       <p class="t-meta" style="margin:8px 0 0;color:var(--secondary);text-wrap:pretty">{{ standing }}</p>
     </div>
 
@@ -109,7 +109,7 @@
          say it. Every persona called the imprint the best thing in the product
          and none of them could read it. Each line is a rule the ledger applies
          the same way to every record. -->
-    <div style="padding-top:22px">
+    <div style="padding-top:24px">
       <div class="sechead"><h2 class="t-sec" style="margin:0">What the figure says</h2></div>
       <div class="sinerule">@@SINERULE@@</div>
       <sc-for list="{{ legend }}" as="l" hint-placeholder-count="5">
@@ -122,7 +122,7 @@
           </span>
           <span style="flex:1;min-width:0">
             <span class="t-rec" style="display:block;text-wrap:pretty">{{ l.head }}</span>
-            <span class="t-meta" style="display:block;color:var(--secondary);padding-top:3px;text-wrap:pretty">{{ l.body }}</span>
+            <span class="t-meta" style="display:block;color:var(--secondary);padding-top:4px;text-wrap:pretty">{{ l.body }}</span>
           </span>
         </div>
       </sc-for>

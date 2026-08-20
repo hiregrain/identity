@@ -7,8 +7,6 @@
   <style>
 @@CSS@@
 @@CHROME@@
-    .prow{display:flex;gap:12px;align-items:flex-start;padding:14px 0;
-          border-bottom:1px solid var(--hairline)}
     main::-webkit-scrollbar{width:0}
   </style>
 </helmet>
@@ -28,11 +26,11 @@
 
     <!-- The reading an employer needs first is not a score. It is how long they
          have, and who is accountable for what they are about to read. -->
-    <div class="reading" style="padding:24px 0 18px;                border-bottom:1px solid var(--ink)">
+    <div class="reading" style="padding:24px 0 16px;                border-bottom:1px solid var(--ink)">
       <span class="t-inst">{{ daysLeft }}</span>
       <span style="flex:1;min-width:0">
         <span class="t-rec" style="display:block;text-wrap:pretty">days left on this grant</span>
-        <span class="t-data" style="display:block;color:var(--secondary);padding-top:3px">
+        <span class="t-data" style="display:block;color:var(--secondary);padding-top:4px">
           Liezel Mendoza granted it on {{ granted }}. She can end it at any time.</span>
       </span>
     </div>
@@ -45,14 +43,14 @@
 
     <!-- What Grain is and is not saying, before any content. This is the sentence
          the whole product exists to be able to write. -->
-    <div style="margin-top:18px;border-block:1px solid var(--ink);padding:14px 0">
+    <div style="margin-top:16px;border-block:1px solid var(--ink);padding:14px 0">
       <p class="t-body" style="margin:0;text-wrap:pretty">
         Grain checks that a business really signed a record. It never checks
         whether the work was done well. What each party asserted is below, at
         their own reading, and the decision is yours.</p>
     </div>
 
-    <div style="padding-top:26px">
+    <div style="padding-top:24px">
       <div class="sechead"><h2 class="t-sec" style="margin:0">Work history</h2>
         <span class="t-data" style="color:var(--secondary)">{{ count }}</span></div>
       <div class="sinerule">@@SINERULE@@</div>
@@ -70,7 +68,7 @@
           </span>
           <span style="flex:1;min-width:0">
             <span class="t-rec" style="display:block">{{ c.party }}</span>
-            <span class="t-meta" style="display:block;color:var(--secondary);padding-top:3px">{{ c.registry }}</span>
+            <span class="t-meta" style="display:block;color:var(--secondary);padding-top:4px">{{ c.registry }}</span>
           </span>
           <span class="col-r">
             <span class="t-data" style="display:block">{{ c.from }}</span>

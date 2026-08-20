@@ -24,19 +24,19 @@
 
   <main class="dissolve" style="position:absolute;top:52px;bottom:88px;left:0;right:0;overflow-y:auto;padding:0 20px 32px">
     <div style="padding-top:24px">
-      <h2 class="t-title" style="margin:0 0 14px;font-size:25px;line-height:1.2;text-wrap:pretty">
+      <h2 class="t-head" style="margin:0 0 14px;line-height:1.2;text-wrap:pretty">
         This ends your record</h2>
-      <p class="t-body" style="margin:0 0 22px;color:var(--secondary);text-wrap:pretty">
+      <p class="t-body" style="margin:0 0 24px;color:var(--secondary);text-wrap:pretty">
         You do not have to give a reason, and nobody will ask you for one.</p>
 
       <sc-for list="{{ steps }}" as="s" hint-placeholder-count="4">
-        <div style="padding:15px 0;border-bottom:1px solid var(--hairline)">
+        <div style="padding:16px 0;border-bottom:1px solid var(--hairline)">
           <span class="t-rec" style="display:block;text-wrap:pretty">{{ s.head }}</span>
-          <span class="t-body" style="display:block;color:var(--secondary);padding-top:5px;text-wrap:pretty">{{ s.body }}</span>
+          <span class="t-body" style="display:block;color:var(--secondary);padding-top:4px;text-wrap:pretty">{{ s.body }}</span>
         </div>
       </sc-for>
 
-      <div style="margin-top:22px" class="warn">
+      <div style="margin-top:24px" class="warn">
         <p class="t-rec" style="margin:0;color:var(--paper);text-wrap:pretty">
           What deletion cannot do</p>
         <p class="t-data" style="margin:8px 0 0;text-wrap:pretty">

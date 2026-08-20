@@ -10,11 +10,6 @@
   <style>
 @@CSS@@
 @@CHROME@@
-    .plate{position:absolute;inset:0;pointer-events:none}
-    .reg{position:absolute;width:11px;height:11px;border:0 solid var(--ink);opacity:.55}
-    .row{display:flex;gap:12px;align-items:flex-start;padding:12px 0;
-         border-bottom:1px solid var(--hairline);width:100%}
-    .gutter{flex:0 0 26px;padding-top:3px}
     .proud{transform:translateY(-2px)}
     main::-webkit-scrollbar{width:0}
   </style>
@@ -50,7 +45,7 @@
         <span class="t-inst">5</span>
         <span style="flex:1;min-width:0">
           <span class="t-rec" style="display:block;text-wrap:pretty">chapters, none of them confirmed</span>
-          <span class="t-data" style="display:block;color:var(--secondary);padding-top:3px;text-wrap:pretty">
+          <span class="t-data" style="display:block;color:var(--secondary);padding-top:4px;text-wrap:pretty">
             Yours so far. Ask a party who was there to attest one.</span>
         </span>
       </div>

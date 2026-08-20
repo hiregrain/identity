@@ -5,17 +5,17 @@
     .row{display:flex;gap:12px;align-items:flex-start;padding:12px 0;
          border-bottom:1px solid var(--hairline);width:100%}
     .row-sel{border-bottom:1.5px solid var(--rule)}
-    .gutter{flex:0 0 26px;padding-top:3px}
+    .gutter{flex:0 0 26px;padding-top:4px}
     .sechead{display:flex;justify-content:space-between;align-items:baseline;
              border-bottom:1px solid var(--ink);padding-bottom:8px;gap:12px}
     .icon{stroke:var(--ink);stroke-width:1.5;fill:none;stroke-linecap:square}
-    .col-r{text-align:right;white-space:nowrap;padding-top:1px}
+    .col-r{text-align:right;white-space:nowrap;padding-top:2px}
     main::-webkit-scrollbar{width:0}
 
     /* §9's sine-modulated divider and the rung scale live in the chassis, not in
        one screen's helmet: both are shared vocabulary, and a class defined in
        Main only meant every other screen rendered them unstyled. */
-    .sinerule{margin-top:-1px;line-height:0;opacity:.9}
+    .sinerule{margin-top:-2px;line-height:0;opacity:.9}
     /* No .rung. It drew the seven measures as a graded ladder, and decision 054
        renders nothing derived from them: a ladder with a mark on it is an
        ordinal whether or not the number is printed. */
@@ -32,7 +32,7 @@
        the accessibility tree and the crawler gets nothing, which would defeat
        the whole point of keeping one string. */
     .prov .tip{position:absolute;left:0;top:calc(100% - 6px);z-index:6;
-               background:var(--ink);color:var(--paper);padding:9px 11px;
+               background:var(--ink);color:var(--paper);padding:8px 12px;
                width:max-content;max-width:min(260px, 68vw);text-align:left;
                opacity:0;pointer-events:none;transition:opacity 110ms linear}
     .prov:hover .tip,.prov:focus-visible .tip{opacity:1;pointer-events:auto}
@@ -135,14 +135,44 @@
        §5 forbids a moving gradient and the rhythm alone reads as structure. */
     .skel{border-bottom:1px solid var(--hairline);padding:14px 0}
     .skel span{display:block;height:9px;background:var(--hairline)}
-    .skel span + span{margin-top:7px;width:58%}
+    .skel span + span{margin-top:8px;width:58%}
 
     /* Promoted from three screen helmets, where they had already drifted to two
        different paddings. A settings-style group, its rows, and the one block
        in the system that raises its voice. */
-    .grp{padding-top:26px}
-    .srow{display:flex;gap:12px;align-items:baseline;padding:13px 0;
+    .grp{padding-top:24px}
+    .srow{display:flex;gap:12px;align-items:baseline;padding:12px 0;
           border-bottom:1px solid var(--hairline);width:100%;min-height:44px;
           text-align:left}
     .warn{background:var(--ink);color:var(--paper);padding:14px 16px}
     .warn .t-data{color:var(--paper)}
+
+    /* §8's input: a hairline you type on, focus thickens ink-ward, an error
+       thickens it further and speaks in ink rather than colour (law 8). It
+       existed in ten copies across five divergent variants, which is the defect
+       _chrome.part was written to prevent, committed against the control the
+       app uses most. Reconciled: centre alignment, no padding under the rule
+       (the input's own padding sets the height), .bad for the error, and 16px
+       because anything smaller makes iOS zoom the viewport on focus and the
+       screen never comes back. .lg is the name field, which is the one place a
+       larger value is the point. */
+    .ruled{display:flex;align-items:center;border-bottom:1px solid var(--rule)}
+    .ruled:focus-within{border-bottom:2px solid var(--ink)}
+    .ruled.bad{border-bottom:2.5px solid var(--ink)}
+    .ruled input{border:0;outline:0;background:none;font:inherit;color:var(--ink);
+                 flex:1;min-width:0;padding:12px 0;font-weight:600;font-size:16px;
+                 min-height:44px;box-sizing:border-box}
+    .ruled.lg input{font-size:18px}
+    /* A multi-line field is the same object with room to grow. */
+    .ta{width:100%;min-height:132px;border:0;border-bottom:1px solid var(--rule);
+        background:none;font:inherit;font-size:16px;color:var(--ink);outline:0;
+        padding:12px 0;resize:none}
+    .ta:focus{border-bottom:2px solid var(--ink)}
+
+    /* The reader-facing row. Three screens carried their own copy. */
+    .prow{display:flex;gap:12px;align-items:flex-start;padding:14px 0;
+          border-bottom:1px solid var(--hairline)}
+    /* A key and its value, for a screen that lists raw facts. */
+    .drow{display:flex;gap:14px;align-items:flex-start;padding:12px 0;
+          border-bottom:1px solid var(--hairline)}
+    .dk{flex:0 0 108px;padding-top:2px}

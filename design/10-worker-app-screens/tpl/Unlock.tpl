@@ -18,12 +18,12 @@
 
   <main class="dissolve" style="position:absolute;top:52px;bottom:0;left:0;right:0;overflow-y:auto;padding:0 20px 32px">
   <main style="position:absolute;inset:0;display:flex;flex-direction:column;
-               justify-content:center;padding:0 20px 70px">
+               justify-content:center;padding:0 20px 56px">
     <svg viewBox="0 0 600 600" width="56" height="56" role="img" aria-label="Grain"
          style="margin-bottom:28px">@@MARK56@@</svg>
-    <h1 class="t-title" style="margin:0 0 10px;font-size:25px;line-height:1.2;text-wrap:pretty">
+    <h1 class="t-head" style="margin:0 0 10px;line-height:1.2;text-wrap:pretty">
       Unlock your record</h1>
-    <p class="t-body" style="margin:0 0 26px;color:var(--secondary);text-wrap:pretty">
+    <p class="t-body" style="margin:0 0 24px;color:var(--secondary);text-wrap:pretty">
       This device is set to ask before opening the app.</p>
     <div style="display:flex;flex-direction:column;gap:12px">
       <button class="btn-primary press">Use Face ID</button>

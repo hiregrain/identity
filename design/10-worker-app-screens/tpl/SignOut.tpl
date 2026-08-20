@@ -23,7 +23,7 @@
 
   <main class="dissolve" style="position:absolute;top:52px;bottom:88px;left:0;right:0;overflow-y:auto;padding:0 20px 32px">
     <div style="padding-top:24px">
-      <p class="t-body" style="margin:0 0 22px;color:var(--secondary);text-wrap:pretty">
+      <p class="t-body" style="margin:0 0 24px;color:var(--secondary);text-wrap:pretty">
         Your record stays exactly as it is. Signing out only takes it off this
         phone.</p>
       <sc-for list="{{ rows }}" as="r" hint-placeholder-count="4">

@@ -9,17 +9,10 @@
 @@CHROME@@
     /* §8 inputs are ruled lines: a hairline you type on, focus thickens ink-ward.
        An error thickens it further and speaks in ink, never paler (law 8). */
-    .ruled{display:flex;align-items:baseline;border-bottom:1px solid var(--rule);padding-bottom:10px}
-    .ruled:focus-within{border-bottom:2px solid var(--ink)}
-    .ruled.bad{border-bottom:2.5px solid var(--ink)}
     /* WCAG 2.2 AA 2.5.8 and §12's stricter 44px floor: the field is the target,
        and it measured 18px tall. The rule stays a rule; the touchable area is
        padded around it. */
-    .ruled input{border:0;outline:0;background:none;font:inherit;color:var(--ink);
-                 flex:1;min-width:0;padding:12px 0;font-weight:600;font-size:16px;
-                 min-height:44px;box-sizing:border-box}
-    .ruled{align-items:center}
-    .alt{min-height:44px;padding:13px 12px;border:1px solid var(--rule);border-radius:0}
+    .alt{min-height:44px;padding:12px 12px;border:1px solid var(--rule);border-radius:0}
   </style>
 </helmet>
 

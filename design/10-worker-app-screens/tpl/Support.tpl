@@ -7,9 +7,6 @@
   <style>
 @@CSS@@
 @@CHROME@@
-    .ta{width:100%;min-height:132px;border:0;border-bottom:1px solid var(--rule);
-        background:none;font:inherit;color:var(--ink);outline:0;padding:12px 0;resize:none}
-    .ta:focus{border-bottom:2px solid var(--ink)}
   </style>
 </helmet>
 

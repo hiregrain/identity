@@ -184,7 +184,7 @@
           </span>
           <span style="flex:1;min-width:0">
             <span class="t-rec" style="display:block">{{ o.party }}</span>
-            <span class="t-meta" style="display:block;color:var(--secondary);padding-top:3px">{{ o.gap }}</span>
+            <span class="t-meta" style="display:block;color:var(--secondary);padding-top:4px">{{ o.gap }}</span>
           </span>
           <span class="col-r t-data" style="color:var(--secondary)">{{ o.span }}</span>
         </button>
@@ -213,7 +213,7 @@
             <span class="t-meta" style="display:block;color:var(--secondary);padding-top:2px">{{ c.kind }}</span>
             <sc-for list="{{ c.positions }}" as="p" hint-placeholder-count="2">
               <span style="display:flex;justify-content:space-between;gap:8px;
-                           border-top:1px solid var(--hairline);margin-top:6px;padding-top:5px">
+                           border-top:1px solid var(--hairline);margin-top:6px;padding-top:4px">
                 <span class="t-meta">{{ p.title }}</span>
                 <span class="t-meta" style="color:var(--secondary);white-space:nowrap">{{ p.span }}</span>
               </span>

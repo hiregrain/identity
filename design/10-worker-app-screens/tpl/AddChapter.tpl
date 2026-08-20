@@ -7,11 +7,6 @@
   <style>
 @@CSS@@
 @@CHROME@@
-    .ruled{display:flex;align-items:center;border-bottom:1px solid var(--rule)}
-    .ruled:focus-within{border-bottom:2px solid var(--ink)}
-    .ruled input{border:0;outline:0;background:none;font:inherit;color:var(--ink);
-                 flex:1;min-width:0;padding:12px 0;font-weight:600;font-size:16px;
-                 min-height:44px;box-sizing:border-box}
     .res{display:flex;gap:12px;align-items:flex-start;width:100%;padding:12px 0;
          border-bottom:1px solid var(--hairline);text-align:left}
   </style>
@@ -62,7 +57,7 @@
           <button class="press" style="flex:1;min-height:44px;border:1px solid var(--rule);
                   border-radius:3px;padding:10px 12px;text-align:left">
             <span class="t-micro" style="display:block;color:var(--secondary)">{{ m.label }}</span>
-            <span class="t-data" style="display:block;padding-top:3px">{{ m.value }}</span>
+            <span class="t-data" style="display:block;padding-top:4px">{{ m.value }}</span>
           </button>
         </sc-for>
       </div>

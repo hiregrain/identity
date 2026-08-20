@@ -7,11 +7,6 @@
   <style>
 @@CSS@@
 @@CHROME@@
-    .ruled{display:flex;align-items:center;border-bottom:1px solid var(--rule)}
-    .ruled:focus-within{border-bottom:2px solid var(--ink)}
-    .ruled input{border:0;outline:0;background:none;font:inherit;color:var(--ink);
-                 flex:1;min-width:0;padding:12px 0;font-weight:600;font-size:18px;
-                 min-height:44px;box-sizing:border-box}
   </style>
 </helmet>
 
@@ -27,21 +22,21 @@
   </header>
 
   <main class="dissolve" style="position:absolute;top:52px;bottom:88px;left:0;right:0;overflow-y:auto;padding:0 20px 32px">
-    <div style="padding-top:26px">
-      <h2 class="t-sec" style="margin:0 0 8px;font-size:19px;line-height:1.3">What is your name?</h2>
-      <p class="t-body" style="margin:0 0 26px;color:var(--secondary);text-wrap:pretty">
+    <div style="padding-top:24px">
+      <h2 class="t-lead" style="margin:0 0 8px;line-height:1.3">What is your name?</h2>
+      <p class="t-body" style="margin:0 0 24px;color:var(--secondary);text-wrap:pretty">
         Write it the way you write it. Any script. This is the name at the top of
         your record and on anything you send.</p>
 
       <label class="t-micro" for="nm" style="display:block;color:var(--secondary);padding-bottom:8px">Full name</label>
-      <div class="ruled">
+      <div class="ruled lg">
         <input id="nm" value="{{ value }}" onInput="{{ onInput }}" aria-describedby="nn" autocapitalize="words">
       </div>
       <p id="nn" class="t-meta" style="margin:12px 0 0;color:var(--secondary);text-wrap:pretty">
         One field, on purpose. Splitting a name into first and last assumes a
         shape most of the world does not use.</p>
 
-      <div style="margin-top:34px;border-top:1px solid var(--hairline);padding-top:16px">
+      <div style="margin-top:32px;border-top:1px solid var(--hairline);padding-top:16px">
         <p class="t-body" style="margin:0;color:var(--secondary);text-wrap:pretty">
           Changing it later is a support request, because the name on a record
           that parties have signed cannot quietly become a different name.</p>

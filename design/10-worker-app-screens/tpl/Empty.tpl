@@ -10,8 +10,6 @@
   <style>
 @@CSS@@
 @@CHROME@@
-    .plate{position:absolute;inset:0;pointer-events:none}
-    .reg{position:absolute;width:11px;height:11px;border:0 solid var(--ink);opacity:.55}
   </style>
 </helmet>
 

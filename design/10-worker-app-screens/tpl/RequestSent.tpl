@@ -29,12 +29,12 @@
   </header>
 
   <main class="dissolve" style="position:absolute;top:52px;bottom:0;left:0;right:0;overflow-y:auto;padding:0 20px 32px">
-    <div style="padding:26px 0 18px;border-bottom:1px solid var(--ink)">
+    <div style="padding:24px 0 16px;border-bottom:1px solid var(--ink)">
       <div class="said">
         <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-tick"></use></svg>
         <span style="flex:1;min-width:0">
           <span class="t-rec" style="display:block;text-wrap:pretty">Sent to Cebu Pacific Cargo Services</span>
-          <span class="t-meta" style="display:block;color:var(--secondary);padding-top:3px">
+          <span class="t-meta" style="display:block;color:var(--secondary);padding-top:4px">
             Today, to their verified domain</span>
         </span>
       </div>
@@ -44,7 +44,7 @@
       <div class="sechead"><h3 class="t-sec" style="margin:0">What happens now</h3></div>
       <div class="sinerule">@@SINERULE@@</div>
       <sc-for list="{{ states }}" as="s" hint-placeholder-count="3">
-        <div style="display:flex;gap:12px;align-items:flex-start;padding:13px 0;
+        <div style="display:flex;gap:12px;align-items:flex-start;padding:12px 0;
                     border-bottom:1px solid var(--hairline)">
           <span style="flex:0 0 20px;padding-top:2px">
             <sc-if value="{{ s.done }}" hint-placeholder-val="{{ true }}">
@@ -55,7 +55,7 @@
           <span style="flex:1;min-width:0">
             <span class="t-body" style="display:block;color:{{ s.color }};text-wrap:pretty">{{ s.label }}</span>
             <sc-if value="{{ s.note }}" hint-placeholder-val="{{ true }}">
-              <span class="t-meta" style="display:block;color:var(--secondary);padding-top:3px;text-wrap:pretty">{{ s.note }}</span>
+              <span class="t-meta" style="display:block;color:var(--secondary);padding-top:4px;text-wrap:pretty">{{ s.note }}</span>
             </sc-if>
           </span>
         </div>

@@ -7,12 +7,6 @@
   <style>
 @@CSS@@
 @@CHROME@@
-    .ruled{display:flex;align-items:center;border-bottom:1px solid var(--rule)}
-    .ruled:focus-within{border-bottom:2px solid var(--ink)}
-    .ruled.bad{border-bottom:2.5px solid var(--ink)}
-    .ruled input{border:0;outline:0;background:none;font:inherit;color:var(--ink);
-                 flex:1;min-width:0;padding:12px 0;font-weight:600;font-size:16px;
-                 min-height:44px;box-sizing:border-box}
     .cc{min-height:44px;display:flex;align-items:center;gap:6px;padding-right:10px;
         border-right:1px solid var(--rule);margin-right:12px}
   </style>
@@ -31,9 +25,9 @@
   </header>
 
   <main class="dissolve" style="position:absolute;top:52px;bottom:88px;left:0;right:0;overflow-y:auto;padding:0 20px 32px">
-    <div style="padding-top:26px">
-      <h2 class="t-sec" style="margin:0 0 8px;font-size:19px;line-height:1.3">How should we reach you?</h2>
-      <p class="t-body" style="margin:0 0 26px;color:var(--secondary);text-wrap:pretty">
+    <div style="padding-top:24px">
+      <h2 class="t-lead" style="margin:0 0 8px;line-height:1.3">How should we reach you?</h2>
+      <p class="t-body" style="margin:0 0 24px;color:var(--secondary);text-wrap:pretty">
         We send one code to check it is yours. This is how you get back in, and
         it is never shown to anyone reading your record.</p>
 

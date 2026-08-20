@@ -10,11 +10,6 @@
   <style>
 @@CSS@@
 @@CHROME@@
-    .plate{position:absolute;inset:0;pointer-events:none}
-    .reg{position:absolute;width:11px;height:11px;border:0 solid var(--ink);opacity:.55}
-    .row{display:flex;gap:12px;align-items:flex-start;padding:12px 0;
-         border-bottom:1px solid var(--hairline);width:100%}
-    .gutter{flex:0 0 26px;padding-top:3px}
     /* §10, the attestation landing. One of only two heavy ceremonies.
        A state change of something already on screen: no overlay, no spawned UI. */
     .before{opacity:1}

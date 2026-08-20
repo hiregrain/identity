@@ -18,14 +18,14 @@
 
   <main class="dissolve" style="position:absolute;top:52px;bottom:0;left:0;right:0;overflow-y:auto;padding:0 20px 32px">
   <main class="dissolve" style="position:absolute;top:0;bottom:150px;left:0;right:0;
-               overflow-y:auto;padding:44px 20px 24px">
+               overflow-y:auto;padding:40px 20px 24px">
     <svg viewBox="0 0 160 26" width="148" height="24" role="img" aria-label="Grain">@@LOCKUP@@</svg>
-    <h1 class="t-title" style="margin:34px 0 0;font-size:29px;line-height:1.15;text-wrap:pretty">
+    <h1 class="t-title" style="margin:32px 0 0;text-wrap:pretty">
       A record of the work you have actually done.</h1>
     <p class="t-body" style="margin:16px 0 0;color:var(--secondary);text-wrap:pretty">
       The businesses you worked for sign what you did there. You choose who reads
       it. It is yours, it is free, and it stays free.</p>
-    <div style="margin-top:30px;border-top:1px solid var(--ink);padding-top:14px">
+    <div style="margin-top:32px;border-top:1px solid var(--ink);padding-top:14px">
       <p class="t-body" style="margin:0;text-wrap:pretty">
         Grain never says whether you are any good. It says what happened and who
         confirmed it, and the person reading decides what that is worth.</p>

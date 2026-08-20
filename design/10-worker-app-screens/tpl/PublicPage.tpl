@@ -23,8 +23,8 @@
   </header>
 
   <main class="dissolve" style="position:absolute;top:52px;bottom:0;left:0;right:0;overflow-y:auto;padding:0 20px 32px">
-    <div style="padding:24px 0 18px;border-bottom:1px solid var(--ink)">
-      <p class="t-sec" style="margin:0;font-size:19px;line-height:1.35;text-wrap:pretty">{{ headline }}</p>
+    <div style="padding:24px 0 16px;border-bottom:1px solid var(--ink)">
+      <p class="t-lead" style="margin:0;line-height:1.35;text-wrap:pretty">{{ headline }}</p>
       <p class="t-meta" style="margin:10px 0 0;color:var(--secondary);text-wrap:pretty">
         hiregrain.com/u/liezel-mendoza. The address is yours whether the page is
         on or off, and it never goes to anyone else.</p>

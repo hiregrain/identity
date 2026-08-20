@@ -7,9 +7,6 @@
   <style>
 @@CSS@@
 @@CHROME@@
-    .drow{display:flex;gap:14px;align-items:flex-start;padding:13px 0;
-          border-bottom:1px solid var(--hairline)}
-    .dk{flex:0 0 108px;padding-top:1px}
   </style>
 </helmet>
 
@@ -27,8 +24,8 @@
   </header>
 
   <main class="dissolve" style="position:absolute;top:52px;bottom:0;left:0;right:0;overflow-y:auto;padding:0 20px 32px">
-    <div style="padding:24px 0 18px;border-bottom:1px solid var(--ink)">
-      <h2 class="t-title" style="margin:0;font-size:24px;text-wrap:pretty">Sunrise Foods Manufacturing</h2>
+    <div style="padding:24px 0 16px;border-bottom:1px solid var(--ink)">
+      <h2 class="t-head" style="margin:0;text-wrap:pretty">Sunrise Foods Manufacturing</h2>
       <p class="t-data" style="margin:8px 0 0;color:var(--secondary)">Mar 2019 to Sep 2021 · Two positions</p>
       <div style="display:flex;align-items:center;gap:10px;padding-top:12px">
         <span class="prov" tabindex="0">
@@ -50,7 +47,7 @@
           <span style="flex:1;min-width:0">
             <span class="t-body" style="display:block;text-wrap:pretty">{{ f.v }}</span>
             <sc-if value="{{ f.was }}" hint-placeholder-val="{{ true }}">
-              <span class="t-meta" style="display:block;color:var(--secondary);padding-top:3px;text-wrap:pretty">
+              <span class="t-meta" style="display:block;color:var(--secondary);padding-top:4px;text-wrap:pretty">
                 <s>{{ f.was }}</s> corrected {{ f.when }}, by a new entry</span>
             </sc-if>
           </span>
@@ -66,7 +63,7 @@
         <div class="drow">
           <span style="flex:1;min-width:0">
             <span class="t-rec" style="display:block">{{ a.party }}</span>
-            <span class="t-meta" style="display:block;color:var(--secondary);padding-top:3px;text-wrap:pretty">{{ a.kind }}</span>
+            <span class="t-meta" style="display:block;color:var(--secondary);padding-top:4px;text-wrap:pretty">{{ a.kind }}</span>
           </span>
           <span class="t-data col-r" style="color:var(--secondary)">{{ a.when }}</span>
         </div>

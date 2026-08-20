@@ -21,7 +21,16 @@
     a:hover{color:var(--ink);text-decoration-thickness:2px}
     button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;text-align:left}
     /* §6 uses one family, hierarchy from width, weight and tracking */
+    /* Two registers added because the screens were already asking for them in
+       inline overrides: t-lead at 19 appeared twelve times patching t-sec
+       upward for a statement that opens a screen, and t-head at 25 appeared
+       eleven times patching t-title downward for a pushed screen, where a 28px
+       title next to a 52px header band reads as a second masthead. Adding two
+       registers is a smaller change than thirty-two local patches, and it is
+       the only one a check can hold. */
     .t-title {font-stretch:125%;font-weight:700;font-size:28px;line-height:1.12;text-wrap:balance}
+    .t-head  {font-stretch:110%;font-weight:700;font-size:25px;line-height:1.16;text-wrap:balance}
+    .t-lead  {font-weight:600;font-size:19px;line-height:1.35;text-wrap:pretty}
     .t-sec   {font-weight:600;font-size:17px;line-height:1.2;text-wrap:balance}
     .t-rec   {font-weight:600;font-size:15px;line-height:1.3}
     .t-body  {font-weight:400;font-size:14px;line-height:1.6}
@@ -38,12 +47,12 @@
     .rigid:active{transform:none}
     /* §8 buttons have no pills, no icons inside. 44px minimum (§12). */
     .btn-primary{background:var(--ink);color:var(--paper);border-radius:3px;
-                 padding:13px 16px;font-weight:600;font-size:15px;width:100%;
+                 padding:12px 16px;font-weight:600;font-size:15px;width:100%;
                  text-align:center;min-height:44px}
     .btn-secondary{border:1px solid var(--ink);border-radius:3px;padding:12px 16px;
                    font-weight:600;font-size:15px;width:100%;text-align:center;min-height:44px}
     .btn-tertiary{font-weight:600;font-size:14px;text-decoration:underline;
-                  text-underline-offset:3px;min-height:44px;padding:13px 8px;display:inline-block}
+                  text-underline-offset:3px;min-height:44px;padding:12px 8px;display:inline-block}
     /* a disabled control loses its ink, never its contrast (law 8) */
     .btn-primary[disabled]{background:none;color:var(--ink);border:1px solid var(--rule)}
     :focus-visible{outline:2px solid var(--ink);outline-offset:2px}
@@ -59,17 +68,17 @@
     .row{display:flex;gap:12px;align-items:flex-start;padding:12px 0;
          border-bottom:1px solid var(--hairline);width:100%}
     .row-sel{border-bottom:1.5px solid var(--rule)}
-    .gutter{flex:0 0 26px;padding-top:3px}
+    .gutter{flex:0 0 26px;padding-top:4px}
     .sechead{display:flex;justify-content:space-between;align-items:baseline;
              border-bottom:1px solid var(--ink);padding-bottom:8px;gap:12px}
     .icon{stroke:var(--ink);stroke-width:1.5;fill:none;stroke-linecap:square}
-    .col-r{text-align:right;white-space:nowrap;padding-top:1px}
+    .col-r{text-align:right;white-space:nowrap;padding-top:2px}
     main::-webkit-scrollbar{width:0}
 
     /* §9's sine-modulated divider and the rung scale live in the chassis, not in
        one screen's helmet: both are shared vocabulary, and a class defined in
        Main only meant every other screen rendered them unstyled. */
-    .sinerule{margin-top:-1px;line-height:0;opacity:.9}
+    .sinerule{margin-top:-2px;line-height:0;opacity:.9}
     /* No .rung. It drew the seven measures as a graded ladder, and decision 054
        renders nothing derived from them: a ladder with a mark on it is an
        ordinal whether or not the number is printed. */
@@ -86,7 +95,7 @@
        the accessibility tree and the crawler gets nothing, which would defeat
        the whole point of keeping one string. */
     .prov .tip{position:absolute;left:0;top:calc(100% - 6px);z-index:6;
-               background:var(--ink);color:var(--paper);padding:9px 11px;
+               background:var(--ink);color:var(--paper);padding:8px 12px;
                width:max-content;max-width:min(260px, 68vw);text-align:left;
                opacity:0;pointer-events:none;transition:opacity 110ms linear}
     .prov:hover .tip,.prov:focus-visible .tip{opacity:1;pointer-events:auto}
@@ -189,17 +198,47 @@
        §5 forbids a moving gradient and the rhythm alone reads as structure. */
     .skel{border-bottom:1px solid var(--hairline);padding:14px 0}
     .skel span{display:block;height:9px;background:var(--hairline)}
-    .skel span + span{margin-top:7px;width:58%}
+    .skel span + span{margin-top:8px;width:58%}
 
     /* Promoted from three screen helmets, where they had already drifted to two
        different paddings. A settings-style group, its rows, and the one block
        in the system that raises its voice. */
-    .grp{padding-top:26px}
-    .srow{display:flex;gap:12px;align-items:baseline;padding:13px 0;
+    .grp{padding-top:24px}
+    .srow{display:flex;gap:12px;align-items:baseline;padding:12px 0;
           border-bottom:1px solid var(--hairline);width:100%;min-height:44px;
           text-align:left}
     .warn{background:var(--ink);color:var(--paper);padding:14px 16px}
     .warn .t-data{color:var(--paper)}
+
+    /* §8's input: a hairline you type on, focus thickens ink-ward, an error
+       thickens it further and speaks in ink rather than colour (law 8). It
+       existed in ten copies across five divergent variants, which is the defect
+       _chrome.part was written to prevent, committed against the control the
+       app uses most. Reconciled: centre alignment, no padding under the rule
+       (the input's own padding sets the height), .bad for the error, and 16px
+       because anything smaller makes iOS zoom the viewport on focus and the
+       screen never comes back. .lg is the name field, which is the one place a
+       larger value is the point. */
+    .ruled{display:flex;align-items:center;border-bottom:1px solid var(--rule)}
+    .ruled:focus-within{border-bottom:2px solid var(--ink)}
+    .ruled.bad{border-bottom:2.5px solid var(--ink)}
+    .ruled input{border:0;outline:0;background:none;font:inherit;color:var(--ink);
+                 flex:1;min-width:0;padding:12px 0;font-weight:600;font-size:16px;
+                 min-height:44px;box-sizing:border-box}
+    .ruled.lg input{font-size:18px}
+    /* A multi-line field is the same object with room to grow. */
+    .ta{width:100%;min-height:132px;border:0;border-bottom:1px solid var(--rule);
+        background:none;font:inherit;font-size:16px;color:var(--ink);outline:0;
+        padding:12px 0;resize:none}
+    .ta:focus{border-bottom:2px solid var(--ink)}
+
+    /* The reader-facing row. Three screens carried their own copy. */
+    .prow{display:flex;gap:12px;align-items:flex-start;padding:14px 0;
+          border-bottom:1px solid var(--hairline)}
+    /* A key and its value, for a screen that lists raw facts. */
+    .drow{display:flex;gap:14px;align-items:flex-start;padding:12px 0;
+          border-bottom:1px solid var(--hairline)}
+    .dk{flex:0 0 108px;padding-top:2px}
 
   </style>
 </helmet>
@@ -222,7 +261,7 @@
   </header>
 
   <main class="dissolve" style="position:absolute;top:52px;bottom:88px;left:0;right:0;overflow-y:auto;padding:0 20px 32px">
-    <div style="padding:24px 0 18px;border-bottom:1px solid var(--ink)">
+    <div style="padding:24px 0 16px;border-bottom:1px solid var(--ink)">
       <span class="t-micro" style="display:block;color:var(--secondary)">Asking</span>
       <p class="t-rec" style="margin:6px 0 0">Cebu Pacific Cargo Services</p>
       <p class="t-meta" style="margin:4px 0 0;color:var(--secondary)">
@@ -233,7 +272,7 @@
       <div class="sechead"><h3 class="t-sec" style="margin:0">How it reaches them</h3></div>
       <div class="sinerule"><svg viewBox='0 0 320 6' width='100%' height='6' preserveAspectRatio='none' fill='none' stroke='#D3D7D6' stroke-width='1' vector-effect='non-scaling-stroke'><path d='M0.0 3.00 L2.0 3.31 L4.0 3.60 L6.0 3.84 L8.0 4.02 L10.0 4.13 L12.0 4.15 L14.0 4.08 L16.0 3.93 L18.0 3.71 L20.0 3.44 L22.0 3.14 L24.0 2.82 L26.0 2.52 L28.0 2.25 L30.0 2.04 L32.0 1.91 L34.0 1.85 L36.0 1.88 L38.0 2.00 L40.0 2.19 L42.0 2.44 L44.0 2.73 L46.0 3.05 L48.0 3.36 L50.0 3.64 L52.0 3.87 L54.0 4.04 L56.0 4.14 L58.0 4.14 L60.0 4.06 L62.0 3.90 L64.0 3.68 L66.0 3.40 L68.0 3.09 L70.0 2.78 L72.0 2.48 L74.0 2.22 L76.0 2.02 L78.0 1.89 L80.0 1.85 L82.0 1.89 L84.0 2.02 L86.0 2.22 L88.0 2.48 L90.0 2.78 L92.0 3.09 L94.0 3.40 L96.0 3.68 L98.0 3.90 L100.0 4.06 L102.0 4.14 L104.0 4.14 L106.0 4.04 L108.0 3.87 L110.0 3.64 L112.0 3.36 L114.0 3.05 L116.0 2.73 L118.0 2.44 L120.0 2.19 L122.0 2.00 L124.0 1.88 L126.0 1.85 L128.0 1.91 L130.0 2.04 L132.0 2.25 L134.0 2.52 L136.0 2.82 L138.0 3.14 L140.0 3.44 L142.0 3.71 L144.0 3.93 L146.0 4.08 L148.0 4.15 L150.0 4.13 L152.0 4.02 L154.0 3.84 L156.0 3.60 L158.0 3.31 L160.0 3.00 L162.0 2.69 L164.0 2.40 L166.0 2.16 L168.0 1.98 L170.0 1.87 L172.0 1.85 L174.0 1.92 L176.0 2.07 L178.0 2.29 L180.0 2.56 L182.0 2.86 L184.0 3.18 L186.0 3.48 L188.0 3.75 L190.0 3.96 L192.0 4.09 L194.0 4.15 L196.0 4.12 L198.0 4.00 L200.0 3.81 L202.0 3.56 L204.0 3.27 L206.0 2.95 L208.0 2.64 L210.0 2.36 L212.0 2.13 L214.0 1.96 L216.0 1.86 L218.0 1.86 L220.0 1.94 L222.0 2.10 L224.0 2.32 L226.0 2.60 L228.0 2.91 L230.0 3.22 L232.0 3.52 L234.0 3.78 L236.0 3.98 L238.0 4.11 L240.0 4.15 L242.0 4.11 L244.0 3.98 L246.0 3.78 L248.0 3.52 L250.0 3.22 L252.0 2.91 L254.0 2.60 L256.0 2.32 L258.0 2.10 L260.0 1.94 L262.0 1.86 L264.0 1.86 L266.0 1.96 L268.0 2.13 L270.0 2.36 L272.0 2.64 L274.0 2.95 L276.0 3.27 L278.0 3.56 L280.0 3.81 L282.0 4.00 L284.0 4.12 L286.0 4.15 L288.0 4.09 L290.0 3.96 L292.0 3.75 L294.0 3.48 L296.0 3.18 L298.0 2.86 L300.0 2.56 L302.0 2.29 L304.0 2.07 L306.0 1.92 L308.0 1.85 L310.0 1.87 L312.0 1.98 L314.0 2.16 L316.0 2.40 L318.0 2.69 L320.0 3.00'/></svg></div>
       <sc-for list="{{ steps }}" as="s" hint-placeholder-count="3">
-        <div style="padding:13px 0;border-bottom:1px solid var(--hairline)">
+        <div style="padding:12px 0;border-bottom:1px solid var(--hairline)">
           <span class="t-body" style="display:block;text-wrap:pretty">{{ s }}</span>
         </div>
       </sc-for>

@@ -7,7 +7,7 @@
   <style>
 @@CSS@@
 @@CHROME@@
-    .erow{display:flex;gap:14px;align-items:flex-start;padding:13px 0;
+    .erow{display:flex;gap:14px;align-items:flex-start;padding:12px 0;
           border-bottom:1px solid var(--hairline)}
     .when{flex:0 0 62px;padding-top:2px}
   </style>
@@ -32,8 +32,8 @@
 
   <main class="dissolve" style="position:absolute;top:52px;bottom:0;left:0;right:0;overflow-y:auto;padding:0 20px 40px">
 
-    <div style="padding:22px 0 16px;border-bottom:1px solid var(--ink)">
-      <p class="t-sec" style="margin:0;font-size:19px;line-height:1.35;text-wrap:pretty">
+    <div style="padding:24px 0 16px;border-bottom:1px solid var(--ink)">
+      <p class="t-lead" style="margin:0;line-height:1.35;text-wrap:pretty">
         Every entry ever written to your record, newest last.</p>
       <p class="t-meta" style="margin:10px 0 0;color:var(--secondary);text-wrap:pretty">
         Nothing is ever removed or rewritten. A correction is a new entry that
@@ -50,14 +50,14 @@
             <span class="when t-data" style="color:var(--secondary)">{{ e.day }}</span>
             <span style="flex:1;min-width:0">
               <span class="t-rec" style="display:block;text-wrap:pretty">{{ e.what }}</span>
-              <span class="t-meta" style="display:block;color:var(--secondary);padding-top:3px;text-wrap:pretty">{{ e.who }}</span>
+              <span class="t-meta" style="display:block;color:var(--secondary);padding-top:4px;text-wrap:pretty">{{ e.who }}</span>
             </span>
           </div>
         </sc-for>
       </div>
     </sc-for>
 
-    <p class="t-meta" style="margin:18px 0 0;color:var(--secondary);text-wrap:pretty">
+    <p class="t-meta" style="margin:16px 0 0;color:var(--secondary);text-wrap:pretty">
       Ask us to send you everything and this is what arrives, with the signatures
       attached.</p>
   </main>

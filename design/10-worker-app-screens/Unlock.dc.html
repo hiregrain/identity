@@ -21,7 +21,16 @@
     a:hover{color:var(--ink);text-decoration-thickness:2px}
     button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;text-align:left}
     /* §6 uses one family, hierarchy from width, weight and tracking */
+    /* Two registers added because the screens were already asking for them in
+       inline overrides: t-lead at 19 appeared twelve times patching t-sec
+       upward for a statement that opens a screen, and t-head at 25 appeared
+       eleven times patching t-title downward for a pushed screen, where a 28px
+       title next to a 52px header band reads as a second masthead. Adding two
+       registers is a smaller change than thirty-two local patches, and it is
+       the only one a check can hold. */
     .t-title {font-stretch:125%;font-weight:700;font-size:28px;line-height:1.12;text-wrap:balance}
+    .t-head  {font-stretch:110%;font-weight:700;font-size:25px;line-height:1.16;text-wrap:balance}
+    .t-lead  {font-weight:600;font-size:19px;line-height:1.35;text-wrap:pretty}
     .t-sec   {font-weight:600;font-size:17px;line-height:1.2;text-wrap:balance}
     .t-rec   {font-weight:600;font-size:15px;line-height:1.3}
     .t-body  {font-weight:400;font-size:14px;line-height:1.6}
@@ -38,12 +47,12 @@
     .rigid:active{transform:none}
     /* §8 buttons have no pills, no icons inside. 44px minimum (§12). */
     .btn-primary{background:var(--ink);color:var(--paper);border-radius:3px;
-                 padding:13px 16px;font-weight:600;font-size:15px;width:100%;
+                 padding:12px 16px;font-weight:600;font-size:15px;width:100%;
                  text-align:center;min-height:44px}
     .btn-secondary{border:1px solid var(--ink);border-radius:3px;padding:12px 16px;
                    font-weight:600;font-size:15px;width:100%;text-align:center;min-height:44px}
     .btn-tertiary{font-weight:600;font-size:14px;text-decoration:underline;
-                  text-underline-offset:3px;min-height:44px;padding:13px 8px;display:inline-block}
+                  text-underline-offset:3px;min-height:44px;padding:12px 8px;display:inline-block}
     /* a disabled control loses its ink, never its contrast (law 8) */
     .btn-primary[disabled]{background:none;color:var(--ink);border:1px solid var(--rule)}
     :focus-visible{outline:2px solid var(--ink);outline-offset:2px}
@@ -59,17 +68,17 @@
     .row{display:flex;gap:12px;align-items:flex-start;padding:12px 0;
          border-bottom:1px solid var(--hairline);width:100%}
     .row-sel{border-bottom:1.5px solid var(--rule)}
-    .gutter{flex:0 0 26px;padding-top:3px}
+    .gutter{flex:0 0 26px;padding-top:4px}
     .sechead{display:flex;justify-content:space-between;align-items:baseline;
              border-bottom:1px solid var(--ink);padding-bottom:8px;gap:12px}
     .icon{stroke:var(--ink);stroke-width:1.5;fill:none;stroke-linecap:square}
-    .col-r{text-align:right;white-space:nowrap;padding-top:1px}
+    .col-r{text-align:right;white-space:nowrap;padding-top:2px}
     main::-webkit-scrollbar{width:0}
 
     /* §9's sine-modulated divider and the rung scale live in the chassis, not in
        one screen's helmet: both are shared vocabulary, and a class defined in
        Main only meant every other screen rendered them unstyled. */
-    .sinerule{margin-top:-1px;line-height:0;opacity:.9}
+    .sinerule{margin-top:-2px;line-height:0;opacity:.9}
     /* No .rung. It drew the seven measures as a graded ladder, and decision 054
        renders nothing derived from them: a ladder with a mark on it is an
        ordinal whether or not the number is printed. */
@@ -86,7 +95,7 @@
        the accessibility tree and the crawler gets nothing, which would defeat
        the whole point of keeping one string. */
     .prov .tip{position:absolute;left:0;top:calc(100% - 6px);z-index:6;
-               background:var(--ink);color:var(--paper);padding:9px 11px;
+               background:var(--ink);color:var(--paper);padding:8px 12px;
                width:max-content;max-width:min(260px, 68vw);text-align:left;
                opacity:0;pointer-events:none;transition:opacity 110ms linear}
     .prov:hover .tip,.prov:focus-visible .tip{opacity:1;pointer-events:auto}
@@ -189,17 +198,47 @@
        §5 forbids a moving gradient and the rhythm alone reads as structure. */
     .skel{border-bottom:1px solid var(--hairline);padding:14px 0}
     .skel span{display:block;height:9px;background:var(--hairline)}
-    .skel span + span{margin-top:7px;width:58%}
+    .skel span + span{margin-top:8px;width:58%}
 
     /* Promoted from three screen helmets, where they had already drifted to two
        different paddings. A settings-style group, its rows, and the one block
        in the system that raises its voice. */
-    .grp{padding-top:26px}
-    .srow{display:flex;gap:12px;align-items:baseline;padding:13px 0;
+    .grp{padding-top:24px}
+    .srow{display:flex;gap:12px;align-items:baseline;padding:12px 0;
           border-bottom:1px solid var(--hairline);width:100%;min-height:44px;
           text-align:left}
     .warn{background:var(--ink);color:var(--paper);padding:14px 16px}
     .warn .t-data{color:var(--paper)}
+
+    /* §8's input: a hairline you type on, focus thickens ink-ward, an error
+       thickens it further and speaks in ink rather than colour (law 8). It
+       existed in ten copies across five divergent variants, which is the defect
+       _chrome.part was written to prevent, committed against the control the
+       app uses most. Reconciled: centre alignment, no padding under the rule
+       (the input's own padding sets the height), .bad for the error, and 16px
+       because anything smaller makes iOS zoom the viewport on focus and the
+       screen never comes back. .lg is the name field, which is the one place a
+       larger value is the point. */
+    .ruled{display:flex;align-items:center;border-bottom:1px solid var(--rule)}
+    .ruled:focus-within{border-bottom:2px solid var(--ink)}
+    .ruled.bad{border-bottom:2.5px solid var(--ink)}
+    .ruled input{border:0;outline:0;background:none;font:inherit;color:var(--ink);
+                 flex:1;min-width:0;padding:12px 0;font-weight:600;font-size:16px;
+                 min-height:44px;box-sizing:border-box}
+    .ruled.lg input{font-size:18px}
+    /* A multi-line field is the same object with room to grow. */
+    .ta{width:100%;min-height:132px;border:0;border-bottom:1px solid var(--rule);
+        background:none;font:inherit;font-size:16px;color:var(--ink);outline:0;
+        padding:12px 0;resize:none}
+    .ta:focus{border-bottom:2px solid var(--ink)}
+
+    /* The reader-facing row. Three screens carried their own copy. */
+    .prow{display:flex;gap:12px;align-items:flex-start;padding:14px 0;
+          border-bottom:1px solid var(--hairline)}
+    /* A key and its value, for a screen that lists raw facts. */
+    .drow{display:flex;gap:14px;align-items:flex-start;padding:12px 0;
+          border-bottom:1px solid var(--hairline)}
+    .dk{flex:0 0 108px;padding-top:2px}
 
   </style>
 </helmet>
@@ -212,12 +251,12 @@
 
   <main class="dissolve" style="position:absolute;top:52px;bottom:0;left:0;right:0;overflow-y:auto;padding:0 20px 32px">
   <main style="position:absolute;inset:0;display:flex;flex-direction:column;
-               justify-content:center;padding:0 20px 70px">
+               justify-content:center;padding:0 20px 56px">
     <svg viewBox="0 0 600 600" width="56" height="56" role="img" aria-label="Grain"
          style="margin-bottom:28px"><g fill='none' stroke='#1B2A44' stroke-width='13.39'><path d='M564.00 300.00 L574.96 315.17 L583.47 331.37 L588.08 348.07 L587.84 364.51 L582.40 379.85 L572.04 393.39 L557.62 404.64 L540.44 413.47 L522.15 420.22 L504.50 425.71 L489.19 431.18 L477.47 438.13 L469.93 448.00 L466.25 461.73 L465.18 479.44 L464.85 500.17 L463.20 522.04 L458.50 542.60 L449.81 559.48 L437.09 570.89 L421.10 576.08 L403.10 575.36 L384.42 569.90 L366.21 561.44 L349.21 551.91 L333.71 543.12 L319.60 536.55 L306.43 533.25 L293.56 533.66 L280.31 537.63 L266.11 544.38 L250.65 552.62 L233.98 560.73 L216.49 566.99 L198.95 569.90 L182.26 568.41 L167.37 562.08 L155.01 551.13 L145.53 536.44 L138.82 519.30 L134.27 501.24 L130.87 483.73 L127.37 467.94 L122.51 454.58 L115.26 443.79 L105.05 435.18 L91.88 427.93 L76.39 421.01 L59.76 413.37 L43.54 404.16 L29.43 392.89 L18.93 379.48 L13.13 364.29 L12.50 347.97 L16.81 331.34 L25.13 315.17 L36.00 300.00 L47.67 286.08 L58.39 273.26 L66.70 261.07 L71.65 248.83 L73.00 235.81 L71.18 221.45 L67.27 205.47 L62.74 188.04 L59.25 169.71 L58.31 151.43 L61.05 134.32 L68.07 119.48 L79.32 107.81 L94.17 99.77 L111.53 95.26 L130.07 93.67 L148.48 93.86 L165.68 94.41 L180.99 93.87 L194.21 90.96 L205.63 84.87 L215.91 75.40 L225.88 63.03 L236.40 48.87 L248.13 34.46 L261.39 21.57 L276.13 11.87 L291.91 6.67 L308.09 6.67 L323.87 11.87 L338.61 21.57 L351.87 34.46 L363.60 48.87 L374.12 63.03 L384.09 75.40 L394.37 84.87 L405.79 90.96 L419.01 93.87 L434.32 94.41 L451.52 93.86 L469.93 93.67 L488.47 95.26 L505.83 99.77 L520.68 107.81 L531.93 119.48 L538.95 134.32 L541.69 151.43 L540.75 169.71 L537.26 188.04 L532.73 205.47 L528.82 221.45 L527.00 235.81 L528.34 248.83 L533.28 261.07 L541.57 273.26 L552.30 286.08 L564.00 300.00 Z'/><path d='M472.00 300.00 L492.08 314.75 L505.38 331.72 L507.77 348.62 L497.92 362.64 L477.58 371.57 L451.00 374.76 L424.04 373.74 L402.83 372.33 L391.92 375.80 L392.26 388.79 L400.38 412.63 L409.52 443.68 L412.83 474.23 L406.52 495.89 L391.17 503.37 L370.56 496.46 L349.31 479.45 L330.81 458.87 L316.31 441.26 L305.04 431.61 L294.93 432.36 L283.50 442.94 L269.00 459.85 L251.22 477.52 L231.75 490.02 L213.57 492.80 L199.84 484.18 L192.67 465.73 L192.03 441.65 L195.51 417.24 L198.99 397.21 L197.96 384.15 L189.17 377.96 L171.94 376.14 L148.60 374.96 L124.01 370.93 L104.01 362.03 L93.61 348.30 L95.29 331.62 L108.12 314.73 L128.00 300.00 L148.89 288.40 L164.74 279.11 L171.44 269.92 L168.03 258.23 L156.93 242.34 L143.12 222.32 L132.37 200.34 L129.46 180.05 L136.65 165.28 L153.15 158.67 L175.62 160.43 L199.43 168.07 L220.34 176.99 L235.82 181.97 L245.70 178.88 L251.96 166.23 L257.62 145.79 L265.52 122.20 L277.09 101.58 L291.93 89.58 L308.07 89.58 L322.91 101.58 L334.48 122.20 L342.38 145.79 L348.04 166.23 L354.30 178.88 L364.18 181.97 L379.66 176.99 L400.57 168.07 L424.38 160.43 L446.85 158.67 L463.35 165.28 L470.54 180.05 L467.63 200.34 L456.88 222.32 L443.07 242.34 L431.97 258.24 L428.54 269.92 L435.22 279.11 L451.07 288.40 L472.00 300.00 Z'/><path d='M390.00 300.00 L406.81 314.06 L408.37 329.04 L391.72 337.99 L366.58 338.44 L348.86 337.49 L348.33 348.33 L357.27 374.63 L358.06 400.56 L344.33 407.02 L325.01 393.34 L309.86 374.86 L300.00 367.25 L290.02 375.80 L275.23 392.45 L257.77 401.94 L245.47 394.44 L243.46 373.68 L247.36 352.64 L245.90 341.51 L231.58 339.50 L209.07 337.66 L192.54 328.79 L193.47 314.03 L210.00 300.00 L228.07 290.53 L233.59 282.21 L224.63 268.78 L212.53 249.50 L211.29 231.93 L225.36 225.36 L246.96 230.88 L264.53 238.56 L273.34 235.63 L278.18 218.57 L286.50 197.49 L300.00 188.00 L313.50 197.49 L321.82 218.57 L326.66 235.63 L335.47 238.56 L353.04 230.88 L374.64 225.36 L388.71 231.93 L387.47 249.50 L375.37 268.78 L366.40 282.21 L371.91 290.53 L390.00 300.00 Z'/></g></svg>
-    <h1 class="t-title" style="margin:0 0 10px;font-size:25px;line-height:1.2;text-wrap:pretty">
+    <h1 class="t-head" style="margin:0 0 10px;line-height:1.2;text-wrap:pretty">
       Unlock your record</h1>
-    <p class="t-body" style="margin:0 0 26px;color:var(--secondary);text-wrap:pretty">
+    <p class="t-body" style="margin:0 0 24px;color:var(--secondary);text-wrap:pretty">
       This device is set to ask before opening the app.</p>
     <div style="display:flex;flex-direction:column;gap:12px">
       <button class="btn-primary press">Use Face ID</button>

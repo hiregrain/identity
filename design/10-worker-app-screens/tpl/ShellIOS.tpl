@@ -19,7 +19,7 @@
     .inset{position:absolute;left:0;right:0;z-index:4;display:flex;align-items:center;
            justify-content:center;
            background:repeating-linear-gradient(-45deg,var(--page) 0 6px,var(--paper) 6px 12px)}
-    .inset span{background:var(--paper);padding:1px 6px}
+    .inset span{background:var(--paper);padding:2px 6px}
     .rule{position:absolute;left:0;right:0;border-top:1px solid var(--rule);z-index:5}
   </style>
 </helmet>

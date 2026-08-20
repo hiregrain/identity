@@ -34,8 +34,8 @@
          would read as a score, and §6's instrument register is for readings where
          the number IS the fact, such as ledger length or days left, not for a count of
          who can see you. -->
-    <div style="padding:24px 0 18px;border-bottom:1px solid var(--ink)">
-      <p class="t-sec" style="margin:0;font-size:19px;line-height:1.35;text-wrap:pretty">{{ exposure }}</p>
+    <div style="padding:24px 0 16px;border-bottom:1px solid var(--ink)">
+      <p class="t-lead" style="margin:0;line-height:1.35;text-wrap:pretty">{{ exposure }}</p>
       <p class="t-meta" style="margin:10px 0 0;color:var(--secondary);text-wrap:pretty">
         A grant ends on its own date. Nobody keeps reading your record because
         you forgot about them.</p>
@@ -52,7 +52,7 @@
       <button class="srow press" onClick="{{ noop }}">
         <span style="flex:1;min-width:0">
           <span class="t-rec" style="display:block">Your address</span>
-          <span class="t-data" style="display:block;padding-top:3px">hiregrain.com/u/liezel-mendoza</span>
+          <span class="t-data" style="display:block;padding-top:4px">hiregrain.com/u/liezel-mendoza</span>
           <span class="t-meta" style="display:block;color:var(--secondary);padding-top:2px;text-wrap:pretty">
             It never changes hands. Turn the page off and the address stays yours.</span>
         </span>
@@ -108,7 +108,7 @@
         <button class="srow press" onClick="{{ g.go }}">
           <span style="flex:1;min-width:0">
             <span class="t-rec" style="display:block">{{ g.party }}</span>
-            <span class="t-data" style="display:block;padding-top:3px">{{ g.what }}</span>
+            <span class="t-data" style="display:block;padding-top:4px">{{ g.what }}</span>
             <span class="t-meta" style="display:block;color:var(--secondary);padding-top:2px">{{ g.since }}</span>
           </span>
           <span class="col-r">

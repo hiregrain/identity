@@ -29,14 +29,14 @@
 
   <main class="dissolve" style="position:absolute;top:52px;bottom:0;left:0;right:0;overflow-y:auto;padding:0 20px 32px">
     <div style="padding-top:20px">
-      <p class="t-body" style="margin:0 0 18px;color:var(--secondary);text-wrap:pretty">
+      <p class="t-body" style="margin:0 0 16px;color:var(--secondary);text-wrap:pretty">
         Every piece below comes from the shared chassis. Nothing is defined on
         this board, so what renders here renders on every screen.</p>
 
       <div class="cell">
         <span class="t-micro">Provenance marks, the five states</span>
         <sc-for list="{{ marks }}" as="m" hint-placeholder-count="5">
-          <div style="display:flex;gap:16px;align-items:center;padding:7px 0">
+          <div style="display:flex;gap:16px;align-items:center;padding:8px 0">
             <span class="prov" tabindex="0">
               <svg viewBox="0 0 34 16" width="34" height="16" fill="none" aria-hidden="true"
                    stroke="var(--ink)" stroke-width="1"><use href="{{ m.sw }}"></use></svg>
@@ -100,7 +100,7 @@
           <sc-for list="{{ icons }}" as="i" hint-placeholder-count="6">
             <span>
               <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><use href="{{ i.id }}"></use></svg>
-              <span class="t-meta" style="display:block;color:var(--secondary);font-size:10px;padding-top:4px">{{ i.name }}</span>
+              <span class="t-micro" style="display:block;color:var(--secondary);padding-top:4px;letter-spacing:0">{{ i.name }}</span>
             </span>
           </sc-for>
         </div>

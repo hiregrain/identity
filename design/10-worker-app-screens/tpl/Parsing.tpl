@@ -22,8 +22,8 @@
   </header>
 
   <main class="dissolve" style="position:absolute;top:52px;bottom:0;left:0;right:0;overflow-y:auto;padding:0 20px 32px">
-    <div style="padding-top:30px">
-      <h2 class="t-sec" style="margin:0 0 8px;font-size:19px;line-height:1.3">{{ head }}</h2>
+    <div style="padding-top:32px">
+      <h2 class="t-lead" style="margin:0 0 8px;line-height:1.3">{{ head }}</h2>
       <p class="t-body" style="margin:0 0 24px;color:var(--secondary);text-wrap:pretty">
         Nothing is written to your record yet. You read it and correct it first.</p>
 
@@ -34,9 +34,9 @@
         <span class="t-data">{{ pct }}%</span>
       </div>
 
-      <div style="padding-top:30px">
+      <div style="padding-top:32px">
         <sc-for list="{{ steps }}" as="s" hint-placeholder-count="3">
-          <div style="display:flex;gap:12px;align-items:flex-start;padding:11px 0;
+          <div style="display:flex;gap:12px;align-items:flex-start;padding:12px 0;
                       border-bottom:1px solid var(--hairline)">
             <span style="flex:0 0 20px;padding-top:2px">
               <sc-if value="{{ s.done }}" hint-placeholder-val="{{ true }}">

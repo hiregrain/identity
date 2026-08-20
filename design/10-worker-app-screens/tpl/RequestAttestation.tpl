@@ -28,7 +28,7 @@
   </header>
 
   <main class="dissolve" style="position:absolute;top:52px;bottom:88px;left:0;right:0;overflow-y:auto;padding:0 20px 32px">
-    <div style="padding:24px 0 18px;border-bottom:1px solid var(--ink)">
+    <div style="padding:24px 0 16px;border-bottom:1px solid var(--ink)">
       <span class="t-micro" style="display:block;color:var(--secondary)">Asking</span>
       <p class="t-rec" style="margin:6px 0 0">Cebu Pacific Cargo Services</p>
       <p class="t-meta" style="margin:4px 0 0;color:var(--secondary)">
@@ -39,7 +39,7 @@
       <div class="sechead"><h3 class="t-sec" style="margin:0">How it reaches them</h3></div>
       <div class="sinerule">@@SINERULE@@</div>
       <sc-for list="{{ steps }}" as="s" hint-placeholder-count="3">
-        <div style="padding:13px 0;border-bottom:1px solid var(--hairline)">
+        <div style="padding:12px 0;border-bottom:1px solid var(--hairline)">
           <span class="t-body" style="display:block;text-wrap:pretty">{{ s }}</span>
         </div>
       </sc-for>

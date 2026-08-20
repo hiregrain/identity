@@ -7,8 +7,6 @@
   <style>
 @@CSS@@
 @@CHROME@@
-    .prow{display:flex;gap:12px;align-items:flex-start;padding:14px 0;
-          border-bottom:1px solid var(--hairline)}
     main::-webkit-scrollbar{width:0}
   </style>
 </helmet>
@@ -49,7 +47,7 @@
             </span>
             <span style="flex:1;min-width:0">
               <span class="t-rec" style="display:block">{{ c.party }}</span>
-              <span class="t-meta" style="display:block;color:var(--secondary);padding-top:3px">{{ c.kind }}</span>
+              <span class="t-meta" style="display:block;color:var(--secondary);padding-top:4px">{{ c.kind }}</span>
             </span>
             <span class="col-r">
               <span class="t-data" style="display:block">{{ c.from }}</span>
@@ -59,7 +57,7 @@
         </sc-for>
       </div>
 
-      <p class="t-meta" style="margin:18px 0 0;color:var(--secondary);text-wrap:pretty">
+      <p class="t-meta" style="margin:16px 0 0;color:var(--secondary);text-wrap:pretty">
         This page shows who she worked for, when, and which party attested each
         chapter. Grain never checks whether the work was done well. A record holds
         the chapters its subject entered, and Grain does not know of any she did

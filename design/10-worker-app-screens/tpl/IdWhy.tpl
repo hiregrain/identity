@@ -24,7 +24,7 @@
 
   <main class="dissolve" style="position:absolute;top:52px;bottom:88px;left:0;right:0;overflow-y:auto;padding:0 20px 32px">
     <div style="padding-top:24px">
-      <h2 class="t-title" style="margin:0 0 14px;font-size:25px;line-height:1.2;text-wrap:pretty">
+      <h2 class="t-head" style="margin:0 0 14px;line-height:1.2;text-wrap:pretty">
         One check, so a reader knows the record is yours</h2>
       <p class="t-body" style="margin:0 0 24px;color:var(--secondary);text-wrap:pretty">
         Without it, anyone could put your name on a page. This is the only time
@@ -33,12 +33,12 @@
       <sc-for list="{{ rows }}" as="r" hint-placeholder-count="4">
         <div class="drow" style="display:flex;gap:14px;align-items:flex-start;padding:14px 0;
                                  border-bottom:1px solid var(--hairline)">
-          <span class="t-meta" style="flex:0 0 96px;color:var(--secondary);padding-top:1px">{{ r.k }}</span>
+          <span class="t-meta" style="flex:0 0 96px;color:var(--secondary);padding-top:2px">{{ r.k }}</span>
           <span class="t-body" style="flex:1;min-width:0;text-wrap:pretty">{{ r.v }}</span>
         </div>
       </sc-for>
 
-      <p class="t-meta" style="margin:18px 0 0;color:var(--secondary);text-wrap:pretty">
+      <p class="t-meta" style="margin:16px 0 0;color:var(--secondary);text-wrap:pretty">
         You can skip this and keep using your record. Some businesses will not
         read a record that has not been checked, and the page says which it is.</p>
     </div>

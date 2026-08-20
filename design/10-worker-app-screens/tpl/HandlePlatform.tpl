@@ -19,7 +19,7 @@
     .m-field{background:var(--page);border-radius:4px 4px 0 0;padding:8px 16px 6px;
              border-bottom:1px solid var(--secondary);min-height:56px;display:flex;
              flex-direction:column;justify-content:center}
-    .m-field:focus-within{border-bottom:2px solid var(--ink);padding-bottom:5px}
+    .m-field:focus-within{border-bottom:2px solid var(--ink);padding-bottom:4px}
     .m-field.bad{border-bottom:2px solid var(--ink)}
     .m-label{font:400 12px/16px system-ui,Roboto,sans-serif;color:var(--secondary)}
     .m-input{display:flex;align-items:baseline;gap:2px}
@@ -27,7 +27,7 @@
                    font:400 16px/24px system-ui,Roboto,sans-serif;color:var(--ink)}
     .m-support{font:400 12px/16px system-ui,Roboto,sans-serif;color:var(--secondary);
                padding:4px 16px 0}
-    .m-chip{min-height:44px;padding:6px 16px;border:1px solid var(--secondary);
+    .m-chip{min-height:40px;padding:6px 16px;border:1px solid var(--secondary);
             border-radius:8px;font:500 14px/20px system-ui,Roboto,sans-serif;
             background:none;color:var(--ink)}
     .m-btn{min-height:44px;padding:10px 24px;border-radius:100px;background:var(--ink);
