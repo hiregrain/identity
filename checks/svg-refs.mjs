@@ -32,12 +32,16 @@ let scanned = 0;
 for (const file of built(root)) {
   scanned++;
   const text = readFileSync(file, "utf8");
-  const defined = new Set([...text.matchAll(/\bid=["']([^"']+)["']/g)].map((m) => m[1]));
+  const defined = new Set(
+    [...text.matchAll(/\bid=["']([^"']+)["']/g)].map((m) => m[1]),
+  );
   const seen = new Set();
   for (const m of text.matchAll(/<use\b[^>]*\bhref=["']#([^"']+)["']/g)) {
     if (defined.has(m[1]) || seen.has(m[1])) continue;
     seen.add(m[1]);
-    failures.push(`${file}: <use href="#${m[1]}"> resolves to nothing in this file`);
+    failures.push(
+      `${file}: <use href="#${m[1]}"> resolves to nothing in this file`,
+    );
   }
 }
 

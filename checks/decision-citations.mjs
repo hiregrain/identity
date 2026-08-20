@@ -32,24 +32,53 @@ import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
 
 const LOG = "decisions/LOG.md";
-const ROOTS = process.argv.length > 2 ? process.argv.slice(2)
-  : ["design", "plans", "model", "imprint", "mark", "copy", "CLAUDE.md", "THESIS.md", "DESIGN.md"];
-const SKIP = new Set(["node_modules", ".git", ".claude", "handoff", "research", "counsel"]);
+const ROOTS =
+  process.argv.length > 2
+    ? process.argv.slice(2)
+    : [
+        "design",
+        "plans",
+        "model",
+        "imprint",
+        "mark",
+        "copy",
+        "CLAUDE.md",
+        "THESIS.md",
+        "DESIGN.md",
+      ];
+const SKIP = new Set([
+  "node_modules",
+  ".git",
+  ".claude",
+  "handoff",
+  "research",
+  "counsel",
+]);
 const TEXT = /\.(md|tpl|part|py|mjs|js|ts|tsx|json|html|css|txt|yml|yaml)$/;
 
 const log = readFileSync(LOG, "utf8");
-const assigned = new Set([...log.matchAll(/^## (\d{3}) — /gm)].map((m) => m[1]));
+const assigned = new Set(
+  [...log.matchAll(/^## (\d{3}) — /gm)].map((m) => m[1]),
+);
 const never = new Set(
-  [...log.matchAll(/\*Numbers (\d{3}) and (\d{3}) were never assigned\./g)]
-    .flatMap((m) => [m[1], m[2]]),
+  [
+    ...log.matchAll(/\*Numbers (\d{3}) and (\d{3}) were never assigned\./g),
+  ].flatMap((m) => [m[1], m[2]]),
 );
 
 const CITES = [/\b(?:decisions?|entry|entries)\s+(\d{3})\b/g, /\b(\d{3})\s*§/g];
 
 function* files(root) {
   let st;
-  try { st = statSync(root); } catch { return; }
-  if (st.isFile()) { if (TEXT.test(root)) yield root; return; }
+  try {
+    st = statSync(root);
+  } catch {
+    return;
+  }
+  if (st.isFile()) {
+    if (TEXT.test(root)) yield root;
+    return;
+  }
   for (const name of readdirSync(root)) {
     if (SKIP.has(name)) continue;
     yield* files(join(root, name));

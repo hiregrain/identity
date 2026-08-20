@@ -33,8 +33,17 @@ import { join } from "node:path";
 const dir = process.argv[2] ?? "design/10-worker-app-screens";
 const TPL = join(dir, "tpl");
 
-const FROZEN = new Set(["HandleGrain.tpl", "HandlePlatform.tpl", "HandleSplit.tpl"]);
-const PARTS = new Set(["_chrome.part", "_shared.css", "_icons.part", "_swatches.part"]);
+const FROZEN = new Set([
+  "HandleGrain.tpl",
+  "HandlePlatform.tpl",
+  "HandleSplit.tpl",
+]);
+const PARTS = new Set([
+  "_chrome.part",
+  "_shared.css",
+  "_icons.part",
+  "_swatches.part",
+]);
 
 // §6's registers, read from the stylesheet rather than restated here, so this
 // check cannot disagree with the system it is checking.
@@ -59,7 +68,8 @@ const chassis = new Set(
   [...chassisText.matchAll(/^\s*\.([a-z][\w-]*)/gm)].map((m) => m[1]),
 );
 
-const SPACING = /\b((?:padding|margin)(?:-(?:top|bottom|left|right|block|inline))?)\s*:\s*([^;"']*)/g;
+const SPACING =
+  /\b((?:padding|margin)(?:-(?:top|bottom|left|right|block|inline))?)\s*:\s*([^;"']*)/g;
 const failures = [];
 let scanned = 0;
 
@@ -76,7 +86,9 @@ for (const name of readdirSync(TPL)) {
     helm[1].split("\n").forEach((line, i) => {
       const m = line.match(/^\s*\.([a-z][\w-]*)/);
       if (m && chassis.has(m[1]))
-        failures.push(`${name}:${offset + i}: .${m[1]} is defined in the chassis; a local copy wins here and nowhere else`);
+        failures.push(
+          `${name}:${offset + i}: .${m[1]} is defined in the chassis; a local copy wins here and nowhere else`,
+        );
     });
   }
 
@@ -85,7 +97,9 @@ for (const name of readdirSync(TPL)) {
     for (const m of line.matchAll(/font-size:\s*([\d.]+)px/g)) {
       const v = Number(m[1]);
       if (!REGISTER_SIZES.has(v) && !CONTROL_SIZES.has(v))
-        failures.push(`${name}:${i + 1}: font-size ${v}px is not a §6 register (${[...REGISTER_SIZES].sort((a, b) => b - a).join(", ")})`);
+        failures.push(
+          `${name}:${i + 1}: font-size ${v}px is not a §6 register (${[...REGISTER_SIZES].sort((a, b) => b - a).join(", ")})`,
+        );
     }
     // 3. spacing
     SPACING.lastIndex = 0;
@@ -93,7 +107,9 @@ for (const name of readdirSync(TPL)) {
       for (const n of m[2].matchAll(/(\d+)px/g)) {
         const v = Number(n[1]);
         if (v !== 0 && !SCALE.has(v))
-          failures.push(`${name}:${i + 1}: ${m[1]}: ${v}px is off the spacing scale`);
+          failures.push(
+            `${name}:${i + 1}: ${m[1]}: ${v}px is off the spacing scale`,
+          );
       }
     }
   });

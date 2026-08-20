@@ -31,6 +31,12 @@ const SCANNED_ROOTS = ["."];
 // trees (typegen output, never hand-written prose).
 const EXCLUDED_DIRS = new Set([
   ".git",
+  // Gitignored local tooling: agent worktrees, and gstack's own audit log. Same
+  // reason as eslint.config.mjs. CI never sees them, so scanning them turns a
+  // green check red on a developer machine only, and a check that is red for
+  // everyone locally stops being read.
+  ".claude",
+  ".gstack",
   "node_modules",
   "backups",
   "core/gen",

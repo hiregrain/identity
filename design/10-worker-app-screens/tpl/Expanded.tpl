@@ -147,7 +147,7 @@ const CHAPTERS = [
   {r0:58.00,  r1:95.35,  party:'Bataan Poultry Processing',   span:'Sep 2017 to Mar 2019', sw:'#sw-self',
    attested:false,
    prov:'Recorded by Liezel Mendoza. No attesting party.',
-   standing:'Nobody who was there has attested this chapter, so it stands as her own account of it. Its ring is drawn dotted, which is how the figure says that.'},
+   standing:'Nobody who was there has attested this chapter, so it is her own account of it. Its ring is drawn dotted, which is how the figure says that.'},
   {r0:95.35,  r1:145.14, party:'Sunrise Foods Manufacturing', span:'Mar 2019 to Sep 2021', sw:'#sw-multi',
    attested:true,
    prov:'Attested by Sunrise Foods Manufacturing on 14 October 2021, and a second party agrees.',

@@ -197,7 +197,7 @@ at until a third party acts, and the third party is a company that has
 never done anything for me and has no reason to start. Week two is where
 I see the same dotted ring and stop opening the app.
 
-**7. Consent gives me the terms and gives the employer the leverage.** I
+**7. Consent gives me the terms and gives the employer the power.** I
 cannot edit, undo a request, share in part, or delete in part. What a
 reader keeps, they keep. Businesses can decline to change it and Grain
 never checks whether they were fair. My rights: attach a side note, with
