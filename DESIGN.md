@@ -268,9 +268,9 @@ to reinstate a composite purely for filing is a counsel question. **[GAP]**
 The record is monochrome. There is no accent colour.
 
     ink         #1B2A44   structure, figures, every verified fact
-    paper       #F8F5EE   every surface of record — warm, see below
+    paper       #F8F5EE   every surface of record, warm, see below
     secondary   #5C6878   labels, captions, self-reported material
-    rule        #7E8794   any line that carries meaning — state, selection, boundary
+    rule        #7E8794   any line that carries meaning, state, selection, boundary
     hairline    #D3D7D6   pure separation only: the ledger grid, never a state
     page        #E9E5DE   behind the paper; app chrome ground
 
