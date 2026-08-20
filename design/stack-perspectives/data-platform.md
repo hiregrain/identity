@@ -23,7 +23,7 @@ practice (sources at end).
    the integrity spine.** Managed Postgres (Aurora-class). No NoSQL: merges,
    alias closures, supersession chains, and grant semantics are relational
    and transactional. The spine/payload split from `ledger-design-0.1.md`
-   §2.1 must be a *physical* storage split, not a schema convention —
+   §2.1 must be a *physical* storage split, not a schema convention,
    different databases, different encryption keying, different replication
    topology, different retention rules.
 
@@ -35,21 +35,21 @@ practice (sources at end).
    supplementary measures), because a region-locked spine destroys the
    global-identity property the product exists to provide. The design work
    is keeping the spine so small that its global replication is defensible:
-   IDs, type codes, hashes, signatures, timestamps, pointers — nothing
+   IDs, type codes, hashes, signatures, timestamps, pointers. Nothing
    readable, ever, enforced by schema.
 
 4. **CDC is the only sanctioned copy mechanism.** No service reads another
    service's tables; no analyst exports from the operational store; no batch
    job scrapes an API into a bucket. One CDC stream per regional database,
    schema-registered, column-level PII-tagged, feeding one lakehouse. Every
-   copy of a datum that exists must be *derivable from the copy map* — if a
+   copy of a datum that exists must be *derivable from the copy map*. If a
    copy isn't on the map, it's a compliance incident, not a convenience.
 
 5. **Deletion is an engineered subsystem with SLOs, not a DELETE statement.**
    An R2 whole-profile deletion is an orchestrated saga that must reach:
    operational primary, read replicas, CDC topics, lakehouse
    bronze/silver/gold, search/blocking indexes, feature store, embeddings,
-   ML training snapshots, caches, backups, and logs — each with a tracked
+   ML training snapshots, caches, backups, and logs, each with a tracked
    acknowledgment and a published SLO (operational: 72h; streams: retention
    capped at 7 days so payloads age out structurally; lakehouse: delete
    queue + snapshot expiry within 30 days; backups: 35-day maximum retention
@@ -58,14 +58,14 @@ practice (sources at end).
    found exactly the failures this prevents: undefined backup erasure and
    pseudonymization passed off as deletion.
 
-6. **Lakehouse: Iceberg, managed, from roughly month three — not day one,
+6. **Lakehouse: Iceberg, managed, from roughly month three, not day one,
    and never self-run Spark.** The table-format war is over; Iceberg won,
    and every major platform (Snowflake managed Iceberg + Horizon, BigQuery
    BigLake, AWS S3 Tables) now sells it managed with catalog, maintenance,
    and row-level deletes included. Day one, analytics runs on a Postgres
    read replica + dbt. The trigger for the lakehouse is the first of:
-   ~1M identities, the second vertical, or the first ML model in production
-   — expected within months, so the schema contracts that feed it are built
+   ~1M identities, the second vertical, or the first ML model in production,
+   expected within months, so the schema contracts that feed it are built
    day one even though the lakehouse itself is staged.
 
 7. **The three ML workloads are two ML systems and one deterministic view.**
@@ -74,7 +74,7 @@ practice (sources at end).
    labeled-data flywheel. Party anomaly detection: batch graph features on
    the lakehouse (bipartite party×subject statistics), not a graph database.
    Dimension standing: deterministic, published, recomputed from the live
-   operational record — it must never be served from the analytics plane,
+   operational record. It must never be served from the analytics plane,
    because the analytics plane is eventually consistent with deletions and
    supersessions and the prior packet is not allowed to be.
 
@@ -86,7 +86,7 @@ practice (sources at end).
    the canonical impossible migration; stamping it at 10³ costs nothing.
 
 9. **Data contracts govern both boundaries.** The vertical boundary is the
-   attestation interface — enforced as a versioned schema registry with
+   attestation interface, enforced as a versioned schema registry with
    reject-don't-coerce semantics. The operational→analytical boundary is a
    second, internal contract: every CDC-published column carries
    machine-readable tags (`pii_class`, `residency`, `erasure_group`,
@@ -106,7 +106,7 @@ practice (sources at end).
   hash-chain append with monotonic ordering. Every one of these wants
   multi-row transactions and foreign keys. Wide-column/document stores buy
   write scale the system will not need for years (attestation write volume
-  is bounded by real-world work events — even 10⁸ workers generating one
+  is bounded by real-world work events, even 10⁸ workers generating one
   attestation a week is ~165 writes/sec average) at the price of the exact
   integrity machinery the design depends on.
 - **Managed (Aurora PostgreSQL or Cloud SQL-class).** Three people do not
@@ -114,17 +114,17 @@ practice (sources at end).
   hundred million rows per region without heroics; the sharding cliff is
   far away and, when it arrives, arrives per-region (see §3.4).
 - **Physical layout:**
-  - `spine` database — global, append-only tables only, no readable
+  - `spine` database, global, append-only tables only, no readable
     personal data by schema construction (enforced: columns are IDs, enums,
     fixed-width hashes, signatures, timestamps; no free-text column exists
     in the spine schema, so nothing readable *can* be written there).
     Replicated to every region read-only.
-  - `payload-{region}` databases — one per residency partition. All PII,
+  - `payload-{region}` databases, one per residency partition. All PII,
     all claim content, all contact channels. Hard-deletable. Encrypted with
     per-person envelope data keys (see §2.4).
-  - `registry` database — attesting-party registry, keys, lifecycle events.
+  - `registry` database, attesting-party registry, keys, lifecycle events.
     Global like the spine; parties are businesses, and the registry is the
-    trust root — it colocates with the spine.
+    trust root. It colocates with the spine.
 - **The spine/payload split is physical, not logical.** A schema-level
   split inside one database means one backup, one replication stream, one
   blast radius, and an erasure story that has to argue about WAL segments.
@@ -132,7 +132,7 @@ practice (sources at end).
   the spine's backups can be kept for years; the payload's cannot exceed
   the erasure SLO.
 
-### 1.2 What the spine is, legally — decided, not deferred
+### 1.2 What the spine is, legally decided, not deferred
 
 The spine holds `ledger_person_id`, object hashes, issuer references,
 timestamps. Position taken: **this is personal data** (pseudonymous;
@@ -144,7 +144,7 @@ architecture accepts that rather than pretending otherwise. Consequences:
   available supplementary measure: the data is unreadable without the
   regional payload store, which never leaves its region.
 - On R2 deletion, the spine row set for the person is *tombstoned* (person
-  marked deleted, ID never reissued) but not physically removed — this is
+  marked deleted, ID never reissued) but not physically removed. This is
   the residual retention the logical design already commits to (§2.5 of
   `ledger-design-0.1.md`), and it is defensible precisely because the spine
   was minimized to unreadability. Flag for counsel, per the logical design;
@@ -158,7 +158,7 @@ architecture accepts that rather than pretending otherwise. Consequences:
 
 All state changes in the spine and registry are already events in the
 logical design (`person_merged`, `party_events`, grants). Keep Postgres as
-the source of truth — do *not* build Kafka-as-source-of-truth event
+the source of truth. Do *not* build Kafka-as-source-of-truth event
 sourcing. The event tables in Postgres are the ledger; CDC turns them into
 streams for consumers. This gets replayability and audit without making a
 3-person team operate a distributed log as its system of record.
@@ -184,16 +184,16 @@ this list is prohibited from existing:
 | 8 | Feature store rows + any embeddings | yes | keyed by person; deleted with saga | ≤ 7d |
 | 9 | ML training snapshots | yes | snapshot TTL ≤ 90d + exclusion list applied at next train; no model ships trained on data older than the TTL | ≤ 90d |
 | 10 | Application caches (packet assembly, session) | n/a | TTL ≤ 24h; reads already stop at T0 | 24h |
-| 11 | Service logs / traces | n/a | payloads never logged (contract-enforced redaction); IDs only | — |
-| 12 | Delivered prior packets | recipient's problem | out of scope by design (interface amendment A5) | — |
-| 13 | Spine + registry | global | tombstone only, by design | — |
+| 11 | Service logs / traces | n/a | payloads never logged (contract-enforced redaction); IDs only | N/A |
+| 12 | Delivered prior packets | recipient's problem | out of scope by design (interface amendment A5) | N/A |
+| 13 | Spine + registry | global | tombstone only, by design | N/A |
 
 Two rules make the map enforceable rather than aspirational:
 
 - **No copy without lineage.** Every derived dataset in the lakehouse
   declares its upstream tables; the deletion job walks the lineage graph.
-  This is why lineage is a day-one requirement, not an enterprise luxury —
-  retrofitting lineage over an organically grown lake at 10⁸ identities is
+  This is why lineage is a day-one requirement, not an enterprise luxury.
+  Retrofitting lineage over an organically grown lake at 10⁸ identities is
   the failure mode that makes erasure unprovable.
 - **No compacted or infinite-retention topic may carry payload columns.**
   Streams are transport, not storage. If a consumer needs history, it reads
@@ -205,7 +205,7 @@ R2 deletion is a first-class orchestrated workflow (Temporal-class managed
 workflow engine, or a Postgres-backed job table day one):
 
 1. **T0 (synchronous):** grants revoked, reads stop, person marked
-   `deleting` in spine — packet issuance impossible from this instant.
+   `deleting` in spine, packet issuance impossible from this instant.
 2. **Fan-out:** one deletion task per copy-map entry, each with an owner
    service, an idempotent delete operation, and a verification step
    (count-by-person = 0, or structural proof such as "retention window
@@ -214,7 +214,7 @@ workflow engine, or a Postgres-backed job table day one):
    deletion is *published to the worker as complete* only when every
    non-structural task has verified. Structural tasks (backup aging) get a
    published date.
-4. **Audit:** the saga record itself contains no payload — only the person
+4. **Audit:** the saga record itself contains no payload, only the person
    tombstone and per-copy timestamps. It is the artifact shown to a
    regulator.
 
@@ -250,7 +250,7 @@ this data class today. What is non-negotiable day one is the *mechanism*:
   declared residence + signals; correctable by supported migration event).
 - Every service that touches payloads is region-aware: a request for a
   person's payload routes to that person's regional store. The spine tells
-  it where to go (`person → region` is spine metadata — a pointer, not
+  it where to go (`person → region` is spine metadata, a pointer, not
   content).
 - Regional infrastructure is stamped out from one IaC module, so partition
   N+1 is a deploy, not a project.
@@ -259,19 +259,19 @@ this data class today. What is non-negotiable day one is the *mechanism*:
 
 | Trigger | Action |
 |---|---|
-| NPC/PH posture, PH enterprise partner, or PH volume at scale | carve `PH` out of ROW (mechanical: copy rows where `residency_region='PH'`, flip routing, delete from ROW — itself a copy-map operation) |
+| NPC/PH posture, PH enterprise partner, or PH volume at scale | carve `PH` out of ROW (mechanical: copy rows where `residency_region='PH'`, flip routing, delete from ROW, itself a copy-map operation) |
 | First partner or regulator demanding in-country processing (India, Indonesia, Gulf states are the likely askers) | same carve-out playbook |
-| EU counsel outcome on spine transfers | worst case: regional spine *projections* with a global reconciliation protocol — expensive, so the spine-minimization discipline (§1.2) exists precisely to avoid ever needing this |
+| EU counsel outcome on spine transfers | worst case: regional spine *projections* with a global reconciliation protocol, expensive, so the spine-minimization discipline (§1.2) exists precisely to avoid ever needing this |
 
 ### 3.3 Cross-region reads
 
 A US vertical reading a prior packet about an EU-resident worker is a
-cross-border disclosure of readable personal data — this is the *packet's*
+cross-border disclosure of readable personal data. This is the *packet's*
 transfer, distinct from the spine question. It happens at read time,
 worker-granted, logged. Handle contractually (party data-handling
 agreements incorporate transfer terms) and mechanically: the packet is
 assembled *in the worker's region* and delivered outward, so raw payload
-stores are never queried cross-region — only finished packets cross, and
+stores are never queried cross-region. Only finished packets cross, and
 every crossing is a logged, attributable event. This keeps the transfer
 narrative clean: one worker, one grant, one packet, one log line.
 
@@ -279,7 +279,7 @@ narrative clean: one worker, one grant, one packet, one log line.
 
 Per-region Postgres to ~low-10⁸ rows with partitioned tables; then
 per-region sharding (Citus-class or application-level by
-`ledger_person_id` hash — the opaque UUIDv7 ID is an excellent shard key,
+`ledger_person_id` hash, the opaque UUIDv7 ID is an excellent shard key,
 another reason the ID design is right). Because partitioning is by region
 first, no single database ever holds the planet; the 10⁸-identities
 problem arrives as several 10⁷–10⁸ regional problems, which managed
@@ -305,7 +305,7 @@ spine, registry  ──CDC──▶ global stream          ──▶ Iceberg bro
   commodity choice: Snowflake managed Iceberg (Horizon catalog, RBAC,
   masking, lineage built in), BigQuery + BigLake metastore, or Athena/
   SageMaker Lakehouse over S3 Tables. Pick the one on the chosen cloud;
-  the Iceberg substrate keeps the engine swappable — that is the point of
+  the Iceberg substrate keeps the engine swappable. That is the point of
   Iceberg. Never self-hosted Spark with three engineers.
 - **Regional buckets for payload-derived tables.** The lakehouse inherits
   the residency partitioning; cross-region analytics runs over the
@@ -314,13 +314,13 @@ spine, registry  ──CDC──▶ global stream          ──▶ Iceberg bro
   workload does (dedupe review), the reviewer tooling reads
   region-locally.
 - **Managed CDC.** Postgres logical replication into a managed connector
-  (MSK Connect/Debezium, Datastream, or Snowflake's Postgres connector) —
+  (MSK Connect/Debezium, Datastream, or Snowflake's Postgres connector),
   never hand-rolled pollers. CDC configs are code-reviewed against the
   column tag registry: a column without tags does not ship.
 
-### 4.2 Workload 1 — duplicate detection (real ML system)
+### 4.2 Workload 1, duplicate detection (real ML system)
 
-- **Model:** Fellegi–Sunter probabilistic linkage — Splink is the mature
+- **Model:** Fellegi–Sunter probabilistic linkage. Splink is the mature
   open implementation and runs on the warehouse engine directly.
 - **Blocking:** candidate generation from a regional index over normalized
   name variants, DOB, channel identifiers, document-number salted hashes.
@@ -336,10 +336,10 @@ spine, registry  ──CDC──▶ global stream          ──▶ Iceberg bro
   real bottleneck, and the model's job is queue *ranking* as much as
   auto-merge.
 - **Metrics from day one:** precision on auto-merges (target: no wrong
-  merge, ever — a wrong merge contaminates a career), steward
+  merge, ever, a wrong merge contaminates a career), steward
   agreement rate, queue latency, duplicate-rate by cohort.
 
-### 4.3 Workload 2 — party anomaly detection (batch graph statistics)
+### 4.3 Workload 2, party anomaly detection (batch graph statistics)
 
 - Bipartite party×subject graph features computed in the warehouse on
   schedule: attestation velocity, subject-set overlap between parties,
@@ -353,13 +353,13 @@ spine, registry  ──CDC──▶ global stream          ──▶ Iceberg bro
   (probation, audit, suspension) with human decision, matching §3.5 of the
   logical design. Never a visible score.
 
-### 4.4 Workload 3 — dimension standing (deterministic; not ML; not analytics-plane)
+### 4.4 Workload 3, dimension standing (deterministic; not ML; not analytics-plane)
 
 The standing rule is published, deterministic, and coarse. Therefore it is
 an **operational-plane materialized view**: computed from live attestations
 in the regional payload store, invalidated by attestation/supersession/
 deletion events, recomputed synchronously or near-synchronously. It must
-not be served from the lakehouse — the lakehouse is minutes-to-hours stale
+not be served from the lakehouse. The lakehouse is minutes-to-hours stale
 against deletions and grants, and the prior packet's correctness guarantee
 ("generated at read time from the live record") forbids that staleness.
 The lakehouse *evaluates* the standing rule (calibration studies across
@@ -371,7 +371,7 @@ Operator analytics that workers don't see (decision 4) still operates on
 regulated data. Rules: silver/gold tables default to pseudonymous (spine
 IDs, no readable PII); readable-PII columns exist only in bronze and in
 the two workloads that need them (dedupe features), access-controlled and
-audited via the warehouse's native governance (masking, row policies —
+audited via the warehouse's native governance (masking, row policies,
 another reason to buy Snowflake/BigQuery-class governance rather than
 build it).
 
@@ -379,11 +379,11 @@ build it).
 
 ## 5. Languages, tooling, hosting
 
-- **Services:** TypeScript/Node — matches the team, and this system's
+- **Services:** TypeScript/Node, matches the team, and this system's
   services are I/O-and-integrity logic, not compute. One modular monolith
   day one (packet assembly, ingestion, grants, deletion saga as modules),
   split only along the plane boundaries when scale forces it.
-- **Data transforms:** SQL + dbt (lineage, tests, docs generated —
+- **Data transforms:** SQL + dbt (lineage, tests, docs generated,
   dbt's lineage graph is the day-one lineage system, upgraded later only
   if needed).
 - **ML:** Python, only where ML lives (Splink, scikit-learn, review-queue
@@ -396,7 +396,7 @@ build it).
   MSK/DMS, S3 Tables' native Iceberg); GCP (Cloud SQL/AlloyDB +
   Datastream + BigQuery/BigLake) is an acceptable alternative with a
   slightly better managed-analytics story. The wrong answer is two clouds.
-- **Everything infra is IaC** from the first week — the regional stamp-out
+- **Everything infra is IaC** from the first week. The regional stamp-out
   (§3.1) depends on it.
 
 ---
@@ -416,7 +416,7 @@ build it).
   schema shape make per-unit smuggling structurally awkward, and ingestion
   rejects unknown fields outright.
 - Per interface "what never crosses": the ledger's schemas contain no
-  columns for routing internals, traces, or per-unit rows — the strongest
+  columns for routing internals, traces, or per-unit rows. The strongest
   contract is a schema that cannot represent the violation.
 
 ### 6.2 The operational→analytical boundary (internal contract)
@@ -431,7 +431,7 @@ column: attestation_payload.score_summary
   retention: lakehouse-standard | short | none
 ```
 
-These tags are not documentation — they are inputs to machinery: the CDC
+These tags are not documentation. They are inputs to machinery: the CDC
 allowlist, the regional bucket router, the deletion lineage walker, and
 the warehouse masking policies are all *generated* from them. Adding a
 column without tags fails CI. This one discipline is what makes §2's copy
@@ -520,8 +520,8 @@ CDC flavor.
   saga that must reach all of them is an SRE organization, not a startup.
   The plane boundaries are the only service boundaries that pay rent early.
 - **DynamoDB/Cassandra-class operational store for "planet scale from day
-  one."** Trades away transactions and relational integrity — the exact
-  properties merges, chains, and grants require — to solve a write-volume
+  one."** Trades away transactions and relational integrity, the exact
+  properties merges, chains, and grants require, to solve a write-volume
   problem this workload does not have.
 - **Graph database for the trust/anomaly work.** A fourth datastore for
   what are, in practice, SQL aggregations.
@@ -533,14 +533,14 @@ CDC flavor.
 - **Building identity verification, KYC, or biometric infrastructure
   in-house.** The contract already says verification is bought; the data
   platform stores resulting attestations and evidence *commitments*, never
-  raw document images — keep the most toxic data class entirely outside
+  raw document images. Keep the most toxic data class entirely outside
   the estate.
 
 ## 10. Assumptions
 
 1. **Write volume stays real-world-bounded** (attestations track actual
    work events, not telemetry). If a vertical ever tries to push per-unit
-   cadence through the interface, the contract — not the database — is the
+   cadence through the interface, the contract, not the database, is the
    defense.
 2. **Counsel does not region-lock the spine.** If EU counsel concludes
    even the minimized spine cannot replicate globally, §3.2's worst-case
@@ -549,7 +549,7 @@ CDC flavor.
 3. **R1 holds.** No CRA machinery is built; the `reportable_until` hook
    from the logical design is honored as a read-path filter, which this
    architecture supports trivially (it is a predicate, not a topology).
-4. **The 3-person team is genuinely AI-leveraged** — the day-one platform
+4. **The 3-person team is genuinely AI-leveraged.** The day-one platform
    above is roughly 2× what a 2019-era trio could carry and roughly right
    for an AI-heavy 2026 trio; if that assumption fails, cut the third
    residency partition (US+EU only) before cutting the tagging/copy-map
@@ -558,7 +558,7 @@ CDC flavor.
    Snowflake, Google, and AWS as of mid-2026); the bet is hedged anyway,
    since Iceberg's openness is what makes the engine choice reversible.
 6. **Scale arrives as stated** (~1M in months). If it arrives 10× slower,
-   nothing above is wasted — the staged additions simply trigger later;
+   nothing above is wasted. The staged additions simply trigger later;
    the day-one platform is deliberately small enough to be cheap even in
    the slow world.
 

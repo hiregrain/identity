@@ -4,7 +4,7 @@ Author stance: one language, one relational database, one deployment unit,
 managed services, no distributed systems until measured load forces them.
 This is not an aesthetic preference. It is a claim about where this company
 will actually die if it dies: operational complexity and a three-person team
-spread across systems nobody deeply understands — not database ceilings.
+spread across systems nobody deeply understands, not database ceilings.
 The arithmetic below shows the ceilings are farther away than the
 planet-scale intuition suggests, and the migration path when we reach them
 is well-trodden.
@@ -38,7 +38,7 @@ is well-trodden.
 5. **Where it genuinely breaks**: sustained chained writes above roughly
    2–5K/sec (hash-chain head serialization), any single table approaching
    Aurora's 32 TiB per-table limit, working set past a single node's RAM at
-   the read path, or — most likely first — a legal data-residency mandate,
+   the read path, or, most likely first, a legal data-residency mandate,
    not a performance ceiling. Every one of these has a documented,
    incremental exit (per-shard chains, person-keyed sharding, regional read
    replicas) that is *easier* to execute because the v1 is simple.
@@ -46,7 +46,7 @@ is well-trodden.
    event sourcing, microservices, DID/blockchain anchoring, self-run
    Kubernetes, and any bespoke consensus or HSM ceremony. Each adds
    permanent operational tax to solve a problem the arithmetic says we will
-   not have for years — and the unlimited capital that arrives *if it gets
+   not have for years, and the unlimited capital that arrives *if it gets
    big* funds the migration then, with ten times today's engineering
    capacity.
 
@@ -81,7 +81,7 @@ launch and one order less at the two-year horizon. **The ingestion queue
 protection.**
 
 **Read volume.** Prior packets are generated at read time, triggered by
-grants and routing events — not by page views. Assume 2 packet generations
+grants and routing events, not by page views. Assume 2 packet generations
 per active worker per month plus worker-view traffic at 10× that:
 ~60M packet reads/month at the 100M mark ≈ 23/sec average, maybe 1–2K/sec
 at coordinated peaks. A packet is 5–10 indexed, person-scoped queries. Read
@@ -90,13 +90,13 @@ replicas make this embarrassing.
 **Storage.** Spine row ~0.5KB, payload ~2KB. At maturity, 50 lifetime
 attestations per identity: 100M × 50 × 2.5KB ≈ **12.5 TB**. Add
 verification attestations, party events, grants, and the genuinely
-high-volume table — the read log (~720M rows/year at the above read rate,
-~1TB/year) — and the two-year system is **20–30 TB**. Aurora PostgreSQL
+high-volume table, the read log (~720M rows/year at the above read rate,
+~1TB/year), and the two-year system is **20–30 TB**. Aurora PostgreSQL
 now scales to 256 TiB per cluster ([AWS, July
 2025](https://aws.amazon.com/about-aws/whats-new/2025/07/amazon-aurora-postgresql-database-clusters-256-tib-storage-volume/)),
 with a 32 TiB per-table limit ([Aurora
-quotas](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_Limits.html))
-— which native range partitioning (monthly on the spine, hash-on-person
+quotas](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_Limits.html)).
+Native range partitioning (monthly on the spine, hash-on-person
 for payloads) keeps us far under per physical table. The practitioner
 literature is consistent that partitioning plus replicas carries Postgres
 comfortably into the billions-of-rows, multi-TB range before sharding is
@@ -129,7 +129,7 @@ relational databases. Ours should too.
 
 **One deployment unit: a modular monolith.** Internal modules with
 enforced import boundaries (`identity`, `registry`, `attestation`,
-`packet`, `dispute`, `taxonomy`, `worker-surface`, `partner-api`) — the
+`packet`, `dispute`, `taxonomy`, `worker-surface`, `partner-api`), the
 service boundaries we would *draw* if forced, kept as folders instead of
 network hops. HANDOFF already says the schema line binds now and the
 service boundary later; a monolith is that ruling expressed in
@@ -140,7 +140,7 @@ one log stream, one on-call surface.
 
 **One Aurora PostgreSQL cluster** (writer + 2 readers, Serverless v2 or
 provisioned r-class; Multi-AZ). Postgres specifically because the design's
-invariants are *relational constraint* problems — and the safest place to
+invariants are *relational constraint* problems, and the safest place to
 enforce invariants that AI-generated application code must not be able to
 violate is the database itself.
 
@@ -160,14 +160,14 @@ Two-plane mapping, concretely:
   forbidden keys). Hash-partitioned by `subject_id`. **R2 deletion is
   `DELETE ... WHERE subject_id = $1` across the payload plane plus a
   tombstone event on the spine.** One transaction family, one database,
-  verifiable completion — this is where a polyglot design (payloads in a
+  verifiable completion. This is where a polyglot design (payloads in a
   document store, spine in Postgres) turns a legal guarantee into a
   distributed-consistency problem. Veto.
 - **Registry, taxonomy, aliases, standing cache**: ordinary relational
   tables. Standing is a recomputable cache per design §5; a materialized
   table refreshed on write, never a source of truth.
 - **Alias closure and supersession chains**: recursive CTEs at read time,
-  cached. Person-scoped, depth-bounded — cheap.
+  cached. Person-scoped, depth-bounded, cheap.
 
 The single most important property: **every query in the system is
 person-scoped or party-scoped.** No cross-person joins in any hot path.
@@ -177,7 +177,7 @@ architectural.
 ## 4. Hash chain and signatures: small, boring, auditable
 
 - **Party signatures**: Ed25519 over a canonical (JCS) payload in a JWS
-  envelope, `kid`-bound, verified against the registry — exactly as the
+  envelope, `kid`-bound, verified against the registry, exactly as the
   ledger design specifies. Implementation: libsodium via Node bindings.
   No DID resolution, no JSON-LD canonicalization stack (a notorious
   complexity and vulnerability sink). VC-2.0-shaped claims so the
@@ -206,7 +206,7 @@ person part-time.
 
 - **Workers**: managed identity provider (Cognito or WorkOS-class) doing
   email OTP + passkeys, OIDC into our session. Phone as a contact channel
-  and weak signal only, per the design — the IdP must not make phone an
+  and weak signal only, per the design. The IdP must not make phone an
   anchor. Passkeys matter for the emerging-markets base (shared devices,
   SIM churn) and are now table stakes in managed IdPs. We do not build
   password storage, recovery flows, or MFA. Ever.
@@ -222,7 +222,7 @@ person part-time.
 Next.js (same monorepo), server-rendered, behind CloudFront. Design
 targets: works on a $60 Android over 3G, total JS budget small, no native
 app in v1 (a wrapped PWA if distribution demands a store presence). The
-worker view is mostly *reads of their own record* — SSR + CDN handles
+worker view is mostly *reads of their own record*. SSR + CDN handles
 global latency without global infrastructure: the dynamic calls are few
 and person-scoped, the shell is edge-cached. Localization in from the
 start (the first cohorts include Philippine ops workers); RTL and
@@ -232,15 +232,15 @@ low-bandwidth budgets are product requirements, not scale requirements.
 
 Versioned JSON REST over HTTPS. Nothing cleverer.
 
-- `POST /v1/attestations` — single and batch; **idempotency key
+- `POST /v1/attestations`, single and batch; **idempotency key
   required**; synchronous schema/signature validation, asynchronous append
   via SQS with a receipt ID; explicit, machine-readable rejection reasons
   (the ledger never silently rewrites, per design §4).
-- `GET /v1/packets/{ledger_person_id}` — requires an active grant; returns
+- `GET /v1/packets/{ledger_person_id}`, requires an active grant; returns
   the generated-at-read packet; every issuance writes the read log.
-- `GET /v1/registry/{party_id}` — public status/history (eIDAS-style
+- `GET /v1/registry/{party_id}`, public status/history (eIDAS-style
   transparency).
-- `GET /v1/taxonomy/{version}` — the `work_kind` vocabulary and
+- `GET /v1/taxonomy/{version}`, the `work_kind` vocabulary and
   crosswalks, cacheable and CDN-served.
 - Webhooks (signed, retried) for dispute notifications, supersessions
   affecting a party's attestations, and subject-deleted notices.
@@ -253,7 +253,7 @@ proliferation beyond a generated TS client.
 
 ## 8. Observability, backup, DR
 
-- **Observability**: one managed vendor (Datadog or Grafana Cloud —
+- **Observability**: one managed vendor (Datadog or Grafana Cloud,
   pick one, not both), Sentry for errors, `pg_stat_statements` reviewed
   weekly. Four golden dashboards: ingestion latency/rejection rate, packet
   generation latency, chain-head lag, replica lag. Business-integrity
@@ -266,7 +266,7 @@ proliferation beyond a generated TS client.
   (which also makes restores *verifiable*, not just possible). Quarterly
   restore drill, timed, written up. An untested backup is a rumor.
 - **DR**: single primary region (us-east or ap-southeast given the
-  Philippine cohort — a product call), cross-region Aurora replica,
+  Philippine cohort, a product call), cross-region Aurora replica,
   RPO ≈ seconds, RTO ≈ 1 hour via promotion runbook. Not active-active:
   active-active writes on a hash-chained ledger is a hard distributed
   problem we should refuse to have.
@@ -275,7 +275,7 @@ proliferation beyond a generated TS client.
 eventually reach backups. Policy: payload purge is immediate in the live
 database; backups age out on the published 35-day window; the deletion
 notice states this. This is the industry-standard posture and another
-reason to keep exactly one payload store — every additional copy of PII is
+reason to keep exactly one payload store. Every additional copy of PII is
 another erasure obligation.
 
 ## 9. Team workflow for AI-heavy development
@@ -300,12 +300,12 @@ So:
   anything touching partner-visible behavior. No release trains, no
   staging archipelago.
 
-## 10. Where this breaks — specific thresholds
+## 10. Where this breaks, specific thresholds
 
 1. **Chain-head serialization**: the single-row ledger head caps chained
    appends at roughly **2–5K/sec** (lock + fsync bound). At 4 attestations
    per active worker per month, that ceiling corresponds to **~2 billion
-   monthly attestations** if smoothed — but batch peaks reach it around
+   monthly attestations** if smoothed, but batch peaks reach it around
    **~1B active identities**, or far earlier if the interface contract is
    ever loosened to admit event-grade data. The contract is the load
    shield; defend it.
@@ -320,7 +320,7 @@ So:
    active read traffic**.
 4. **Data residency (the actual first break)**: an EU or Philippine
    localization mandate forces a second region *legally* long before load
-   forces one technically. This is a compliance fork, not a scale fork —
+   forces one technically. This is a compliance fork, not a scale fork,
    and no planet-scale database choice today would dodge it, because it
    dictates *where* data lives, not *how it shards*.
 
@@ -336,13 +336,13 @@ In order, each triggered by a measured threshold, none by anticipation:
    super-root over shard heads. Verification semantics unchanged;
    checkpoint format designed for this from day one (§4).
 3. **Single-writer ceiling or residency mandate**: **shard by
-   `ledger_person_id`** — Citus or application-level, whichever is boring
+   `ledger_person_id`**, Citus or application-level, whichever is boring
    at that date. Every hot query is already person-scoped (§3), so
    sharding is a routing change, not a redesign. The append-only spine is
    the easiest data shape in existence to shard and replicate: no
    cross-shard transactions exist because no cross-person writes exist.
 4. **Only then**, with hundreds of engineers and the promised capital, is
-   a distributed-native store even worth evaluating — and by then the
+   a distributed-native store even worth evaluating, and by then the
    spine's total ordering requirements are already relaxed to per-shard,
    which is exactly the shape those systems want.
 
@@ -359,10 +359,10 @@ migrating a complicated thing instead of a simple one.
   append-only and sensitive-data invariants against AI-generated code,
   weaker transactional deletion for R2, thinner AI training corpus, and a
   permanent operational tax on a three-person team. "Design for 10⁸
-  honestly" means doing the arithmetic — which shows 10⁸ identities is
-  ~50 writes/sec — not buying Google's problems with Google's headcount.
+  honestly" means doing the arithmetic, which shows 10⁸ identities is
+  ~50 writes/sec, not buying Google's problems with Google's headcount.
 - **Event-sourcing / Kafka-as-source-of-truth school.** Superficially
-  seductive because the domain is append-only — but the domain needs an
+  seductive because the domain is append-only, but the domain needs an
   append-only *record with strong read-time joins, constraints, and a
   transactional erasable plane*, which is a ledger table, not a log
   pipeline. Kafka gives us at-least-once delivery semantics where we need
@@ -373,8 +373,8 @@ migrating a complicated thing instead of a simple one.
 - **Crypto-heavy school (blockchain anchoring, DIDs, ZK proofs, verifiable
   data registries).** The research corpus already adjudicated this (`04`):
   the hard problem is party vetting and the trust registry; signatures are
-  easy and decentralization buys nothing when there is one root of trust —
-  us. Public-chain anchoring adds a dependency with its own outage and fee
+  easy and decentralization buys nothing when there is one root of trust.
+  Us. Public-chain anchoring adds a dependency with its own outage and fee
   politics to deliver what an S3 WORM Merkle checkpoint delivers for
   dollars. ZK selective disclosure contradicts the founder's own decision 7
   (no claim-level curation). Keep the VC-shaped envelope, skip the
@@ -388,17 +388,17 @@ migrating a complicated thing instead of a simple one.
 1. **Active fraction and cadence**: ~30% of identities actively attested,
    ~4 attestations/month each. If the real cadence is 10× (e.g., weekly
    per-engagement attestations across many gigs), all figures shift one
-   order — and the conclusion still holds at 100M (460 avg / 4.6K peak
+   order, and the conclusion still holds at 100M (460 avg / 4.6K peak
    writes/sec is within one Postgres writer with the SQS buffer; the
    chain-shard split in §11.2 moves up the calendar).
 2. **The interface contract holds.** Aggregates only; no behavioral
    traces, no per-unit rows. If product pressure pushes event-grade data
-   into the ledger, the load model breaks and so does every other school's
-   — that is a product decision to fight, not an architecture to
+   into the ledger, the load model breaks and so does every other school's.
+   That is a product decision to fight, not an architecture to
    pre-build.
 3. **Read volume is grant/routing-driven**, not feed-driven. If the worker
    surface grows social/feed mechanics, the read path needs a separate
-   (cacheable) tier — additive, not a rewrite.
+   (cacheable) tier, additive, not a rewrite.
 4. **AWS as the cloud** is interchangeable with GCP (AlloyDB/Cloud SQL);
    the argument is "one major cloud's managed Postgres," not AWS
    specifically.

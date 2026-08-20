@@ -27,7 +27,7 @@ conditional on success.
    "KMS forces you off Ed25519" objection is dead. Non-extractable keys,
    signing as an authenticated API call, every use in the cloud audit log.
    For internal verticals and ordinary external partners, the ledger *hosts*
-   party keys in KMS under per-party isolation — contrarian, argued in §2.3:
+   party keys in KMS under per-party isolation, contrarian, argued in §2.3:
    a key file on a partner's laptop is the single most likely forgery vector
    in this entire system, and hosted signing eliminates it while keeping
    every signature auditable. Sophisticated partners may BYO key; the
@@ -39,7 +39,7 @@ conditional on success.
    people this is one afternoon of ceremony and a written runbook, not an
    HSM cage.
 
-4. **Build a real Merkle transparency log from day one — not the deferred
+4. **Build a real Merkle transparency log from day one, not the deferred
    "hash chain now, Merkle in v2" in ledger-design-0.1 §3.3.** The cost
    argument for deferral died in October 2025 when Rekor v2 went GA on
    tile-based Tessera (modernized Trillian): cheap, object-storage-backed,
@@ -49,17 +49,17 @@ conditional on success.
    launch; they become *public* (external witness co-signed) no later than
    the first external attesting party's activation or 1M identities,
    whichever comes first. This is the only control that protects the record
-   against the ledger operator itself — including a compromised insider or a
-   compromised deploy pipeline — and it cannot be retrofitted credibly after
+   against the ledger operator itself, including a compromised insider or a
+   compromised deploy pipeline, and it cannot be retrofitted credibly after
    an incident.
 
 5. **Account recovery, not login, is the worker-auth attack surface.**
    Takeover of a ledger identity is worse than a bank-account takeover: the
    attacker inherits an attestation-grade professional identity. Design:
    passkeys primary (≈5B in active use globally in 2026, but 6–11% of users
-   lose all devices within 18 months — recovery is mandatory, not an edge
+   lose all devices within 18 months, recovery is mandatory, not an edge
    case); SMS never as a sole factor anywhere (number recycling, SIM-swap);
-   and the load-bearing rule — **recovery strength must equal the account's
+   and the load-bearing rule, **recovery strength must equal the account's
    derived assurance level**. A document-verified profile can only be
    recovered by re-clearing document verification with a registered
    verification provider; email/phone alone can never recover it. Time-locked
@@ -70,10 +70,10 @@ conditional on success.
    person's payload data is encrypted under a per-person DEK wrapped by a
    KMS KEK. R2 deletion purges rows in the primary and destroys the DEK,
    which renders every backup, replica, and analytics copy unreadable
-   without hunting them down — the only honest way to make "purged within a
-   fixed published window" true in a real system with backups. Spine
+   without hunting them down. This is the only honest way to make "purged
+   within a fixed published window" true in a real system with backups. Spine
    commitments are salted (HMAC with a per-record key held in the payload
-   plane), so post-deletion the retained hashes are unlinkable — this
+   plane), so post-deletion the retained hashes are unlinkable. This
    materially strengthens the EDPB posture that ledger-design-0.1 §2.1 only
    flags.
 
@@ -92,7 +92,7 @@ conditional on success.
    to serve and expensive to weaponize.** CDN/WAF in front of everything,
    layered rate limits (device, IP, ASN), no user-existence oracles,
    non-enumerable IDs, and risk-gating on the expensive operations
-   (verification, packet reads) rather than friction on account creation —
+   (verification, packet reads) rather than friction on account creation,
    which founder decision 3 forbids gating anyway.
 
 9. **Infrastructure this forces:** one major cloud (GCP has the edge:
@@ -115,24 +115,24 @@ risk *within the rules*; this perspective adds the layer below it: the
 integrity of the machinery itself. Three failure classes, in descending
 order of company-ending-ness:
 
-1. **Forgery** — an attestation that verifies but was never made by the
+1. **Forgery.** An attestation that verifies but was never made by the
    named party (stolen/leaked party key, compromised signing path).
-2. **Mutation** — history silently altered or deleted by whoever operates
+2. **Mutation.** History silently altered or deleted by whoever operates
    the database (external attacker with operator access, insider, or a
    poisoned deploy).
-3. **Impersonation** — an account takeover that lets an attacker act as a
+3. **Impersonation.** An account takeover that lets an attacker act as a
    worker or a party through the front door.
 
 Class 1 is defeated by key custody (§2). Class 2 is defeated only by
 tamper-evidence the operator cannot bypass (§3). Class 3 is defeated by
-auth and recovery design (§4). Everything else — WAFs, scanners, SDLC — is
+auth and recovery design (§4). Everything else, WAFs, scanners, SDLC, is
 in service of these three.
 
 The honest cost statement: everything mandated as non-negotiable in this
 document is operable by three people because it is *managed-service-shaped*
 (KMS, cloud audit logs, a tile log on object storage, CI gates). The things
-that are genuinely expensive for a 3-person team — 24/7 SOC, physical HSM
-custody, formal verification, SOC 2 theater — are explicitly deferred or
+that are genuinely expensive for a 3-person team, 24/7 SOC, physical HSM
+custody, formal verification, SOC 2 theater, are explicitly deferred or
 rejected below. Security architecture is cheap when it is architecture;
 it is expensive when it is staffing. Buy architecture now, staffing later.
 
@@ -168,7 +168,7 @@ of trust" (§3.3, residual risk). Then run it like one:
 The design's Ed25519/JWS choice (§3.2) is right and is now fully
 KMS-compatible: GCP Cloud KMS supports Ed25519 including HSM-backed, and
 AWS KMS added EdDSA/Ed25519 in November 2025, all regions. There is no
-remaining reason for any signing key in this system — ledger or party — to
+remaining reason for any signing key in this system, ledger or party, to
 exist as extractable key material. Latency (~10–50ms per KMS sign) is
 irrelevant at attestation volumes: even 10⁸ identities producing an
 attestation a month is ~40 signs/second globally, trivially within KMS
@@ -179,11 +179,11 @@ quotas and parallelizable per party key.
 The contrarian call, argued in full. The design assumes parties hold their
 own Ed25519 keys and submit JWS envelopes. Consider who the parties are at
 1M identities: internal verticals (same operator) and early external
-partners — a datacenter-training company, a Philippine ops firm. None of
+partners, a datacenter-training company, a Philippine ops firm. None of
 these will run KMS-grade key custody. Their key will be a file: in a
 config, in a CI secret, on a laptop, in a shared vault five contractors can
 read. **The most probable forgery event in this system's first three years
-is not a cryptanalytic break or a ledger breach — it is a partner's key file
+is not a cryptanalytic break or a ledger breach. It is a partner's key file
 leaking, followed by fraudulent attestations that verify perfectly.** The
 verify-against-registry machinery is exactly useless against it, and §3.3's
 "flag post-compromise-report attestations" only helps after someone notices.
@@ -196,24 +196,24 @@ Therefore:
   or mTLS, no static API keys) and submits the canonical payload; the
   service signs and returns the envelope. Every signature is thereby an
   authenticated, rate-limited, anomaly-scannable, individually-logged API
-  event — the party-fraud detection of design §3.5 gets a complete,
+  event. The party-fraud detection of design §3.5 gets a complete,
   real-time feed for free, and probation volume caps become enforceable at
   the signing endpoint instead of at ingestion.
 - **This does not weaken non-repudiation in practice.** Yes, hosted signing
-  means the operator *could* sign as the party — but the operator already
+  means the operator *could* sign as the party, but the operator already
   runs the registry that decides which keys are valid, so registry-level
   trust in the operator is assumed either way (design §3.3 says so). What
   disciplines the operator is the transparency log (§3 below): a forged
   entry is permanently, provably in the log, attributable to an exact
-  operator action in the KMS audit trail. Meanwhile the realistic threat —
-  partner-side leakage — is eliminated, not mitigated.
+  operator action in the KMS audit trail. Meanwhile the realistic threat,
+  partner-side leakage, is eliminated, not mitigated.
 - **BYO-key remains available** for parties that can pass a custody review
   (their own KMS/HSM, attested), and the registry records `custody_model`
   per key: `ledger_hosted | party_kms | party_hsm`. Read-time trust
   weighting may use it; the attestation schema, per founder decision 2,
   cannot.
-- Peer-attestation account keys are ledger-hosted by the same machinery —
-  workers will never do client-side key management, and pretending otherwise
+- Peer-attestation account keys are ledger-hosted by the same machinery.
+  Workers will never do client-side key management, and pretending otherwise
   is how "decentralized" designs get people locked out of their own careers
   (§10).
 
@@ -231,7 +231,7 @@ logged, append-only events:
    window swept and flagged.
 3. **Ledger issuing-key compromise:** revoke in KMS, root signs a revocation
    + successor statement, checkpoint the log, re-sign nothing (history is
-   protected by log inclusion, not by re-signing — this is why the log must
+   protected by log inclusion, not by re-signing, this is why the log must
    exist first).
 4. **Root compromise:** the company-ending scenario; the answer is the
    ceremony's physical custody making it a physical theft of two artifacts
@@ -249,14 +249,14 @@ the public commitment log "to v2." Three objections:
 
 1. **The threat it defends against is present from day one.** The hash
    chain proves ordering *to the operator's own database*. It does nothing
-   against the operator — a compromised admin account, a poisoned deploy, or
+   against the operator. A compromised admin account, a poisoned deploy, or
    an engineer under coercion can rewrite the chain wholesale and re-hash.
    Tamper-*evidence* requires commitments that leave the operator's control
    (witnessed checkpoints). The most dangerous window for silent rewriting
    is precisely the early one, before external scrutiny exists.
 2. **The credibility asymmetry.** A transparency log started at launch
-   proves the whole history. One started after an incident — or after a
-   partner demands it — proves only the future, and the gap is permanent.
+   proves the whole history. One started after an incident, or after a
+   partner demands it, proves only the future, and the gap is permanent.
    "Our log covers everything since the first attestation" is a sentence
    worth real money in every partner negotiation for the life of the
    company.
@@ -272,7 +272,7 @@ the public commitment log "to v2." Three objections:
 **Recommendation: adopt Tessera (the library under Rekor v2) directly as
 the spine's append mechanism** rather than bolting Rekor's
 software-supply-chain entry types onto attestations. Evaluate running
-rekor-tiles as-is first — if its entry model fits the attestation envelope,
+rekor-tiles as-is first. If its entry model fits the attestation envelope,
 take the maintained system; if not, Tessera-on-GCS/S3 with our own entry
 schema. Postgres remains the queryable system of record; the log is the
 integrity authority; a reconciliation job proves they agree and alerts on
@@ -280,38 +280,38 @@ divergence (that alert is the tamper alarm).
 
 ### 3.2 What goes in the log
 
-Three entry families, one tree (or three trees under one checkpoint — an
+Three entry families, one tree (or three trees under one checkpoint, an
 implementation choice):
 
-1. **Attestation commitments** — the integrity-spine tuple: object ID,
+1. **Attestation commitments.** The integrity-spine tuple: object ID,
    type, subject/issuer refs, salted payload commitment, signature hash,
    supersession pointer. This *is* the "ledger hash-chain timestamp at
    write" of design §3.3, upgraded to carry inclusion proofs.
-2. **Registry and key lifecycle events** — party registered / suspended /
+2. **Registry and key lifecycle events.** Party registered / suspended /
    revoked, key registered / rotated / compromised. This is the CT-style
    commitment log over registry changes that the design itself names as the
    hardening for operator-as-single-root, delivered in v1. A malicious
    operator can no longer quietly backdate a key's validity window or
    un-suspend a party without leaving a provable record.
-3. **Privileged operations** — merges/unmerges, deletions (as anonymous
+3. **Privileged operations.** Merges/unmerges, deletions (as anonymous
    tombstone events: "person-scope deletion executed," no identity
    linkable post-shred), break-glass access, invalidation attestations,
    deploy attestations (§6).
 
-### 3.3 Checkpoints and witnesses — the schedule
+### 3.3 Checkpoints and witnesses, the schedule
 
 - **Launch:** checkpoints signed hourly by a dedicated KMS checkpoint key
   (chained to root); retained internally and mirrored to a second cloud
   account with independent credentials (cheapest possible "outside the blast
   radius" witness).
 - **First external attesting party OR 1M identities (whichever first):**
-  checkpoints become public — published to an immutable public endpoint, and
+  checkpoints become public, published to an immutable public endpoint, and
   co-signed by at least one independent witness (the witness-network
   pattern from CT/sumdb; a partner, an auditor, or a public witness service
   can hold this role). From this point, silent rewriting is provably
   impossible rather than merely detectable by us.
 - **10⁸ scale:** multiple witnesses across jurisdictions; year-sharded logs
-  (the Rekor v2 pattern — log2026, log2027 — which also bounds tree size and
+  (the Rekor v2 pattern, log2026, log2027, which also bounds tree size and
   makes long-term crypto migration tractable); offer inclusion proofs in
   the prior packet so a consumer can verify an attestation offline.
 
@@ -320,8 +320,8 @@ implementation choice):
 A Merkle log is append-forever, and R2 demands erasure. The two-plane
 design already solves the structure; the log must solve the *linkability*:
 
-- Log entries carry **salted commitments** — HMAC(payload, k_r) with a
-  per-record random key k_r stored in the erasable payload plane — never
+- Log entries carry **salted commitments**, HMAC(payload, k_r) with a
+  per-record random key k_r stored in the erasable payload plane, never
   bare hashes of payload. EDPB guidance treats hashes of personal data as
   personal data; a bare hash of a low-entropy payload is dictionary-
   attackable. On R2 deletion, k_r is destroyed with the payload: the
@@ -337,7 +337,7 @@ caveat (§2.1) into the strongest technically available posture.
 ### 3.5 Insider threat, sized for three people
 
 Classic dual-control is impossible at this headcount for daily operations.
-Honest substitution — *prevent where cheap, prove always*:
+The honest substitution is *prevent where cheap, prove always*:
 
 - **No human write path to production data.** All mutations go through the
   service, which appends to the log. No `psql` into prod. Break-glass
@@ -348,7 +348,7 @@ Honest substitution — *prevent where cheap, prove always*:
 - **Everything else: detection over prevention.** Cloud audit logs shipped
   to a locked, separate account; the log reconciliation alarm; anomaly
   review of admin actions. An insider at a 3-person company cannot be
-  stopped by process from *acting* — they can be guaranteed to leave
+  stopped by process from *acting*. They can be guaranteed to leave
   indelible, checkpoint-anchored evidence. That guarantee, stated publicly,
   is also the deterrent.
 
@@ -359,7 +359,7 @@ Honest substitution — *prevent where cheap, prove always*:
 ### 4.1 Threat framing
 
 The account is the pen that signs grants, files disputes, accepts
-verifications, and — catastrophically — executes R2 deletion. Takeover =
+verifications, and, catastrophically, executes R2 deletion. Takeover =
 career impersonation plus the ability to *destroy the victim's record
 irreversibly* (delete + re-signup as them). Recovery flows, not login
 forms, are where identity systems are actually broken; that is where the
@@ -373,7 +373,7 @@ design effort goes.
   Password fallback exists (argon2id, breach-list checked) because forcing
   passkey-only on shared-device users locks out exactly the workers this
   system is for.
-- **Phone/email are channels, not factors of record** — consistent with
+- **Phone/email are channels, not factors of record.** Consistent with
   design §1.2. SMS OTP may serve as *one* signal in low-risk step-up, never
   as a sole authentication or recovery path (SIM-swap, 45–90-day number
   recycling, carrier-store social engineering; regulators began phasing out
@@ -381,9 +381,9 @@ design effort goes.
 - **Shared-device reality (emerging markets):** short sessions on untrusted
   devices, no silent persistent login on first use, re-auth for
   consequential actions (grants, deletion, disputes). Device-binding is a
-  risk signal, never a lockout criterion — family-shared phones are normal.
+  risk signal, never a lockout criterion. Family-shared phones are normal.
 
-### 4.3 Recovery — the actual design
+### 4.3 Recovery, the actual design
 
 The rule that does the work: **recovery strength ≥ derived assurance
 level.** The record itself tells us how strongly this account is bound to a
@@ -395,7 +395,7 @@ document-grade assurance).
 |---|---|
 | No verification attestations | Email/phone re-proof + time delay. Low stakes: profile is self-asserted only. |
 | Channel-verified | Two independent channels + 72h time-lock, notification to all channels with one-click freeze. |
-| Document/biometric-verified | **Re-verification with a registered verification provider** (same document class or biometric re-match) — the verification-attestation machinery of design §1.2 doubles as the recovery machinery, cost billed as any verification event. Plus time-lock + all-channel notification. |
+| Document/biometric-verified | **Re-verification with a registered verification provider** (same document class or biometric re-match). The verification-attestation machinery of design §1.2 doubles as the recovery machinery, cost billed as any verification event. Plus time-lock + all-channel notification. |
 | Any attested history | Everything above, and the time-lock is non-waivable; deletion is blocked for the lock window after any recovery (prevents takeover-then-destroy). |
 
 - **Passkey loss is a planned event, not an exception:** 6–11% of passkey
@@ -406,14 +406,14 @@ document-grade assurance).
   recovery is the most-exploited path in every large identity system and
   is unstaffable at 1M with three people anyway. The escape hatch for the
   truly locked-out undocumented worker is honest: a fresh profile (which R2
-  makes legitimate) — the old profile stays frozen, not stolen.
+  makes legitimate). The old profile stays frozen, not stolen.
 
 ### 4.4 Party authentication
 
 Parties are the high-value accounts and get the enterprise treatment:
 hardware-bound WebAuthn required for the party console, named individual
 accounts (no shared logins) with roles, step-up re-auth for key operations,
-signing access via workload identity/mTLS only (§2.3 — no static API keys
+signing access via workload identity/mTLS only (§2.3, no static API keys
 to leak into a partner's git history), and IP/velocity anomaly alerts on
 the signing endpoint feeding the §3.5-of-the-design reliability machinery.
 
@@ -435,7 +435,7 @@ the signing endpoint feeding the §3.5-of-the-design reliability machinery.
   payloads, because parties will paste government IDs into free-text fields
   no matter what the schema says. Hits quarantine the payload and notify
   the party; the spine entry stands.
-- **Access to payloads is mediated, logged, and purpose-tagged** — the read
+- **Access to payloads is mediated, logged, and purpose-tagged.** The read
   log the design promises workers (§7.1) is generated from the only path
   that can decrypt, not from app-layer bookkeeping that a bug can bypass.
 
@@ -484,7 +484,7 @@ architectural:
    forensic mystery.
 
 Priced honestly: items 2–5 are days of setup and near-zero marginal
-burden — they are precisely the controls that scale with an AI-heavy team
+burden. They are precisely the controls that scale with an AI-heavy team
 because they are machines checking machines. Item 1 costs real senior-human
 hours and is the deliberate bottleneck; it is affordable because the kernel
 is small and changes rarely, and it is the correct place to spend the only
@@ -502,7 +502,7 @@ scarce resource this team has.
   IP/ASN/device velocity limits, proof-of-work challenges under attack
   conditions (works without CAPTCHAs' accessibility and labor problems),
   disposable-domain throttling. An account is cheap to create and worth
-  nothing until attestations attach — the design already ensures signup
+  nothing until attestations attach. The design already ensures signup
   fraud yields empty profiles, so the control target is infrastructure
   cost and namespace pollution, not record integrity.
 - **No enumeration oracles:** UUIDv7 IDs are non-enumerable by design;
@@ -513,7 +513,7 @@ scarce resource this team has.
   signing endpoints enforce the probation volume caps (design §3.1)
   mechanically; anomalies feed §3.5 reliability machinery.
 - **The expensive endpoints (verification purchase, packet generation) are
-  risk-gated,** with spend alarms on verification-provider calls — an
+  risk-gated,** with spend alarms on verification-provider calls. An
   attacker driving third-party verification spend is a cost-DoS the
   fraud-detection layer must see.
 
@@ -529,7 +529,7 @@ Ranked by what actually protects the attestation-integrity story:
 3. Tessera-based Merkle log carrying attestation commitments **and**
    registry/key events, hourly signed checkpoints mirrored outside the
    primary blast radius from day one.
-4. Ledger-hosted party signing (or attested BYO custody) — no party key
+4. Ledger-hosted party signing (or attested BYO custody), no party key
    files, ever.
 5. Recovery-strength ≥ assurance-level rule; no SMS-only path; time-locked
    recovery with deletion lockout on attested accounts.
@@ -543,22 +543,22 @@ Ranked by what actually protects the attestation-integrity story:
 ## 9. What can wait for 10⁸
 
 - **Public witness network** (multiple independent co-signers across
-  jurisdictions) — one external witness suffices at the first-external-party
+  jurisdictions). One external witness suffices at the first-external-party
   milestone; a network is a 10⁸ credibility feature.
 - **Inclusion proofs in the prior packet** and offline-verifiable packet
-  format — build when a consumer asks; the log makes it a feature, not a
+  format. Build when a consumer asks; the log makes it a feature, not a
   migration.
 - **External RFC 3161 timestamping** alongside the log's own checkpoints.
-- **Formal SOC 2 / ISO 27001** — the controls above are the substance;
+- **Formal SOC 2 / ISO 27001.** The controls above are the substance;
   certification is paperwork to buy when enterprise procurement demands it.
 - **Regional sharding / data-residency splits** of payload stores, and
   year-sharded log rotation.
-- **Dedicated abuse/T&S staffing and ML risk models** — at 1M, rules +
+- **Dedicated abuse/T&S staffing and ML risk models.** At 1M, rules +
   anomaly review; at 10⁸, a team.
-- **Post-quantum migration** — Ed25519 is fine for this decade; the
+- **Post-quantum migration.** Ed25519 is fine for this decade; the
   year-sharded log design is exactly what makes future algorithm rotation
   tractable, which is why the log ships now and PQ ships later.
-- **HSM-backed (vs. software) KMS protection level** — flip a parameter
+- **HSM-backed (vs. software) KMS protection level.** Flip a parameter
   when a partner or regulator requires it; the API contract is identical.
 
 ## 10. Where other schools' designs get people hurt
@@ -568,13 +568,13 @@ Ranked by what actually protects the attestation-integrity story:
   outsiders; its key custody means one leaked env var forges history
   undetectably. The people hurt are workers whose records are forged or
   quietly edited during exactly the window when nobody external is
-  watching — and the company, later, cannot *prove* it didn't happen,
+  watching, and the company, later, cannot *prove* it didn't happen,
   which is the same as it having happened.
 - **The decentralization school (DIDs, wallets, client-held keys,
   blockchain anchoring).** Already correctly rejected by `04` for buying
   nothing on vetting; the security addition: client-held keys convert the
   6–11%/18-month device-loss rate into permanent career lockout for the
-  workers least able to manage key material — shared-phone, low-document
+  workers least able to manage key material, shared-phone, low-document
   workers in emerging markets. A recovery-capable custodial design with a
   transparency log protects them better than self-sovereignty theater.
 - **The defer-transparency school ("hash chain v1, Merkle v2").** Leaves
@@ -585,7 +585,7 @@ Ranked by what actually protects the attestation-integrity story:
   "verify."
 - **The growth school (SMS-first auth, agent-adjudicated recovery,
   frictionless everything).** SMS recovery on an identity ledger hands
-  SIM-swappers attestation-grade impersonation plus — under R2 — the power
+  SIM-swappers attestation-grade impersonation plus, under R2, the power
   to irreversibly destroy the victim's record. Support-adjudicated recovery
   reliably becomes the primary takeover path (every major platform's
   incident history says so) and cannot be staffed honestly at this
@@ -601,7 +601,7 @@ Ranked by what actually protects the attestation-integrity story:
    audit logs.** The transparency log's mirrored checkpoints are the hedge;
    full cloud-neutrality is not a v1 goal. GCP recommended; AWS workable.
 2. **Attestation write volume stays modest relative to identity count**
-   (≤ ~10⁸ attestations/year at 10⁸ identities) — comfortably inside
+   (≤ ~10⁸ attestations/year at 10⁸ identities), comfortably inside
    Tessera and KMS envelopes. If volume were 100× this, the log design
    holds but checkpoint/shard cadence changes.
 3. **Founder decisions 1–10 and rulings R1/R2 bind**; §3.4/§5 mechanics are
@@ -609,15 +609,15 @@ Ranked by what actually protects the attestation-integrity story:
    just in the primary database.
 4. **Hosted party signing is acceptable to founders and counsel** as the
    default custody model. If rejected, the fallback is mandatory BYO-KMS
-   with custody attestation — strictly worse for the realistic threat, and
+   with custody attestation, strictly worse for the realistic threat, and
    said so.
 5. **The 2026 tooling facts hold:** Rekor v2/Tessera GA and maintained;
    AWS KMS and GCP Cloud KMS Ed25519 support as shipped in Nov 2025 /
    earlier. If Tessera stalls, the fallback is a self-built tiled log on
-   the same storage layout — the design, not the dependency, is the
+   the same storage layout. The design, not the dependency, is the
    commitment.
 6. **The EDPB salted-commitment posture (§3.4) is mitigation to be blessed
-   by counsel, not a legal conclusion** — same caveat status as
+   by counsel, not a legal conclusion**, same caveat status as
    ledger-design-0.1 §2.1, strengthened but not discharged.
 7. **Three people can operate this** because every always-on control is a
    managed service or a CI gate; the human-hours costs are concentrated in
