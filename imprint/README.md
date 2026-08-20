@@ -19,9 +19,9 @@ Companion documents: [`../DESIGN.md`](../DESIGN.md) §2 · [`../THESIS.md`](../T
     r(t) = R + a · L(t) · sin(7·t + π/2 + delta_i)
 
     R        the strand's mid-radius
-    a        amplitude — half the strand width, less the stroke
+    a        amplitude, half the strand width, less the stroke
     L(t)     lobe depth as a function of angle; interpolates the seven levels
-    delta_i  i · (2π/7) / n_curves — the phase sweep
+    delta_i  i · (2π/7) / n_curves, the phase sweep
 
 `delta_i` sweeping **one lobe period** across the passes is what produces guilloché.
 Threads converge at the lobe tips and fan between them. This is load-bearing:

@@ -73,7 +73,7 @@
       </div>
     </div>
     <p class="t-meta" style="text-align:center;color:var(--secondary);margin:14px 0 0;text-wrap:pretty">
-      Businesses sign what they confirm. Everything else here is Liezel’s own account, marked as such.</p>
+      Businesses sign what they confirm. Everything else here is Liezel's own account, marked as such.</p>
   </main>
 </div>
 
