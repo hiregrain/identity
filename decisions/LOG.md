@@ -3289,3 +3289,47 @@ set to never-batch if extraction's benchmarks disappoint; the
 ask-not-guess confirmation cost is real and goes to the extraction
 grilling and the design pass; import infeasibility does not rewrite this
 layer because manual entry is the ruled fallback.
+
+## 064 — Task-file review: four small rulings close nineteen defects (2026-08-20)
+
+The second engineering pass ran over self-asserted-record's nine
+authored task files, per the rule that the review runs again at task
+authoring. A fresh-context reviewer returned nineteen defects; fifteen
+were mechanical (wrong dependency edges, stale PROPOSED headings,
+missing binds, unverifiable wording) and are fixed in place. Four
+needed rulings, made here:
+
+**Delete is a tombstone version row.** foundation/03's ratified
+invariant lets recording functions INSERT only, so the layer's "delete"
+verb is an appended tombstone: the claim leaves the record, its
+versions persist worker-only, and physical removal happens only at
+profile deletion through foundation/08. No append-only exemption is
+added for record tables.
+
+**Confirmation references are schema, created with the tables.** The
+constraint three criteria lean on now exists in the record schema:
+imported commits, `institution_ref` writes, and `issuer_ref` writes
+each require a recorded worker confirmation, shipped in
+`0023-record-objects` and exercised by the flow tasks. Pre-send
+withdrawal of a verification request thaws the claim, closing the enum
+state the freeze task had left unhandled; positions freeze with their
+chapter and are never a claim ref themselves.
+
+**The institution registry lives in the global spine.** Public
+reference data about institutions carries no personal data and no
+residency obligation, and one copy stays consistent where regional
+payload copies would drift.
+
+**trust-kernel/03's stream list carries the 063 amendment.** The
+governing-event list in the ready task file now names worker record
+writes, applying decision 063 to the one artifact its coverage check
+actually reads. This is the founder's amendment cascading, not a
+downstream rewrite of a criteria-final task.
+
+The packet-facing clauses (document pointer, version-history exclusion)
+are consolidated as prior-packet's inherited criterion candidates;
+seeding runs against committed fixture snapshots so the verifier's run
+reproduces the implementer's; and tasks 03 and 05 keep two deliverables
+each knowingly, recorded here so the reviewer's objection is answered
+rather than lost: the halves share one done-condition in each case, and
+splitting them would produce PRs that cannot be verified alone.
