@@ -3333,3 +3333,71 @@ reproduces the implementer's; and tasks 03 and 05 keep two deliverables
 each knowingly, recorded here so the reviewer's objection is answered
 rather than lost: the halves share one done-condition in each case, and
 splitting them would produce PRs that cannot be verified alone.
+
+## 065 — trust-kernel/08 grilled and reviewed: the transport seam is ruled, the kernel chain unblocks (2026-08-20)
+
+trust-kernel/08 was authored cold after the layer's 2026-08-18 review
+(decision 019), the drift case the same-session rule now names. The
+founder ruled it could not go ready without its own grilling and an
+engineering review; both ran 2026-08-20. Ten rulings:
+
+**The premise, recorded here because entry 052 never held it:** the
+foundation run left the docker-compose-exec psql path hand-rolled in
+three packages with three quoting dialects and two row formats, plus a
+fourth verbatim copy in envelope's db test. Safe because values are
+shape-validated first; a copying-ground for the next task.
+
+**The API is driver-shaped with two verbs.** `Query(plane, role, sql,
+args...)` for single statements, `Tx(plane, role, fn)` for
+multi-statement transactional work. The review killed the single-verb
+shape: three call sites send BEGIN-to-COMMIT scripts, and the outbox
+crash-point protocol deliberately opens a transaction and aborts by
+process exit, which a one-call API cannot express. Without the Tx verb
+the one-file-driver-migration promise was false.
+
+**Args are typed, never pre-rendered strings.** Explicit cases for
+string, nil, bool, numerics, and a bytea wrapper. The review showed the
+promoted string-only renderer would have turned SQL NULL into the text
+'NULL' and reinterpreted a worker-supplied backslash-x text as bytea by
+shape inference. Escaping is by quote doubling; NUL is always refused;
+hex only through the wrapper. Free-text failure details keep today's
+stored-not-refused behavior, and the row format is the outbox's
+bounded tab split, because an unbounded split corrupts any detail
+containing the separator.
+
+**Envelope keeps its Querier; the transport implements it.** The
+interface exists to keep the kernel-facing package transport-free, and
+that inversion survives; wiring happens at composition.
+
+**Tests migrate too.** No test-file exemption: the repo-wide check
+covers tests, and envelope's duplicate test renderer dies.
+
+**Dependencies now tell the truth.** trust-kernel/01 touches no SQL
+and no longer depends on 08; tasks 02, 03, and 04, which all issue
+SQL, now do. trust-kernel/01 joins the workable frontier immediately.
+
+**Placement stands: trust-kernel, with the reason in the task.** The
+task refactors foundation code, but its consumers ahead are the
+kernel's SQL tasks and foundation is done; reopening a done layer for
+a new task is a bigger precedent than a placement note.
+
+**The driver decision stays gated, with a named trigger.** Recorded in
+ORDER.md's decision gates: decided before any layer serving external
+reads goes ready, so it happens on schedule rather than in an
+incident. Compose-exec is fine for tests and unusable for production
+load.
+
+**`satisfies` stays empty, stated in the task body.** A refactor task
+that adds no layer capability claims no layer criterion; inventing one
+for ledger symmetry would be backwards.
+
+**Criteria were rewritten to be executable.** The review found the
+grep check could not detect the driver invocations its own sentence
+claimed, the transport package was never named, the removed symbols
+were unnamed, and one criterion ("the diff touches no test
+expectations") was both unjudgeable and unsatisfiable. All five
+criteria now name their package, symbols, and fixtures, and a red-path
+suite covers the renderer, closing the reviewed-scope-without-
+criterion gap the review flagged.
+
+**trust-kernel/08 is promoted to ready by this entry.**
