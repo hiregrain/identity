@@ -4,7 +4,7 @@ type: task
 layer: trust-kernel
 satisfies: [2]
 status: ready
-depends_on: [trust-kernel/02, trust-kernel/03]
+depends_on: [trust-kernel/02, trust-kernel/03, trust-kernel/08]
 migrations: [0008-checkpoint-log]
 binds: [design/stack-litigation/d3-verdict.md, contract/CONTRACT.md, decisions/LOG.md#016, decisions/LOG.md#019]
 evidence: []

@@ -4,7 +4,7 @@ type: task
 layer: trust-kernel
 satisfies: [2, 6]
 status: ready
-depends_on: [trust-kernel/01, foundation/04]
+depends_on: [trust-kernel/01, foundation/04, trust-kernel/08]
 migrations: [0007-stream-heads]
 binds: [contract/CONTRACT.md, decisions/LOG.md#019]
 evidence: []

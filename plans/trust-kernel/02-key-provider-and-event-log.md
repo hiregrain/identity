@@ -4,7 +4,7 @@ type: task
 layer: trust-kernel
 satisfies: [5]
 status: ready
-depends_on: [trust-kernel/01, foundation/03]
+depends_on: [trust-kernel/01, foundation/03, trust-kernel/08]
 migrations: [0006-key-event-log]
 binds: [design/stack-litigation/d3-verdict.md, decisions/LOG.md#011]
 evidence: []
