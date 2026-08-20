@@ -4,7 +4,7 @@ type: task
 layer: analytics
 satisfies: [2, 7, 9]
 status: ready
-depends_on: []
+depends_on: [self-asserted-record/01]
 migrations: []
 binds: [decisions/LOG.md#022, decisions/LOG.md#066, model/record-schema.md]
 evidence: []
@@ -23,16 +23,22 @@ model anywhere in it.
 
 - Input assembly from the record objects: work history at whatever
   verification level exists, education and credentials, structured
-  references where any exist, and the observable meta-signals decision
+  references where any exist (none in first-product), and the
+  observable meta-signals decision
   022 names (average tenure in role, described responsibility,
-  seniority).
+  seniority). The `provenance` field on each claim is the input;
+  fixtures set it directly, so no attestation machinery is needed to
+  test weighting (decision 067).
 - Provenance weighting with fixed published weights: `self_asserted`,
   `peer_attested`, and `party_attested` evidence for the same assertion
   never weigh equally; corroboration (`none | single | multi`) enters
-  the weight; the weight table is versioned and its version is what the
-  run record carries.
-- `score_summary` exclusion enforced at the query surface: the scoring
-  path has no read on party score fields.
+  the weight, and one claim corroborated by two sources counts once at
+  higher weight, never twice; the weight table is versioned, and the
+  run record carries the instrument version on every run.
+- Party score exclusion: the scoring path contains no reference to
+  party score fields, a grep-class check over the query surface; the
+  column-privilege assertion lands with v1 when ingestion creates
+  `score_summary` (decision 067).
 - Determinism as a property of the whole instrument: no LLM, no
   network call, no clock- or randomness-dependent value inside a
   scored run (the run record's timestamp and pseudonym are written by
@@ -42,15 +48,19 @@ model anywhere in it.
 ## Acceptance
 
 1. AC (mechanical): two fixtures asserting the same claim at different
-   provenance classes produce different weights; a
+   provenance classes produce different weights; one claim
+   corroborated by two sources counts once at higher weight, proven by
+   a fixture where double-counting would cross a distinct output
+   boundary; a
    `self_asserted`-only fixture never reaches the confidence of a
    corroborated `party_attested` fixture with the same content.
-2. AC (mechanical): the scoring path cannot read `score_summary`,
-   asserted by a check over the query surface and by privilege on the
-   column.
+2. AC (mechanical): the query surface contains no reference to party
+   score fields, asserted by a grep-class check with a red-path
+   fixture.
 3. AC (mechanical): the same inputs and instrument version produce
    byte-identical output across repeated runs and across processes,
-   and a scored run completes with network egress blocked.
+   and a scored run completes with network egress blocked; the run
+   record written for the fixture run carries the instrument version.
 4. AC (mechanical): the weight table is versioned; changing a weight
    without bumping the version fails a check.
 

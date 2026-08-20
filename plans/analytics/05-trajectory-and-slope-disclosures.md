@@ -33,9 +33,12 @@ in words the founder ratified.
   drafted as product copy, carried on the face of every trajectory
   output, unslop-compliant. The founder ratifies the text at this
   task's review; until then it is draft copy in the PR.
-- Mapping fidelity: when a customer-authored view is applied to an
-  output, the fidelity of that mapping is computed and rendered with
-  the output.
+- Mapping fidelity and customer-authored views are deferred to v1
+  (decision 067): the artifact is modeled nowhere and blocked on
+  `chapter_standing`, which first-product does not derive. The task
+  carries the disclosure copy knowingly beside the computation, the
+  self-asserted-record 03/05 pattern: the halves share one
+  done-condition, a trajectory output that is honest on its face.
 
 ## Acceptance
 
@@ -45,9 +48,7 @@ in words the founder ratified.
 2. AC (adjudicated): the disclosure text states the three failure
    modes accurately against decision 022's wording, judged by a
    clean-context verifier given only 022 and the rendered output.
-3. AC (mechanical): an output through a customer-authored view carries
-   its mapping fidelity; one without a view carries none.
-4. AC (mechanical): trajectory output is byte-identical across
+3. AC (mechanical): trajectory output is byte-identical across
    repeated runs at the same instrument version.
 
 ## Outside check

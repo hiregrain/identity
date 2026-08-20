@@ -36,6 +36,13 @@ without that could not know they were consenting to be ranked.
 
 The worker's two ultimate controls, engineered as subsystems.
 
+**analytics/02 lands the named-recipient grant subset first** (decisions
+057, 067): the grant table, address-proof open, expiry, revocation, and
+the payload-side read log ship in the first-product milestone. This
+layer builds the party-level standing-grant machinery on that table
+rather than beside it; one grant object, one migration lineage, no
+second read log.
+
 Scope: the onboarding consent instrument (six-point plain-language
 coverage per design 0.1 §8.2, contextual re-affirmation at each
 verification request; final terms blocked on counsel brief 4, the flow
