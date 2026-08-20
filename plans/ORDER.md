@@ -159,6 +159,11 @@ not a wording problem.
 - **Migrations:** `NNNN-<kebab-noun-phrase>.sql`, naming what exists after, not
   what the migration does: `0002-roles-and-default-privileges`, never
   `0002-add-roles`.
+- **Package paths:** the first task executed in a layer establishes the
+  layer's package path (`core/<name>` unless its task file names one),
+  and every later task in the layer follows it. Two parallel
+  implementers inventing two layouts for one layer is the drift this
+  line exists to prevent.
 
 **The fence.** A tool may rewrite `status`, `evidence` and `verified_by`.
 Nothing else. Objective, scope, constraints and criteria are authored by a
@@ -203,6 +208,11 @@ the loop:
    is the claim), then hand the task to an **implementer**, a fresh session
    given the task id and nothing else. One implementer per task; parallel
    implementers only on tasks with no shared `depends_on` frontier.
+   **The dispatch prompt tells every implementer to read the conventions
+   before writing anything**: `make check`'s targets, `checks/`, and the
+   nearest done task's verification record in `log/`. Task files name
+   checks by pattern; the repo names them literally, and an implementer
+   who has not read both invents a third convention.
 
    **Every implementer works in its own worktree. The main checkout is a
    planning desk.** It holds plans, decisions, model and design edits, and
