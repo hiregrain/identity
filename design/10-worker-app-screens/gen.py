@@ -9,13 +9,13 @@ TAU, LOBES = imprint.TAU, imprint.LOBES
 OUT = sys.argv[1]
 
 # The identity core (035 §B6) and the stroke unit (gap 10a) are both settled in
-# the generator now — decision 044 — so the monkey patches that used to carry
+# the generator now, decision 044, so the monkey patches that used to carry
 # them here are gone. `render()` no longer emits `_core()`, and stroke widths are
 # device pixels carried by vector-effect rather than viewbox units.
 #
 # RENDER SIZE. Thread count is budgeted from the size the figure is DRAWN at, so
 # a fragment is only correct for the surface it was budgeted for. These artboards
-# set every imprint to width:100% inside a 360px frame, which lands near 296px —
+# set every imprint to width:100% inside a 360px frame, which lands near 296px,
 # so that is what is budgeted here, and `Expanded` at full bleed is consequently
 # drawn thinner than it has room for. One fragment cannot serve both; splitting
 # them is a canvas change and has not been made.
@@ -63,7 +63,7 @@ for (dur, live), width in zip(segs, widths):
     r += width
 json.dump(hit, open(os.path.join(OUT,"hit.json"), "w"))
 
-# The expanded view's lobe highlight — one path per chapter and measure, so the
+# The expanded view's lobe highlight is one path per chapter and measure, so the
 # figure can light the lobe a reader is reading about. No spokes, no sector
 # lines, no notches: they read as damage across the drawing. It used to be
 # computed in the artboard's own JavaScript, which meant a second copy of
@@ -111,7 +111,7 @@ open(os.path.join(OUT,"ceremony-before.svgfrag"),"w").write(G % imprint._strand(
 after = imprint._strand(r_cur[0], r_cur[1], CUR_WOVEN, PPU, DPR).replace("<path d=","<path pathLength='1' d=")
 open(os.path.join(OUT,"ceremony-after.svgfrag"),"w").write(G % after)
 
-# gutter swatches — the same construction unrolled over one lobe period, at a
+# gutter swatches are the same construction unrolled over one lobe period, at a
 # larger box and lower counts so 3-vs-5 is countable at 1x (design/07 §3).
 W, MID = 34.0, 8.0
 def unrolled(n, amp=5.6):
@@ -148,7 +148,7 @@ def sine_rule(w=320.0, amp=1.15, h=6.0):
             "<path d='M%s'/></svg>") % (w, h, h, " L".join(pts))
 open(os.path.join(OUT,"sine-rule.svgfrag"),"w").write(sine_rule())
 
-# The lockup — mark plus the GRAIN wordmark (§4a). tier_for() inside lockup()
+# The lockup is the mark plus the GRAIN wordmark (§4a). tier_for() inside lockup()
 # swaps the mark to its correct drawn reduction, so this is never a scaled master.
 LOCKUP_MARK_PX = 26
 open(os.path.join(OUT,"lockup.svgfrag"),"w").write(mark.lockup(LOCKUP_MARK_PX))

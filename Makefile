@@ -64,7 +64,7 @@ migrate:
 	node db/migrate.mjs payload
 
 # Layer criterion 2's mechanism: both chains replay from empty
-# deterministically, and a second replay is a no-op — proven by schema
+# deterministically, and a second replay is a no-op, proven by schema
 # dumps, not by trusting the runner's own output.
 migrate-verify:
 	@dumps="$$(mktemp -d)"; \
@@ -122,7 +122,7 @@ two-plane-split:
 	node test/two-plane-split.test.mjs
 
 # The envelope acceptance suite (foundation/05): runs against the live
-# payload plane once per key provider — the provider swap is
+# payload plane once per key provider. The provider swap is
 # configuration only (GRAIN_KEY_PROVIDER) and the suite must pass under
 # both (criterion 6). Build tag db keeps these tests out of the
 # database-less go-check job; -count=1 defeats the test cache, since the
@@ -151,9 +151,9 @@ cross-plane-outbox:
 # gate refusing traffic, the journal replay opening it, the purge role's
 # licensed DELETE and its audit trail. Build tag db like the envelope
 # suite; -count=1 because the database is state the test cache cannot
-# see. One provider run: everything this suite proves — journal, gate,
-# purge, replay — is provider-independent registry and grant state, and
-# the provider swap is already proven both ways by `envelope-test`.
+# see. One provider run: everything this suite proves, journal, gate,
+# purge, and replay, is provider-independent registry and grant state.
+# The provider swap is already proven both ways by `envelope-test`.
 # NOTE: the restore scenario recreates the payload container mid-run;
 # the suite leaves both planes migrated and consistent on the green
 # path, which is why this target runs last in the database stage.
@@ -200,9 +200,9 @@ check-red:
 	node checks/plan-graph.mjs test/fixtures/frontier/plans > /tmp/frontier-fixture.out
 	grep -qx "  alpha/02" /tmp/frontier-fixture.out
 	grep -qx "  beta/01" /tmp/frontier-fixture.out
-	grep -q "^blocked: alpha/03 — alpha/02 is ready" /tmp/frontier-fixture.out
-	grep -q "^blocked: beta/02 — epsilon/01 is unauthored" /tmp/frontier-fixture.out
-	grep -q "^blocked: delta/01 — layer gate: alpha is not done" /tmp/frontier-fixture.out
+	grep -q "^blocked: alpha/03 due to alpha/02 is ready" /tmp/frontier-fixture.out
+	grep -q "^blocked: beta/02 due to epsilon/01 is unauthored" /tmp/frontier-fixture.out
+	grep -q "^blocked: delta/01 due to layer gate: alpha is not done" /tmp/frontier-fixture.out
 	! grep -qx "  delta/01" /tmp/frontier-fixture.out
 	rm /tmp/frontier-fixture.out
 	@echo "red path 8: a duplicate entry number, an unmarked gap, and a contradicted never-assigned marker each fail the decisions-index check; a marked gap passes (no database)"
@@ -253,7 +253,7 @@ check-red-db:
 	@echo "red path db 5: an allow-listed exception column whose migration lacks the justification block fails the spine schema lint (and passes with the block present)"
 	echo "CREATE TABLE planted_exception (blob bytea);" | $(PSQL_SPINE) -f -
 	! node checks/spine-schema.mjs test/fixtures/redpath/spine-schema/allow-list.json db/migrations db/migrations/spine test/fixtures/redpath/spine-schema/without-justification
-	@echo "red path db 5b: a justification block in the WRONG file (a decoy the declared migration field does not name) is not a match — the lint must still fail"
+	@echo "red path db 5b: a justification block in the WRONG file, a decoy the declared migration field does not name, is not a match, and the lint must still fail"
 	! node checks/spine-schema.mjs test/fixtures/redpath/spine-schema/allow-list.json db/migrations db/migrations/spine test/fixtures/redpath/spine-schema/without-justification test/fixtures/redpath/spine-schema/decoy
 	node checks/spine-schema.mjs test/fixtures/redpath/spine-schema/allow-list.json db/migrations db/migrations/spine test/fixtures/redpath/spine-schema/with-justification
 	echo "DROP TABLE planted_exception;" | $(PSQL_SPINE) -f -

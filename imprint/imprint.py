@@ -1,4 +1,4 @@
-"""Grain imprint — canonical generator.
+"""Grain imprint, canonical generator.
 
 The imprint is the per-person figure computed from the verified record. It is a
 DIFFERENT OBJECT from the Grain mark (the logo), which is invariant and carries no
@@ -32,7 +32,7 @@ CORE_RADII = ((26.0, 1.3), (34.0, 0.8))
 # sat 0.82 CSS px apart. Both numbers below are what actually reaches glass.
 STROKE_PX = 1.0         # hairline: one device pixel. Skia hairline mode; in
                         # SVG, vector-effect='non-scaling-stroke'
-MIN_PITCH_PX = 2.0      # a thread and the paper beside it, in DEVICE pixels —
+MIN_PITCH_PX = 2.0      # a thread and the paper beside it, in DEVICE pixels,
                         # the tightest pitch that can resolve as two threads at
                         # all. The figure is drawn as densely as the hardware
                         # can carry, so a 3x phone earns a richer imprint than a
@@ -107,7 +107,7 @@ def segment(engagements):
     """Split the timeline at every start and end.
 
     Returns [(duration, [live engagements])]. Periods with nothing live contribute
-    NOTHING — that is how employment gaps become invisible, which is deliberate.
+    NOTHING. That is how employment gaps become invisible, which is deliberate.
     """
     if not engagements:
         return []
@@ -123,7 +123,7 @@ def segment(engagements):
 def allocate(segments):
     """Width of each segment as a share of the FIXED canvas, honouring BAND_FLOOR.
 
-    Where the floor cannot be met, the two EARLIEST adjacent segments merge — never
+    Where the floor cannot be met, the two EARLIEST adjacent segments merge, never
     the recent ones, because recent chapters carry the decision-relevant signal.
     """
     segs = [(d, list(l)) for d, l in segments]
@@ -188,7 +188,7 @@ def thread_path(mid, amplitude, L, delta, px_per_unit=None):
     samples every lobe: the curve turns LOBES times per revolution and no fit
     recovers a wave it never saw.
 
-    Tangents are analytic (`_point`), which is what buys the accuracy — a
+    Tangents are analytic (`_point`), which is what buys the accuracy. A
     numeric tangent would spend it again. Verified against a dense polyline in
     `examples.py`; the deviation budget is MAX_ERR_PX.
     """
