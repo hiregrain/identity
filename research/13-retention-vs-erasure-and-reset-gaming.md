@@ -107,7 +107,7 @@ reduced to €16,000: the controller confirmed erasure, then eleven months later
 used a retained minimal link to deny a returning applicant a new-customer
 promotion. The controller's defence was verbatim the "we keep only what is
 necessary to tell they are not new" argument. Held: Art. 6(1) infringement. **No
-fraud, no safety: pure commercial detriment applied at re-registration.**
+fraud, no safety; pure commercial detriment applied at re-registration.**
 Decision `014` was right and is now better supported than when it was made.
 Confidence: high.
 
@@ -175,7 +175,7 @@ the Data Principal."
 
 **15. Two things outside the brief that change the risk picture.** The AI Act's
 Art. 10(5) was **repealed** by Regulation (EU) 2026/1744 (OJ 24 July 2026) and
-relocated to a new Art. 4a, so the 2 December 2027 date is now adopted law, and any
+relocated to a new Art. 4a; the 2 December 2027 date is now adopted law, and any
 repo citation to Art. 10(5) is stale. And a cross-employer performance register is
 a **labour-market information exchange**: the DOJ/FTC guidelines of 16 January
 2025 say such exchange "may be illegal even if companies use a third party or
@@ -247,7 +247,7 @@ verbatim from the Commission's Service Desk:
 > on the protection of personal data."
 
 Two limitations sit in that sentence and both matter enormously. "To the extent
-such logs are under their control" means an API provider controls its own run logs;
+such logs are under their control": in application, an API provider controls its own run logs;
 a deployer's downstream records are the deployer's problem under Art. 26(6). And
 the closing clause, which is the single most important sentence in this memo:
 **the retention floor is expressly subordinated to data protection law.** §2.2
@@ -344,8 +344,8 @@ amending item (40)(b) replaces Art. 113, third paragraph, point (c):
 
 Arts. 12 and 19 sit in Chapter III Sections 2 and 3, so both bite for Grain on
 **2 December 2027**. Three verified negatives that matter: **Reg. 2026/1744 does
-not amend Art. 12 or Art. 19**, since no amending item touches them, and the string
-"six months" does not appear anywhere in the Omnibus, and **Annex III point 4 is
+not amend Art. 12 or Art. 19** (no amending item touches them, and the string
+"six months" does not appear anywhere in the Omnibus), and **Annex III point 4 is
 unamended**. The founder's date is therefore right, and now rests on adopted law
 rather than on a proposal.
 
@@ -406,8 +406,8 @@ Three supports, none of which is about AI:
   protection law (§2.2). Art. 6(3) further requires that the law "meet an
   objective of public interest and be proportionate to the legitimate aim
   pursued," and Recital 41 requires it to be "clear and precise" with
-  "foreseeable" application. Recital 45 is the counter: a general law can serve
-  several operations, but it still requires the law to determine the purpose,
+  "foreseeable" application. Recital 45 is the counter (a general law can serve
+  several operations), but it still requires the law to determine the purpose,
   and Art. 12(2) determines a *system-monitoring* purpose, not an
   individual-record purpose.
 - **C-77/21 *Digi* (EU:C:2022:805)**, operative ruling 2, is close to on point.
@@ -724,7 +724,7 @@ consumer *because* they exercised a right. See §6.4.
 
 **Philippines.** NPC Advisory 2021-01 §10(B)(2) enumerates the grounds for
 refusing erasure and performance is not among them. NPC AO 2023-026 blessed a
-*shared employee fraud database* via the legal-claims route: the regulator that
+*shared employee fraud database* via the legal-claims route. The regulator that
 went furthest toward permitting a cross-employer negative register did so
 expressly on a fraud theory.
 
@@ -775,7 +775,7 @@ There is one, and it deserves to be on the record rather than dismissed.
 
 **The integrity-of-the-record argument.** Grain's product is not a judgment about
 a worker; it is a *measurement over a record*. If the record can be reset at
-will, then the measurement measures nothing: a person with five years of
+will, then the measurement measures nothing. A person with five years of
 attested history and a person who deleted four of them are indistinguishable,
 and the analytic output is systematically biased toward whoever most recently
 deleted. Under the AI Act this is arguably not a commercial preference but an
@@ -904,8 +904,8 @@ misrepresentation of fact," or where "the consumer obtained possession of goods,
 services, or money as a result of the blocked transaction." Fraud opens the door
 and fraud closes it. Performance is not in the conversation.
 
-**And US federal law criminalises identity-reset-as-evasion: of the consumer's
-conduct, not the register's retention.** CROA §1679b(a)(2) prohibits any credit
+**And US federal law criminalises identity-reset-as-evasion; the crime is the
+consumer's conduct, not the register's retention.** CROA §1679b(a)(2) prohibits any credit
 repair organisation from:
 
 > "make any statement, or counsel or advise any consumer to make any statement,
@@ -916,7 +916,7 @@ repair organisation from:
 Read the qualifier: "accurate **and not obsolete**." Congress prohibited
 identity-reset-to-conceal while leaving the seven-year obsolescence rule fully
 intact. **That is precisely the line this memo is drawing, drawn by Congress in
-1996.** Enforcement exists: the FTC's "Operation New ID – Bad IDea" (21 October
+1996.** Enforcement exists. The FTC's "Operation New ID – Bad IDea" (21 October
 1999) produced sixteen settlements against sellers of the technique, with
 settlements requiring defendants to notify victims that "using a false
 identification number to apply for credit is a felony," the criminal hook being
@@ -949,7 +949,7 @@ every seven years, and Grain's retention question is answered against it by
 statute.** Worth putting in front of counsel as a scenario, not as a change of
 position.
 
-Two directional asymmetries worth carrying: FCRA is a **ceiling, not a floor**:
+Two directional asymmetries worth carrying: FCRA is a **ceiling, not a floor**.
 CRAs have no duty to include a tradeline and no liability for omitting adverse
 information, and merging identities is treated as an accuracy **risk**, not a
 duty, with mixed-file cases such as *Williams v. First Advantage LNS Screening
@@ -1098,7 +1098,7 @@ Regulations.** SI 2010/493 Reg. 3(2) joins its two limbs with "**and**", not
 "or": a prohibited list must contain details of trade-union membership or
 activities **and** be compiled with a view to discriminatory use. **A performance
 register with no union nexus falls entirely outside the Regulations.** Citing them
-as authority against one invites an easy rebuttal. Their value is architectural:
+as authority against one invites an easy rebuttal. Their value is architectural.
 Parliament legislated because general data protection law was seen as an
 inadequate *deterrent*, not because it was an inadequate *prohibition*.
 
@@ -1234,7 +1234,7 @@ Two consequences:
 - The suggested remedy on a below-threshold result ("take an assessment") is
   itself the anti-reset mechanism that actually works, since it offers a resetter a
   legitimate route back to a score, at the cost of sitting a fresh instrument.
-  That is a *cure*, and cures are what regulators like: CNIL 2021-130 requires
+  That is a *cure*, and cures are what regulators like. CNIL 2021-130 requires
   48-hour deletion on cure, and Cifas's fixed expiry does the same job.
 
 ### 6.4 Could thin-record signalling be attacked as an indirect penalty on exercising an erasure right? Yes, and this is the real risk in Q2
@@ -1329,7 +1329,7 @@ genuinely unsettled, and no case law will save a design that gets it wrong.**
 
 - The rule applied to a deleted-and-re-registered account must be
   **byte-identical** to the rule applied to a never-registered account. Not
-  "equivalent": identical code path, provably, with a test.
+  "equivalent". Identical code path, provably, with a test.
 - Grain must hold **nothing** that lets it or a reader distinguish the two. If a
   reader can tell "this person deleted a prior profile," the defence collapses,
   because the detriment then attaches to the exercise of the right rather than to

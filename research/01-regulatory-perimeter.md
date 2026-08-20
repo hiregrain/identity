@@ -97,7 +97,7 @@ least. Confidence: high.
 **8. Erasure risk under GDPR is real but narrower than usually assumed, and the
 right lawful basis is legitimate interests, not consent.** Consent is unreliable
 in an employment-adjacent power imbalance (Art. 29 WP Opinion 2/2017). On
-Art. 6(1)(f), the live exposure is the Art. 21(1) objection: you may refuse only
+Art. 6(1)(f), the live exposure is the Art. 21(1) objection. You may refuse only
 on "compelling legitimate grounds," which feeds Art. 17(1)(c). Art. 17(3)(e)
 (establishment/exercise/defence of legal claims) is the most defensible retention
 hook for dispute-relevant records, and it is narrower than "we might need this
@@ -149,8 +149,8 @@ reaching Philippine ops staff needs SCCs plus a transfer impact assessment,
 and *read access by a PH-based operator is itself a transfer*. Confidence: high.
 
 **12. Net: the regulation does not kill the product. It kills three specific
-design commitments: never-delete, freeze-on-verification, and one global
-table, and it forces a dispute/reinvestigation engine to be a first-class
+design commitments (never-delete, freeze-on-verification, and one global
+table), and it forces a dispute/reinvestigation engine to be a first-class
 subsystem rather than a feature.** The single highest-leverage architectural
 decision is separating the *immutable evidence of an event* from the *reportable
 personal-data payload of that event*, so the first can be permanent and the
@@ -309,8 +309,8 @@ exclusion, not evidence you qualify for it.
 
 **Epistemic caveat, stated plainly: § 1681a(o) is essentially untested in
 court.** I found no reported decision construing it. The available authority is
-the statutory text plus four 1998 FTC advisory opinions. That cuts both ways:
-nobody can tell you the exclusion definitively fails, but it is a bad risk
+the statutory text plus four 1998 FTC advisory opinions. That cuts both ways.
+Nobody can tell you the exclusion definitively fails, but it is a bad risk
 trade for this product specifically, because (i) the § 1681a(o)(4) and (o)(1)
 problems are textual rather than fact-dependent, and (ii) an untested exclusion
 relied on in writing is precisely the posture that converts a negligent
@@ -505,7 +505,7 @@ a strong legitimate interest; open-ended reputation scoring is much weaker in
 the balancing.
 
 **Contract (Art. 6(1)(b))** supports only what is objectively necessary to
-deliver the service the worker asked for: enough for the worker's own profile,
+deliver the service the worker asked for, enough for the worker's own profile,
 not for retaining adverse attestations against their objection.
 
 **Art. 9 special categories** should be schema-excluded by design (health, union
@@ -654,7 +654,7 @@ confirmed against a primary source.
 
 ### 3.1 You are in scope, from the first Philippine worker
 
-Sec. 6 (extraterritorial application) is drafted ambiguously: it strings "and"
+Sec. 6 (extraterritorial application) is drafted ambiguously. It strings "and"
 between the (a)/(b)/(c) limbs, which on a strict conjunctive reading would
 require all three links. **The IRR resolves it disjunctively and is the operative
 text.** IRR Sec. 4 applies the Act where any of the following holds, joined by
@@ -804,8 +804,8 @@ subject (b), legal obligation (c), and **legitimate interests (f), expressly
 extending to the interests of "a third party or parties to whom the data is
 disclosed."** That last clause is unusually well-suited to a reference-checking
 product: the *recipient employer's* legitimate interest counts. **NPC Circular
-2023-07** (effective 14 Jan 2024) imposes a documented three-part test: purpose,
-necessity, balancing, retained as a **Legitimate Interest Assessment** for NPC
+2023-07** (effective 14 Jan 2024) imposes a documented three-part test (purpose,
+necessity, balancing), retained as a **Legitimate Interest Assessment** for NPC
 review, and critically requires the controller to **verify the third party's
 legitimate interest before disclosing to them**, via its own assessment or the
 third party's documented LIA. That is a per-employer LIA gate on the access-grant
@@ -832,7 +832,7 @@ decision.**
 
 Sec. 3(b): consent must be "freely given, specific, informed" and **"evidenced by
 written, electronic or recorded means."** Electronic is sufficient, but must be
-*evidenced*: a durable, per-purpose, timestamped record versioned against the
+*evidenced*, a durable, per-purpose, timestamped record versioned against the
 notice text shown. A single click-through TOS will not carry Sec. 13(a)'s
 "specific to the purpose, prior to the processing."
 
@@ -946,8 +946,8 @@ launches first.
 
 - **[unverified]** No Philippine statute specifically prohibits private-sector
   employment blacklisting was found. The formal blacklisting mechanism under
-  RA 8042 / RA 10022 and DMW rules governs *overseas* employment for foreign
-  employers and recruitment agencies, and is a poor analogy. Do not lean on it.
+  RA 8042 / RA 10022 and DMW rules governs *overseas* employment (foreign
+  employers and recruitment agencies), and is a poor analogy. Do not lean on it.
 - **DOLE Labor Advisory No. 06-20** requires a Certificate of Employment within
   three days of request, with minimum contents of date of engagement, date of
   termination, and type of work. **Reason for separation is not a required field.**
@@ -1130,8 +1130,8 @@ Stated as forced (F) or foreclosed (X). Confidence noted where below high.
     grant.** NPC Circular 2023-07 requires the controller to verify the *third
     party's* legitimate interest before disclosing, via its own assessment or the
     recipient's documented LIA. Combined with FCRA § 1681b(b)(1) certification,
-    this means partner onboarding produces a structured, auditable purpose record:
-    the same artifact satisfies both regimes.
+    this means partner onboarding produces a structured, auditable purpose record.
+    The same artifact satisfies both regimes.
 12. **(F) Hard separation between commonly-owned internal verticals and external
     partners in the data plane.** § 1681a(d)(2)(A)(ii)-(iii) gives affiliates a
     real statutory lane that partners do not have. Collapsing them into one
@@ -1194,7 +1194,7 @@ Stated as forced (F) or foreclosed (X). Confidence noted where below high.
 
 ## Sources
 
-**FCRA — statute**
+**FCRA: statute**
 - [15 U.S.C. § 1681a — Definitions (Cornell LII)](https://www.law.cornell.edu/uscode/text/15/1681a)
 - [15 U.S.C. § 1681a — full text incl. subsection (o) (US House OLRC)](https://uscode.house.gov/view.xhtml?req=granuleid:USC-prelim-title15-section1681a&num=0&edition=prelim)
 - [15 U.S.C. § 1681c — Requirements relating to information contained in consumer reports](https://www.law.cornell.edu/uscode/text/15/1681c)
@@ -1204,7 +1204,7 @@ Stated as forced (F) or foreclosed (X). Confidence noted where below high.
 
 - [FTC, Fair Credit Reporting Act, 15 U.S.C. § 1681 — consolidated text, revised March 2026 (PDF)](https://www.ftc.gov/system/files/ftc_gov/pdf/fcra-march-2026.pdf)
 
-**FCRA — agency guidance and enforcement**
+**FCRA: agency guidance and enforcement**
 - [CFPB Circular 2024-06: Background Dossiers and Algorithmic Scores for Hiring, Promotion, and Other Employment Decisions](https://www.consumerfinance.gov/compliance/circulars/consumer-financial-protection-circular-2024-06-background-dossiers-and-algorithmic-scores-for-hiring-promotion-and-other-employment-decisions/)
 - [Circular 2024-06 as published, 89 Fed. Reg. 88,875 (Nov. 12, 2024)](https://www.federalregister.gov/documents/2024/11/12/2024-26099/consumer-financial-protection-circular-2024-06-background-dossiers-and-algorithmic-scores-for-hiring)
 - [CFPB, Interpretive Rules, Policy Statements, and Advisory Opinions; Withdrawal (May 12, 2025)](https://www.federalregister.gov/documents/2025/05/12/2025-08286/interpretive-rules-policy-statements-and-advisory-opinions-withdrawal)
@@ -1223,14 +1223,14 @@ Stated as forced (F) or foreclosed (X). Confidence noted where below high.
 - [CFPB Fact Sheet: Proposed Rule on Data Brokers (Dec. 2024)](https://files.consumerfinance.gov/f/documents/cfpb_fcra-nprm-fact-sheet_2024-12.pdf)
 - [CFPB, Fair Credit Reporting; Background Screening advisory opinion (Jan. 2024) (PDF)](https://files.consumerfinance.gov/f/documents/cfpb_fair-credi-reporting-background-screening_2024-01.pdf)
 
-**FCRA — case law**
+**FCRA: case law**
 - [Kidd v. Thomson Reuters Corp., 925 F.3d 99 (2d Cir. 2019) (Justia)](https://law.justia.com/cases/federal/appellate-courts/ca2/17-3550/17-3550-2019-05-30.html)
 - [Kidd v. Thomson Reuters (FindLaw full text)](https://caselaw.findlaw.com/court/us-2nd-circuit/2000805.html)
 - [Paul, Weiss — Second Circuit Defines "Consumer Reporting Agency" Under the FCRA](https://www.paulweiss.com/insights/client-memos/second-circuit-review-court-defines-consumer-reporting-agency-under-the-fcra)
 - [Connor v. First Student, Inc., 5 Cal.5th 1026 (2018) (FindLaw)](https://caselaw.findlaw.com/court/ca-supreme-court/1948536.html)
 - [Farella Braun + Martel — California Supreme Court Clarifies Background Check Laws](https://www.fbm.com/publications/california-supreme-court-clarifies-background-check-laws-in-california/)
 
-**FCRA — staffing-agency practice**
+**FCRA: staffing-agency practice**
 - [myHRcounsel — Can Staffing Agencies Share Background Checks or Drug Tests with Clients?](https://myhrcounsel.com/2018-7-26-can-staffing-agencies-share-background-checks-or-drug-tests-with-clients/)
 - [myHRcounsel — What Should Staffing Agencies Do When a Client Requests to See Applicant Background Check Reports?](https://myhrcounsel.com/2019-2-4-what-should-staffing-agencies-do-when-a-client-requests-to-see-applicant-background-check-reports/)
 
@@ -1249,14 +1249,14 @@ Stated as forced (F) or foreclosed (X). Confidence noted where below high.
 - [Goodwin — Personal Data or Not? CJEU Weighs In on Pseudonymisation in EDPS v. SRB](https://www.goodwinlaw.com/en/insights/publications/2025/09/alerts-technology-dpc-personal-data-or-not)
 - [ICO — Right to erasure](https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/individual-rights/individual-rights/right-to-erasure/)
 
-**Philippines — primary (read verbatim)**
+**Philippines: primary (read verbatim)**
 - [RA 10173, Data Privacy Act of 2012 (LawPhil)](https://lawphil.net/statutes/repacts/ra2012/ra_10173_2012.html)
 - [RA 10173 (Official Gazette)](https://www.officialgazette.gov.ph/2012/08/15/republic-act-no-10173/)
 - [Implementing Rules and Regulations of RA 10173 (Supreme Court E-Library)](https://elibrary.judiciary.gov.ph/thebookshelf/showdocs/2/70735)
 - [IRR of RA 10173 (Official Gazette)](https://www.officialgazette.gov.ph/2016/08/25/implementing-rules-and-regulations-of-republic-act-no-10173/)
 - [RA 9510, Credit Information System Act (LawPhil)](https://lawphil.net/statutes/repacts/ra2008/ra_9510_2008.html)
 
-**Philippines — NPC issuances (primary URLs; privacy.gov.ph blocks automated fetch, retrieve manually)**
+**Philippines: NPC issuances (primary URLs; privacy.gov.ph blocks automated fetch, retrieve manually)**
 - [NPC Circular 2022-04 — Registration of DPS and DPO](https://privacy.gov.ph/wp-content/uploads/2023/05/Circular-2022-04-1.pdf)
 - [NPC Circular 2023-07 — Guidelines on Legitimate Interest](https://privacy.gov.ph/wp-content/uploads/2024/01/NPC-Circular-No.-2023-07_Guidelines-on-Legitimate-Interest_13-December-2023.pdf)
 - [NPC Advisory 2024-02 — Processing based on Sec. 13(f)](https://privacy.gov.ph/wp-content/uploads/2024/08/NPC-Advisory-No.-2024-02-Personal-Data-Processing-Based-on-Section-13-f.pdf)
@@ -1270,7 +1270,7 @@ Stated as forced (F) or foreclosed (X). Confidence noted where below high.
 - [NPC — Cease and Desist Order against Tools for Humanity (Oct. 2025)](https://privacy.gov.ph/npc-issues-cease-and-desist-order-against-tools-for-humanity/)
 - [Tools for Humanity CDO, CID-CDO-25-001 (23 Sept. 2025) (PDF)](https://privacy.gov.ph/wp-content/uploads/2025/10/FINAL-2025.09.23-Cease-and-Desist-Order-CID-CDO-25-001-Application-for-Issuance-of-Cease-and-Desist-Order-for-In-the-Matter-of-World-App-Processing-of-Personal-Information_SGD.pdf)
 
-**Philippines — secondary (used to verify NPC issuances)**
+**Philippines: secondary (used to verify NPC issuances)**
 - [Baker McKenzie / GCN — NPC Circular 2023-07 on legitimate interest](https://www.globalcompliancenews.com/2024/01/22/https-insightplus-bakermckenzie-com-bm-data-technology-philippines-national-privacy-commission-issues-guidelines-on-the-processing-of-personal-information-based-on-legitimate-interest_01092024/)
 - [Baker McKenzie / GCN — NPC Advisory 2024-02 on Sec. 13(f)](https://www.globalcompliancenews.com/2024/09/17/https-insightplus-bakermckenzie-com-bm-investigations-compliance-ethics-philippines-npc-issues-new-guidelines-on-the-processing-of-sensitive-personal-information-for-legal-claims_09042024/)
 - [Baker McKenzie / GCN — Administrative fines under Circular 2022-01](https://www.globalcompliancenews.com/2022/08/23/philippines-administrative-fines-for-data-privacy-infractions-to-be-imposed-starting-27-august-2022-160822/)

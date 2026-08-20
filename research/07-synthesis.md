@@ -9,7 +9,7 @@ where the research **converges** on a design constraint, and where it
 **collides with a founder decision** recorded in `00-founder-grilling`.
 Collisions are surfaced, not resolved, since they are the founder's to re-decide.
 
-> **Status update (same day):** the founder ruled on both collisions — see
+> **Status update (same day):** the founder ruled on both collisions; see
 > "Founder rulings after research review" in `00-founder-grilling`. R1: not a
 > CRA; worker-owned-platform model, modeled on known platforms' constraints.
 > R2: whole-profile deletion supported at any time; verified records never

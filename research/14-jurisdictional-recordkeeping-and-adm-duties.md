@@ -56,7 +56,7 @@ rather than conservatively.
 and rule reads "an employer or employment agency." DCWP's own FAQ is explicit:
 "The vendor that created the AEDT is not responsible for a bias audit of the
 tool." The only retention-shaped duty is §5-303(c), which requires the *audit
-summary* to stay posted for six months after last use: a posting duration over
+summary* to stay posted for six months after last use. A posting duration over
 aggregate data, not a record-retention duty and not person-level. §5-300's
 independent-auditor definition disqualifies anyone with an employment
 relationship with the vendor, so Grain cannot audit its own tool even
@@ -131,7 +131,7 @@ an employer*."**
 
 The second limb is a precise description of a worker-facing job-suggestion
 surface. Surfacing opportunities to a worker was reasoned about in this repo as
-the neutrality-preserving direction: Grain ranks roles for a person, never
+the neutrality-preserving direction. Grain ranks roles for a person, never
 people for an employer. In US law it is the opposite: it is the limb that makes
 Grain a covered entity in its own right, a "user" under UGESP, and a duty-holder
 under §1602.14 rather than a vendor supplying documentation to one.
@@ -223,8 +223,8 @@ provision**: where a significant decision is based solely on automated
 processing, the controller must provide information about the decision, enable
 representations, enable human intervention, and enable contest.
 
-DUAA adds **no new retention or logging duty**, and leaves Article 30 unamended
-since the DPDI Bill's lighter records-of-processing regime was dropped. ICO's final
+DUAA adds **no new retention or logging duty**, and leaves Article 30
+unamended; the DPDI Bill's lighter records-of-processing regime was dropped. ICO's final
 ADM guidance is **not yet published**; a consultation ran 31 March to 29 May 2026
 and the live guidance still describes the pre-DUAA regime.
 
@@ -291,7 +291,7 @@ pointer. The Guidelines do flag Arts. 11(2) and 12(2) GDPR as the one route by
 which pseudonymisation lawfully limits Chapter III rights, which is worth pursuing.
 
 **CEN-CENELEC JTC 21 draft standards on logging and traceability are
-unretrievable**: member-restricted, and sold rather than published once final.
+unretrievable**, member-restricted, and sold rather than published once final.
 Everything available is third-party commentary.
 
 ---

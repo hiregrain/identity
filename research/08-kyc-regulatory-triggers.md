@@ -55,7 +55,7 @@ no independent I-9 duty. Third-party carriage of the evidence is lawful and
 routine: 8 CFR §274a.2(e)–(i) sets electronic I-9 standards (integrity controls,
 indexed retrieval, permanent audit trail of every access and modification), and
 the E-Verify Employer Agent MOU track exists for exactly this. But delegation of
-the *act* never delegates the *liability*: the Form I-9 instructions state the
+the *act* never delegates the *liability*. The Form I-9 instructions state the
 employer "is liable for any violations in connection with the form or the
 verification process, including any violations committed by the authorized
 representative acting on your behalf." Confidence: high, settled regulation.
@@ -77,7 +77,7 @@ confirmation, and it must be read *after* selection, never used as a routing
 filter.** The sensitive-data payload ban (`07` constraint 12, design §2.2) and
 §1324b point the same direction: what may live in the payload is
 `{jurisdiction, authorized_to_work: bool, basis_class, verified_at, expires_at,
-issuer}`, excluding document numbers, images, visa category detail, and
+issuer}`. No document numbers, no images, no visa category detail, no
 immigration narrative. Oregon (SB 619) and Delaware enumerate citizenship or
 immigration status as *sensitive data* requiring opt-in consent, which is the
 US-side reason the coarse shape is not merely prudent. GDPR Art. 9 does *not*
@@ -283,8 +283,8 @@ vendor.
 
 Crossing: accepting or holding client funds for onward payment; escrow;
 disbursing wages under any label; acting as agent of an EOR for wage payment;
-issuing stored value or wage advances. All five are the same crossing:
-touching money, which is why the perimeter is defensible as a single corporate
+issuing stored value or wage advances. All five are the same crossing
+(touching money), which is why the perimeter is defensible as a single corporate
 rule rather than a compliance program.
 
 ---
@@ -310,7 +310,7 @@ not a covered recruiter or referrer.
 
 For temporary staffing, USCIS Handbook M-274 assigns the I-9 (and any E-Verify
 case) to the agency where the agency is the paying employer. E-Verify guidance
-separately warns staffing agencies against selectively verifying placed workers:
+separately warns staffing agencies against selectively verifying placed workers;
 cherry-picking who gets verified is itself a violation.
 (https://www.e-verify.gov/about-e-verify/whats-new/reminder-staffing-agencies-must-not-selectively-verify-employees)
 
@@ -393,7 +393,7 @@ and DOLE D.O. 221-21 require an Alien Employment Permit before employment
 commences or within 10 working days of contract signing, with a 5-year filing
 bar and PHP 10,000 per year of unauthorized employment for violations. The
 larger PH exposure is structural rather than status-based: **D.O. 174-17**
-prohibits labor-only contracting: supplying workers without substantial capital
+prohibits labor-only contracting. Supplying workers without substantial capital
 or investment where the principal directs and controls the work makes the
 principal the deemed employer. Non-registration with DOLE creates a
 presumption of labor-only contracting.
@@ -591,7 +591,7 @@ warn about, in its sharpest form.
 Third, **reliance transfers nothing.** No OFAC regulation or FAQ establishes a
 safe harbor for a party relying on a third party's screening result, a negative
 finding stated explicitly because it is the crux. A partner that employs an SDN
-is exposed regardless of what a ledger told it; a strong compliance program
+is exposed regardless of what a ledger told it; a robust compliance program
 mitigates penalty under Appendix A's general factors, not liability.
 
 The architecture that satisfies all three is the one the ledger already uses for
@@ -710,7 +710,7 @@ attach on the build path.
 of identity for both government and private transactions, and private entities
 are required to accept it. PSA operates PhilSys Check and National ID eVerify
 free of charge for relying parties. There is no PH analogue to QTSP or IDSP
-certification: the government occupies the issuer role, which makes PH the
+certification. The government occupies the issuer role, which makes PH the
 cheapest jurisdiction to be a relying party and an uninteresting one in which to
 become an issuer.
 

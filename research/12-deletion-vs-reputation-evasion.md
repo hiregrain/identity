@@ -12,7 +12,7 @@ regulator guidance, published platform practice, journalism, and my own
 inference are labeled separately throughout.
 
 **Relationship to a standing decision.** Decision `009` already ruled: *"No
-salted document-hash survives profile deletion — R2's spirit controls; the
+salted document-hash survives profile deletion. R2's spirit controls; the
 Uber-style retain-and-flag alternative is rejected. Revisit trigger: fresh-start
 fraud materializing at measurable rates."* This memo was commissioned to test
 the reasoning behind that ruling, not to assume it. **The research substantially
@@ -173,8 +173,8 @@ negative records on 3,213 construction workers, sold to 40+ firms; the ICO
 raided it in 2009, its operator was prosecuted, Parliament passed the
 Employment Relations Act 1999 (Blacklists) Regulations 2010 to prohibit
 compiling, using, selling, or supplying such lists, and the participating firms
-settled for roughly £75 million. The Regulations are formally narrow, biting only
-on trade-union grounds, but the political and regulatory reflex they encode is
+settled for roughly £75 million. The Regulations are formally narrow, biting on
+trade-union grounds, but the political and regulatory reflex they encode is
 not narrow at all. A durable cross-employer negative-performance record on
 workers is, in the UK and EU, the most disfavoured category of database that
 exists. This should weigh on the product, not just on the deletion policy.
@@ -204,7 +204,7 @@ portability and not the original employer's own knowledge, is correct, and it
 is the single strongest argument for permissive deletion.**
 Deleting from the ledger destroys no evidence. The employer who fired the worker
 still knows, still holds their own records, and is still free to answer a
-reference call. What deletion removes is only the *amplification*: the ability
+reference call. What deletion removes is only the *amplification*, the ability
 to broadcast a negative signal to parties who have no relationship with the
 worker. That is precisely the interest that regulators protect most and platforms
 justify least. It also means the marginal safety cost of permissive deletion is
@@ -248,7 +248,7 @@ job:
 > preventing fraud also constitutes a legitimate interest of the data controller
 > concerned."
 
-Recital 47 is about **Art. 6(1)(f)**: whether you had a lawful basis to process
+Recital 47 is about **Art. 6(1)(f)**, whether you had a lawful basis to process
 in the first place. It says nothing about whether an erasure right, once
 triggered, can be resisted.
 
@@ -540,7 +540,7 @@ transposition. It is worth noting the direction of travel: the legal pressure to
 keep deactivation records is coming from **worker-protective** legislation, and
 its purpose is to let the worker contest the deactivation. That is a very
 different retention than a blocklist, and it should be built as a different
-thing: the worker's evidence, not the platform's weapon. Confidence: high on
+thing, the worker's evidence, not the platform's weapon. Confidence: high on
 the ordinance; medium on how many jurisdictions follow, though California,
 Washington State, and several others have live proposals.
 
@@ -729,7 +729,7 @@ Rule 4 (consent managers) around 13 November 2026. Rule 8 is not yet live.
 "about an individual who is identifiable by or in relation to such data", broad
 and not controller-relative. Full-text search of both the Act and the Rules
 returns **zero** occurrences of "pseudonym," "anonymis/anonymiz," or "hash."
-The Rules treat these techniques as *security measures*, not scope exits:
+The Rules treat these techniques as *security measures*, not scope exits.
 Rule 6(1)(a) requires "encryption, obfuscation, masking or the use of virtual
 tokens **mapped to** that personal data." A token that maps back is still in
 scope. A one-way hash of a phone number or ID number, trivially reversible by
@@ -1074,7 +1074,7 @@ Read the ICO's reasoning carefully and the load-bearing element is not
 minimisation and not hashing. It is **whose interest the residue serves**. The
 suppression list survives the erasure right because its function is to *carry out
 what the data subject asked for*. It is the mechanism of compliance, not an
-exception to it. That is why there is no right to delete from it: deleting from
+exception to it. That is why there is no right to delete from it. Deleting from
 it would defeat the subject's own instruction.
 
 A re-registration blocklist has the opposite polarity. Its function is to
@@ -1082,7 +1082,7 @@ frustrate what the data subject wants, on behalf of the controller and third
 parties. It is minimal in the same way and hashed in the same way, and neither of
 those similarities touches the ICO's actual reasoning.
 
-CCPA §1798.105(c)(2) has the identical structure: the confidential record of
+CCPA §1798.105(c)(2) has the identical structure. The confidential record of
 deletion requests is authorised "solely for the purpose of preventing the
 personal information … from being sold," i.e. to honour the request.
 
@@ -1100,7 +1100,7 @@ Synthesising the EDPB Article 5 package (§1.1), the ICO "beyond use" test
 (§1.4), and the HireRight structure (§2.1):
 
 - **Stored:** a salted one-way hash of a single identifier. Not a set of
-  identifiers: every additional identifier converts a check into an identity
+  identifiers. Every additional identifier converts a check into an identity
   graph and makes the "beyond use" argument harder.
 - **Not stored:** any payload. No reason code, no narrative, no employer, no
   date beyond what the retention clock needs. The HireRight design is the proof
@@ -1229,7 +1229,7 @@ store that is joinable to production data loses its protection under all of them
 simultaneously.** That is the hardest architectural constraint in this memo, and
 it is stricter than "hash it."
 
-**Verified negatives.** The EDPB has never addressed suppression lists: a
+**Verified negatives.** The EDPB has never addressed suppression lists. A
 full-text search of Guidelines 1/2024 and 01/2025 for *suppress*, *do not
 contact*, *opt-out list*, and *blacklist* returns zero hits, and the February
 2026 erasure report has no substantive hits for *suppress*, *re-registration*,
@@ -1254,7 +1254,7 @@ original employer's own knowledge.
 
 This means deletion destroys no evidence. The employer who terminated the worker
 still knows, still holds their records, and can still answer a reference call.
-What deletion removes is *amplification*: the broadcast of a negative signal to
+What deletion removes is *amplification*, the broadcast of a negative signal to
 parties who have no relationship with the worker and no ability to assess it in
 context.
 
@@ -1263,7 +1263,7 @@ interest regulators protect most fiercely and controllers justify least well;
 Art. 21 balancing goes badly for a controller whose asserted interest is
 "continued ability to disadvantage this person with strangers." **Practically**,
 it means the marginal safety cost of permissive deletion is far lower than
-intuition suggests: the worker who deletes and re-registers has not escaped
+intuition suggests. The worker who deletes and re-registers has not escaped
 their history with the employer who holds it, only with employers who never knew
 it.
 
@@ -1285,7 +1285,7 @@ serious safety finding.** Specifically:
 - **Trigger taxonomy is published and closed.** Forged documents, identity
   substitution, attestation collusion; and a defined serious-safety category.
   Follow the ISSP precedent and borrow an external taxonomy rather than writing
-  your own: an external taxonomy is a defence, a self-written one is an
+  your own. An external taxonomy is a defence, a self-written one is an
   admission of discretion.
 - **One identifier only**: a salted hash of the government-document number.
   Not phone (changes, shared, reassigned), not device (over-broad, catches
@@ -1356,7 +1356,7 @@ markets. Confidence: high on the statutory mapping; this is exactly the point
 to put to counsel first.
 
 **Three things to build regardless of where the line lands.** First,
-deactivation records for the worker's benefit: the Seattle ordinance requires
+deactivation records for the worker's benefit. The Seattle ordinance requires
 three-year retention with worker access and a challenge window, and that trend
 is running toward you, not against you. Build it as the worker's evidence.
 Second, an honest distinction in the UI and the policy between "delete my
@@ -1405,7 +1405,7 @@ taxonomy should be closed and external, a fraud or safety designation should
 require corroboration rather than a single vertical's assertion, the flag should
 produce review rather than denial, and the worker should be able to see and
 contest it. But I should be straight that those constraints are load-bearing
-rather than decorative: **if they cannot be built and enforced, the correct
+rather than decorative. **If they cannot be built and enforced, the correct
 answer is decision 009 unamended: no residue at all, ever, and accept the
 fresh-start losses.** Given that the amplification analysis in §4.1 shows those
 losses are smaller than they feel, that fallback is more defensible than it

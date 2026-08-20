@@ -33,7 +33,7 @@ most production-proven of the three.** Its `retracted_due_to_deletion`
 status + counterparty-recompute pipeline is the ledger's
 supersession-plus-derived-recompute pattern already working in production.
 
-## Ledger ↔ Dispatch, near-total convergence, three notable deltas
+## Ledger ↔ Dispatch: near-total convergence, three notable deltas
 
 **Identical, independently:** append-only enforced by `REVOKE UPDATE,
 DELETE` on the application role with default-privileges inheritance
@@ -50,8 +50,8 @@ derived lifecycle projections instead of status columns.
 event sourcing (on construction cost, honestly argued); the ledger's
 litigation absorbed the log-centric school's semantics (events-as-rows,
 rebuildable projections, per-stream chains) while also landing on plain
-relational Postgres. These are compatible in substance: both are
-"append-only rows + derived views", but the ledger's event-catalog
+relational Postgres. These are compatible in substance (both are
+"append-only rows + derived views"), but the ledger's event-catalog
 formalism is stricter. No conflict; a vocabulary difference worth not
 letting drift into a real one.
 
@@ -84,7 +84,7 @@ SECURITY-DEFINER recording functions as the application's only insert path
 constraints can't); early-capture columns (decision 31) as the cheap form
 of optionality the reportability hook also embodies.
 
-## Ledger ↔ grain, the divergences are the migration list
+## Ledger ↔ grain: the divergences are the migration list
 
 | Axis | grain today (verified) | Ledger ruling | Migration implication |
 |---|---|---|---|

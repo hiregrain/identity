@@ -154,8 +154,8 @@ personnel-file information that is neither dates, title, nor wage. Since the ide
 makes a future claim possible, Connecticut's carve-out shelters the part of the payload Grain
 cares least about and not the part the mechanic depends on. Michigan and Illinois reach
 disciplinary records only, so they are dormant on this payload and activate the instant it
-thickens. **Any enrichment beyond dates/title/role, such as outcomes, scores, terminations, or
-`dimensions_exercised`, leaves every shelter at once.** Confidence: high on Connecticut,
+thickens. **Any enrichment beyond dates/title/role (outcomes, scores, terminations,
+`dimensions_exercised`) leaves every shelter at once.** Confidence: high on Connecticut,
 Michigan and Illinois (text verified); medium on the remaining personnel-record states.
 
 **10. Reference-immunity statutes probably do not cover this, and that matters for partner
@@ -197,11 +197,11 @@ Confidence: high.
 **12. Indefinite "pending claim" retention is not defensible, and the consent cure is
 structurally unreachable.** § 1798.100(a)(3) requires a retention period or criteria and forbids
 retention "for longer than is reasonably necessary." "Indefinite" is neither a period nor a
-criterion, and "until she claims it" is circular: a condition the subject does not know exists
+criterion, and "until she claims it" is circular. A condition the subject does not know exists
 produces a functionally infinite period. **All five 11 CCR § 7002(b) reasonable-expectations
 factors run against the pre-claim population**, and § 7002(e)'s consent cure cannot be reached:
 the employer cannot consent for the worker, and § 7063 requires the consumer's own signed
-permission. Maryland's MODPA is harder still: § 14-4607(b)(1)(i) measures necessity against "a
+permission. Maryland's MODPA is harder still. § 14-4607(b)(1)(i) measures necessity against "a
 specific product or service **requested by the consumer**," and no disclosure or employer
 contract can satisfy a test anchored to a request that does not exist. If Grain is a CRA,
 § 1681c(a)(5)'s seven-year rule independently caps *reportability* of adverse items. Confidence:
@@ -217,7 +217,7 @@ exchange at the pleading stage. DOJ and FTC withdrew the 1996 Statement 6 safety
 so there is no harbour to design into, and the **May 2026 proposed final judgment in
 *United States v. Agri Stats*** now states the agencies' current remedy set: no company-level
 data, information at least 45 days old on average, symmetric availability, and a monitoring
-trustee. **Grain can satisfy none of those without ceasing to be Grain: re-identification is
+trustee. **Grain can satisfy none of those without ceasing to be Grain. Re-identification is
 not a risk to be mitigated, it is the product.** The one genuine defence is that no located
 authority treats non-wage employment data as a § 1 problem; that is unlitigated territory, not
 safe territory. Confidence: medium-high that the theory survives a motion to dismiss; medium on
@@ -565,7 +565,7 @@ immunity it currently enjoys. Grain's partner agreement has to answer that, and
 
 ### 2.4 Defamation
 
-Low exposure for the thin payload: dates and title are verifiable facts and truth is a complete
+Low exposure for the thin payload. Dates and title are verifiable facts and truth is a complete
 defence. Note the doctrinal tell inside *Lewis v. Equitable Life Assurance Society*, 389 N.W.2d
 876 (Minn. 1986) itself: Equitable's policy was to release only dates of employment and final
 job title absent written authorisation. That triad has been the market's defamation-safe
@@ -583,7 +583,7 @@ is non-actionable, but a number presented as derived from proprietary data impli
 defamatory facts, which is the classic *Milkovich* exception to opinion protection. The
 compelled-self-publication theory is also stronger against a score than against dates, because a
 low score is exactly what a candidate is forced to explain. And note that every employer
-immunity statute above protects *information the employer disclosed*: **a Grain-generated score
+immunity statute above protects *information the employer disclosed*. **A Grain-generated score
 is not information the employer disclosed, so employer immunity does not travel to it, and Grain
 has no immunity statute of its own.**
 
@@ -879,7 +879,7 @@ status on the whole enterprise.
 
 `THESIS.md` §7 already concedes that analytics move R1 "from theoretical to load-bearing." The
 correct statement after this memo is stronger: **with pre-claim collection, analytics is not
-what breaks R1: pre-claim collection breaks R1, and analytics removes the fallback.**
+what breaks R1; pre-claim collection breaks R1, and analytics removes the fallback.**
 
 ### 3.5 The provision nobody in the corpus has raised: nationwide specialty CRA
 
@@ -902,7 +902,7 @@ than to question the collection.
 
 *Verification note:* the TALX action was reported by the research thread as an FTC matter with a
 $350,000 penalty; the year and docket were not independently confirmed here, and the widely
-repeated claim of a **CFPB** action against The Work Number appears to be unsupported: a search
+repeated claim of a **CFPB** action against The Work Number appears to be unsupported. A search
 of the CFPB enforcement database returns nothing for TALX, Equifax Workforce Solutions or The
 Work Number. Do not cite a CFPB Work Number action. Counsel should pull the FTC matter directly.
 
@@ -996,7 +996,7 @@ does not need modelling to be alarming.
 
 I record the disagreement with R1 once, here, and then defer: **R1 is wrong on this mechanic.**
 Not defensible-but-risky; wrong. If the founder wants the hospitality mechanic, the honest move
-is to build CRA-native and treat FCRA compliance as a moat: the dispute engine, file
+is to build CRA-native and treat FCRA compliance as a moat. The dispute engine, file
 disclosure, and read logging are already designed, which is why `research/01` TLDR-3 is right
 that the architecture is voluntary pre-compliance. Grain is roughly two subsystems from being a
 compliant CRA and zero subsystems from being an uncompliant one.
@@ -1046,7 +1046,7 @@ data; (8) legal obligation applies only for genuine retention mandates, and § 5
 One textual friction worth knowing but not relying on: § 1798.105(a) speaks of personal
 information "collected **from the consumer**," and 11 CCR § 7001(y) tracks that phrasing. A
 literal reading might exclude employer-sourced data from the deletion right entirely. I would not
-assert it: DROP is built on the opposite premise, and raising it against a worker is a poor
+assert it. DROP is built on the opposite premise, and raising it against a worker is a poor
 posture that invites the regulator's attention. But it is a genuine open question and counsel
 should know it exists. Confidence: high that (d)'s exceptions fail; low-medium on the § 1798.105(a)
 "from the consumer" argument, which is untested and strategically unattractive.
@@ -1284,7 +1284,7 @@ information… for longer than is reasonably necessary for that disclosed purpos
 proportionate."
 
 **First failure: "indefinite" is neither a period nor a criterion.** "Until she claims it" is
-circular: a condition the data subject does not know exists produces a functionally infinite
+circular. A condition the data subject does not know exists produces a functionally infinite
 period for nearly every record. Confidence: high that this violates § 1798.100(a)(3) on the face
 of the policy.
 
@@ -1433,7 +1433,7 @@ live vehicle, potentially spanning millions of applicants across hundreds of emp
 Docket posture verified through secondary sources only.
 
 **Illinois HB 3773** (P.A. 103-0804) amends the IHRA effective **1 January 2026** and is
-**effects-based**: it prohibits AI that "has the effect of" subjecting employees to
+**effects-based**. It prohibits AI that "has the effect of" subjecting employees to
 discrimination, requires notice, and expressly bars ZIP code as a proxy. Duties run to
 employers. IDHR's implementing rules ("Subpart J") were temporarily withdrawn and remained in
 draft as of early 2026: the statutory duty is live, the contours of compliant notice are not
@@ -1485,7 +1485,7 @@ negative signal, and so that the analytics output declares its coverage basis.
 
 Not engaged by the mechanic as described. The schema's sensitive-data ban (A-4) keeps biometric
 identifiers out of attestations, and `research/09`'s IDV analysis already handles the
-verification path. **The one way biometrics enter is through §4.2's verification problem**: if
+verification path. **The one way biometrics enter is through §4.2's verification problem.** If
 Grain ever uses face-match to verify an unclaimed subject's rights request, BIPA (740 ILCS 14)
 private right of action, Texas CUBI and Washington's statute all engage, and BIPA is the most
 expensive privacy statute in the country per violation. Flagged, not researched. Confidence:
@@ -1571,7 +1571,7 @@ structurally unavailable:**
 | Third-party administration | Present, but *Todd* shows this is necessary, never sufficient |
 | Data aged ≥3 months (Agri Stats: ≥45 days average) | **Absent**: active roster data, current by design; a lagged employment verification is worth much less |
 | Aggregated, ≥5 contributors, none >25% | **Absent**: person-level, individually identified |
-| Non-attribution / anonymised | **Structurally impossible.** Agri Stats teaches that claimed anonymisation fails if recipients can re-identify. Here re-identification is not a risk: **it is the product**. The value proposition is that an employer learns about a specific named worker |
+| Non-attribution / anonymised | **Structurally impossible.** Agri Stats teaches that claimed anonymisation fails if recipients can re-identify. Here re-identification is not a risk; **it is the product**. The value proposition is that an employer learns about a specific named worker |
 | Output is historical fact, not forward-looking | **Absent**: trajectory projection is forward-looking by name |
 | Symmetric access | **Absent**: employers see the pool, workers do not, and pre-claim workers do not know it exists. This is precisely the asymmetry Agri Stats remedy 4 targets |
 
@@ -1706,7 +1706,7 @@ Ordered by how much they constrain architecture rather than policy.
    specific-pieces disclosure on employer-supplied identifiers alone; challenge-response against
    the held identifier plus a penalty-of-perjury declaration. Use the § 7062(d) sliding standard
    deliberately and document it: thinner proof for deletion than for disclosure. And **never
-   verify an opt-out**: § 7060(b) forbids it, and it is what the *Honda* and *Todd Snyder*
+   verify an opt-out.** § 7060(b) forbids it, and it is what the *Honda* and *Todd Snyder*
    orders punished.
 
 9a. **Build the § 1798.100(b) homepage notice at collection now.** It is cheap, entirely within

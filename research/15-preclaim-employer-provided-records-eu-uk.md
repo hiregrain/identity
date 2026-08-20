@@ -30,7 +30,7 @@ against primary sources retrieved this session plus two parallel research thread
 Confidence is stated on every substantive conclusion. Settled law, regulator guidance
 and my own inference are labelled separately throughout, per this repo's standard.
 
-**Scope:** the hospitality-vertical mechanic only: Grain ingests an employer's active
+**Scope:** the hospitality-vertical mechanic only. Grain ingests an employer's active
 roster and records verified employment attestations about people who are not Grain
 users, have not consented, and may not know Grain exists. Companion to
 `research/01-regulatory-perimeter.md` §2, which this memo extends rather than restates.
@@ -42,7 +42,7 @@ is v1.0 and must be re-checked if a v2.0 appears. (b) Several enforcement decisi
 below (Garante *Limit Call* doc. web 9971433; APD *Black Tiger* 87/2024; AP *Experian*;
 Datatilsynet *SSI* 2021-432-0070; NAIH-5802-9/2022; DPC *WhatsApp* IN-18-12-2 with EDPB
 Binding Decision 1/2021; CNIL SAN-2021-010, SAN-2024-002, SAN-2024-014/015) are held at
-**reference level**: I have the case identifiers and the proposition each is cited for,
+**reference level**. I have the case identifiers and the proposition each is cited for,
 but did not read the decision text myself. They are marked `[ref-level]` at each use and
 should not be quoted to a regulator or a counterparty without verification. (c) Fashion
 ID, Wirtschaftsakademie and Jehovan todistajat paragraph numbers were verified via
@@ -52,7 +52,7 @@ EUR-Lex by the research thread, not by me directly.
 
 ## TLDR: conclusions in full
 
-**1. There is no lawful basis for the mechanic as specified. Not "a weak basis," but none.**
+**1. There is no lawful basis for the mechanic as specified. Not "a weak basis" but none.**
 Consent is unavailable (the employer cannot consent for the worker: Art. 4(11) requires
 *the data subject's* affirmative action, and Art. 7(1) puts the burden on Grain to
 *demonstrate* each individual consented, and a contractual warranty from the employer is not
@@ -311,7 +311,7 @@ balancing, not here.
 federation's disclosure was not necessary because it could instead "**inform its members
 beforehand and ask them whether they want their data to be transmitted**." An available
 opt-in defeats necessity. Grain's whole design premise is that asking first is
-commercially inconvenient: the flywheel needs the record to exist before the worker
+commercially inconvenient. The flywheel needs the record to exist before the worker
 arrives. That is not a necessity argument; it is the opposite of one. EDPB ¶28: necessity
 is "not simply what is useful." Guidelines 2/2019 ¶25, applied by analogy: "if there are
 realistic, less intrusive alternatives, the processing is not 'necessary'." A claim-first
@@ -355,8 +355,8 @@ about people who never engaged with it.
 Two companion decisions matter for the employer-supplied posture. CNIL,
 **HUBSIDE.STORE, SAN-2024-004, 4 April 2024, EUR 525,000** (of which EUR 325,000 for
 Arts. 6 and 14) held at ¶45 that a "simple contractual commitment" from the upstream
-supplier is **insufficient**: the recipient, as controller, must itself verify the
-upstream lawfulness, and at ¶71–77 rejected legitimate interests because prospects
+supplier is **insufficient** (the recipient, as controller, must itself verify the
+upstream lawfulness), and at ¶71–77 rejected legitimate interests because prospects
 "could not reasonably expect contact from a company whose name was absent from the
 partner lists supplied at collection." Read across: an employer warranty that "our staff
 notice covers this" is worth nothing, and Grain being unnamed in the employer's HR notice
@@ -456,7 +456,7 @@ CNIL's HR référentiel treats work-accident declarations, *arrêts de travail* 
 *inaptitude* findings as **the employer's** Art. 9(2)(b) processing, which reinforces the
 point. Art. 9(2)(a) explicit consent is the only fallback and is unreliable for the
 reasons in §1.1. Art. 9(4) means health, genetic and biometric data may attract *further*
-national conditions, so **there is no single EU-wide answer**: a market-by-market check
+national conditions, so **there is no single EU-wide answer**. A market-by-market check
 is required for every jurisdiction the vertical sells into. **Confidence: medium-high on
 the 9(2)(b) conclusion, since it is textual inference; no authority squarely on point was
 found.**
@@ -486,7 +486,7 @@ categories of recipients, and categories of data subjects**. Grain sets the sche
 packet and on what grant model; and it defines who is a subject (persons only,
 decision 007). The employer supplies rows into a structure Grain authored. ¶84 permits a
 processor to offer a pre-defined service, but the controller must **actively approve the
-essential means**, and the employer does not: it cannot change the schema, the
+essential means**, and the employer does not. It cannot change the schema, the
 vocabulary, the retention, or the disclosure model.
 
 The **accountant** worked example at ¶39–41 is the closest fit in the guidance: the
@@ -521,7 +521,7 @@ but it is a short one.
 negotiable." ¶29: "**If one party in fact decides why and how personal data are processed
 that party will be a controller even if a contract says that it is a processor.**"
 *C-683/21* ¶34: even being *named* as controller in a privacy policy matters only if the
-entity consented to the designation: labels create nothing in either direction.
+entity consented to the designation; labels create nothing in either direction.
 
 **(f) The "becomes a controller at claim" half is backwards.** Grain's controllership
 begins at ingestion. The claim event does not change role; it changes which lawful bases
@@ -577,7 +577,7 @@ technically enforced; a contractual prohibition on supplying any worker without 
 deliverable contact channel; an obligation to name Grain in the employer's own staff
 privacy notice (necessary but not sufficient; see §3.3); an obligation to inform workers'
 representatives where required by AI Act Art. 26(7) and by national works-council law;
-and a suppression obligation: the employer must not re-supply a worker who has objected.
+and a suppression obligation. The employer must not re-supply a worker who has objected.
 
 **Technical.** Pre-claim records in a physically separable partition with no read path to
 any employer surface, any analytics job, or any aggregate. Grain's existing architecture
@@ -642,8 +642,8 @@ not given. Under the narrow design in §1.4 no such disclosure occurs pre-claim,
 removes the tripwire, another reason that design is the only sustainable one.
 
 *HUBSIDE.STORE* ¶96 applied the equivalent point to first contact by phone: the obligation
-arises **at first contact**, and ¶113 characterised the failure as "**structural**":
-none of dozens of recorded calls complied. Structural failures attract structural
+arises **at first contact**, and ¶113 characterised the failure as "**structural**".
+None of dozens of recorded calls complied. Structural failures attract structural
 remedies.
 
 ### 3.3 Does the employer's own privacy notice discharge Grain's duty?
@@ -667,7 +667,7 @@ duty. If that is the holding, it forecloses the obvious architectural dodge of h
 the non-user identifiers and claiming Art. 11. Verify.]` Independently: Art. 11 only
 relieves a controller that cannot identify the subject, and Grain's whole purpose is to
 be able to match this person when they arrive. `research/12` conclusion 2 already settled
-the equivalent point internally: a retained hash whose function is to single out one
+the equivalent point internally. A retained hash whose function is to single out one
 human is personal data in Grain's hands, and *EDPS v SRB* (C-413/23 P) does not help the
 party that deliberately retains the matching capability.
 
@@ -812,7 +812,7 @@ nothing.
 **Art. 15 access.** Must return the record, the purposes, the categories, the recipients,
 the retention period, the rights, **the source** (Art. 15(1)(g)) and the existence of
 automated decision-making with meaningful information about the logic (Art. 15(1)(h)).
-*KASPR* ¶105: sources must be identified "as precise as possible", for Grain, the named
+*KASPR* ¶105: sources must be identified "as precise as possible", which for Grain means the named
 employer, the ingestion timestamp, and the specific field set supplied. *Criteo*
 (SAN-2023-009, 15 June 2023, EUR 40,000,000) ¶106–121 found an Art. 15 breach for
 withholding internal matching tables from access responses; the read-across is that
@@ -872,7 +872,7 @@ score.
 4. **A suppression decision that is itself ruled.** If Grain retains anything to stop the
    employer re-supplying an objecting worker on the next sync, that retained thing is
    personal data in Grain's hands (`research/12` conclusion 2). The cleaner design pushes
-   suppression to the employer contractually: the employer maintains the exclusion list,
+   suppression to the employer contractually. The employer maintains the exclusion list,
    because the employer already lawfully holds the identifiers. **Confidence: medium-high
    that this is the right split; it has not been ruled internally.**
 5. **A dispute intake that works pre-account**, per decision 028's authenticity-only
@@ -1017,8 +1017,8 @@ T6. Deletion-completeness test reusing the decision-017 evidence set.
 ```
 
 **Why 365 days rather than 5 (KASPR's cap) or 2 (recruitment practice).** The purpose
-here is narrower than KASPR's: enabling a specific person to claim a specific record,
-not maintaining a commercial contact database, and a narrower purpose supports a shorter
+here is narrower than KASPR's (enabling a specific person to claim a specific record,
+not maintaining a commercial contact database), and a narrower purpose supports a shorter
 period, not a longer one. Hospitality tenure is short and turnover is high; a worker who
 has not claimed within a year of being told about it has effectively declined. A shorter
 period is also the strongest single mitigating measure available in the Art. 6(1)(f)
@@ -1142,7 +1142,7 @@ permits delaying "until the identity is confirmed." Saving: s. 76 does not apply
 requests received before 5 February 2026 (SI 2026/82 reg. 4).
 https://www.legislation.gov.uk/ukpga/2025/18/section/76/enacted
 
-For a non-user DSAR this is genuinely useful: the clock does not start until identity is
+For a non-user DSAR this is genuinely useful. The clock does not start until identity is
 verified.
 
 ### 6.5 Automated decisions: Arts. 22A–22D, in force 5 February 2026
@@ -1356,8 +1356,8 @@ before positioning hardens.
   the signup invitation.
 - **EU Platform Work Directive 2024/2831**, transposition deadline 2 December 2026. Grain
   is probably not a "digital labour platform" (it does not organise or allocate work), but
-  the algorithmic-management chapter, human oversight of significant decisions,
-  explanation rights, limits on intrusive processing, will bind hospitality customers
+  the algorithmic-management chapter (human oversight of significant decisions,
+  explanation rights, limits on intrusive processing) will bind hospitality customers
   that do, and Grain's outputs will be inside their scope. **Confidence: low-medium; not
   researched in depth.**
 - **Conduct Regulations reg. 19 as an opportunity.** An employment business may not supply
@@ -1365,9 +1365,9 @@ before positioning hardens.
   qualifications and any authorisation which the hirer considers are necessary." Grain's
   attestation product is a clean way to discharge reg. 19, good positioning, but it also
   strengthens the argument that Grain operates in the regulated space. Both at once.
-- **The US comparator that does not exist in Europe.** Equifax's The Work Number: employer
+- **The US comparator that does not exist in Europe.** Equifax's The Work Number (employer
   payroll feeds, ~2.5 million contributors, records on roughly a third of the US
-  workforce, most of whom do not know, is the closest existing analogue to the pre-claim
+  workforce, most of whom do not know) is the closest existing analogue to the pre-claim
   mechanic. It operates as a **regulated CRA under the FCRA**, and it has **no European
   equivalent**. That absence is a signal about what the EU regime permits, not an
   opportunity. **Confidence: medium; this is my inference from the absence.**
@@ -1409,14 +1409,14 @@ Constraints, in order of how much they cost to retrofit.
    in their language, containing the full §3.1 content set including the named source
    employer, with `notice_dispatched_at` stored as a first-class field.
 9. **A public, unauthenticated rights portal**, linked from every notice. Access,
-   rectification, objection, erasure: all exercisable with no account.
+   rectification, objection, erasure are all exercisable with no account.
 10. **One-click object-and-erase.** The single highest-value control in the design, and a
     genuine mitigating measure under EDPB Guidelines 1/2024 ¶57.
 11. **Identity verification by OTP to the identifier already in the record.** Never a
     government ID document; never account creation.
 12. **A pre-account dispute path**, consistent with decision 028's authenticity-only
     adjudication rule.
-13. **Separate the Art. 14 legal notice from the signup invitation**: the PECR/ePrivacy
+13. **Separate the Art. 14 legal notice from the signup invitation**; the PECR/ePrivacy
     split in §3.5.
 
 **Commercial and contractual.**
@@ -1425,7 +1425,7 @@ Constraints, in order of how much they cost to retrofit.
     executed before the first ingestion, with the essence published per EDPB ¶180 (all
     Art. 13/14 elements, each attributed to a named controller) and a single point of
     contact.
-15. **The employer must name Grain in its own staff privacy notice**: necessary for the
+15. **The employer must name Grain in its own staff privacy notice.** Necessary for the
     LI balancing per *HUBSIDE.STORE* ¶71–77, not sufficient for Art. 14.
 16. **The employer maintains the objection suppression list**, not Grain, because Grain
     retaining a suppression key is Grain retaining personal data across a deletion
@@ -1463,7 +1463,7 @@ Ordered by how much turns on the answer.
    safeguards?** This determines whether the hospitality vertical has an EU/UK shape at
    all. The specific question is whether *KNLTB* ¶52–53's opt-in-defeats-necessity holding
    is confined to disclosure-for-consideration or is general. Ask for a view on at least
-   France, Germany, Spain and Ireland separately: Art. 88 national employment rules and
+   France, Germany, Spain and Ireland separately. Art. 88 national employment rules and
    Art. 9(4) national conditions mean there is no single EU answer.
 
 2. **Confirm the controller allocation and, specifically, whether the ingestion stage is
@@ -1486,7 +1486,7 @@ Ordered by how much turns on the answer.
 5. **UK: is Grain an employment agency under EAA 1973 s. 13(2)?** Ask this before
    go-to-market positioning hardens, because the positioning determines the answer. Ask
    for the criminal-liability perimeter under s. 6(1)(a) explicitly, and pair it with the
-   unruled US §2000e(c) item in THESIS §8: the same product surface triggers agency
+   unruled US §2000e(c) item in THESIS §8. The same product surface triggers agency
    status in both jurisdictions by different routes.
 
 6. **Does the roster ingestion pipe put Grain into Art. 9?** Specifically: is a
