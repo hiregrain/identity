@@ -1,7 +1,7 @@
 ---
 id: foundation
 type: layer
-status: ready
+status: done
 milestone: first-product
 depends_on: []
 binds:
@@ -11,8 +11,8 @@ binds:
   - decisions/LOG.md#016
   - decisions/LOG.md#017
   - design/stack-litigation/docket-rulings-0.1.md
-evidence: []
-verified_by: null
+evidence: ["log:log/2026-08-19-foundation-layer-close.md"]
+verified_by: layer-close-verifier@2026-08-19
 ---
 
 # foundation
