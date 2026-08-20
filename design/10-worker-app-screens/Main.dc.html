@@ -80,6 +80,28 @@
        fixed on the record and still live on three other screens. 320 is the size
        it is drawn and thread-budgeted at (044). */
     .imprint{display:block;width:100%;max-width:320px;margin-inline:auto}
+    /* An instrument reading: the figure and what it counts. baseline alignment
+       hung the small text off the numeral's foot, which reads as two things that
+       missed each other. The text block is centred against the numeral instead,
+       and the numeral gets its own optical trim — a 40px 800-weight Expanded
+       figure sits high in its line box. */
+    .reading{display:flex;align-items:center;gap:14px}
+    .reading .t-inst{flex:0 0 auto;line-height:.82;position:relative;top:1px}
+    .reading > span:last-child{flex:1;min-width:0}
+    /* A row that goes somewhere says so. Rows that only state a fact carry no
+       chevron — a fact dressed as a control lies about what can be changed. */
+    .chev{flex:0 0 16px;display:flex;align-items:center;padding-left:4px}
+    /* The bottom of a scroller is where the system's own bar begins. Content that
+       simply stops there reads as cut off, and a large empty band reads as a
+       mistake. `.dissolve` fades the last 28px of the scroll into the paper, so
+       the record ends rather than being truncated, and the home indicator has
+       something to sit against. 28 is the smallest band that reads as intentional
+       at the 16px body size — below that it is a hairline nobody sees. */
+    .dissolve{-webkit-mask-image:linear-gradient(to bottom, #000 calc(100% - 28px), transparent 100%);
+              mask-image:linear-gradient(to bottom, #000 calc(100% - 28px), transparent 100%)}
+    @media (prefers-reduced-transparency:reduce){
+      .dissolve{-webkit-mask-image:none;mask-image:none}
+    }
 
     /* the figure spans the plate's full width so its centre is the screen's
        centre; the text column keeps its asymmetric margin, which is fine for
@@ -132,7 +154,7 @@
      screen on iOS, which reads as a stray corner rather than the plate's edge.
      min-height carries the standalone case, where height:100% has no sized
      ancestor to resolve against and would collapse to zero. -->
-<div style="width:100%;height:100%;min-height:728px;position:relative;overflow:hidden;
+<div style="width:100%;height:100%;min-height:752px;position:relative;overflow:hidden;
             background:var(--paper)">
   <!-- §9 the plate. It marks the record; no other surface carries it. -->
   <div class="plate">
@@ -181,7 +203,7 @@
     </span>
   </header>
 
-  <main id="scroll" style="position:absolute;top:52px;bottom:0;left:0;right:0;overflow-y:auto;
+  <main id="scroll" class="dissolve" style="position:absolute;top:52px;bottom:0;left:0;right:0;overflow-y:auto;
                            padding:0 20px 56px 20px;scroll-behavior:smooth">
 
     <!-- ===== identity and imprint, composed as one hero (029 §B1) ========= -->

@@ -77,6 +77,28 @@
        fixed on the record and still live on three other screens. 320 is the size
        it is drawn and thread-budgeted at (044). */
     .imprint{display:block;width:100%;max-width:320px;margin-inline:auto}
+    /* An instrument reading: the figure and what it counts. baseline alignment
+       hung the small text off the numeral's foot, which reads as two things that
+       missed each other. The text block is centred against the numeral instead,
+       and the numeral gets its own optical trim — a 40px 800-weight Expanded
+       figure sits high in its line box. */
+    .reading{display:flex;align-items:center;gap:14px}
+    .reading .t-inst{flex:0 0 auto;line-height:.82;position:relative;top:1px}
+    .reading > span:last-child{flex:1;min-width:0}
+    /* A row that goes somewhere says so. Rows that only state a fact carry no
+       chevron — a fact dressed as a control lies about what can be changed. */
+    .chev{flex:0 0 16px;display:flex;align-items:center;padding-left:4px}
+    /* The bottom of a scroller is where the system's own bar begins. Content that
+       simply stops there reads as cut off, and a large empty band reads as a
+       mistake. `.dissolve` fades the last 28px of the scroll into the paper, so
+       the record ends rather than being truncated, and the home indicator has
+       something to sit against. 28 is the smallest band that reads as intentional
+       at the 16px body size — below that it is a hairline nobody sees. */
+    .dissolve{-webkit-mask-image:linear-gradient(to bottom, #000 calc(100% - 28px), transparent 100%);
+              mask-image:linear-gradient(to bottom, #000 calc(100% - 28px), transparent 100%)}
+    @media (prefers-reduced-transparency:reduce){
+      .dissolve{-webkit-mask-image:none;mask-image:none}
+    }
 
     .srow{display:flex;gap:12px;align-items:baseline;padding:13px 0;
           border-bottom:1px solid var(--hairline);width:100%;min-height:44px;text-align:left}
@@ -89,7 +111,7 @@
      min-height carries the standalone case where height:100% has no sized
      ancestor and would collapse to zero. 728 is the common safe box across
      iOS (778) and Android (728). Decision 046. -->
-<div style="width:100%;height:100%;min-height:728px;position:relative;overflow:hidden;background:var(--paper)">
+<div style="width:100%;height:100%;min-height:752px;position:relative;overflow:hidden;background:var(--paper)">
   <header style="height:52px;display:flex;align-items:center;justify-content:space-between;
                  padding:0 20px;border-bottom:1px solid var(--ink);position:relative;z-index:3;
                  background:var(--paper)">
@@ -100,22 +122,17 @@
     </button>
   </header>
 
-  <main style="position:absolute;top:52px;bottom:0;left:0;right:0;overflow-y:auto;padding:0 20px 40px">
+  <main class="dissolve" style="position:absolute;top:52px;bottom:0;left:0;right:0;overflow-y:auto;padding:0 20px 40px">
 
     <!-- Exposure first, in one sentence, before any control. A worker opening
          this screen should learn what is already true before deciding anything. -->
-    <!-- Exposure as a reading, not a sentence: the number of parties who can open
-         your record is the instrument's figure, set in §6's instrument register. -->
-    <div style="padding-top:24px;border-bottom:1px solid var(--ink);padding-bottom:18px">
-      <div style="display:flex;align-items:baseline;gap:14px">
-        <span class="t-inst">{{ grantCount }}</span>
-        <span style="flex:1;min-width:0">
-          <span class="t-rec" style="display:block;text-wrap:pretty">{{ exposure }}</span>
-          <span class="t-data" style="display:block;color:var(--secondary);padding-top:3px">
-            Your public page is {{ pubStateLower }}</span>
-        </span>
-      </div>
-      <p class="t-meta" style="margin:12px 0 0;color:var(--secondary);text-wrap:pretty">
+    <!-- Exposure said as a state, because that is what it is. A bare figure here
+         would read as a score, and §6's instrument register is for readings where
+         the number IS the fact — ledger length, days left — not for a count of
+         who can see you. -->
+    <div style="padding:24px 0 18px;border-bottom:1px solid var(--ink)">
+      <p class="t-sec" style="margin:0;font-size:19px;line-height:1.35;text-wrap:pretty">{{ exposure }}</p>
+      <p class="t-meta" style="margin:10px 0 0;color:var(--secondary);text-wrap:pretty">
         A grant ends on its own date. Nobody keeps reading your record because
         you forgot about them.</p>
     </div>
@@ -124,22 +141,50 @@
       <div class="sechead"><h2 class="t-sec" style="margin:0">Your public page</h2>
         <span class="t-data" style="color:var(--secondary)">{{ pubState }}</span></div>
       <div class="sinerule"><svg viewBox='0 0 320 6' width='100%' height='6' preserveAspectRatio='none' fill='none' stroke='#D3D7D6' stroke-width='1' vector-effect='non-scaling-stroke'><path d='M0.0 3.00 L2.0 3.31 L4.0 3.60 L6.0 3.84 L8.0 4.02 L10.0 4.13 L12.0 4.15 L14.0 4.08 L16.0 3.93 L18.0 3.71 L20.0 3.44 L22.0 3.14 L24.0 2.82 L26.0 2.52 L28.0 2.25 L30.0 2.04 L32.0 1.91 L34.0 1.85 L36.0 1.88 L38.0 2.00 L40.0 2.19 L42.0 2.44 L44.0 2.73 L46.0 3.05 L48.0 3.36 L50.0 3.64 L52.0 3.87 L54.0 4.04 L56.0 4.14 L58.0 4.14 L60.0 4.06 L62.0 3.90 L64.0 3.68 L66.0 3.40 L68.0 3.09 L70.0 2.78 L72.0 2.48 L74.0 2.22 L76.0 2.02 L78.0 1.89 L80.0 1.85 L82.0 1.89 L84.0 2.02 L86.0 2.22 L88.0 2.48 L90.0 2.78 L92.0 3.09 L94.0 3.40 L96.0 3.68 L98.0 3.90 L100.0 4.06 L102.0 4.14 L104.0 4.14 L106.0 4.04 L108.0 3.87 L110.0 3.64 L112.0 3.36 L114.0 3.05 L116.0 2.73 L118.0 2.44 L120.0 2.19 L122.0 2.00 L124.0 1.88 L126.0 1.85 L128.0 1.91 L130.0 2.04 L132.0 2.25 L134.0 2.52 L136.0 2.82 L138.0 3.14 L140.0 3.44 L142.0 3.71 L144.0 3.93 L146.0 4.08 L148.0 4.15 L150.0 4.13 L152.0 4.02 L154.0 3.84 L156.0 3.60 L158.0 3.31 L160.0 3.00 L162.0 2.69 L164.0 2.40 L166.0 2.16 L168.0 1.98 L170.0 1.87 L172.0 1.85 L174.0 1.92 L176.0 2.07 L178.0 2.29 L180.0 2.56 L182.0 2.86 L184.0 3.18 L186.0 3.48 L188.0 3.75 L190.0 3.96 L192.0 4.09 L194.0 4.15 L196.0 4.12 L198.0 4.00 L200.0 3.81 L202.0 3.56 L204.0 3.27 L206.0 2.95 L208.0 2.64 L210.0 2.36 L212.0 2.13 L214.0 1.96 L216.0 1.86 L218.0 1.86 L220.0 1.94 L222.0 2.10 L224.0 2.32 L226.0 2.60 L228.0 2.91 L230.0 3.22 L232.0 3.52 L234.0 3.78 L236.0 3.98 L238.0 4.11 L240.0 4.15 L242.0 4.11 L244.0 3.98 L246.0 3.78 L248.0 3.52 L250.0 3.22 L252.0 2.91 L254.0 2.60 L256.0 2.32 L258.0 2.10 L260.0 1.94 L262.0 1.86 L264.0 1.86 L266.0 1.96 L268.0 2.13 L270.0 2.36 L272.0 2.64 L274.0 2.95 L276.0 3.27 L278.0 3.56 L280.0 3.81 L282.0 4.00 L284.0 4.12 L286.0 4.15 L288.0 4.09 L290.0 3.96 L292.0 3.75 L294.0 3.48 L296.0 3.18 L298.0 2.86 L300.0 2.56 L302.0 2.29 L304.0 2.07 L306.0 1.92 L308.0 1.85 L310.0 1.87 L312.0 1.98 L314.0 2.16 L316.0 2.40 L318.0 2.69 L320.0 3.00'/></svg></div>
+      <!-- Every row leads with the record voice and carries its detail beneath,
+           so the address row and the rows under it are the same object. A row
+           that goes somewhere shows a chevron; a row that only states a fact
+           does not, because a fact dressed as a control is a lie about what a
+           worker can change. -->
       <button class="srow press" onClick="{{ noop }}">
         <span style="flex:1;min-width:0">
-          <span class="t-data" style="display:block">hiregrain.com/u/liezel-mendoza</span>
+          <span class="t-rec" style="display:block">Your address</span>
+          <span class="t-data" style="display:block;padding-top:3px">hiregrain.com/u/liezel-mendoza</span>
           <span class="t-meta" style="display:block;color:var(--secondary);padding-top:2px;text-wrap:pretty">
-            Your address never changes hands. You can turn the page off; the address stays yours.</span>
+            It never changes hands. Turn the page off and the address stays yours.</span>
+        </span>
+        <span class="chev" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="var(--rule)"
+               stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4 L14 10 L8 16"/></svg>
         </span>
       </button>
-      <sc-for list="{{ visibility }}" as="v" hint-placeholder-count="4">
-        <button class="srow press" onClick="{{ v.go }}" aria-pressed="{{ v.on }}">
-          <span style="flex:1;min-width:0">
-            <span class="t-rec" style="display:block">{{ v.label }}</span>
-            <span class="t-meta" style="display:block;color:var(--secondary);padding-top:2px;text-wrap:pretty">{{ v.note }}</span>
-          </span>
-          <span class="t-data col-r" style="color:{{ v.color }}">{{ v.state }}</span>
-        </button>
-      </sc-for>
+
+      <!-- Decision 035: the only lever is the imprint, full or absent, nothing
+           between. So this is one control, and the rest are statements. They were
+           drawn as four identical toggles, which promised three settings that do
+           not exist. -->
+      <button class="srow press" onClick="{{ noop }}" aria-pressed="{{ imprintOn }}">
+        <span style="flex:1;min-width:0">
+          <span class="t-rec" style="display:block">Your imprint on the page</span>
+          <span class="t-meta" style="display:block;color:var(--secondary);padding-top:2px;text-wrap:pretty">
+            The figure itself. It stays behind sign-in even when the page is public.</span>
+        </span>
+        <span class="t-data col-r">{{ imprintState }}</span>
+      </button>
+
+      <div style="padding-top:14px">
+        <span class="t-micro" style="display:block;color:var(--secondary);padding-bottom:6px">
+          What the page always shows, and never shows</span>
+        <sc-for list="{{ facts }}" as="v" hint-placeholder-count="3">
+          <div class="srow">
+            <span style="flex:1;min-width:0">
+              <span class="t-body" style="display:block;text-wrap:pretty">{{ v.label }}</span>
+              <span class="t-meta" style="display:block;color:var(--secondary);padding-top:2px;text-wrap:pretty">{{ v.note }}</span>
+            </span>
+            <span class="t-data col-r" style="color:{{ v.color }}">{{ v.state }}</span>
+          </div>
+        </sc-for>
+      </div>
     </div>
 
     <div class="grp">
@@ -194,26 +239,27 @@
 // at the bottom of a scroll. Reached from the record header.
 //
 // Every control here is drawn but inert: this is a mockup, and what a revoke or
-// a visibility switch actually does is not decided (DESIGN.md gaps 8 and 13).
+// the imprint lever actually does is not decided. Decision 035 fixes that the
+// lever is the imprint, full or absent, and nothing between — so this screen
+// carries one control and states the rest as facts rather than drawing three
+// settings that do not exist.
 class Component extends DCLogic {
   constructor(p){ super(p); this.state = {}; }
   renderVals(){
     const noop = () => {};
     return {
       noop,
-      exposure: 'businesses hold a grant to your whole record',
-      pubStateLower: 'on, and anyone with a Grain account can open it',
+      exposure: 'Your public page is on, and two businesses hold a grant to your whole record.',
       pubState: 'On',
       grantCount: '2',
-      visibility: [
+      imprintOn: 'true', imprintState: 'On',
+      facts: [
         {label:'Chapters, parties and dates', note:'Who you worked for, and when. This is what the page is for.',
-         state:'Shown', color:'var(--ink)', on:'true', go:noop},
+         state:'Always', color:'var(--ink)'},
         {label:'Who confirmed what', note:'Whether a business signed, a coworker signed, or nobody did.',
-         state:'Shown', color:'var(--ink)', on:'true', go:noop},
-        {label:'Your imprint', note:'The figure. It is behind sign-in even when the page is public.',
-         state:'Shown', color:'var(--ink)', on:'true', go:noop},
-        {label:'What each business wrote', note:'Never on the public page. Only on an expiring link you send.',
-         state:'Private', color:'var(--secondary)', on:'false', go:noop}
+         state:'Always', color:'var(--ink)'},
+        {label:'What each business wrote', note:'Only on an expiring link you send. Never here.',
+         state:'Never', color:'var(--secondary)'}
       ],
       grants: [
         {party:'Alorica Philippines', what:'Whole record, including what businesses wrote',

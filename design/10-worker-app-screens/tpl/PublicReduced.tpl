@@ -16,9 +16,9 @@
 <!-- Public's own chassis: --page ground, not --paper. design/07 §7 calls this the
      one place the system proves it can vary by meaning, and it must not be
      mistakable for the worker's own record. -->
-<div style="width:100%;height:100%;min-height:728px;position:relative;overflow:hidden;background:var(--page)">
+<div style="width:100%;height:100%;min-height:752px;position:relative;overflow:hidden;background:var(--page)">
 
-  <main style="position:absolute;inset:0;overflow-y:auto;padding:0 20px 40px">
+  <main class="dissolve" style="position:absolute;inset:0;overflow-y:auto;padding:0 20px 40px">
     <div style="background:var(--paper);margin:20px -4px 0;padding:24px 20px 20px;
                 border:1px solid var(--hairline)">
 

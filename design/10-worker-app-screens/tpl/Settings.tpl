@@ -18,7 +18,7 @@
      min-height carries the standalone case where height:100% has no sized
      ancestor and would collapse to zero. 728 is the common safe box across
      iOS (778) and Android (728). Decision 046. -->
-<div style="width:100%;height:100%;min-height:728px;position:relative;overflow:hidden;background:var(--paper)">
+<div style="width:100%;height:100%;min-height:752px;position:relative;overflow:hidden;background:var(--paper)">
   <header style="height:52px;display:flex;align-items:center;justify-content:space-between;
                  padding:0 20px;border-bottom:1px solid var(--hairline);position:relative;z-index:3;
                  background:var(--paper)">
@@ -29,14 +29,14 @@
     </button>
   </header>
 
-  <main style="position:absolute;top:52px;bottom:0;left:0;right:0;overflow-y:auto;padding:0 20px 40px">
+  <main class="dissolve" style="position:absolute;top:52px;bottom:0;left:0;right:0;overflow-y:auto;padding:0 20px 40px">
 
     <!-- Append-only status, relocated here by decision 045 when the plate footer
          left the record. It is the only surface that makes "nothing can be
          deleted" checkable rather than a claim, and it is set in the instrument
          register — §6 defines instrument numerals and nothing used them. -->
     <div style="padding:26px 0 20px;border-bottom:1px solid var(--ink)">
-      <div style="display:flex;align-items:baseline;gap:14px">
+      <div class="reading">
         <span class="t-inst">{{ entries }}</span>
         <span style="flex:1;min-width:0">
           <span class="t-rec" style="display:block">entries, and none removed</span>

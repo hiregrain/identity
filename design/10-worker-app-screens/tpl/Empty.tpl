@@ -19,7 +19,7 @@
      min-height carries the standalone case where height:100% has no sized
      ancestor and would collapse to zero. 728 is the common safe box across
      iOS (778) and Android (728). Decision 046. -->
-<div style="width:100%;height:100%;min-height:728px;position:relative;overflow:hidden;background:var(--paper)">
+<div style="width:100%;height:100%;min-height:752px;position:relative;overflow:hidden;background:var(--paper)">
   <div class="plate">
     <div class="reg" style="top:7px;left:7px;border-top-width:1px;border-left-width:1px"></div>
     <div class="reg" style="top:7px;right:7px;border-top-width:1px;border-right-width:1px"></div>
@@ -34,7 +34,7 @@
     <svg viewBox="0 0 160 26" width="160" height="26" role="img" aria-label="Grain">@@LOCKUP@@</svg>
   </header>
 
-  <main style="position:absolute;top:52px;bottom:0;left:0;right:0;padding:0 20px;
+  <main style="position:absolute;top:52px;bottom:0;left:0;right:0;padding:0 20px 28px;
                display:flex;flex-direction:column;justify-content:center;gap:40px">
     <!-- the fixed canvas, empty. The graticule ground (§9) carries it; there is no
          identity core, and no boundary ring: absence is drawn as absence. -->

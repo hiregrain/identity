@@ -27,7 +27,7 @@
      min-height carries the standalone case where height:100% has no sized
      ancestor and would collapse to zero. 728 is the common safe box across
      iOS (778) and Android (728). Decision 046. -->
-<div style="width:100%;height:100%;min-height:728px;position:relative;overflow:hidden;background:var(--paper)">
+<div style="width:100%;height:100%;min-height:752px;position:relative;overflow:hidden;background:var(--paper)">
   <header style="height:52px;display:flex;align-items:center;gap:10px;padding:0 20px;
                  border-bottom:1px solid var(--hairline)">
     <!-- The lockup: mark plus the GRAIN wordmark (§4a), generated so the mark
@@ -35,7 +35,7 @@
     <svg viewBox="0 0 160 26" width="160" height="26" role="img" aria-label="Grain">@@LOCKUP@@</svg>
   </header>
 
-  <main style="position:absolute;top:52px;bottom:120px;left:0;right:0;overflow-y:auto;padding:28px 20px">
+  <main class="dissolve" style="position:absolute;top:52px;bottom:120px;left:0;right:0;overflow-y:auto;padding:28px 20px">
     <h1 class="t-title" style="margin:0 0 8px">Your link</h1>
     <p class="t-body" style="margin:0 0 32px;color:var(--secondary);text-wrap:pretty">
       The address people open to see your record. We wrote it out from your name.

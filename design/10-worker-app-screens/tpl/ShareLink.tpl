@@ -17,7 +17,7 @@
   </style>
 </helmet>
 
-<div style="width:100%;height:100%;min-height:728px;position:relative;overflow:hidden;background:var(--paper)">
+<div style="width:100%;height:100%;min-height:752px;position:relative;overflow:hidden;background:var(--paper)">
   <header style="height:52px;display:flex;align-items:center;justify-content:space-between;
                  padding:0 20px;border-bottom:1px solid var(--ink);position:relative;z-index:3;
                  background:var(--paper)">
@@ -28,11 +28,10 @@
     </button>
   </header>
 
-  <main style="position:absolute;top:52px;bottom:0;left:0;right:0;overflow-y:auto;padding:0 20px 40px">
+  <main class="dissolve" style="position:absolute;top:52px;bottom:0;left:0;right:0;overflow-y:auto;padding:0 20px 40px">
 
     <!-- The reading: how long it lives. The whole object is its expiry. -->
-    <div style="display:flex;align-items:baseline;gap:14px;padding:24px 0 18px;
-                border-bottom:1px solid var(--ink)">
+    <div class="reading" style="padding:24px 0 18px;                border-bottom:1px solid var(--ink)">
       <span class="t-inst">{{ days }}</span>
       <span style="flex:1;min-width:0">
         <span class="t-rec" style="display:block;text-wrap:pretty">days, then the link stops working</span>

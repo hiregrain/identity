@@ -52,7 +52,7 @@
         animation-delay:0ms !important;transition-delay:0ms !important}
     }
 
-    .body{position:absolute;top:0;left:0;right:0;height:824px;border-radius:38px;
+    .body{position:absolute;top:0;left:0;right:0;height:800px;border-radius:38px;
           background:var(--ink);box-shadow:inset 0 0 0 2px var(--secondary)}
     .screen{position:absolute;top:12px;left:12px;width:360px;height:800px;
             border-radius:28px;overflow:hidden;background:var(--paper)}
@@ -72,13 +72,15 @@
   <div class="screen">
     <!-- Status bar only. Nothing is drawn over the navigation band: that
          space is the system's, and a box on it reads as the app's edge.
-         48 dp is still reserved below — three-button nav, the larger of the
-         two modes and the one still shipped and still chosen. -->
+         24 dp is reserved below for gesture navigation, the default. Three-button
+         navigation takes 48 and still ships; it is named here rather than
+         reserved everywhere, because designing to the larger figure left a band
+         of dead space on every screen. -->
     <div class="zone" style="top:0;height:24px">
       <span class="t-micro" style="color:var(--secondary)">status bar · 24 dp</span>
     </div>
 
-    <div style="position:absolute;top:24px;bottom:48px;left:0;right:0;overflow:hidden">
+    <div style="position:absolute;top:24px;bottom:24px;left:0;right:0;overflow:hidden">
       <dc-import name="Main" hint-size="100%,100%"></dc-import>
     </div>
 
@@ -96,7 +98,7 @@
 <script data-dc-script data-props='{"$preview":{"width":384,"height":990}}'>
 // Android shell. Back is a system gesture from BOTH edges, which is the
 // constraint design/08 §3 records and no screen has been drawn against.
-const DEVICE = {w:360, h:800, top:24, bottom:48};
+const DEVICE = {w:360, h:800, top:24, bottom:24};   // gesture nav; 48 for three-button
 const DRAWN = {w:360, h:800};
 class Component extends DCLogic {
   renderVals(){

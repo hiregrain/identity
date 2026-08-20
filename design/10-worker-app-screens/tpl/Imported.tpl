@@ -24,7 +24,7 @@
      min-height carries the standalone case where height:100% has no sized
      ancestor and would collapse to zero. 728 is the common safe box across
      iOS (778) and Android (728). Decision 046. -->
-<div style="width:100%;height:100%;min-height:728px;position:relative;overflow:hidden;background:var(--paper)">
+<div style="width:100%;height:100%;min-height:752px;position:relative;overflow:hidden;background:var(--paper)">
 
   <header style="height:52px;display:flex;align-items:center;gap:10px;padding:0 20px;
                  border-bottom:1px solid var(--hairline);position:relative;z-index:2;background:var(--paper)">
@@ -33,7 +33,7 @@
     <svg viewBox="0 0 160 26" width="160" height="26" role="img" aria-label="Grain">@@LOCKUP@@</svg>
   </header>
 
-  <main style="position:absolute;top:52px;bottom:196px;left:0;right:0;overflow-y:auto;padding:0 20px 24px">
+  <main class="dissolve" style="position:absolute;top:52px;bottom:196px;left:0;right:0;overflow-y:auto;padding:0 20px 24px">
     <section style="padding-top:20px">
       <svg class="imprint" viewBox="0 0 600 600" role="img"
            aria-label="Five chapters, none confirmed">@@IMPORTED@@</svg>
@@ -46,7 +46,7 @@
     <section style="padding-top:32px">
       <!-- The reading is how much of this nobody has confirmed, set in §6's
            instrument register — defined across ten screens and used by none. -->
-      <div style="display:flex;align-items:baseline;gap:14px;padding-bottom:20px">
+      <div class="reading" style="padding-bottom:20px">
         <span class="t-inst">5</span>
         <span style="flex:1;min-width:0">
           <span class="t-rec" style="display:block;text-wrap:pretty">chapters, none of them confirmed</span>

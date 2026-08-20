@@ -16,8 +16,8 @@
   </style>
 </helmet>
 
-<div style="width:100%;height:100%;min-height:728px;position:relative;overflow:hidden;background:var(--page)">
-  <main style="position:absolute;inset:0;overflow-y:auto;padding:16px 12px">
+<div style="width:100%;height:100%;min-height:752px;position:relative;overflow:hidden;background:var(--page)">
+  <main class="dissolve" style="position:absolute;inset:0;overflow-y:auto;padding:16px 12px">
     <div class="sheetpage" style="padding:28px 22px 22px">
 
       <h1 class="t-title" style="margin:0;font-size:28px">Liezel Mendoza</h1>

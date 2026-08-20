@@ -61,7 +61,7 @@
      screen on iOS, which reads as a stray corner rather than the plate's edge.
      min-height carries the standalone case, where height:100% has no sized
      ancestor to resolve against and would collapse to zero. -->
-<div style="width:100%;height:100%;min-height:728px;position:relative;overflow:hidden;
+<div style="width:100%;height:100%;min-height:752px;position:relative;overflow:hidden;
             background:var(--paper)">
   <!-- §9 the plate. It marks the record; no other surface carries it. -->
   <div class="plate">
@@ -110,7 +110,7 @@
     </span>
   </header>
 
-  <main id="scroll" style="position:absolute;top:52px;bottom:0;left:0;right:0;overflow-y:auto;
+  <main id="scroll" class="dissolve" style="position:absolute;top:52px;bottom:0;left:0;right:0;overflow-y:auto;
                            padding:0 20px 56px 20px;scroll-behavior:smooth">
 
     <!-- ===== identity and imprint, composed as one hero (029 §B1) ========= -->
