@@ -1,4 +1,4 @@
-# Attestation interface: schema_version 0.3 (A-6 and A-7 RATIFIED; measures section open)
+# Attestation interface: schema_version 0.3 (A-6, A-7, A-8 RATIFIED; measures section open)
 
 The contract between the ledger and any vertical or external partner
 attached to it. Ratified 2026-08-17 (decision 006) from Dispatch's
@@ -41,7 +41,7 @@ evidence**; ledger claims are never treated as locally observed evidence.
 | `credentials[]` | Coarse, ledger-verified claims. **Every item carries its provenance class**: `self_asserted \| peer_attested \| party_attested`, as a schema-level field (A-3); nothing self-asserted can be confused with anything attested on either side of the boundary. |
 | `dimension_standing[]` | Position on the responsibility dimensions, **derived by the ledger** from `dimensions_exercised` across attestations under a published deterministic coarse rule (N-2): per dimension `{level, corroboration (multi\|single), as_of, supporting_attestation_refs[]}`. Attestations assert what was exercised; only the ledger asserts standing. No cross-dimension composite exists. |
 | `prior_attestations[]` | Attestations from other parties, in this same schema, each carrying supersession status and any derived issuer-state or dispute flags. |
-| `work_authorization` (optional) | Jurisdiction-scoped, expiring attestation: boolean + coarse `basis_class` + expiry only, never documents, visa type, or nationality. **Readable only post-selection** (decision 008). The read path structurally prevents this field from being available to candidate ranking or selection. |
+| ~~`work_authorization`~~ | **Removed by amendment A-8, ratified by decision 070.** Work authorization is not stored, not requested, and not shown: an employer cannot outsource its own verification duty, so the field was a prior signal with no compliance value carrying legally sensitive status. Decision 008's post-selection shape is superseded. |
 
 ## Up (vertical → ledger): the attestation
 
