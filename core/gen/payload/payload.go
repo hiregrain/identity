@@ -2,7 +2,7 @@
 
 // Package payload holds row types for the payload plane only. It is
 // generated per database with no shared namespace: a spine type
-// must not satisfy a payload-typed parameter, and does not — the types
+// must not satisfy a payload-typed parameter, and does not. The types
 // are distinct named types in distinct packages.
 package payload
 
