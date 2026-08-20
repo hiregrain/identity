@@ -30,10 +30,30 @@
   </header>
 
   <main style="position:absolute;top:52px;bottom:0;left:0;right:0;overflow-y:auto;padding:0 20px 40px">
+
+    <!-- Append-only status, relocated here by decision 045 when the plate footer
+         left the record. It is the only surface that makes "nothing can be
+         deleted" checkable rather than a claim, and it is set in the instrument
+         register — §6 defines instrument numerals and nothing used them. -->
+    <div style="padding:26px 0 20px;border-bottom:1px solid var(--ink)">
+      <div style="display:flex;align-items:baseline;gap:14px">
+        <span class="t-inst">{{ entries }}</span>
+        <span style="flex:1;min-width:0">
+          <span class="t-rec" style="display:block">entries, and none removed</span>
+          <span class="t-data" style="display:block;color:var(--secondary);padding-top:3px">
+            Last change {{ lastChange }}</span>
+        </span>
+      </div>
+      <p class="t-meta" style="margin:12px 0 0;color:var(--secondary);text-wrap:pretty">
+        Every entry is kept. A correction is written as a new entry rather than
+        replacing the old one, so the record can be read back in order.</p>
+    </div>
+
     <sc-for list="{{ groups }}" as="g" hint-placeholder-count="5">
       <div class="grp">
         <h2 class="t-micro" style="display:block;color:var(--secondary);padding-bottom:6px;
                                    border-bottom:1px solid var(--ink);margin:0">{{ g.name }}</h2>
+        <div class="sinerule">@@SINERULE@@</div>
         <sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="5">
           <sc-if value="{{ r.act }}" hint-placeholder-val="{{ true }}">
             <button class="srow press" onClick="{{ r.act }}">
@@ -80,8 +100,10 @@ class Component extends DCLogic {
   constructor(p){ super(p); this.state = {confirming:false}; }
   renderVals(){
     const inert = (label, value) => ({label, value, inert:true});
+    const entries = 47, lastChange = '12 Aug 2026';
     const act = (label, value) => ({label, value, act: () => {}});
     return {
+      entries, lastChange,
       groups: [
         {name:'Account', rows:[
           inert('Full name','Liezel Mendoza'), inert('Phone','+63 •• ••• 4471'),

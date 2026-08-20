@@ -68,10 +68,16 @@
     </div>
 
     <div style="padding-top:28px">
+      <!-- The event, said once and said large. This is the heavier of the two
+           ceremonies §10 permits and it carried no headline at all. -->
+      <h1 class="t-title" style="margin:0 0 8px;text-wrap:pretty">{{ headline }}</h1>
+      <p class="t-body" style="margin:0 0 24px;color:var(--secondary);text-wrap:pretty">{{ subhead }}</p>
+
       <div style="display:flex;justify-content:space-between;align-items:baseline;
                   border-bottom:1px solid var(--ink);padding-bottom:8px">
         <h2 class="t-sec" style="margin:0">{{ sectionLabel }}</h2>
       </div>
+      <div class="sinerule">@@SINERULE@@</div>
       <div style="position:relative">
         <div class="contact" style="position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--ink)"></div>
         <div class="row seat">
@@ -115,6 +121,10 @@ class Component extends DCLogic {
     return {
       phase: this.state.phase,
       readout: done ? '4 chapters signed. 1 you added yourself.' : '3 chapters signed. 2 not yet.',
+      headline: done ? 'Cebu Pacific signed your work.' : 'Cebu Pacific is signing your work.',
+      subhead: done
+        ? 'They confirmed the dates and the job. Nobody else has agreed yet, so it stands at their reading alone.'
+        : 'Watch the ring for that chapter fill in.',
       sectionLabel: done ? 'Work history' : 'Outstanding verification',
       rowState: done ? 'Cebu Pacific signed this. Nobody else has agreed yet.'
                      : 'They confirmed the dates and the job. Not the work.',

@@ -1,0 +1,230 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><script src="./support.js"></script></head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap');
+    /* Grain — DESIGN.md §5 colour, §6 type, §7 spacing/radius/depth */
+    :root{
+      --ink:#1B2A44; --paper:#F8F5EE; --secondary:#5C6878;
+      --rule:#7E8794;      /* 3.35:1 — every line that carries meaning */
+      --hairline:#D3D7D6;  /* 1.34:1 — pure separation, never a state */
+      --page:#E9E5DE;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--page);color:var(--ink);
+         font-family:'Archivo',-apple-system,'Helvetica Neue',sans-serif;
+         -webkit-font-smoothing:antialiased}
+    a{color:var(--ink);text-decoration:underline;text-underline-offset:2px}
+    a:hover{color:var(--ink);text-decoration-thickness:2px}
+    button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;text-align:left}
+    /* §6 — one family, hierarchy from width, weight and tracking */
+    .t-title {font-stretch:125%;font-weight:700;font-size:28px;line-height:1.12;text-wrap:balance}
+    .t-sec   {font-weight:600;font-size:17px;line-height:1.2;text-wrap:balance}
+    .t-rec   {font-weight:600;font-size:15px;line-height:1.3}
+    .t-body  {font-weight:400;font-size:14px;line-height:1.6}
+    .t-data  {font-weight:500;font-size:13px;line-height:1.35;font-variant-numeric:tabular-nums}
+    .t-meta  {font-weight:400;font-size:12px;line-height:1.4}
+    /* labels ONLY — never a value, a date, a name or a sentence (§6) */
+    .t-micro {font-weight:500;font-size:9.5px;letter-spacing:0.08em;text-transform:uppercase;line-height:1.3}
+    .t-serial{font-weight:500;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;line-height:1.2}
+    .t-inst  {font-stretch:125%;font-weight:800;font-size:40px;line-height:1;font-variant-numeric:tabular-nums;white-space:nowrap}
+    /* §7 depth presses down; verified rows have zero press-give — rigidity is
+       how permanence is expressed. Both halves are load-bearing. */
+    .press{transition:transform 60ms cubic-bezier(0.2,0,0,1)}
+    .press:active{transform:translateY(2px)}
+    .rigid:active{transform:none}
+    /* §8 buttons — no pills, no icons inside. 44px minimum (§12). */
+    .btn-primary{background:var(--ink);color:var(--paper);border-radius:3px;
+                 padding:13px 16px;font-weight:600;font-size:15px;width:100%;
+                 text-align:center;min-height:44px}
+    .btn-secondary{border:1px solid var(--ink);border-radius:3px;padding:12px 16px;
+                   font-weight:600;font-size:15px;width:100%;text-align:center;min-height:44px}
+    .btn-tertiary{font-weight:600;font-size:14px;text-decoration:underline;
+                  text-underline-offset:3px;min-height:44px;padding:13px 8px;display:inline-block}
+    /* a disabled control loses its ink, never its contrast (law 8) */
+    .btn-primary[disabled]{background:none;color:var(--ink);border:1px solid var(--rule)}
+    :focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+    @media (prefers-reduced-motion:reduce){
+      *{animation-duration:1ms !important;transition-duration:1ms !important;
+        animation-delay:0ms !important;transition-delay:0ms !important}
+    }
+
+    /* the plate (§9) marks the RECORD. A settings sheet is not one, so the
+       corners appear on the record surface and nowhere else. */
+    .plate{position:absolute;inset:0;pointer-events:none}
+    .reg{position:absolute;width:11px;height:11px;border:0 solid var(--rule)}
+    .row{display:flex;gap:12px;align-items:flex-start;padding:12px 0;
+         border-bottom:1px solid var(--hairline);width:100%}
+    .row-sel{border-bottom:1.5px solid var(--rule)}
+    .gutter{flex:0 0 26px;padding-top:3px}
+    .sechead{display:flex;justify-content:space-between;align-items:baseline;
+             border-bottom:1px solid var(--ink);padding-bottom:8px;gap:12px}
+    .icon{stroke:var(--ink);stroke-width:1.5;fill:none;stroke-linecap:square}
+    .col-r{text-align:right;white-space:nowrap;padding-top:1px}
+    main::-webkit-scrollbar{width:0}
+
+    /* §9's sine-modulated divider and the rung scale live in the chassis, not in
+       one screen's helmet: both are shared vocabulary, and a class defined in
+       Main only meant every other screen rendered them unstyled. */
+    .sinerule{margin-top:-1px;line-height:0;opacity:.9}
+    .rung{display:inline-flex;align-items:flex-end;gap:2px;height:14px;flex:none}
+    .rung i{display:block;width:3px}
+
+    .prow{display:flex;gap:12px;align-items:flex-start;padding:14px 0;
+          border-bottom:1px solid var(--hairline)}
+    .mrow{display:flex;gap:12px;align-items:baseline;padding:11px 0;
+          border-bottom:1px solid var(--hairline)}
+    main::-webkit-scrollbar{width:0}
+  </style>
+</helmet>
+
+<!-- The employer's side, on the --page ground Public uses: whoever is reading
+     this is not the subject, and the chassis says so before the copy does. -->
+<div style="width:100%;height:100%;min-height:728px;position:relative;overflow:hidden;background:var(--page)">
+  <header style="height:52px;display:flex;align-items:center;justify-content:space-between;
+                 padding:0 20px;border-bottom:1px solid var(--ink);background:var(--page)">
+    <span style="display:flex;align-items:center;gap:10px">
+      <svg viewBox="0 0 160 26" width="122" height="20" role="img" aria-label="Grain"><svg x='0' y='0' width='26.00' height='26.00' viewBox='0 0 600 600'><g fill='none' stroke='#1B2A44' stroke-width='28.85'><path d='M564.00 300.00 L584.44 333.88 L586.74 369.29 L565.95 398.78 L529.42 417.75 L492.65 429.76 L470.47 446.91 L465.16 480.54 L462.52 526.50 L445.69 564.26 L412.09 576.40 L372.28 564.53 L336.52 544.65 L306.92 533.31 L278.76 538.27 L246.36 554.85 L209.17 568.68 L173.56 565.42 L147.91 540.91 L134.78 503.62 L127.29 467.66 L113.74 442.19 L87.12 425.73 L51.95 409.27 L22.38 384.78 L12.19 351.73 L24.39 316.36 L48.54 285.08 L68.13 258.33 L72.64 230.57 L64.85 196.42 L58.25 157.23 L66.57 121.80 L93.86 99.88 L132.54 93.62 L170.23 94.43 L199.36 88.73 L221.72 68.46 L244.89 38.19 L274.39 12.76 L308.69 6.77 L341.23 23.80 L367.28 53.79 L389.04 80.45 L414.04 93.15 L447.82 93.99 L487.44 95.10 L521.90 108.76 L540.00 138.35 L539.59 177.03 L530.41 214.41 L527.56 245.01 L540.14 271.40 L564.00 300.00 Z'/><path d='M472.00 300.00 L502.50 326.66 L505.12 354.96 L474.49 372.28 L428.29 374.07 L395.48 373.26 L393.79 393.79 L409.22 442.34 L409.74 490.08 L383.80 502.31 L347.64 477.78 L319.01 444.41 L300.00 430.65 L280.76 446.11 L252.79 476.17 L220.03 493.08 L196.68 478.96 L192.11 440.60 L198.38 401.62 L195.01 380.56 L168.36 376.00 L126.95 371.68 L96.54 354.52 L98.01 326.59 L128.00 300.00 L160.93 281.69 L171.18 265.48 L155.23 240.04 L133.72 204.00 L132.08 171.15 L158.38 158.38 L198.47 167.69 L231.32 181.04 L248.32 175.23 L258.16 143.86 L274.37 105.33 L300.00 88.00 L325.63 105.33 L341.84 143.86 L351.68 175.23 L368.68 181.04 L401.53 167.69 L441.62 158.38 L467.92 171.15 L466.28 204.00 L444.76 240.04 L428.81 265.49 L439.03 281.70 L472.00 300.00 Z'/><path d='M390.00 300.00 L406.81 314.06 L408.37 329.04 L391.72 337.99 L366.58 338.44 L348.86 337.49 L348.33 348.33 L357.27 374.63 L358.06 400.56 L344.33 407.02 L325.01 393.34 L309.86 374.86 L300.00 367.25 L290.02 375.80 L275.23 392.45 L257.77 401.94 L245.47 394.44 L243.46 373.68 L247.36 352.64 L245.90 341.51 L231.58 339.50 L209.07 337.66 L192.54 328.79 L193.47 314.03 L210.00 300.00 L228.07 290.53 L233.59 282.21 L224.63 268.78 L212.53 249.50 L211.29 231.93 L225.36 225.36 L246.96 230.88 L264.53 238.56 L273.34 235.63 L278.18 218.57 L286.50 197.49 L300.00 188.00 L313.50 197.49 L321.82 218.57 L326.66 235.63 L335.47 238.56 L353.04 230.88 L374.64 225.36 L388.71 231.93 L387.47 249.50 L375.37 268.78 L366.40 282.21 L371.91 290.53 L390.00 300.00 Z'/></g></svg><text x='39.93' y='21.96' font-family='Archivo' font-size='26.92' font-weight='600' font-stretch='125%' letter-spacing='2.42' fill='#1B2A44'>GRAIN</text></svg>
+    </span>
+    <span class="t-micro" style="color:var(--secondary)">Granted access</span>
+  </header>
+
+  <main style="position:absolute;top:52px;bottom:0;left:0;right:0;overflow-y:auto;padding:0 20px 40px">
+
+    <!-- The reading an employer needs first is not a score. It is how long they
+         have, and who is accountable for what they are about to read. -->
+    <div style="display:flex;align-items:baseline;gap:14px;padding:24px 0 18px;
+                border-bottom:1px solid var(--ink)">
+      <span class="t-inst">{{ daysLeft }}</span>
+      <span style="flex:1;min-width:0">
+        <span class="t-rec" style="display:block;text-wrap:pretty">days left on this grant</span>
+        <span class="t-data" style="display:block;color:var(--secondary);padding-top:3px">
+          Liezel Mendoza granted it on {{ granted }}. She can end it at any time.</span>
+      </span>
+    </div>
+
+    <div style="padding-top:24px">
+      <h1 class="t-title" style="margin:0">Liezel Mendoza</h1>
+      <p class="t-data" style="margin:8px 0 0;color:var(--secondary);text-wrap:pretty">
+        Philippines · Identity document checked, which says nothing about the work below</p>
+    </div>
+
+    <!-- What Grain is and is not saying, before any content. This is the sentence
+         the whole product exists to be able to write. -->
+    <div style="margin-top:18px;border-block:1px solid var(--ink);padding:14px 0">
+      <p class="t-body" style="margin:0;text-wrap:pretty">
+        Grain checks that a business really signed a record. It never checks
+        whether the work was done well. What each party asserted is below, at
+        their own reading, and the decision is yours.</p>
+    </div>
+
+    <div style="padding-top:26px">
+      <div class="sechead"><h2 class="t-sec" style="margin:0">Work history</h2>
+        <span class="t-data" style="color:var(--secondary)">{{ count }}</span></div>
+      <div class="sinerule"><svg viewBox='0 0 320 6' width='100%' height='6' preserveAspectRatio='none' fill='none' stroke='#D3D7D6' stroke-width='1' vector-effect='non-scaling-stroke'><path d='M0.0 3.00 L2.0 3.31 L4.0 3.60 L6.0 3.84 L8.0 4.02 L10.0 4.13 L12.0 4.15 L14.0 4.08 L16.0 3.93 L18.0 3.71 L20.0 3.44 L22.0 3.14 L24.0 2.82 L26.0 2.52 L28.0 2.25 L30.0 2.04 L32.0 1.91 L34.0 1.85 L36.0 1.88 L38.0 2.00 L40.0 2.19 L42.0 2.44 L44.0 2.73 L46.0 3.05 L48.0 3.36 L50.0 3.64 L52.0 3.87 L54.0 4.04 L56.0 4.14 L58.0 4.14 L60.0 4.06 L62.0 3.90 L64.0 3.68 L66.0 3.40 L68.0 3.09 L70.0 2.78 L72.0 2.48 L74.0 2.22 L76.0 2.02 L78.0 1.89 L80.0 1.85 L82.0 1.89 L84.0 2.02 L86.0 2.22 L88.0 2.48 L90.0 2.78 L92.0 3.09 L94.0 3.40 L96.0 3.68 L98.0 3.90 L100.0 4.06 L102.0 4.14 L104.0 4.14 L106.0 4.04 L108.0 3.87 L110.0 3.64 L112.0 3.36 L114.0 3.05 L116.0 2.73 L118.0 2.44 L120.0 2.19 L122.0 2.00 L124.0 1.88 L126.0 1.85 L128.0 1.91 L130.0 2.04 L132.0 2.25 L134.0 2.52 L136.0 2.82 L138.0 3.14 L140.0 3.44 L142.0 3.71 L144.0 3.93 L146.0 4.08 L148.0 4.15 L150.0 4.13 L152.0 4.02 L154.0 3.84 L156.0 3.60 L158.0 3.31 L160.0 3.00 L162.0 2.69 L164.0 2.40 L166.0 2.16 L168.0 1.98 L170.0 1.87 L172.0 1.85 L174.0 1.92 L176.0 2.07 L178.0 2.29 L180.0 2.56 L182.0 2.86 L184.0 3.18 L186.0 3.48 L188.0 3.75 L190.0 3.96 L192.0 4.09 L194.0 4.15 L196.0 4.12 L198.0 4.00 L200.0 3.81 L202.0 3.56 L204.0 3.27 L206.0 2.95 L208.0 2.64 L210.0 2.36 L212.0 2.13 L214.0 1.96 L216.0 1.86 L218.0 1.86 L220.0 1.94 L222.0 2.10 L224.0 2.32 L226.0 2.60 L228.0 2.91 L230.0 3.22 L232.0 3.52 L234.0 3.78 L236.0 3.98 L238.0 4.11 L240.0 4.15 L242.0 4.11 L244.0 3.98 L246.0 3.78 L248.0 3.52 L250.0 3.22 L252.0 2.91 L254.0 2.60 L256.0 2.32 L258.0 2.10 L260.0 1.94 L262.0 1.86 L264.0 1.86 L266.0 1.96 L268.0 2.13 L270.0 2.36 L272.0 2.64 L274.0 2.95 L276.0 3.27 L278.0 3.56 L280.0 3.81 L282.0 4.00 L284.0 4.12 L286.0 4.15 L288.0 4.09 L290.0 3.96 L292.0 3.75 L294.0 3.48 L296.0 3.18 L298.0 2.86 L300.0 2.56 L302.0 2.29 L304.0 2.07 L306.0 1.92 L308.0 1.85 L310.0 1.87 L312.0 1.98 L314.0 2.16 L316.0 2.40 L318.0 2.69 L320.0 3.00'/></svg></div>
+      <sc-for list="{{ chapters }}" as="c" hint-placeholder-count="5">
+        <div class="prow">
+          <span class="gutter">
+            <svg viewBox="0 0 34 16" width="34" height="16" fill="none"
+                 stroke="var(--ink)" stroke-width="1"><use href="{{ c.sw }}"></use></svg>
+          </span>
+          <span style="flex:1;min-width:0">
+            <span class="t-rec" style="display:block">{{ c.party }}</span>
+            <span class="t-data" style="display:block;padding-top:3px">{{ c.state }}</span>
+            <span class="t-meta" style="display:block;color:var(--secondary);padding-top:2px">{{ c.registry }}</span>
+          </span>
+          <span class="col-r">
+            <span class="t-data" style="display:block">{{ c.from }}</span>
+            <span class="t-data" style="display:block;color:var(--secondary)">{{ c.to }}</span>
+          </span>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="padding-top:26px">
+      <div class="sechead"><h2 class="t-sec" style="margin:0">{{ measureHead }}</h2></div>
+      <div class="sinerule"><svg viewBox='0 0 320 6' width='100%' height='6' preserveAspectRatio='none' fill='none' stroke='#D3D7D6' stroke-width='1' vector-effect='non-scaling-stroke'><path d='M0.0 3.00 L2.0 3.31 L4.0 3.60 L6.0 3.84 L8.0 4.02 L10.0 4.13 L12.0 4.15 L14.0 4.08 L16.0 3.93 L18.0 3.71 L20.0 3.44 L22.0 3.14 L24.0 2.82 L26.0 2.52 L28.0 2.25 L30.0 2.04 L32.0 1.91 L34.0 1.85 L36.0 1.88 L38.0 2.00 L40.0 2.19 L42.0 2.44 L44.0 2.73 L46.0 3.05 L48.0 3.36 L50.0 3.64 L52.0 3.87 L54.0 4.04 L56.0 4.14 L58.0 4.14 L60.0 4.06 L62.0 3.90 L64.0 3.68 L66.0 3.40 L68.0 3.09 L70.0 2.78 L72.0 2.48 L74.0 2.22 L76.0 2.02 L78.0 1.89 L80.0 1.85 L82.0 1.89 L84.0 2.02 L86.0 2.22 L88.0 2.48 L90.0 2.78 L92.0 3.09 L94.0 3.40 L96.0 3.68 L98.0 3.90 L100.0 4.06 L102.0 4.14 L104.0 4.14 L106.0 4.04 L108.0 3.87 L110.0 3.64 L112.0 3.36 L114.0 3.05 L116.0 2.73 L118.0 2.44 L120.0 2.19 L122.0 2.00 L124.0 1.88 L126.0 1.85 L128.0 1.91 L130.0 2.04 L132.0 2.25 L134.0 2.52 L136.0 2.82 L138.0 3.14 L140.0 3.44 L142.0 3.71 L144.0 3.93 L146.0 4.08 L148.0 4.15 L150.0 4.13 L152.0 4.02 L154.0 3.84 L156.0 3.60 L158.0 3.31 L160.0 3.00 L162.0 2.69 L164.0 2.40 L166.0 2.16 L168.0 1.98 L170.0 1.87 L172.0 1.85 L174.0 1.92 L176.0 2.07 L178.0 2.29 L180.0 2.56 L182.0 2.86 L184.0 3.18 L186.0 3.48 L188.0 3.75 L190.0 3.96 L192.0 4.09 L194.0 4.15 L196.0 4.12 L198.0 4.00 L200.0 3.81 L202.0 3.56 L204.0 3.27 L206.0 2.95 L208.0 2.64 L210.0 2.36 L212.0 2.13 L214.0 1.96 L216.0 1.86 L218.0 1.86 L220.0 1.94 L222.0 2.10 L224.0 2.32 L226.0 2.60 L228.0 2.91 L230.0 3.22 L232.0 3.52 L234.0 3.78 L236.0 3.98 L238.0 4.11 L240.0 4.15 L242.0 4.11 L244.0 3.98 L246.0 3.78 L248.0 3.52 L250.0 3.22 L252.0 2.91 L254.0 2.60 L256.0 2.32 L258.0 2.10 L260.0 1.94 L262.0 1.86 L264.0 1.86 L266.0 1.96 L268.0 2.13 L270.0 2.36 L272.0 2.64 L274.0 2.95 L276.0 3.27 L278.0 3.56 L280.0 3.81 L282.0 4.00 L284.0 4.12 L286.0 4.15 L288.0 4.09 L290.0 3.96 L292.0 3.75 L294.0 3.48 L296.0 3.18 L298.0 2.86 L300.0 2.56 L302.0 2.29 L304.0 2.07 L306.0 1.92 L308.0 1.85 L310.0 1.87 L312.0 1.98 L314.0 2.16 L316.0 2.40 L318.0 2.69 L320.0 3.00'/></svg></div>
+      <p class="t-meta" style="margin:10px 0 4px;color:var(--secondary);text-wrap:pretty">
+        Seven measures, in the same order on every record. Each is what one
+        business asserted about the work, in their words, not a rating of a person.</p>
+      <sc-for list="{{ measures }}" as="m" hint-placeholder-count="7">
+        <div class="mrow">
+          <span style="flex:1;min-width:0">
+            <span class="t-rec" style="display:block">{{ m.name }}</span>
+            <span class="t-body" style="display:block;color:{{ m.color }};padding-top:2px;text-wrap:pretty">{{ m.value }}</span>
+          </span>
+          <span class="rung" aria-hidden="true">
+            <sc-for list="{{ m.scale }}" as="st" hint-placeholder-count="7">
+              <i style="height:{{ st.h }};background:{{ st.c }}"></i>
+            </sc-for>
+          </span>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="margin-top:24px;border-top:1px solid var(--ink);padding-top:14px">
+      <p class="t-meta" style="margin:0;color:var(--secondary);text-wrap:pretty">
+        Two of these chapters were signed by one party only, and stand at that
+        party's reading alone. One nobody has confirmed. Grain does not average
+        parties who disagree.</p>
+    </div>
+  </main>
+</div>
+</x-dc>
+
+<script data-dc-script data-props='{"$preview":{"width":360,"height":800}}'>
+// Gap 8: the employer's disclosure-grant view. What a business sees when a worker
+// grants them the whole record.
+//
+// Two constraints this screen exists to obey. It never renders a composite, a
+// score or a badge — CLAUDE.md's constraint that outranks convenience: Grain says
+// what is known and how well, the partner decides what it means and bears the
+// decision. And it states its own limits before its content, not after.
+class Component extends DCLogic {
+  renderVals(){
+    const chapters = [
+      {party:'Cebu Pacific Cargo Services', state:'Dates and job confirmed. Nothing about the work.',
+       registry:'Registered business · signed 20 Jan 2026', sw:'#sw-employment_verified',
+       from:'Jan 2025', to:'present'},
+      {party:'Metro Manila Logistics', state:'Signed by the business. Nobody else has agreed.',
+       registry:'Registered business · signed 20 Jan 2025', sw:'#sw-party_single',
+       from:'Mar 2023', to:'Jan 2025'},
+      {party:'R. Santos Dry Goods', state:'Signed by a coworker, not the business.',
+       registry:'Individual · signed 2 Apr 2023', sw:'#sw-peer_attested',
+       from:'Sep 2020', to:'Mar 2023'},
+      {party:'Sunrise Foods Manufacturing', state:'Signed by the business, and a second party agreed.',
+       registry:'Registered business · signed 14 Oct 2021', sw:'#sw-party_multi',
+       from:'Mar 2019', to:'Sep 2021'},
+      {party:'Bataan Poultry Processing', state:'Liezel added this. Nobody has confirmed it.',
+       registry:'No attesting party', sw:'#sw-self_asserted',
+       from:'Sep 2017', to:'Mar 2019'}
+    ];
+    const DIMS = [
+      ['Discretion','Chose how, within a set what',3],
+      ['Direction of Others','Answerable for a small group',3],
+      ['Consequence Held','Mistakes cost time or schedule',3],
+      ['Counterparty Exposure','No dealings outside the team',1],
+      ['Method Authority','Adapted the method in practice',3],
+      ['Resource and Financial','Accountable for tools in hand',2],
+      ['Systems and Tooling','Kept a system running day to day',2]
+    ];
+    return {
+      daysLeft: 13, granted: '4 Aug 2026',
+      count: chapters.length, chapters,
+      measureHead: 'What Sunrise Foods attested',
+      measures: DIMS.map(([name, value, lv]) => ({
+        name, value, color: 'var(--ink)',
+        scale: Array.from({length: 7}, (_, r) => ({
+          h: (4 + r * 1.6).toFixed(0) + 'px',
+          c: r < lv ? 'var(--rule)' : (r === lv ? 'var(--ink)' : 'var(--hairline)')
+        }))
+      }))
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -24,13 +24,25 @@
        as `.reg` on the record plate — the chart's mark for a framed thing. */
     .figreg{position:absolute;width:13px;height:13px;border:0 solid var(--rule);
             pointer-events:none}
+    /* 050: only the band that changed is re-scribed. Its resting state is the
+       finished drawing, so an environment that suppresses animation shows the
+       whole figure rather than a blank one — the defect design/07 found in the
+       first build's ceremony, where rest was stroke-dashoffset:1. */
+    .moved-band .ch4 path,.moved-band .ch4 circle{stroke-dasharray:1;stroke-dashoffset:1;
+      animation:scribe-band 900ms cubic-bezier(0.2,0,0,1) 260ms forwards}
+    @keyframes scribe-band{to{stroke-dashoffset:0}}
+    @media (prefers-reduced-motion:reduce){
+      .moved-band .ch4 path,.moved-band .ch4 circle{animation-duration:1ms;animation-delay:0ms}
+    }
     /* §9's sine-modulated divider, carrying the figure's own frequency, and the
        graticule ground. Both specified in §9 and unused until now — the record
        had the plate and nothing else, which is most of why it read as bare. */
-    .sinerule{margin-top:-1px;line-height:0;opacity:.9}
+    /* The ground is clipped to the figure's own shape. Left square it stopped at
+       a hard rectangle behind a circular drawing, which reads as a stray box. */
     .figground{position:absolute;inset:14px 0;display:flex;align-items:center;
                justify-content:center;pointer-events:none;opacity:.16}
-    .figground svg{width:100%;max-width:320px;height:100%}
+    .figground svg{width:100%;max-width:292px;aspect-ratio:1;height:auto;
+                   border-radius:50%;overflow:hidden}
     .idx-tick{height:1px;background:var(--rule);transition:width 180ms cubic-bezier(0.2,0,0,1)}
     .sheet{position:absolute;left:0;right:0;bottom:0;background:var(--paper);
            border-top:1px solid var(--ink);padding:20px 20px 24px}
@@ -75,7 +87,7 @@
            forbids, put in to buy prominence it can get honestly. -->
       <button class="press" aria-label="{{ shareLabel }}" onClick="{{ openSharing }}"
               style="min-height:44px;display:flex;align-items:center;gap:7px;
-                     padding:0 10px;margin-right:2px">
+                     padding:0 10px;margin-right:6px">
         <svg width="19" height="19" viewBox="0 0 20 20" fill="none" stroke="var(--ink)"
              stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M10 13 L10 3"/><path d="M6.5 6.5 L10 3 L13.5 6.5"/>
@@ -87,7 +99,8 @@
            for a menu of places to go, and this opens one screen — a bar carrying
            no navigation read as a navigation bar that did nothing (048). -->
       <button class="press" aria-label="Account and settings" onClick="{{ openSettings }}"
-              style="width:44px;height:44px;display:flex;align-items:center;justify-content:flex-end">
+              style="min-width:44px;width:44px;height:44px;display:flex;align-items:center;
+                     justify-content:center;flex:0 0 44px">
         <svg width="19" height="19" viewBox="0 0 20 20" fill="none" stroke="var(--ink)"
              stroke-width="1.2" stroke-linecap="round">
           <circle cx="10" cy="7" r="3.1"/>
@@ -102,12 +115,12 @@
 
     <!-- ===== identity and imprint, composed as one hero (029 §B1) ========= -->
     <section id="sec-0" style="padding-top:20px">
-      <div style="display:flex;gap:12px;align-items:flex-start;padding-bottom:20px">
-        <div style="flex:0 0 60px;height:76px;border:1px solid var(--rule);position:relative;overflow:hidden">
-          <svg viewBox="0 0 76 96" width="60" height="76" preserveAspectRatio="none" fill="none"
-               stroke="var(--hairline)" stroke-width=".6" role="img" aria-label="Portrait placeholder">@@GRATICULE_SM@@</svg>
-        </div>
-        <div style="flex:1;min-width:0">
+      <!-- No portrait slot. It was a drawn container (§8 deletes those) holding a
+           placeholder for a picture of a person, in a product that refuses to draw
+           people — and decision 044 settled that a person is their name and their
+           imprint. A box waiting for a face contradicts both. -->
+      <div style="padding-bottom:20px">
+        <div style="min-width:0">
           <h1 class="t-title" style="margin:0">Liezel Mendoza</h1>
           <p class="t-data" style="margin:6px 0 0;color:var(--secondary)">Philippines · Identity verified</p>
         </div>
@@ -118,6 +131,13 @@
            primitives, each derived from the figure or from chart-work, and that
            was not one of them. The corners are the plate's own mark for a framed
            object, which is what this is. -->
+      <sc-if value="{{ hasNews }}" hint-placeholder-val="{{ true }}">
+        <!-- What moved since you last looked. Not a greeting — a record that
+             welcomes you is a record performing (050). It states the fact and
+             stops, and says nothing at all when nothing has changed. -->
+        <p class="t-rec" style="margin:0 0 16px;text-wrap:pretty">{{ news }}</p>
+      </sc-if>
+
       <button class="fig-plate press" aria-label="Open your imprint at full size"
               onClick="{{ openImprint }}"
               style="position:relative;display:block;max-width:320px;width:100%;
@@ -130,8 +150,11 @@
           <svg viewBox="0 0 296 296" preserveAspectRatio="xMidYMid slice" fill="none"
                stroke="var(--rule)" stroke-width="0.5">@@GRATICULE_LG@@</svg>
         </span>
-      <svg class="fig" viewBox="0 0 600 600" role="img" aria-label="{{ figureAlt }}">
-        @@WORKING@@
+      <svg class="fig {{ movedCls }}" viewBox="0 0 600 600" role="img" aria-label="{{ figureAlt }}">
+        <!-- Per-chapter groups, so the band that moved can be drawn on its own.
+             The whole figure re-scribing on every open is a product performing;
+             one band redrawing is the record saying what changed (050). -->
+        @@CHAPTERS@@
         <g fill="none" stroke="var(--ink)">
           <sc-if value="{{ selBand }}" hint-placeholder-val="{{ true }}">
             <circle cx="300" cy="300" r="{{ selR0 }}" stroke-width="1.2"></circle>
@@ -338,8 +361,16 @@ class Component extends DCLogic {
     }));
 
 
+    // What changed since the last open. In the product this comes from the
+    // ledger; here it is the chapter that most recently gained an attestation.
+    const movedCh = 4;
+    const news = 'Cebu Pacific signed your work since you last looked.';
+
     return {
       headerCls: 'disclosed',
+      hasNews: news !== '',
+      news,
+      movedCls: 'moved-band moved' + movedCh,
       figureAlt: 'Your imprint. Five chapters: two signed by the employer, one by a coworker, one dates only, one you added yourself.',
       bands: z.map(g => ({mid:g.mid, w:g.w, pick: () => pick(g.ch)})),
       selBand: sel !== null,

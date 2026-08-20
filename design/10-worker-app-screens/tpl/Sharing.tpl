@@ -33,9 +33,18 @@
 
     <!-- Exposure first, in one sentence, before any control. A worker opening
          this screen should learn what is already true before deciding anything. -->
-    <div style="padding-top:22px;border-bottom:1px solid var(--ink);padding-bottom:16px">
-      <p class="t-rec" style="margin:0;text-wrap:pretty">{{ exposure }}</p>
-      <p class="t-meta" style="margin:8px 0 0;color:var(--secondary);text-wrap:pretty">
+    <!-- Exposure as a reading, not a sentence: the number of parties who can open
+         your record is the instrument's figure, set in §6's instrument register. -->
+    <div style="padding-top:24px;border-bottom:1px solid var(--ink);padding-bottom:18px">
+      <div style="display:flex;align-items:baseline;gap:14px">
+        <span class="t-inst">{{ grantCount }}</span>
+        <span style="flex:1;min-width:0">
+          <span class="t-rec" style="display:block;text-wrap:pretty">{{ exposure }}</span>
+          <span class="t-data" style="display:block;color:var(--secondary);padding-top:3px">
+            Your public page is {{ pubStateLower }}</span>
+        </span>
+      </div>
+      <p class="t-meta" style="margin:12px 0 0;color:var(--secondary);text-wrap:pretty">
         A grant ends on its own date. Nobody keeps reading your record because
         you forgot about them.</p>
     </div>
@@ -43,6 +52,7 @@
     <div class="grp">
       <div class="sechead"><h2 class="t-sec" style="margin:0">Your public page</h2>
         <span class="t-data" style="color:var(--secondary)">{{ pubState }}</span></div>
+      <div class="sinerule">@@SINERULE@@</div>
       <button class="srow press" onClick="{{ noop }}">
         <span style="flex:1;min-width:0">
           <span class="t-data" style="display:block">hiregrain.com/u/liezel-mendoza</span>
@@ -64,6 +74,7 @@
     <div class="grp">
       <div class="sechead"><h2 class="t-sec" style="margin:0">Who holds a grant</h2>
         <span class="t-data" style="color:var(--secondary)">{{ grantCount }}</span></div>
+      <div class="sinerule">@@SINERULE@@</div>
       <sc-for list="{{ grants }}" as="g" hint-placeholder-count="2">
         <button class="srow press" onClick="{{ g.go }}">
           <span style="flex:1;min-width:0">
@@ -84,6 +95,7 @@
 
     <div class="grp">
       <div class="sechead"><h2 class="t-sec" style="margin:0">Send your whole record</h2></div>
+      <div class="sinerule">@@SINERULE@@</div>
       <p class="t-body" style="margin:0 0 12px;color:var(--secondary);text-wrap:pretty">
         A private link to everything, including what each business wrote. It
         expires. Send it to someone deciding about you, not to a job board.</p>
@@ -92,6 +104,7 @@
 
     <div class="grp">
       <div class="sechead"><h2 class="t-sec" style="margin:0">Who has read it</h2></div>
+      <div class="sinerule">@@SINERULE@@</div>
       <sc-for list="{{ reads }}" as="r" hint-placeholder-count="3">
         <div class="srow">
           <span style="flex:1;min-width:0" class="t-rec">{{ r.party }}</span>
@@ -117,7 +130,8 @@ class Component extends DCLogic {
     const noop = () => {};
     return {
       noop,
-      exposure: 'Your public page is on, and two businesses hold a grant to your whole record.',
+      exposure: 'businesses hold a grant to your whole record',
+      pubStateLower: 'on, and anyone with a Grain account can open it',
       pubState: 'On',
       grantCount: '2',
       visibility: [

@@ -43,11 +43,23 @@
     </section>
 
     <section style="padding-top:32px">
+      <!-- The reading is how much of this nobody has confirmed, set in §6's
+           instrument register — defined across ten screens and used by none. -->
+      <div style="display:flex;align-items:baseline;gap:14px;padding-bottom:20px">
+        <span class="t-inst">5</span>
+        <span style="flex:1;min-width:0">
+          <span class="t-rec" style="display:block;text-wrap:pretty">chapters, none of them confirmed</span>
+          <span class="t-data" style="display:block;color:var(--secondary);padding-top:3px;text-wrap:pretty">
+            You wrote these. Ask each business to sign what you did.</span>
+        </span>
+      </div>
+
       <div style="display:flex;justify-content:space-between;align-items:baseline;
                   border-bottom:1px solid var(--ink);padding-bottom:8px">
         <h2 class="t-sec" style="margin:0">Outstanding verification</h2>
-        <span class="t-meta" style="color:var(--secondary)">5</span>
+        <span class="t-data" style="color:var(--secondary)">5</span>
       </div>
+      <div class="sinerule">@@SINERULE@@</div>
       <sc-for list="{{ rows }}" as="r" hint-placeholder-count="5">
         <button class="row proud press">
           <span class="gutter">

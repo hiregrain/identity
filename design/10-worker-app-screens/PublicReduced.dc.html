@@ -73,126 +73,99 @@
     .rung{display:inline-flex;align-items:flex-end;gap:2px;height:14px;flex:none}
     .rung i{display:block;width:3px}
 
-    .srow{display:flex;gap:12px;align-items:baseline;padding:13px 0;
-          border-bottom:1px solid var(--hairline);width:100%;min-height:44px}
-    .grp{padding-top:24px}
+    .prow{display:flex;gap:12px;align-items:flex-start;padding:14px 0;
+          border-bottom:1px solid var(--hairline)}
     main::-webkit-scrollbar{width:0}
   </style>
 </helmet>
 
-<!-- Fluid in both axes: the record fills whatever safe area it is given, and
-     min-height carries the standalone case where height:100% has no sized
-     ancestor and would collapse to zero. 728 is the common safe box across
-     iOS (778) and Android (728). Decision 046. -->
-<div style="width:100%;height:100%;min-height:728px;position:relative;overflow:hidden;background:var(--paper)">
-  <header style="height:52px;display:flex;align-items:center;justify-content:space-between;
-                 padding:0 20px;border-bottom:1px solid var(--hairline);position:relative;z-index:3;
-                 background:var(--paper)">
-    <h1 class="t-serial" style="margin:0">Account</h1>
-    <button class="press" aria-label="Close" style="width:44px;height:44px;display:flex;
-            align-items:center;justify-content:flex-end">
-      <svg width="18" height="18" viewBox="0 0 18 18" class="icon"><path d="M3 3 L15 15"/><path d="M15 3 L3 15"/></svg>
-    </button>
-  </header>
+<!-- Public's own chassis: --page ground, not --paper. design/07 §7 calls this the
+     one place the system proves it can vary by meaning, and it must not be
+     mistakable for the worker's own record. -->
+<div style="width:100%;height:100%;min-height:728px;position:relative;overflow:hidden;background:var(--page)">
 
-  <main style="position:absolute;top:52px;bottom:0;left:0;right:0;overflow-y:auto;padding:0 20px 40px">
+  <main style="position:absolute;inset:0;overflow-y:auto;padding:0 20px 40px">
+    <div style="background:var(--paper);margin:20px -4px 0;padding:24px 20px 20px;
+                border:1px solid var(--hairline)">
 
-    <!-- Append-only status, relocated here by decision 045 when the plate footer
-         left the record. It is the only surface that makes "nothing can be
-         deleted" checkable rather than a claim, and it is set in the instrument
-         register — §6 defines instrument numerals and nothing used them. -->
-    <div style="padding:26px 0 20px;border-bottom:1px solid var(--ink)">
-      <div style="display:flex;align-items:baseline;gap:14px">
-        <span class="t-inst">{{ entries }}</span>
-        <span style="flex:1;min-width:0">
-          <span class="t-rec" style="display:block">entries, and none removed</span>
-          <span class="t-data" style="display:block;color:var(--secondary);padding-top:3px">
-            Last change {{ lastChange }}</span>
-        </span>
+      <h1 class="t-title" style="margin:0">Liezel Mendoza</h1>
+      <p class="t-data" style="margin:8px 0 0;color:var(--secondary);text-wrap:pretty">
+        Philippines · Identity document checked, which says nothing about the work below</p>
+
+      <!-- No imprint. Decision 035: the figure is always behind sign-in, even when
+           the page is published, because an indexable imprint is the one thing
+           that cannot be taken back. The graticule stands where it would be —
+           §9's ground, doing the job it was defined for. -->
+      <div style="position:relative;height:132px;margin:22px 0 4px;overflow:hidden;
+                  border-block:1px solid var(--hairline)">
+        <svg viewBox="0 0 296 132" preserveAspectRatio="xMidYMid slice" fill="none"
+             stroke="var(--rule)" stroke-width="0.5" style="position:absolute;inset:0;
+             width:100%;height:100%;opacity:.28"><path d='M0 24 L296 24'/><path d='M0 48 L296 48'/><path d='M0 72 L296 72'/><path d='M0 96 L296 96'/><path d='M0 120 L296 120'/><path d='M0 144 L296 144'/><path d='M0 168 L296 168'/><path d='M0 192 L296 192'/><path d='M0 216 L296 216'/><path d='M0 240 L296 240'/><path d='M0 264 L296 264'/><path d='M0 288 L296 288'/><path d='M24.0 0 Q18.1 148.0 24.0 296'/><path d='M48.0 0 Q43.3 148.0 48.0 296'/><path d='M72.0 0 Q68.4 148.0 72.0 296'/><path d='M96.0 0 Q93.5 148.0 96.0 296'/><path d='M120.0 0 Q118.7 148.0 120.0 296'/><path d='M144.0 0 Q143.8 148.0 144.0 296'/><path d='M168.0 0 Q168.9 148.0 168.0 296'/><path d='M192.0 0 Q194.1 148.0 192.0 296'/><path d='M216.0 0 Q219.2 148.0 216.0 296'/><path d='M240.0 0 Q244.4 148.0 240.0 296'/><path d='M264.0 0 Q269.5 148.0 264.0 296'/><path d='M288.0 0 Q294.6 148.0 288.0 296'/></svg>
+        <div style="position:absolute;inset:0;display:flex;flex-direction:column;
+                    align-items:center;justify-content:center;gap:6px;padding:0 24px">
+          <span class="t-rec" style="text-align:center;text-wrap:pretty">Her imprint is not on this page</span>
+          <span class="t-meta" style="color:var(--secondary);text-align:center;text-wrap:pretty">
+            Sign in with a Grain account to see it.</span>
+        </div>
       </div>
-      <p class="t-meta" style="margin:12px 0 0;color:var(--secondary);text-wrap:pretty">
-        Every entry is kept. A correction is written as a new entry rather than
-        replacing the old one, so the record can be read back in order.</p>
-    </div>
 
-    <sc-for list="{{ groups }}" as="g" hint-placeholder-count="5">
-      <div class="grp">
-        <h2 class="t-micro" style="display:block;color:var(--secondary);padding-bottom:6px;
-                                   border-bottom:1px solid var(--ink);margin:0">{{ g.name }}</h2>
+      <div style="padding-top:20px">
+        <div class="sechead"><h2 class="t-sec" style="margin:0">Work history</h2>
+          <span class="t-data" style="color:var(--secondary)">{{ count }}</span></div>
         <div class="sinerule"><svg viewBox='0 0 320 6' width='100%' height='6' preserveAspectRatio='none' fill='none' stroke='#D3D7D6' stroke-width='1' vector-effect='non-scaling-stroke'><path d='M0.0 3.00 L2.0 3.31 L4.0 3.60 L6.0 3.84 L8.0 4.02 L10.0 4.13 L12.0 4.15 L14.0 4.08 L16.0 3.93 L18.0 3.71 L20.0 3.44 L22.0 3.14 L24.0 2.82 L26.0 2.52 L28.0 2.25 L30.0 2.04 L32.0 1.91 L34.0 1.85 L36.0 1.88 L38.0 2.00 L40.0 2.19 L42.0 2.44 L44.0 2.73 L46.0 3.05 L48.0 3.36 L50.0 3.64 L52.0 3.87 L54.0 4.04 L56.0 4.14 L58.0 4.14 L60.0 4.06 L62.0 3.90 L64.0 3.68 L66.0 3.40 L68.0 3.09 L70.0 2.78 L72.0 2.48 L74.0 2.22 L76.0 2.02 L78.0 1.89 L80.0 1.85 L82.0 1.89 L84.0 2.02 L86.0 2.22 L88.0 2.48 L90.0 2.78 L92.0 3.09 L94.0 3.40 L96.0 3.68 L98.0 3.90 L100.0 4.06 L102.0 4.14 L104.0 4.14 L106.0 4.04 L108.0 3.87 L110.0 3.64 L112.0 3.36 L114.0 3.05 L116.0 2.73 L118.0 2.44 L120.0 2.19 L122.0 2.00 L124.0 1.88 L126.0 1.85 L128.0 1.91 L130.0 2.04 L132.0 2.25 L134.0 2.52 L136.0 2.82 L138.0 3.14 L140.0 3.44 L142.0 3.71 L144.0 3.93 L146.0 4.08 L148.0 4.15 L150.0 4.13 L152.0 4.02 L154.0 3.84 L156.0 3.60 L158.0 3.31 L160.0 3.00 L162.0 2.69 L164.0 2.40 L166.0 2.16 L168.0 1.98 L170.0 1.87 L172.0 1.85 L174.0 1.92 L176.0 2.07 L178.0 2.29 L180.0 2.56 L182.0 2.86 L184.0 3.18 L186.0 3.48 L188.0 3.75 L190.0 3.96 L192.0 4.09 L194.0 4.15 L196.0 4.12 L198.0 4.00 L200.0 3.81 L202.0 3.56 L204.0 3.27 L206.0 2.95 L208.0 2.64 L210.0 2.36 L212.0 2.13 L214.0 1.96 L216.0 1.86 L218.0 1.86 L220.0 1.94 L222.0 2.10 L224.0 2.32 L226.0 2.60 L228.0 2.91 L230.0 3.22 L232.0 3.52 L234.0 3.78 L236.0 3.98 L238.0 4.11 L240.0 4.15 L242.0 4.11 L244.0 3.98 L246.0 3.78 L248.0 3.52 L250.0 3.22 L252.0 2.91 L254.0 2.60 L256.0 2.32 L258.0 2.10 L260.0 1.94 L262.0 1.86 L264.0 1.86 L266.0 1.96 L268.0 2.13 L270.0 2.36 L272.0 2.64 L274.0 2.95 L276.0 3.27 L278.0 3.56 L280.0 3.81 L282.0 4.00 L284.0 4.12 L286.0 4.15 L288.0 4.09 L290.0 3.96 L292.0 3.75 L294.0 3.48 L296.0 3.18 L298.0 2.86 L300.0 2.56 L302.0 2.29 L304.0 2.07 L306.0 1.92 L308.0 1.85 L310.0 1.87 L312.0 1.98 L314.0 2.16 L316.0 2.40 L318.0 2.69 L320.0 3.00'/></svg></div>
-        <sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="5">
-          <sc-if value="{{ r.act }}" hint-placeholder-val="{{ true }}">
-            <button class="srow press" onClick="{{ r.act }}">
-              <span class="t-body" style="flex:1;min-width:0">{{ r.label }}</span>
-              <span class="t-data" style="text-align:right;color:var(--secondary)">{{ r.value }}</span>
-            </button>
-          </sc-if>
-          <sc-if value="{{ r.inert }}" hint-placeholder-val="{{ true }}">
-            <div class="srow">
-              <span class="t-body" style="flex:1;min-width:0;color:var(--secondary)">{{ r.label }}</span>
-              <span class="t-data" style="text-align:right">{{ r.value }}</span>
-            </div>
-          </sc-if>
+        <sc-for list="{{ chapters }}" as="c" hint-placeholder-count="5">
+          <div class="prow">
+            <span style="flex:1;min-width:0">
+              <span class="t-rec" style="display:block">{{ c.party }}</span>
+              <span class="t-data" style="display:block;padding-top:3px">{{ c.state }}</span>
+            </span>
+            <span class="col-r">
+              <span class="t-data" style="display:block">{{ c.from }}</span>
+              <span class="t-data" style="display:block;color:var(--secondary)">{{ c.to }}</span>
+            </span>
+          </div>
         </sc-for>
-        <sc-if value="{{ g.note }}" hint-placeholder-val="{{ true }}">
-          <p class="t-meta" style="margin:10px 0 0;color:var(--secondary);text-wrap:pretty">{{ g.note }}</p>
-        </sc-if>
       </div>
-    </sc-for>
 
-    <div style="padding-top:28px">
-      <button class="btn-secondary press" onClick="{{ toggle }}">Ask us to delete everything</button>
-      <sc-if value="{{ confirming }}" hint-placeholder-val="{{ true }}">
-        <div style="background:var(--ink);color:var(--paper);padding:16px;margin-top:12px">
-          <p class="t-body" style="margin:0;text-wrap:pretty">Support handles this. Nobody can read
-            your record from the moment you ask. Everything is erased seven days later. If you sign in
-            before then it all comes back, and you would have to ask again.</p>
-        </div>
-        <div style="padding-top:12px;text-align:center">
-          <button class="btn-tertiary press" onClick="{{ toggle }}">Keep my record</button>
-        </div>
-      </sc-if>
+      <p class="t-meta" style="margin:18px 0 0;color:var(--secondary);text-wrap:pretty">
+        This page shows who she worked for and who confirmed it. It does not show
+        what any business wrote about her work, and Grain never checks whether the
+        work was done well.</p>
+
+      <div style="margin-top:20px;border-top:1px solid var(--ink);padding-top:16px">
+        <button class="btn-secondary press" style="width:100%">Sign in to see the full record</button>
+      </div>
     </div>
-  </main>
 
+    <p class="t-micro" style="margin:16px 4px 0;color:var(--secondary);text-wrap:pretty">
+      hiregrain.com/u/liezel-mendoza · a Grain record</p>
+  </main>
 </div>
 </x-dc>
 
 <script data-dc-script data-props='{"$preview":{"width":360,"height":800}}'>
-// A sheet from the Record header, not a destination. Read-only: every account
-// change is a support request (decision 030). Deletion has no in-app control —
-// it is named here and routed, because consent promises the right at signup.
+// Gap 13, half two, and the first of Public's two NOT DRAWN surfaces: what a
+// logged-out visitor or a crawler receives. Decision 037 gives this its own web
+// layer because a client-painted render ranks badly and cannot serve a distinct
+// crawler payload.
+//
+// What is deliberately absent: the imprint (035 — always behind sign-in, since an
+// indexable figure cannot be recalled), and anything a party wrote.
 class Component extends DCLogic {
-  constructor(p){ super(p); this.state = {confirming:false}; }
   renderVals(){
-    const inert = (label, value) => ({label, value, inert:true});
-    const entries = 47, lastChange = '12 Aug 2026';
-    const act = (label, value) => ({label, value, act: () => {}});
-    return {
-      entries, lastChange,
-      groups: [
-        {name:'Account', rows:[
-          inert('Full name','Liezel Mendoza'), inert('Phone','+63 •• ••• 4471'),
-          inert('Email','Not added'), inert('Address','hiregrain.com/u/liezel-mendoza')],
-         note:'Support changes any of these. Message us and we will do it.'},
-        {name:'Identity', rows:[
-          act('Identity verification','Document'),
-          act('Add a liveness check','Not added')],
-         note:'Employers see one thing: verified, or not. They never see the document.'},
-        {name:'Notifications', rows:[
-          act('A business signs your work','On'),
-          act('A grant is about to end','On'),
-          act('Your public page is viewed','Off')]},
-        {name:'Language', rows:[ act('App language','English') ]},
-        {name:'Your data', rows:[
-          act('Send me everything','By email, within 24 hours'),
-          act('Who can read my record','2 parties'),
-          act('Who has read my record','Ask us')]},
-        {name:'About', rows:[ act('How the record works',''), act('Terms',''), act('Privacy','') ]}
-      ],
-      confirming: this.state.confirming,
-      toggle: () => this.setState({confirming: !this.state.confirming})
-    };
+    const chapters = [
+      {party:'Cebu Pacific Cargo Services', state:'Employment confirmed by the business',
+       from:'Jan 2025', to:'present'},
+      {party:'Metro Manila Logistics', state:'Signed by the business',
+       from:'Mar 2023', to:'Jan 2025'},
+      {party:'R. Santos Dry Goods', state:'Signed by a coworker, not the business',
+       from:'Sep 2020', to:'Mar 2023'},
+      {party:'Sunrise Foods Manufacturing', state:'Signed by the business, and a second party agreed',
+       from:'Mar 2019', to:'Sep 2021'},
+      {party:'Bataan Poultry Processing', state:'Liezel added this. Nobody has confirmed it.',
+       from:'Sep 2017', to:'Mar 2019'}
+    ];
+    return {chapters, count: chapters.length};
   }
 }
 </script>

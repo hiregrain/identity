@@ -11,3 +11,10 @@
     .icon{stroke:var(--ink);stroke-width:1.5;fill:none;stroke-linecap:square}
     .col-r{text-align:right;white-space:nowrap;padding-top:1px}
     main::-webkit-scrollbar{width:0}
+
+    /* §9's sine-modulated divider and the rung scale live in the chassis, not in
+       one screen's helmet: both are shared vocabulary, and a class defined in
+       Main only meant every other screen rendered them unstyled. */
+    .sinerule{margin-top:-1px;line-height:0;opacity:.9}
+    .rung{display:inline-flex;align-items:flex-end;gap:2px;height:14px;flex:none}
+    .rung i{display:block;width:3px}

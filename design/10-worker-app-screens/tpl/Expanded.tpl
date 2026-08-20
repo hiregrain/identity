@@ -37,8 +37,13 @@
     .zoom{display:flex;height:44px;align-items:flex-end}
     .zoom button{flex:1;height:44px;display:flex;align-items:flex-end;justify-content:center}
     .zoom i{display:block;width:1px;background:var(--rule)}
-    .rung{display:inline-flex;align-items:flex-end;gap:2px;height:14px;flex:none}
-    .rung i{display:block;width:3px}
+    /* §7 press physics, on this screen only (decision 050). The figure yields
+       under the thumb where inspecting it is the task; on the record it is a
+       plate you open, and a plate that squirms is a worse plate. A band whose
+       chapter is attested does NOT yield — §7 makes rigidity the expression of
+       permanence, and it had been dead code in every file. */
+    .stage{transition:transform 120ms cubic-bezier(0.2,0,0,1)}
+    .stage.give:active{transform:scale(0.994)}
     .lrow{display:flex;gap:12px;align-items:flex-start;padding:8px 0}
     .lmark{flex:0 0 20px;margin-top:8px}
   </style>
@@ -62,7 +67,7 @@
     </button>
   </header>
 
-  <div class="stage {{ phase }}" style="position:absolute;top:52px;left:0;right:0;height:298px"
+  <div class="stage {{ phase }} {{ give }}" style="position:absolute;top:52px;left:0;right:0;height:298px"
        onPointerDown="{{ down }}" onPointerMove="{{ move }}" onPointerUp="{{ up }}">
     <svg viewBox="0 0 600 600" width="100%" height="100%" role="img" aria-label="{{ figureAlt }}">
       <g class="{{ selCls }}" transform="{{ view }}">
@@ -85,15 +90,15 @@
 
   <!-- The chapter. Touching its ring selects it, but a ring is 10-25px of stroke
        and that is not a touch target, so the name is also a control. -->
-  <div style="position:absolute;top:350px;left:0;right:0;height:56px;display:flex;
+  <div style="position:absolute;top:350px;left:0;right:0;min-height:60px;display:flex;
               align-items:center;border-bottom:1px solid var(--ink)">
     <button class="press" aria-label="Previous chapter" onClick="{{ prevCh }}"
             style="width:44px;height:44px;display:flex;align-items:center;justify-content:center">
       <svg width="16" height="16" viewBox="0 0 16 16" class="icon"><path d="M10 3 L5 8 L10 13"/></svg>
     </button>
-    <span style="flex:1;min-width:0;text-align:center">
-      <span class="t-rec" style="display:block">{{ party }}</span>
-      <span class="t-meta" style="display:block;color:var(--secondary)">{{ span }}</span>
+    <span style="flex:1;min-width:0;text-align:center;padding:0 4px">
+      <span class="t-sec" style="display:block;text-wrap:pretty;line-height:1.2">{{ party }}</span>
+      <span class="t-data" style="display:block;color:var(--secondary);padding-top:2px">{{ span }}</span>
     </span>
     <button class="press" aria-label="Next chapter" onClick="{{ nextCh }}"
             style="width:44px;height:44px;display:flex;align-items:center;justify-content:center">
@@ -272,6 +277,9 @@ class Component extends DCLogic {
       view: `translate(${tx.toFixed(1)} ${ty.toFixed(1)}) translate(${(300*(1-k)).toFixed(1)} ${(300*(1-k)).toFixed(1)}) scale(${k})`,
       selR0: (c.r0*S).toFixed(1), selR1: (c.r1*S).toFixed(1),
       hasLobe: lobe !== '', lobe,
+      // Attested chapters are rigid. Unattested ones yield, which is the whole
+      // point of §7's rule: the record gives where nothing holds it.
+      give: c.levels ? '' : 'give',
       setBy: c.setBy, caveat: c.levels ? CAVEAT : '', party: c.party, span: c.span,
       prevCh: () => this.setState({ch: (ch + CHAPTERS.length - 1) % CHAPTERS.length}),
       nextCh: () => this.setState({ch: (ch + 1) % CHAPTERS.length}),

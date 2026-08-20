@@ -95,7 +95,12 @@ for i, eng in enumerate(WORKING):
     lobes.append(row)
 json.dump(lobes, open(os.path.join(OUT,"lobes.json"), "w"))
 
-chs = "".join("<g class='ch ch%d'>%s</g>" % (i,
+# fill and stroke belong on the fragment, not on whatever markup happens to wrap
+# it: Expanded supplied them and Main did not, so every woven chapter rendered as
+# a solid black shape on the record. A fragment that depends on its caller for
+# fill is a fragment that will be wrong the first time someone reuses it.
+chs = "".join("<g class='ch ch%d' fill='none' stroke='#1B2A44' stroke-width='1.00' "
+              "vector-effect='non-scaling-stroke'>%s</g>" % (i,
         "".join(per[i]).replace("<path d=","<path pathLength='1' d=").replace("<circle ","<circle pathLength='1' "))
       for i in range(5))
 open(os.path.join(OUT,"chapters.svgfrag"),"w").write(chs)

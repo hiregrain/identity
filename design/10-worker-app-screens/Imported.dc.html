@@ -33,7 +33,7 @@
     /* labels ONLY — never a value, a date, a name or a sentence (§6) */
     .t-micro {font-weight:500;font-size:9.5px;letter-spacing:0.08em;text-transform:uppercase;line-height:1.3}
     .t-serial{font-weight:500;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;line-height:1.2}
-    .t-inst  {font-stretch:125%;font-weight:800;font-size:40px;line-height:1;font-variant-numeric:tabular-nums}
+    .t-inst  {font-stretch:125%;font-weight:800;font-size:40px;line-height:1;font-variant-numeric:tabular-nums;white-space:nowrap}
     /* §7 depth presses down; verified rows have zero press-give — rigidity is
        how permanence is expressed. Both halves are load-bearing. */
     .press{transition:transform 60ms cubic-bezier(0.2,0,0,1)}
@@ -89,11 +89,23 @@
     </section>
 
     <section style="padding-top:32px">
+      <!-- The reading is how much of this nobody has confirmed, set in §6's
+           instrument register — defined across ten screens and used by none. -->
+      <div style="display:flex;align-items:baseline;gap:14px;padding-bottom:20px">
+        <span class="t-inst">5</span>
+        <span style="flex:1;min-width:0">
+          <span class="t-rec" style="display:block;text-wrap:pretty">chapters, none of them confirmed</span>
+          <span class="t-data" style="display:block;color:var(--secondary);padding-top:3px;text-wrap:pretty">
+            You wrote these. Ask each business to sign what you did.</span>
+        </span>
+      </div>
+
       <div style="display:flex;justify-content:space-between;align-items:baseline;
                   border-bottom:1px solid var(--ink);padding-bottom:8px">
         <h2 class="t-sec" style="margin:0">Outstanding verification</h2>
-        <span class="t-meta" style="color:var(--secondary)">5</span>
+        <span class="t-data" style="color:var(--secondary)">5</span>
       </div>
+      <div class="sinerule"><svg viewBox='0 0 320 6' width='100%' height='6' preserveAspectRatio='none' fill='none' stroke='#D3D7D6' stroke-width='1' vector-effect='non-scaling-stroke'><path d='M0.0 3.00 L2.0 3.31 L4.0 3.60 L6.0 3.84 L8.0 4.02 L10.0 4.13 L12.0 4.15 L14.0 4.08 L16.0 3.93 L18.0 3.71 L20.0 3.44 L22.0 3.14 L24.0 2.82 L26.0 2.52 L28.0 2.25 L30.0 2.04 L32.0 1.91 L34.0 1.85 L36.0 1.88 L38.0 2.00 L40.0 2.19 L42.0 2.44 L44.0 2.73 L46.0 3.05 L48.0 3.36 L50.0 3.64 L52.0 3.87 L54.0 4.04 L56.0 4.14 L58.0 4.14 L60.0 4.06 L62.0 3.90 L64.0 3.68 L66.0 3.40 L68.0 3.09 L70.0 2.78 L72.0 2.48 L74.0 2.22 L76.0 2.02 L78.0 1.89 L80.0 1.85 L82.0 1.89 L84.0 2.02 L86.0 2.22 L88.0 2.48 L90.0 2.78 L92.0 3.09 L94.0 3.40 L96.0 3.68 L98.0 3.90 L100.0 4.06 L102.0 4.14 L104.0 4.14 L106.0 4.04 L108.0 3.87 L110.0 3.64 L112.0 3.36 L114.0 3.05 L116.0 2.73 L118.0 2.44 L120.0 2.19 L122.0 2.00 L124.0 1.88 L126.0 1.85 L128.0 1.91 L130.0 2.04 L132.0 2.25 L134.0 2.52 L136.0 2.82 L138.0 3.14 L140.0 3.44 L142.0 3.71 L144.0 3.93 L146.0 4.08 L148.0 4.15 L150.0 4.13 L152.0 4.02 L154.0 3.84 L156.0 3.60 L158.0 3.31 L160.0 3.00 L162.0 2.69 L164.0 2.40 L166.0 2.16 L168.0 1.98 L170.0 1.87 L172.0 1.85 L174.0 1.92 L176.0 2.07 L178.0 2.29 L180.0 2.56 L182.0 2.86 L184.0 3.18 L186.0 3.48 L188.0 3.75 L190.0 3.96 L192.0 4.09 L194.0 4.15 L196.0 4.12 L198.0 4.00 L200.0 3.81 L202.0 3.56 L204.0 3.27 L206.0 2.95 L208.0 2.64 L210.0 2.36 L212.0 2.13 L214.0 1.96 L216.0 1.86 L218.0 1.86 L220.0 1.94 L222.0 2.10 L224.0 2.32 L226.0 2.60 L228.0 2.91 L230.0 3.22 L232.0 3.52 L234.0 3.78 L236.0 3.98 L238.0 4.11 L240.0 4.15 L242.0 4.11 L244.0 3.98 L246.0 3.78 L248.0 3.52 L250.0 3.22 L252.0 2.91 L254.0 2.60 L256.0 2.32 L258.0 2.10 L260.0 1.94 L262.0 1.86 L264.0 1.86 L266.0 1.96 L268.0 2.13 L270.0 2.36 L272.0 2.64 L274.0 2.95 L276.0 3.27 L278.0 3.56 L280.0 3.81 L282.0 4.00 L284.0 4.12 L286.0 4.15 L288.0 4.09 L290.0 3.96 L292.0 3.75 L294.0 3.48 L296.0 3.18 L298.0 2.86 L300.0 2.56 L302.0 2.29 L304.0 2.07 L306.0 1.92 L308.0 1.85 L310.0 1.87 L312.0 1.98 L314.0 2.16 L316.0 2.40 L318.0 2.69 L320.0 3.00'/></svg></div>
       <sc-for list="{{ rows }}" as="r" hint-placeholder-count="5">
         <button class="row proud press">
           <span class="gutter">

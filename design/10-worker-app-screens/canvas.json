@@ -6,26 +6,30 @@
     },
     {
       "id": "page-2",
-      "name": "Onboarding and sharing"
+      "name": "First run"
     },
     {
       "id": "page-3",
-      "name": "Platform"
+      "name": "Sharing, and what others see"
     },
     {
       "id": "page-4",
+      "name": "Platform"
+    },
+    {
+      "id": "page-5",
       "name": "How native \u2014 settled"
     }
   ],
   "artboards": [
     {
       "file": "Main.dc.html",
-      "title": "Core screen",
+      "title": "The record",
       "page": "page-1",
       "x": 0,
       "y": 0,
       "w": 360,
-      "h": 728
+      "h": 800
     },
     {
       "file": "Expanded.dc.html",
@@ -38,7 +42,7 @@
     },
     {
       "file": "Landing.dc.html",
-      "title": "Attestation landing",
+      "title": "An attestation lands",
       "page": "page-1",
       "x": 880,
       "y": 0,
@@ -55,19 +59,10 @@
       "h": 800
     },
     {
-      "file": "Consent.dc.html",
-      "title": "Consent instrument",
-      "page": "page-2",
-      "x": 0,
-      "y": 0,
-      "w": 360,
-      "h": 800
-    },
-    {
       "file": "Empty.dc.html",
       "title": "Empty record",
       "page": "page-2",
-      "x": 440,
+      "x": 0,
       "y": 0,
       "w": 360,
       "h": 800
@@ -76,7 +71,7 @@
       "file": "Imported.dc.html",
       "title": "R\u00e9sum\u00e9 imported",
       "page": "page-2",
-      "x": 880,
+      "x": 440,
       "y": 0,
       "w": 360,
       "h": 800
@@ -85,16 +80,16 @@
       "file": "Handle.dc.html",
       "title": "Claim the address",
       "page": "page-2",
-      "x": 1320,
+      "x": 880,
       "y": 0,
       "w": 360,
       "h": 800
     },
     {
-      "file": "Public.dc.html",
-      "title": "Public page",
+      "file": "Consent.dc.html",
+      "title": "Consent instrument",
       "page": "page-2",
-      "x": 1760,
+      "x": 1320,
       "y": 0,
       "w": 360,
       "h": 800
@@ -102,16 +97,52 @@
     {
       "file": "Sharing.dc.html",
       "title": "Sharing",
-      "page": "page-2",
-      "x": -440,
+      "page": "page-3",
+      "x": 0,
+      "y": 0,
+      "w": 360,
+      "h": 800
+    },
+    {
+      "file": "ShareLink.dc.html",
+      "title": "Send the whole record \u2014 gap 13",
+      "page": "page-3",
+      "x": 440,
+      "y": 0,
+      "w": 360,
+      "h": 800
+    },
+    {
+      "file": "Public.dc.html",
+      "title": "Public page, signed in",
+      "page": "page-3",
+      "x": 880,
+      "y": 0,
+      "w": 360,
+      "h": 800
+    },
+    {
+      "file": "PublicReduced.dc.html",
+      "title": "Public page, logged out \u2014 gap 13",
+      "page": "page-3",
+      "x": 1320,
+      "y": 0,
+      "w": 360,
+      "h": 800
+    },
+    {
+      "file": "Grant.dc.html",
+      "title": "Employer grant view \u2014 gap 8",
+      "page": "page-3",
+      "x": 1760,
       "y": 0,
       "w": 360,
       "h": 800
     },
     {
       "file": "ShellIOS.dc.html",
-      "title": "iPhone 17 \u2014 402x874 @3x",
-      "page": "page-3",
+      "title": "iPhone 17 \u2014 402\u00d7874 @3x",
+      "page": "page-4",
       "x": 0,
       "y": 0,
       "w": 426,
@@ -120,8 +151,8 @@
     {
       "file": "ShellAndroid.dc.html",
       "title": "Android \u2014 common viewport",
-      "page": "page-3",
-      "x": 520,
+      "page": "page-4",
+      "x": 506,
       "y": 0,
       "w": 384,
       "h": 990
@@ -129,7 +160,7 @@
     {
       "file": "HandleGrain.dc.html",
       "title": "A \u00b7 Grain-native",
-      "page": "page-4",
+      "page": "page-5",
       "x": 0,
       "y": 0,
       "w": 360,
@@ -138,7 +169,7 @@
     {
       "file": "HandlePlatform.dc.html",
       "title": "B \u00b7 Platform-native",
-      "page": "page-4",
+      "page": "page-5",
       "x": 440,
       "y": 0,
       "w": 360,
@@ -147,7 +178,7 @@
     {
       "file": "HandleSplit.dc.html",
       "title": "C \u00b7 Split",
-      "page": "page-4",
+      "page": "page-5",
       "x": 880,
       "y": 0,
       "w": 360,
@@ -156,104 +187,8 @@
   ],
   "annotations": [
     {
-      "id": "n-round2",
-      "page": "page-1",
-      "x": 0,
-      "y": -260,
-      "w": 360,
-      "text": "REVISED against design/07 \u2014 six independent reviews.\nSpec changes this forced (DESIGN.md): a `rule` token at 3.35:1 for every line that carries meaning, because `hairline` is 1.34:1 and was carrying every state; a `data` register at 13px tabular sentence case, because \u00a76 had no register for a figure column and micro-caption had absorbed 56 applications including the user's own name; \u00a79's \"selection as weave density\" corrected, since \u00a72 already gives density to corroboration."
-    },
-    {
-      "id": "n-disclose",
-      "page": "page-1",
-      "x": 0,
-      "y": 860,
-      "w": 360,
-      "text": "Disclosure is a line quality on the plate's header band, now drawn in `rule` rather than an invisible hairline. Grants are whole-record, so it is a property of the record \u2014 a per-chapter mark would be identical on every row.\nThe readout under the figure now counts the public page too. It previously said \"2 parties can read this\" while a search-indexed page was live, under-reporting exposure by the entire internet."
-    },
-    {
-      "id": "n-rows",
-      "page": "page-1",
-      "x": 0,
-      "y": 1080,
-      "w": 360,
-      "text": "Provenance is now in words on the worker's own rows, not only on the page employers read. Two reviewers found the same inversion independently.\nVerified rows are `.rigid` and do not compress under the thumb; unverified rows are `.press` and do. \u00a77 says rigidity is how permanence is expressed, and it had been dead code in all nine files."
-    },
-    {
-      "id": "n-expanded",
-      "page": "page-1",
-      "x": 440,
-      "y": -260,
-      "w": 360,
-      "text": "No ordinal. Four reviewers independently read \"Step 1 of 6\" as a rating of a person, on the panel an employer receives, on an instrument imprint/README.md \u00a77.5 records as untested for inter-rater agreement. The anchor sentence is the level; the caveat is stated on the surface rather than in a document.\nEvery axis the figure carries is now also a plain 44px control, because five concentric zones across 320px cannot each reach 44px and the figure was the only way in."
-    },
-    {
-      "id": "n-scribe",
-      "page": "page-1",
-      "x": 440,
-      "y": 860,
-      "w": 360,
-      "text": "The resting state is now visible: the scribe is a class added on open and removed when it finishes. Previously the figure's rest state was `stroke-dashoffset:1` and it was revealed only by the animation's fill, so any environment that suppressed animation rendered it permanently blank.\nReduced motion now zeroes delays as well as durations \u2014 the ceremony had been collapsing into a 600ms staggered flicker rather than an instant state change."
-    },
-    {
-      "id": "n-ceremony",
-      "page": "page-1",
-      "x": 880,
-      "y": 860,
-      "w": 360,
-      "text": "The landing now resolves to \"signed, nobody else has agreed yet\" and the single-party weave. It previously produced corroboration from one attestation, which record-schema.md \u00a72 forbids \u2014 the product's highest-attention moment was teaching an impossible state transition.\nTiming brought back inside \u00a710's 1080ms budget; it had run 1330ms while the phase change fired at 1080, snapping the last passes mid-draw."
-    },
-    {
-      "id": "n-settings",
-      "page": "page-1",
-      "x": 1320,
-      "y": -260,
-      "w": 360,
-      "text": "Read-only, per decision 030: every account change is a support request. Values are no longer set in micro-caption, which had been uppercasing the person's name and their permanent address.\nDeletion has no in-app control. It is named and routed, because the consent instrument promises the right at signup and a promised right that cannot be found is worse than one never offered."
-    },
-    {
-      "id": "n-consent",
-      "page": "page-2",
-      "x": 0,
-      "y": -260,
-      "w": 360,
-      "text": "Seven mechanics now, not six. Nothing had told a worker that businesses place them on seven set measures, which travel with every grant and onto the public page \u2014 a person agreeing could not have known they were consenting to be ranked.\nRow 5 was softened past accuracy: \"You can dispute anything\" promised a remedy the system does not provide. It now says what actually exists."
-    },
-    {
-      "id": "n-empty",
-      "page": "page-2",
-      "x": 440,
-      "y": -260,
-      "w": 360,
-      "text": "The identity core is dropped (DESIGN.md gap 11, closed by 029 \u00a7B6); the graticule clipped to the fixed canvas carries absence, with no boundary ring.\nThe copy previously promised \"nothing is drawn until someone confirms it\", which the next artboard breaks by drawing five unconfirmed chapters."
-    },
-    {
-      "id": "n-handle",
-      "page": "page-2",
-      "x": 1320,
-      "y": -260,
-      "w": 360,
-      "text": "Transliteration is real now. The first build's comment claimed the field arrived prefilled and was never rejected; the code stripped to [a-z0-9-], which returns an empty string for a Devanagari or Arabic name and was then classed as invalid \u2014 on the screen where a person claims their own identity.\nThe error state thickens the rule and speaks in ink. It had made the rule paler and set the error quieter than the success."
-    },
-    {
-      "id": "n-public",
-      "page": "page-2",
-      "x": 1760,
-      "y": 860,
-      "w": 360,
-      "text": "Three statements here were false and are corrected: the closing line claimed every record was written by the parties named, directly above a self-asserted chapter; \"this page shows what is true\" claimed more than provenance supports; and a worker-typed job title was printed above \"employment confirmed\", so a reader concluded the employer had confirmed a supervisory role.\nRegistry state is now on every party, the mark uses its solid tier at 20px per \u00a73, and the count is broken out instead of collapsing four kinds of evidence into \"three attested\".\nNOT DRAWN: the reduced page a crawler or logged-out visitor gets, and the employer's grant view (gap 8)."
-    },
-    {
-      "id": "n-sharing",
-      "page": "page-2",
-      "x": 2200,
-      "y": -260,
-      "w": 360,
-      "text": "NEW, decision 045. Sharing was the record's fourth section, below identity, outstanding verification and work history \u2014 which is where a product puts what does not matter, on the one surface where worker custody is actually exercised.\nExposure is stated in one sentence before any control: a worker learns what is already true before deciding anything. Every control is drawn but inert; what revoke and the visibility switches actually do is undecided (gaps 8 and 13).\nThe closing line on grants says ending one stops future reads and cannot pull back what was already read and kept, rather than implying otherwise."
-    },
-    {
       "id": "n-platform",
-      "page": "page-3",
+      "page": "page-4",
       "x": 0,
       "y": -300,
       "w": 880,
@@ -261,7 +196,7 @@
     },
     {
       "id": "n-native-brief",
-      "page": "page-4",
+      "page": "page-5",
       "x": 0,
       "y": -340,
       "w": 1240,
@@ -269,7 +204,7 @@
     },
     {
       "id": "n-native-a",
-      "page": "page-4",
+      "page": "page-5",
       "x": 0,
       "y": 860,
       "w": 360,
@@ -277,7 +212,7 @@
     },
     {
       "id": "n-native-b",
-      "page": "page-4",
+      "page": "page-5",
       "x": 440,
       "y": 860,
       "w": 360,
@@ -285,11 +220,43 @@
     },
     {
       "id": "n-native-c",
-      "page": "page-4",
+      "page": "page-5",
       "x": 880,
       "y": 860,
       "w": 360,
       "text": "C \u00b7 Split \u2014 NOT ADOPTED (047).\n\n\nFor: navigation and commit feel ordinary while everything carrying the record keeps the ruled input, Archivo and error in ink. Familiarity where familiarity pays, instrument where evidence lives.\n\nAgainst: the seam has to be defended case by case, and 'chrome' has no definition yet. Is a consent sheet chrome or record? A dispute form? Without a rule this becomes drift wearing a decision's clothes \u2014 which is exactly what entry 046 left open."
+    },
+    {
+      "id": "n-gap13",
+      "page": "page-3",
+      "x": 440,
+      "y": 840,
+      "w": 360,
+      "text": "NEW \u2014 gap 13, the sensitive tier. The whole record including the imprint, behind a link that expires. Its reading is the expiry, not the content: the number of days is the instrument figure, because how long it lives is the only thing about it a worker controls after sending.\nThe warning is ink inversion and explicit words, never red (\u00a75). It says the two things an interface usually implies the opposite of: it cannot be un-sent, and ending it early does not recall what was already read.\nDrawn but inert \u2014 what 'create' issues is undecided."
+    },
+    {
+      "id": "n-gap13b",
+      "page": "page-3",
+      "x": 1320,
+      "y": 840,
+      "w": 360,
+      "text": "NEW \u2014 the other half of gap 13, and the first of Public's two NOT DRAWN surfaces: what a logged-out visitor or a crawler receives.\nNo imprint. Decision 035 keeps the figure behind sign-in even when the page is published, because an indexable figure is the one thing that cannot be taken back. \u00a79's graticule stands where it would be, doing the job it was defined for.\nDecision 037 gives this its own web layer: a client-painted render ranks badly and cannot serve a distinct crawler payload."
+    },
+    {
+      "id": "n-gap8",
+      "page": "page-3",
+      "x": 1760,
+      "y": 840,
+      "w": 360,
+      "text": "NEW \u2014 gap 8, the employer's disclosure-grant view, on Public's --page chassis so whoever reads it is reminded they are not the subject.\nIt states its limits BEFORE its content: Grain checks that a business really signed a record and never checks whether the work was done well. No composite, no score, no badge \u2014 the constraint that outranks convenience.\nThe first reading is days left on the grant, not a judgement of a person. The closing line says two chapters stand at one party's reading alone, one is unconfirmed, and disagreeing parties are never averaged."
+    },
+    {
+      "id": "n-record",
+      "page": "page-1",
+      "x": 0,
+      "y": 840,
+      "w": 360,
+      "text": "The record after the 2026-08-20 pass. Warm ground (#F8F5EE, decision 049) under unchanged ink. The GRAIN lockup replaces 'Work record' set as text. Sharing is a masthead control carrying the live grant count (045/048); the hamburger became an account glyph because it promised a menu of destinations and opened one screen.\nThe figure is the control, framed by the plate's own registration corners \u2014 expand arrows were a stock icon and \u00a79's vocabulary is closed. \u00a79's sine divider and graticule ground were specified and unused until now.\nThe line above the figure says what moved since you last looked, and only that band re-scribes (050). Nothing is said when nothing changed."
     }
   ],
   "launch": {
