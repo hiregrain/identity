@@ -28,9 +28,15 @@ resolves the person; a merge never tells the party anything happened.
   pseudonym and resolves through the alias closure to the surviving
   `ledger_person_id`; the ledger id appears in no party-facing payload
   anywhere.
-- Merge invisibility: resolution happens before pseudonym lookup, so a
-  merged person's existing pseudonyms keep resolving and no partner's
-  key changes.
+- Issuance to parties: the derivation function this task builds is what
+  the request-delivery path calls, so a party first receives its
+  pseudonym for a worker inside the verification request it gets
+  (decision 069, schema §10); the `verification` layer's delivery
+  flows consume the function, never the table.
+- Merge invisibility, up direction: the incoming pseudonym looks up
+  its (partner, person) row, then the alias closure resolves to the
+  surviving identity, so a merged person's existing pseudonyms keep
+  resolving and no partner's key changes.
 - An attestation naming a pseudonym with no living person behind it is
   rejected pre-confirmation (the interface's waits-until-the-reference-
   exists rule).
@@ -39,8 +45,9 @@ resolves the person; a merge never tells the party anything happened.
 
 1. AC (mechanical): the same person yields different pseudonyms for
    two partners; the same partner gets the same pseudonym across
-   requests; no party-facing payload in any fixture contains a
-   `ledger_person_id`, proven by a scan over captured responses.
+   requests; no party-facing response schema carries a ledger id field
+   and the serializer check rejects a planted one, the RF-1 pattern
+   with a red-path fixture.
 2. AC (mechanical): after a merge, both prior pseudonyms resolve to
    the surviving identity and neither partner's pseudonym changed;
    after an unmerge, resolution is restored, riding

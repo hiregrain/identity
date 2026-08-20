@@ -5,7 +5,7 @@ layer: ingestion
 satisfies: [3]
 status: ready
 depends_on: [ingestion/05]
-migrations: []
+migrations: [0035-invalidation-records]
 binds: [model/attestation-interface.md, decisions/LOG.md#068]
 evidence: []
 verified_by: null
@@ -23,17 +23,21 @@ proven fraud, can ever supersede it.
 - The N-1 rule at admission: a superseding attestation lands only when
   its issuer equals the original's issuer; anyone else's is rejected
   with a structured error, before confirmation.
-- The ledger invalidation path: a signed invalidation record, issued
-  through an operator flow that is itself a chained privileged action,
-  never an edit to the original.
-- Supersession is append-only: the original stays, flagged superseded
-  at read time; no update touches it.
+- The ledger invalidation path: `0035-invalidation-records` stores the
+  signed invalidation record; this task builds the recording function,
+  itself a chained privileged action; the operator-facing flow that
+  calls it belongs to operator-console and arrives with that layer.
+  Never an edit to the original.
+- Supersession is append-only: the original stays; the superseded flag
+  is a derived read-time projection this task exposes through the
+  audit query, since this layer owns no party or worker read surface.
 
 ## Acceptance
 
 1. AC (mechanical): party B's supersession of party A's attestation is
-   rejected pre-confirmation; party A's lands and the original carries
-   the superseded flag at read time with its content untouched.
+   rejected pre-confirmation; party A's lands and the audit query's
+   derived projection shows the original superseded with its content
+   untouched.
 2. AC (mechanical): the ledger invalidation lands as a signed record,
    emits a chained privileged-operator event, and edits nothing,
    proven by byte-comparing the original before and after.

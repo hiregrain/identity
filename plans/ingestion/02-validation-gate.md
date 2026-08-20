@@ -4,7 +4,7 @@ type: task
 layer: ingestion
 satisfies: [2]
 status: ready
-depends_on: [ingestion/01]
+depends_on: [ingestion/01, ingestion/08]
 migrations: []
 binds: [model/attestation-interface.md, decisions/LOG.md#008, decisions/LOG.md#010, decisions/LOG.md#068]
 evidence: []
@@ -22,15 +22,18 @@ that say so are published, not guessed at.
 
 - Schema validation at submission, before the queue: interface
   version, required fields per scope (`engagement | period |
-  evaluation`), `work_kind@version` existence against the vocabulary,
+  evaluation`), `work_kind@version` existence against the
+  ledger-authored vocabulary task 08 stores (decision 069),
   `evaluation_kind` present iff scope is evaluation (A-7).
 - The banned-information scanner: the A-4 list plus the 008/010
   extensions (government IDs, birth dates, health data, criminal
   proceedings, nationality and immigration detail, education beyond
   credential name and issuer, sanctions hit detail), enforced in every
   field including free text by fixed patterns (decision 068). The
-  pattern set is a published artifact; the scanner reads it, so the
-  published rules and the enforced rules cannot diverge.
+  pattern set lives at `contract/ban-patterns.json`, created by this
+  task; the scanner reads that file at startup, so the
+  published rules and the enforced rules cannot diverge, and the AC2
+  check diffs the loaded patterns against the file.
 - Rejections are synchronous and structured, naming the failed rule;
   nothing failing validation reaches the queue.
 

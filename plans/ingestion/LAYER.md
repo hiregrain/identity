@@ -3,16 +3,18 @@ id: ingestion
 type: layer
 status: ready
 milestone: v1
-depends_on: [trust-kernel, party-registry]
+depends_on: [trust-kernel, party-registry, person-identity, self-asserted-record]
 binds:
   - model/attestation-interface.md
   - model/roster-firewall.md
   - decisions/LOG.md#006
   - decisions/LOG.md#008
   - decisions/LOG.md#010
+  - decisions/LOG.md#028
   - decisions/LOG.md#031
   - decisions/LOG.md#032
   - decisions/LOG.md#068
+  - decisions/LOG.md#069
 evidence: []
 verified_by: null
 ---
@@ -28,20 +30,37 @@ task is claimed.
 Scope, per the ratified interface (A-6/A-7 bound by decision 068) and
 the rulings:
 
-- Durable idempotent ingest queue: Postgres in the outbox pattern
-  (decision 068, no Kafka-as-truth), partitioned by subject, never
+- **The admission pipeline has one shape** (decision 069): validation,
+  signature verification, subject resolution, firewall, then enqueue
+  and confirm, in that order, so the subject is resolved before the
+  queue sees the row and partition-by-subject is real. Durable
+  idempotent ingest queue: Postgres in the outbox pattern
+  (decision 068, no Kafka-as-truth), partitioned by resolved subject,
+  never
   issuer, because hot parties at period close are a business-model
-  guarantee; riding the trust-kernel/08 transport.
+  guarantee; idempotency keyed on (attesting party, attestation id)
+  with a payload-hash mismatch rejected; riding the trust-kernel/08
+  transport.
 - **One external confirmation** (decision 068): a submission is
   rejected synchronously or confirmed once, and the confirmation is
   the zero-acked-loss promise, sent only after primary-plus-replica
-  durability. Received/recorded states exist internally for
+  durability. **The hash-chain timestamp is issued at confirmation,
+  and confirmation pins the verification request** (decision 069);
+  after it, the append is materialization that retries until done,
+  with no re-check and no re-rejection. If the subject deletes between
+  confirmation and recording, deletion wins: the attestation is
+  discarded in the deletion process and the party is notified through
+  the deletion-notification path. Received/recorded states exist
+  internally for
   monitoring; a party never sees received-then-rejected.
 - Schema validation at the door: version, required fields,
-  `work_kind@version` existence, and the banned-information list
+  `work_kind@version` existence against the ledger-authored vocabulary
+  this layer also stores (decision 069 closed the 028/006 conflict for
+  the ratified position), and the banned-information list
   (interface A-4, extended by decisions 008/010) enforced in every
   field including free text by **fixed published patterns, never a
-  model** (decision 068).
+  model** (decision 068), the pattern set living at
+  `contract/ban-patterns.json`.
 - Signature verification via the kernel under the R-3 validity rule:
   valid iff the key was active at signing time and the hash-chain
   timestamp predates any compromise report. Issuer state and probation
@@ -83,21 +102,28 @@ Acceptance:
    recording functions, proven by privilege inspection and bypass
    attempt.
 5. **An attestation that fails the roster firewall never lands.**
-   (mechanical, RF-2) an attestation without a live
-   `verification_request` naming the subject as requester is rejected
+   (mechanical, RF-2) an attestation whose request reference is neither
+   a live `verification_request` naming the subject as requester nor an
+   already-attested request between the same party and subject (the
+   opened relationship, decisions 031/069) is rejected
    with a structured error; a deliberately constructed employer-push
    attestation fails ingestion.
 6. **Every party-facing rejection precedes the confirmation.**
-   (mechanical) every rejection path executes before the external
-   confirmation is sent; after confirmation, no code path emits a
-   party-facing rejection, and a post-confirmation processing failure
+   (mechanical) party-facing rejections are constructed by exactly one
+   emitter in the queue module, which asserts the submission's state
+   precedes confirmation; a grep-class check fails any rejection
+   construction outside it; a post-confirmation processing failure
    retries until recorded, proven by a fault-injection fixture.
 7. **No ledger id ever reaches a party, and merges are invisible.**
-   (mechanical) every party-facing payload carries only the pairwise
-   pseudonym; a merge changes no pseudonym any partner holds;
+   (mechanical) no party-facing response schema carries a ledger id
+   field and the serializer check fails any payload containing one,
+   the RF-1 pattern; a merge changes no pseudonym any partner holds;
    resolution through the alias closure lands the attestation on the
    surviving identity.
 8. **A signature is valid only in its key's honest window.**
    (mechanical) an attestation signed with a key inactive at signing
-   time is rejected; one whose timestamp postdates a compromise report
-   is rejected; both land cleanly when the window is honest, per R-3.
+   time is rejected; at the confirmation moment, a key carrying a
+   compromise report is rejected and the just-issued chain timestamp
+   is what the R-3 comparison binds; a key past its renewal window
+   halts that party's ingestion with a structured error naming the
+   cause; all land cleanly when the window is honest.
