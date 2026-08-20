@@ -179,6 +179,14 @@ publishable in one sentence, and two records with identical evidence always
 produce identical marks. That is what allows the ledger to compute them
 without becoming a scorer.
 
+**Each level must be worth holding on its own.** A chapter with one
+attestation must be worth keeping before the second arrives, and a record with
+one chapter must be worth showing before the second. A design whose value
+appears only at graph density asks partners to fund the density first, which
+is the condition §8 names as the write incentive and §9 names as a way this
+dies. The test is not whether a level can be sold once, it is whether the same
+buyer comes back to it.
+
 **The analytics layer.** Built on top of the record, sold to partners and used
 by internal verticals. Computed on a partner's request, delivered, and **not
 retained as a fact about the person**; a run record is retained separately
@@ -392,9 +400,13 @@ In order of durability: the **attestation graph**, which compounds and which
 no single participant can replicate; **identity resolution** across a working
 life, which is cumulative and genuinely hard; **cryptographic integrity**,
 which makes claims falsifiable rather than merely asserted, so trust
-strengthens under scrutiny; the **legibility of the record**, codified
-tightly enough that it can be analysed at scale, which is what the analytics
-product actually sells; and the **mark**, which travels into other products
+strengthens under scrutiny; the **decomposition of the hiring decision into
+independently checkable parts**, which is what the analytics product actually
+sells, because a reader who can confirm one dimension at a time, each carrying
+its own provenance and corroboration, runs a far cheaper search than one
+weighing a whole candidate at once, the saving grows with the number of parts
+checked, and a single composite score would destroy the thing being sold; and
+the **mark**, which travels into other products
 carrying invariant meaning.
 
 The strategic position is the network and the standard rather than the
@@ -545,10 +557,25 @@ performance register is a labour-market information exchange under the January
 shape of the network itself rather than to any feature of it, and nothing in
 this document or the plan tree has been designed against it. **[GAP]** Unscoped.
 
+**And one that lives in the schema rather than in the market.** A `chapter`
+binds one subject to one party (`model/record-schema.md` §2), so every fact
+must hang off exactly one party relationship. Work spanning several parties
+has no home, and work attached to none has no home either: open-source
+contribution, a consortium, a founder before incorporation, cross-functional
+work that never produced a title change. That is the population whose résumé
+carries the least signal, which is where the record's advantage over one
+should be largest. The exclusion is made by omission rather than by decision,
+and it does not announce itself in any output, because nothing in a record
+shows what the format could not hold. **[GAP]** Either `chapter` gains a
+multi-party or no-party form, or that population is out of scope in writing.
+
 ## 10. Gaps: the work queue
 
-Ordered by what gates the first sale. Milestone `first-product` in
-`plans/ORDER.md` is the corresponding build path.
+Ordered by what gates the first sale, with one correction: **items 11 and 12
+belong immediately after item 2 and are not renumbered**, because
+`counsel/brief-6` and other documents cite these numbers and a renumbering
+would break them. Milestone `first-product` in `plans/ORDER.md` is the
+corresponding build path.
 
 1. **The record's own schema.** No field list exists for a work-history row, a
    skill, or a credential anywhere in the repo. Nothing ships without it, and
@@ -579,7 +606,11 @@ Ordered by what gates the first sale. Milestone `first-product` in
     never attaches. Counsel, long lead.
 11. **Responsibility dimension level definitions.** Seven dimensions, no level
     definitions, so `dimensions_exercised` cannot be populated by an attesting
-    party. Improves the score; does not gate it. Closest published prior art is
+    party. **Gates the first sale.** `chapter_standing` is the only object that
+    makes an attested chapter different in kind from a résumé line, and it
+    cannot be populated without these definitions, so a chapter with one
+    attestation today carries provenance and corroboration and nothing else.
+    Closest published prior art is
     SFIA, whose seven levels are defined per-dimension in behavioural prose
     across autonomy, influence, complexity and knowledge; the verbatim
     definitions were retrieved 2026-08-18 and are the drafting template.
@@ -610,6 +641,11 @@ Ordered by what gates the first sale. Milestone `first-product` in
     triple, and the customer-authored threshold artifact are specified in §5
     and built nowhere.
 24. **Matching and fintech scope.** Both raised, neither ruled.
+25. **The shape of a chapter.** One subject, one party, so work spanning
+    parties and work attached to no party are unrepresentable (§9). That is
+    the population the record should beat the résumé by the widest margin,
+    and it is currently excluded by omission. Either the object gains a
+    multi-party or no-party form, or the population is ruled out in writing.
 
 ## 11. Naming
 

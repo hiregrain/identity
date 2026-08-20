@@ -52,6 +52,13 @@ first thing sold runs on unverified self-asserted history plus whatever
 references have arrived, which is what `THESIS.md` §5 says, stated as a
 boundary rather than a sentence. `v1` remains the attestation round trip.
 
+**Its exit test is a second read.** The milestone ships two individually weak
+levels: a self-asserted record, and a read over it that `THESIS.md` §5
+concedes may return insufficient data. One purchase does not establish that
+either level holds value on its own. The same partner returning to the same
+record does. Until that happens `first-product` has produced a demonstration
+rather than a product, and declaring the test in advance is the point.
+
 ## Frontmatter, and what each field is for
 
 A layer and a task carry different fields. The checks port

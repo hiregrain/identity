@@ -31,9 +31,17 @@ A signal belongs on the core attester surface only if all three hold:
 1. The attester knows it without investigating.
 2. They can state it without exercising judgment.
 3. Two attesters observing the same thing would state it identically.
+4. It is useful on the first record it appears on, not only once many
+   accumulate.
+5. It is comparable across parties, or it is explicitly party-local. A field
+   whose meaning depends on the attesting party's own scale is a strong local
+   interaction and must not cross the boundary, whatever its value inside it.
 
 A signal failing (2) or (3) is a quality score wearing a fact's clothes, and
-`THESIS.md` §4 already rules those party-local and unnormalised.
+`THESIS.md` §4 already rules those party-local and unnormalised. A signal
+failing (4) cannot start the graph, only extend one that already exists
+(`THESIS.md` §3). A signal failing (5) is not excluded, it is routed: it stays
+with the issuing party and never enters a comparable channel.
 
 ## The binding constraint
 
@@ -54,10 +62,17 @@ founded, organisation growing or contracting.
 the attester, impossible for a reader to reconstruct, and absent from the
 résumé entirely.
 
-**Status.** Candidate, high priority.
+**Status.** Candidate, and **party-local under filter 5**. A team of three
+means different things at a seed company and at a bank, so team size and
+resourcing are strong local interactions measured against the party's own
+scale. They are recorded, readable under a grant, and never normalised or
+compared across parties. An earlier draft of this file ranked the category as
+the highest-value comparable field, which was wrong: it is high value and it
+does not cross.
 
-**What would change this.** Evidence that attesters answer it unreliably at
-distance, or that readers do not use it when given it.
+**What would change this.** A construction that expresses conditions on a
+scale the ledger owns rather than the party's, which would move the category
+into a comparable channel.
 
 ### 2. Surface and attribution
 
@@ -143,7 +158,12 @@ click. "Would you work with them again" is stated preference and nearly
 worthless. "Did you try to keep them" is revealed and expensive to fake. On
 signal per attester second this is the strongest category on the list.
 
-**Status.** Candidate, highest priority. Not in the model today.
+**Status.** Candidate, highest priority. Not in the model today. **Splits
+under filter 5.** Rehired, referred to a peer and promoted during are
+categorical events any party reports identically and they cross. Tried to
+retain, allocated the scarce work and gave them the new hire to train are
+measured against a party's own resources and headcount, so they stay
+party-local on the same footing as entry 1.
 
 **What would change this.** Evidence that these actions are driven by factors
 uncorrelated with the worker often enough to be noise.
@@ -183,7 +203,11 @@ party that can hold n greater than one. This is the sharpest answer both to
 why the record beats the résumé and to why an employer cannot build it
 themselves.
 
-**Status.** The moat. Requires depth on the same person across employers,
+**Status.** The moat, and **it fails filter 4**. Repetition across contexts is
+worth nothing on a first record and everything on a tenth, so it cannot be
+what makes early records worth holding. That is a real property of the thing
+being called a moat and it belongs beside the claim rather than behind it.
+Requires depth on the same person across employers,
 which makes §8's write-back problem the gate on the moat rather than a growth
 constraint. `THESIS.md` §2 currently rests the independence argument on the
 union of attestations rather than on what the union permits inferring, and
