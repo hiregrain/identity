@@ -142,10 +142,17 @@ drawn in the imprint** (`imprint/README.md` §2).
 | `revoked_at` | nullable | |
 | `last_read_at` | nullable | **Not surfaced to the worker, decision 035 §B4.** The worker sees the grant's *state* (issued, active, expired, revoked) and no read events. The field is retained for the disclosure record that satisfies GDPR Art. 15(1)(c) on request. |
 
-**Share links** are grants with no `grantee_party_ref`, a 30-day default expiry,
-and a statement at creation of what the recipient receives: full work-history
-detail, and the ability to ask Grain to analyse it (decision 035). It is written
-as what the recipient gets, not as a warning. **The public URL is not a grant.** It is a separate
+**Named-recipient sends** (decision 057, replacing 035's expiring link):
+the worker sends access to a named person, who opens it by proving
+control of the address it was sent to; one click, no account, no
+password. Reads are identified and revocation is per recipient. An
+account is required for analytics and for depth, never to read the
+record. Creation states what the recipient receives: full work-history
+detail, and the ability to ask Grain to analyse it (decision 035),
+written as what the recipient gets, not as a warning. Grant state is
+recorded as append-only event pairs; `granted_at`, `expires_at`, and
+`revoked_at` are the projection of those events (decision 067). **The
+public URL is not a grant.** It is a separate
 worker-curated projection carrying verification status and work history only.
 
 ## 6. `dispute`
