@@ -3753,3 +3753,54 @@ outputs; the eval harness is the only thing that calls engines, in its
 own environment. The contract belongs to the consumer:
 self-asserted-record's import task defines the proposal payload shape
 and extraction implements it (decision 067's seam, confirmed).
+
+## 073 — Extraction review: the layer-done rule, text-only over the wire, English-only corpus (2026-08-20)
+
+The engineering review over extraction returned sixteen defects; eleven
+were mechanical and are fixed in place. Five rulings:
+
+**A layer is done when every non-gated criterion is met.** Gated
+criteria discharge later through their declared draft tasks. This was
+always what gated_criteria meant; it is now stated in ORDER.md, because
+without it the strict layer gate deadlocks any milestone containing a
+layer with a gated criterion, which the review proved first-product
+was. With it, extraction takes depends_on self-asserted-record, that
+layer completes with its two gated criteria outstanding, extraction
+runs, and the batch-threshold task promotes when the contract lands.
+
+**Only the extracted text layer crosses the wire, never the document
+bytes.** The engine seam is extract(text, contract); the
+native-document-input wording is dead. The worker is told at upload, in
+one sentence, that the resume's text goes to a named third-party
+processor, and a consent flag is recorded, the decision 058 pattern,
+carried in self-asserted-record's import task. The engine ruling that
+discharges the gated criterion must name its residency posture, where
+calls are made from relative to the subject's region, inside the entry.
+
+**The eval corpus is synthetic-only, and English-only, in v0.** No
+donated real resume enters the corpus without a recorded consent and a
+deletion path, later and with its own note. Languages expand by entry
+as markets are entered; Filipino is not in v0, and Indic scripts wait
+for the India rail. Until the harness produces a passing English entry,
+the eval registry is empty and extraction proposes nothing, which is
+the honest starting state.
+
+**Party-tier matching defers to v1.** The registry it would match
+against is a v1 layer. v0 matches the institution registry and falls
+back to the raw string; the party tier is a declared extension arriving
+when party-registry is done.
+
+**The invention log holds counts, never content.** A blanked field
+increments a counter with the field name; the invented value itself is
+never written anywhere, closing the leak the review found in the
+red-path logging.
+
+With them, recorded: criterion 1 gains its owner and its check,
+covering DELETE and TRUNCATE as well; the commercial adapter splits
+into its own task; the eval registry lives at
+contract/eval-registry.json, committed empty from the start; the
+extraction engine ruling joins ORDER.md's decision gates; research
+files leave binds lists, the evidence tier working as written; the
+live-flip verifier reads harness evidence rather than holding vendor
+credentials; and the staging store holds proposals and the text layer,
+never the artifact bytes, resolving the import task's contradiction.
