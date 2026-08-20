@@ -36,7 +36,11 @@
         </div>
       </sc-for>
 
-      <div style="margin-top:24px;background:var(--ink);color:var(--paper);padding:16px">
+            <!-- Not inverted. Ink inversion is for a consequence that cannot be
+           undone; this is reassurance, which is its opposite, and putting it in
+           the loudest block in the system blurred the rule inside the screen
+           whose whole job is explaining a rule. -->
+      <div style="margin-top:24px;border-block:1px solid var(--ink);padding:16px 0">
         <p class="t-body" style="margin:0;text-wrap:pretty">
           What you can always do: attach your side to anything, permanently, so
           it travels with the chapter. And you can have the whole record deleted,

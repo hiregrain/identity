@@ -39,7 +39,7 @@
         </sc-for>
       </div>
 
-      <label class="t-micro" for="id" style="display:block;color:var(--secondary);padding-bottom:8px">{{ label }}</label>
+      <label class="t-data" style="color:var(--secondary)" for="id" style="display:block;color:var(--secondary);padding-bottom:8px">{{ label }}</label>
       <div class="ruled">
         <sc-if value="{{ isPhone }}" hint-placeholder-val="{{ true }}">
           <button class="cc press t-data" aria-label="Country, Philippines">

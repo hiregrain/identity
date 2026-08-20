@@ -51,11 +51,12 @@
 
     <div class="grp">
       <div class="sechead"><h3 class="t-sec" style="margin:0">When</h3></div>
-      <div class="sinerule">@@SINERULE@@</div>
       <div style="display:flex;gap:12px;padding-top:14px">
         <sc-for list="{{ months }}" as="m" hint-placeholder-count="2">
-          <button class="press" style="flex:1;min-height:44px;border:1px solid var(--rule);
-                  border-radius:3px;padding:10px 12px;text-align:left">
+          <!-- A ruled line, not a box. §8: inputs are ruled lines and boxed
+               fields do not exist, and a month picker is an input. -->
+          <button class="press" style="flex:1;min-height:44px;padding:8px 0;text-align:left;
+                  border-bottom:1px solid var(--rule)">
             <span class="t-micro" style="display:block;color:var(--secondary)">{{ m.label }}</span>
             <span class="t-data" style="display:block;padding-top:4px">{{ m.value }}</span>
           </button>
@@ -68,7 +69,6 @@
 
     <div class="grp">
       <div class="sechead"><h3 class="t-sec" style="margin:0">What you did</h3></div>
-      <div class="sinerule">@@SINERULE@@</div>
       <label class="t-micro" for="t" style="display:block;color:var(--secondary);padding:14px 0 8px">Your title there</label>
       <div class="ruled"><input id="t" value="{{ title }}" onInput="{{ onT }}" autocapitalize="words"></div>
       <p class="t-meta" style="margin:10px 0 0;color:var(--secondary);text-wrap:pretty">
@@ -96,7 +96,7 @@ class Component extends DCLogic {
       {name:'Cebu Pacific Air', note:'Pasay, Philippines · airline', registered:true}
     ].filter(x => !q || x.name.toLowerCase().includes(q));
     const hits = ALL.concat(q ? [{
-      name: this.state.q, note: 'Not registered with Grain. A coworker who was there can attest it.',
+      name: this.state.q, note: 'Not registered with Grain. A coworker Liezel named can attest it.',
       registered: false, pick: () => {}
     }] : []).map(h => ({...h, pick: h.pick || (() => this.setState({q:h.name}))}));
     return {

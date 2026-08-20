@@ -18,8 +18,10 @@
      promise. -->
 <!-- D3. The business is not registered, so a person attests instead. A work
      email at the business is what separates a manager from a coworker, and
-     confirming it also confirms their own time there, which is the quiet
-     reason this path grows the ledger rather than only serving one worker. -->
+     Grain checks control of the address and records that, and nothing about
+     when they worked there: a confirmation link cannot make a non-user the
+     subject of a tenure claim they never agreed to. See the gate in
+     plans/ORDER.md on third parties becoming subjects. -->
 <div style="width:100%;height:100%;min-height:752px;position:relative;overflow:hidden;background:var(--paper)">
   <header class="pushhead">
     <button class="iconbtn press" aria-label="Back to your record">
@@ -37,8 +39,9 @@
 
     <div style="padding-top:24px">
       <p class="t-body" style="margin:0 0 24px;color:var(--secondary);text-wrap:pretty">
-        A person who was there can attest what you did. Someone who confirms a
-        work email at the business attests as the business alongside themselves.</p>
+        A person who was there can attest what you did. If they confirm a work
+        address at the business, the record shows a person at a business Grain
+        recognises rather than one it does not.</p>
 
       <label class="t-micro" for="em" style="display:block;color:var(--secondary);padding-bottom:8px">Their email</label>
       <div class="ruled">
@@ -52,8 +55,8 @@
           They do not need the app. The link opens on the web, they confirm who
           they are, and they answer there.</p>
         <p class="t-meta" style="margin:10px 0 0;color:var(--secondary);text-wrap:pretty">
-          Confirming a work email also confirms their own time at that business,
-          so they are attesting to something of their own as well as yours.</p>
+          A confirmed work address is a fact about the address, not about when
+          they worked there. Grain records what it checked and nothing more.</p>
       </div>
     </div>
   </main>
@@ -78,7 +81,12 @@ class Component extends DCLogic {
       email: v, onE: (e) => this.setState({email:e.target.value}),
       note: !ok ? 'An email they can open.'
         : free ? 'A personal address attests as a person, not as the business. That is still a real witness, and the record says which it was.'
-               : 'A work address at this business. Confirming it attests as the business as well as the person.',
+               // Not "attests as the business". ChapterDetail renders the same
+               // evidence class, a confirmed work email at the business, as
+               // Individual, so the same evidence produced two marks split by an
+               // attribute Grain cannot check. What the check establishes is
+               // control of an address at that domain, and that is what it says.
+               : 'A work address at this business. Grain checks control of that address, so the record shows a person at a business it recognises.',
       disabled: ok ? null : 'disabled'
     };
   }

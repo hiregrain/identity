@@ -43,7 +43,6 @@
 
     <div class="grp">
       <div class="sechead"><h2 class="t-sec" style="margin:0">Your public page</h2></div>
-      <div class="sinerule">@@SINERULE@@</div>
       <!-- Every row leads with the record voice and carries its detail beneath,
            so the address row and the rows under it are the same object. A row
            that goes somewhere shows a chevron; a row that only states a fact
@@ -103,7 +102,6 @@
     <div class="grp">
       <div class="sechead"><h2 class="t-sec" style="margin:0">Who holds a grant</h2>
         <span class="t-data" style="color:var(--secondary)">{{ grantCount }}</span></div>
-      <div class="sinerule">@@SINERULE@@</div>
       <sc-for list="{{ grants }}" as="g" hint-placeholder-count="2">
         <button class="srow press" onClick="{{ g.go }}">
           <span style="flex:1;min-width:0">
@@ -127,7 +125,6 @@
 
     <div class="grp">
       <div class="sechead"><h2 class="t-sec" style="margin:0">Send your record to someone</h2></div>
-      <div class="sinerule">@@SINERULE@@</div>
       <p class="t-body" style="margin:0 0 12px;color:var(--secondary);text-wrap:pretty">
         You send it to one person by name. They open it by confirming the address
         you sent it to, so you always know who read it, and it ends on a date you
@@ -172,7 +169,7 @@ class Component extends DCLogic {
       facts: [
         {label:'Chapters, parties and dates', note:'Who you worked for, when, and in what position.',
          state:'Always', color:'var(--ink)'},
-        {label:'Which party attested each chapter', note:'The business, a coworker who was there, or none.',
+        {label:'Which party attested each chapter', note:'The business, a coworker the worker named, or none.',
          state:'Always', color:'var(--ink)'},
         {label:'Your imprint', note:'Drawn for anyone who opens the page. Never in search results.',
          state:'Visitors', color:'var(--ink)'},

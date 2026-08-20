@@ -16,7 +16,7 @@
      plans/ORDER.md. These screens describe who can attest and what it
      costs, which is settled, and say nothing that the gate would make a
      promise. -->
-<!-- D2. The registered-party path: the request goes to a verified domain and
+<!-- D2. The registered-party path: the request goes to the business domain Grain checked and
      whoever answers signs in first. 058 puts the irreversible term here, at
      the moment it binds, rather than at signup where nobody had reached it. -->
 <div style="width:100%;height:100%;min-height:752px;position:relative;overflow:hidden;background:var(--paper)">
@@ -32,12 +32,11 @@
       <span class="t-micro" style="display:block;color:var(--secondary)">Asking</span>
       <p class="t-rec" style="margin:6px 0 0">Cebu Pacific Cargo Services</p>
       <p class="t-meta" style="margin:4px 0 0;color:var(--secondary)">
-        Registered with Grain · verified domain cebupacificcargo.com</p>
+        Registered with Grain · domain Grain checked, cebupacificcargo.com</p>
     </div>
 
     <div class="grp">
       <div class="sechead"><h3 class="t-sec" style="margin:0">How it reaches them</h3></div>
-      <div class="sinerule">@@SINERULE@@</div>
       <sc-for list="{{ steps }}" as="s" hint-placeholder-count="3">
         <div style="padding:12px 0;border-bottom:1px solid var(--hairline)">
           <span class="t-body" style="display:block;text-wrap:pretty">{{ s }}</span>
@@ -76,7 +75,7 @@
 class Component extends DCLogic {
   renderVals(){
     return { steps: [
-      'The request goes to their verified domain, not to a person you name.',
+      'The request goes to the domain Grain checked, not to a person you name.',
       'Whoever answers it signs in first, so the record knows who attested.',
       'They answer on the web. They do not need the app, then or ever.'
     ]};

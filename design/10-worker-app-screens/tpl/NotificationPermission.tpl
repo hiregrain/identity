@@ -24,7 +24,7 @@
   <main class="dissolve" style="position:absolute;top:52px;bottom:88px;left:0;right:0;overflow-y:auto;padding:0 20px 32px">
     <div style="padding:32px 0 16px">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--ink)"
-           stroke-width="1.5" aria-hidden="true"><use href="#i-tick"></use></svg>
+           stroke-width="1.5" aria-hidden="true"><use href="#i-done"></use></svg>
       <h2 class="t-head" style="margin:16px 0 12px;line-height:1.2;text-wrap:pretty">Should we tell you when a party attests?</h2>
       <p class="t-body" style="margin:0;color:var(--secondary);text-wrap:pretty">That is the one thing worth interrupting you for. A business signing your work is the moment your record changes.</p>
     </div>

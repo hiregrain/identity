@@ -24,7 +24,6 @@
   <main class="dissolve" style="position:absolute;top:52px;bottom:88px;left:0;right:0;overflow-y:auto;padding:0 20px 32px">
     <div style="padding-top:24px">
       <div class="sechead"><h3 class="t-sec" style="margin:0">Issuing country</h3></div>
-      <div class="sinerule">@@SINERULE@@</div>
       <button class="srow press" style="padding-top:16px">
         <span class="t-body" style="flex:1;min-width:0">Philippines</span>
         <span class="chev" aria-hidden="true">
@@ -36,7 +35,6 @@
 
     <div class="grp">
       <div class="sechead"><h3 class="t-sec" style="margin:0">Which document</h3></div>
-      <div class="sinerule">@@SINERULE@@</div>
       <sc-for list="{{ docs }}" as="d" hint-placeholder-count="4">
         <button class="srow press" aria-pressed="{{ d.on }}" onClick="{{ d.go }}">
           <span style="flex:1;min-width:0">

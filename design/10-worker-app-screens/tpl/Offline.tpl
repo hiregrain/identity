@@ -21,9 +21,9 @@
     <h1 class="t-serial" style="margin:0">Your record</h1>
   </header>
   <div style="background:var(--ink);color:var(--paper);padding:8px 20px">
-    <span class="t-micro" style="color:var(--paper)">Offline. Showing your record as it was on 12 Aug</span>
+    <span class="t-data" style="color:var(--paper)">Offline. Showing your record as it was on 12 Aug</span>
   </div>
-  <main class="dissolve" style="position:absolute;top:52px;bottom:0;left:0;right:0;overflow-y:auto;padding:0 20px 32px">
+  <main class="dissolve" style="position:absolute;top:82px;bottom:0;left:0;right:0;overflow-y:auto;padding:0 20px 32px">
     <div style="padding-top:24px">
       <p class="t-body" style="margin:0 0 24px;color:var(--secondary);text-wrap:pretty">
         Everything already on your record is here and readable. What needs the

@@ -48,7 +48,10 @@
         <p class="t-meta" style="margin:8px 0 0;color:var(--secondary);text-wrap:pretty">
           The baseline is the business, an arch is an attestation of the work,
           and the number of arches is the number of parties. They differ by shape
-          rather than by density, because count is invisible at this size.</p>
+          rather than by density, because count is invisible at this size. The
+          figure uses density for the same fact at 300px, where it resolves. Two
+          encodings of one fact, chosen by what a reader can actually see, is the
+          rule; using density where it cannot be counted was the defect.</p>
       </div>
 
       <div class="cell">
@@ -76,7 +79,7 @@
       <div class="cell">
         <span class="t-micro">Saying something happened</span>
         <div class="said">
-          <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-tick"></use></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-done"></use></svg>
           <span class="t-body" style="flex:1;min-width:0;text-wrap:pretty">Sent to Cebu Pacific Cargo Services</span>
         </div>
         <p class="t-meta" style="margin:10px 0 0;color:var(--secondary);text-wrap:pretty">
@@ -97,7 +100,7 @@
       <div class="cell">
         <span class="t-micro">Icons, §8's whole set</span>
         <div class="ico">
-          <sc-for list="{{ icons }}" as="i" hint-placeholder-count="6">
+          <sc-for list="{{ icons }}" as="i" hint-placeholder-count="7">
             <span>
               <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><use href="{{ i.id }}"></use></svg>
               <span class="t-micro" style="display:block;color:var(--secondary);padding-top:4px;letter-spacing:0">{{ i.name }}</span>
@@ -105,22 +108,32 @@
           </sc-for>
         </div>
         <p class="t-meta" style="margin:12px 0 0;color:var(--secondary);text-wrap:pretty">
-          24px grid, 1.5px hairline, square terminals, never filled. Close and the
-          chevron live in the chassis as inline paths.</p>
+          24px grid, 1.5px hairline, square terminals. No tick: §8 says the
+          product contains no checkmarks, and the same sentence names the state
+          grammar that replaces one, filled for done and hollow for not. Close and
+          the chevron live in the chassis as inline paths.</p>
       </div>
 
       <div class="cell" style="border-bottom:0">
         <span class="t-micro">Buttons, and the block that raises its voice</span>
         <div style="display:flex;flex-direction:column;gap:10px;padding-bottom:14px">
-          <button class="btn-primary press">Primary</button>
-          <button class="btn-secondary press">Secondary</button>
-          <div style="text-align:center"><button class="btn-tertiary press">Tertiary</button></div>
+          <button class="btn-primary press">Primary, writes to the ledger</button>
+          <button class="btn-primary press" disabled>Not yet, dashed</button>
+          <button class="btn-secondary press">Secondary, goes somewhere</button>
+          <div style="text-align:center"><button class="btn-tertiary press">Tertiary, declines</button></div>
         </div>
+        <p class="t-meta" style="margin:0 0 14px;color:var(--secondary);text-wrap:pretty">
+          Filled ink writes something to the record. A hairline box goes
+          somewhere or does something reversible. Bare text declines. A primary
+          that is not yet available is dashed, so it can never be read as a
+          deliberate secondary.</p>
         <div class="warn">
           <p class="t-rec" style="margin:0;color:var(--paper)">Used sparingly</p>
           <p class="t-data" style="margin:6px 0 0;text-wrap:pretty">
             Ink inversion is for a consequence that cannot be undone, and for
-            nothing else. Three screens carry it.</p>
+            nothing else. No count here: the last one said three while eight
+            screens carried it, which is the drift CLAUDE.md bans hand counts to
+            prevent, committed inside the rule it was describing.</p>
         </div>
       </div>
     </div>
@@ -140,8 +153,8 @@ class Component extends DCLogic {
          tip:'Recorded by the worker. No attesting party.'},
         {sw:'#sw-emp',    label:'Solid rule: a business confirmed dates and employment, nothing about the work',
          tip:'The business attested the dates and the employment. Nothing about the work.'},
-        {sw:'#sw-peer',   label:'Arch, no rule: a person who was there, at a business Grain does not know',
-         tip:'Attested by a coworker who was there. The business is not registered with Grain.'},
+        {sw:'#sw-peer',   label:'Arch, no rule: a person the worker named, at a business Grain does not know',
+         tip:'Attested by a coworker the worker named. The business is not registered with Grain.'},
         {sw:'#sw-single', label:'Arch on a rule: one business',
          tip:'Attested by the business. No second party has agreed.'},
         {sw:'#sw-multi',  label:'Two arches on a rule: a business, and a second party agreeing',
@@ -149,7 +162,7 @@ class Component extends DCLogic {
       ],
       skels: [1,2,3],
       icons: [['#i-back','back'],['#i-add','add'],['#i-camera','camera'],
-              ['#i-link','link'],['#i-tick','tick'],['#i-alert','alert']]
+              ['#i-link','link'],['#i-done','done'],['#i-open','open'],['#i-alert','alert']]
               .map(([id,name]) => ({id, name}))
     };
   }

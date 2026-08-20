@@ -33,8 +33,8 @@
       <svg class="imprint" viewBox="0 0 600 600" role="img"
            aria-label="Five chapters, none confirmed">@@IMPORTED@@</svg>
       <div style="display:flex;justify-content:space-between;align-items:baseline;padding:12px 0 0">
-        <span class="t-micro" style="color:var(--secondary)">Liezel Mendoza</span>
-        <span class="t-micro">5 chapters · none attested yet</span>
+        <span class="t-data" style="color:var(--secondary)">Liezel Mendoza</span>
+        <span class="t-data" style="color:var(--secondary)">5 chapters, none attested yet</span>
       </div>
     </section>
 
@@ -52,7 +52,7 @@
 
       <div style="display:flex;justify-content:space-between;align-items:baseline;
                   border-bottom:1px solid var(--ink);padding-bottom:8px">
-        <h2 class="t-sec" style="margin:0">Outstanding verification</h2>
+        <h2 class="t-sec" style="margin:0">Where you could ask a party</h2>
         <span class="t-data" style="color:var(--secondary)">5</span>
       </div>
       <div class="sinerule">@@SINERULE@@</div>
@@ -66,7 +66,7 @@
             <span class="t-rec" style="display:block">{{ r.party }}</span>
             <span class="t-meta" style="display:block;color:var(--secondary);padding-top:2px">{{ r.kind }}</span>
           </span>
-          <span class="t-micro" style="text-align:right;white-space:nowrap;padding-top:2px">{{ r.span }}</span>
+          <span class="t-data" style="text-align:right;white-space:nowrap;padding-top:2px;color:var(--secondary)">{{ r.span }}</span>
         </button>
       </sc-for>
     </section>

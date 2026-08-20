@@ -40,7 +40,6 @@
 
     <div class="grp">
       <div class="sechead"><h2 class="t-sec" style="margin:0">Who you are sending it to</h2></div>
-      <div class="sinerule">@@SINERULE@@</div>
       <label class="t-micro" for="to" style="display:block;color:var(--secondary);padding:14px 0 8px">
         Their email</label>
       <div class="ruled">
@@ -48,13 +47,14 @@
                autocapitalize="none" autocorrect="off" spellcheck="false" inputmode="email">
       </div>
       <p id="tn" class="t-meta" style="margin:10px 0 0;color:var(--secondary);text-wrap:pretty">
-        They open it by confirming this address. No account, no password. Nobody
-        else can open it, and you see when they did.</p>
+        They open it by confirming this address. No account, no password, and
+        nobody else can open it. Grain will not tell you when they read it: no
+        surface shows a read, and the full record of who read your record is
+        yours on request.</p>
     </div>
 
     <div class="grp">
       <div class="sechead"><h2 class="t-sec" style="margin:0">How long</h2></div>
-      <div class="sinerule">@@SINERULE@@</div>
       <div role="group" aria-label="How long the link lasts" style="display:flex;gap:8px;padding-top:14px">
         <sc-for list="{{ spans }}" as="s" hint-placeholder-count="3">
           <button class="press t-data" aria-pressed="{{ s.on }}" onClick="{{ s.go }}"
@@ -66,7 +66,6 @@
 
     <div class="grp">
       <div class="sechead"><h2 class="t-sec" style="margin:0">What they will see</h2></div>
-      <div class="sinerule">@@SINERULE@@</div>
       <sc-for list="{{ contents }}" as="c" hint-placeholder-count="4">
         <div class="srow">
           <span style="flex:1;min-width:0">
@@ -124,7 +123,7 @@ class Component extends DCLogic {
       contents: [
         {label:'Every chapter, and its dates', note:'Everything on your record, not a selection.',
          state:'Shown', color:'var(--ink)'},
-        {label:'Which party attested each chapter', note:'The business, a coworker who was there, or none.',
+        {label:'Which party attested each chapter', note:'The business, a coworker the worker named, or none.',
          state:'Shown', color:'var(--ink)'},
         {label:'Your imprint', note:'The figure, at full size.',
          state:'Shown', color:'var(--ink)'},

@@ -2958,3 +2958,155 @@ The rulings were at 035 and 036 throughout, off by exactly the six the
 collision consumed. The check's precision limit is stated in its own
 header: a bare parenthesised number is not matched, because pixel values
 share that shape.
+
+## 061 — Outside review: the screens printed what the constitution forbids (2026-08-20)
+
+Four outside reviewers with clean contexts were given the review pack, the
+rendered screens and the `design/` tree. Their reports are evidence and
+bind nothing; this entry is the rulings. Most of what they found was
+written or built in the pass that closed 053 to 060, and most of it was a
+claim in prose that the pixels falsified.
+
+**Verified before ruling.** Every checkable finding was reproduced against
+source or computed from the tokens. Two were wrong and are recorded as
+wrong below, because a review that is accepted whole is not a review.
+
+**The product prints no checkmark, and the icon set no longer contains
+one.** `DESIGN.md` §8 is flat: the product contains no checkmarks. A tick
+shipped in the icon set and led six screens, including the identity result,
+where a tick beside a document check is the verified badge 027 prohibits,
+arriving through the icon set rather than the mark. The same §8 sentence
+names its replacement, the state grammar, so a step that is done is filled
+and one that is not is hollow.
+
+**Boxed fields do not exist, including month pickers.** §8 says inputs are
+ruled lines. Two screens drew boxed date fields.
+
+**"Verified domain" is gone from every surface.** Six templates printed it
+while the identity screen printed that Grain does not print the word
+anywhere. A domain check establishes control of an address on a date, and
+that is what the copy now says. The claim itself is restated to the rule
+actually followed: Grain never calls a person verified.
+
+**"Outstanding verification" is renamed and loses its count.** It was a
+titled, counted list of the worker's unattested chapters on the screen they
+see most, which is a deficiency scoreboard however carefully the rows are
+worded, and it seated a peer-attested chapter in a queue as though a
+coworker were a lesser answer, which 055 denies. A count of chapters is a
+fact; a count of chapters nobody has asked about is a score.
+
+**A presence claim Grain never observed is withdrawn.** Reader-facing copy
+said a chapter was "attested by a coworker who was there." Grain checks
+that a person the worker named answered, and on the evidence class where
+the incentive to launder an attestation is highest it may not assert more.
+Worker-facing copy still says "ask someone who was there", which is
+addressed to the person who knows.
+
+**The mark set is not yet a total function, and the copy stopped implying
+it is.** One screen said a confirmed work email "attests as the business as
+well as the person" while chapter detail rendered the identical evidence as
+Individual: the same evidence produced two marks, split by an attribute
+Grain cannot check. The copy now states what the check establishes. The
+deeper problem stands and is a gate: five states cannot encode two peers
+and no business, two registered businesses, or a peer at a registered
+business that never answered.
+
+**Read events stay unsurfaced, on the third surface to break it.** Send
+said "you see when they did." 035 §B4 was already reasserted twice in one
+day, on Sharing and on the ledger. Notification event sets are reconciled
+the same way: no row for a page view, because a page-view push is a read
+event delivered to a lock screen.
+
+**Contrast is fixed at the token, with headroom rather than hundredths.**
+`--rule` was 3.34:1 on paper and 2.89:1 on page, so the token whose comment
+reads "every line that carries meaning" failed 1.4.11 on the three reader
+surfaces, which are the ones on page. `--secondary` passed by 0.013.
+Darkened to 3.88 and 3.37, and to 5.87 and 5.09. Both ratios are recorded
+for both grounds, because a single figure was how the first one hid.
+`t-micro` goes from 9.5px to 11px: it does field labels and screen titles,
+and 9.5px is below every platform floor.
+
+**The spacing scale exists in the stylesheet now.** It lived in the review
+artifact and in `DESIGN.md` §7 in two versions that disagreed, while the
+templates used raw values on neither. `checks/design-system.mjs` reads the
+scale and the registers out of `_shared.css`, so a check can no longer
+disagree with the system it checks.
+
+**The two uppercase registers are split and reasoned.** One rule governed
+both and said "labels only, never a value, a date, a name or a sentence",
+which made every screen title a violation of its own rule. A serial names
+the screen; a micro labels a field. Neither carries a value, a date, a name
+or a sentence, because uppercase with tracking is unreadable at length and
+meaningless in Devanagari.
+
+**The button grammar is written down.** Filled ink writes to the record, a
+hairline box goes somewhere or does something reversible, bare text
+declines. A disabled primary is dashed, because it was a hairline box with
+ink text and therefore indistinguishable from an enabled secondary, well
+enough that a reviewer read one as a deliberate style choice and concluded
+the grammar had no rule.
+
+**The sine divider appears only where the figure does.** It was under every
+section header on every screen including settings groups, which is
+`design/01-banned-patterns.md` test 3: a device applied uniformly is a tell
+rather than a system. It carries the figure's own frequency, so it means
+"this section is about the record the figure draws", and it now says only
+that.
+
+**Interactive rows carry one cue, from the chassis.** A button row and a
+static row were the same object, and the only boundary in the system is
+`--hairline`, which is deliberately below 3:1 because it may never carry a
+state. Every button row draws the chevron now, so no screen can forget it
+and no static row can borrow it.
+
+**Ink inversion loses its count and its one wrong use.** The rule said
+three screens carried it while eight did, which is the drift CLAUDE.md bans
+hand counts to prevent, committed inside the rule describing it. And the
+permanence screen inverted a paragraph of reassurance, which is the
+opposite of a consequence that cannot be undone.
+
+**Grant leads with the person and the limits.** It opened on "13 days left
+on this grant", which is plumbing, and buried the sentence saying what
+Grain will and will not vouch for. Its footer also miscounted: it said two
+chapters were attested by one party where three were, true only if a
+dates-only confirmation silently is not attested. The count is replaced by
+the per-row fact, which is checkable by looking.
+
+**A screen the plan calls blocked says so on its own surface.** Consent
+rendered as a finished screen ending in "Agree and continue" while a gate
+declared it unshippable, and the review pack claimed two screens said so
+where one did.
+
+**Recovery exists.** The identity anchor is a mobile number and every
+account change routes through a person, and there was no screen for losing
+the number. In this population that is the median five-year story.
+
+**Two findings were wrong, and the corrections matter.**
+
+The imprint is not an age proxy. `R_OUTER` is a constant carrying the law
+by name, and a two-year one-chapter record and a thirty-year thirty-chapter
+record draw to an identical outermost radius. Ring count varies; footprint
+does not, which is what the law governs.
+
+Density does not violate law 8. That law governs absence drawn as
+diminished magnitude, and an unattested ring draws at a heavier stroke than
+a single woven thread at the same radius. What survives is the reviewers'
+better point: the components board banned density as a channel at 34px
+while the figure used it at 300px. Both are now stated as one rule, that an
+encoding is chosen by what the reader can actually resolve at that size.
+
+**Three checks, for the failure class that produced most of this.** Nothing
+compared a claim to the artifact it described. `checks/artboards.mjs` holds
+the canvas manifest, the templates and the tree to each other, and fails
+when a surface the inventory calls blocked carries no notice.
+`checks/design-system.mjs` gains a rule that a file speaking the system's
+class names must mean the system's values, which is exactly the fork the
+review pack shipped. `checks/svg-refs.mjs` already caught the tick's
+removal leaving dangling references.
+
+**And a harness defect that made the published proof sheet lie.** The
+flattener rendered a null attribute binding as `disabled=""`, which in HTML
+is disabled, so every screenshot of a screen with a conditional disable
+showed a dead button. One reviewer read a disabled primary as a deliberate
+secondary and concluded the button grammar was incoherent. The grammar was
+consistent; the images were wrong.

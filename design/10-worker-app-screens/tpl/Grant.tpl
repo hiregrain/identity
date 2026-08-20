@@ -26,16 +26,7 @@
 
     <!-- The reading an employer needs first is not a score. It is how long they
          have, and who is accountable for what they are about to read. -->
-    <div class="reading" style="padding:24px 0 16px;                border-bottom:1px solid var(--ink)">
-      <span class="t-inst">{{ daysLeft }}</span>
-      <span style="flex:1;min-width:0">
-        <span class="t-rec" style="display:block;text-wrap:pretty">days left on this grant</span>
-        <span class="t-data" style="display:block;color:var(--secondary);padding-top:4px">
-          Liezel Mendoza granted it on {{ granted }}. She can end it at any time.</span>
-      </span>
-    </div>
-
-    <div style="padding-top:24px">
+    <div style="padding:24px 0 0">
       <h1 class="t-title" style="margin:0">Liezel Mendoza</h1>
       <p class="t-data" style="margin:8px 0 0;color:var(--secondary);text-wrap:pretty">
         Identity document checked, which says nothing about the work below</p>
@@ -80,9 +71,19 @@
 
     <div style="margin-top:24px;border-top:1px solid var(--ink);padding-top:14px">
       <p class="t-meta" style="margin:0;color:var(--secondary);text-wrap:pretty">
-        Two of these chapters were attested by one party only, and stand at that
-        party's reading alone. One has no attesting party. This record holds the
-        chapters Liezel entered, and Grain does not know of any she did not.</p>
+        Each row names the party that attested it, or names none, and the marks
+        say the same thing at a glance. This record holds the chapters Liezel
+        entered, and Grain does not know of any she did not.</p>
+    </div>
+    <!-- Grant mechanics, demoted to the foot. This screen opened with "13 days
+         left", which is plumbing. A reader deciding about a person spends their
+         first seconds on the person, and the sentence saying what Grain will and
+         will not vouch for is the one they must not miss. -->
+    <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;
+                padding:16px 0 0;border-top:1px solid var(--hairline);margin-top:24px">
+      <span class="t-meta" style="color:var(--secondary);text-wrap:pretty">
+        Liezel Mendoza granted this on {{ granted }}. She can end it at any time.</span>
+      <span class="t-data col-r">{{ daysLeft }} days left</span>
     </div>
   </main>
 </div>
@@ -114,7 +115,7 @@ class Component extends DCLogic {
        registry:'Registered business · signed 14 Oct 2021', sw:'#sw-multi',
        from:'Mar 2019', to:'Sep 2021'},
       {party:'R. Santos Dry Goods',
-       prov:'Attested by a coworker who was there. The business is not registered with Grain.',
+       prov:'Attested by a coworker the worker named. The business is not registered with Grain.',
        registry:'Individual · signed 2 Apr 2023', sw:'#sw-peer',
        from:'Sep 2020', to:'Mar 2023'},
       {party:'Metro Manila Logistics',

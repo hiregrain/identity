@@ -55,8 +55,7 @@
       <div class="grp">
         <h2 class="t-micro" style="display:block;color:var(--secondary);padding-bottom:6px;
                                    border-bottom:1px solid var(--ink);margin:0">{{ g.name }}</h2>
-        <div class="sinerule">@@SINERULE@@</div>
-        <sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="5">
+          <sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="5">
           <sc-if value="{{ r.act }}" hint-placeholder-val="{{ true }}">
             <button class="srow press" onClick="{{ r.act }}">
               <span class="t-body" style="flex:1;min-width:0">{{ r.label }}</span>
@@ -125,7 +124,11 @@ class Component extends DCLogic {
         {name:'Notifications', rows:[
           act('A business signs your work','On'),
           act('A grant is about to end','On'),
-          act('Your public page is viewed','Off')]},
+          // No row for a page view. Notifications states there is no
+          // notification for somebody reading your record, and a page-view push
+          // is a read event delivered to the worker's lock screen. Two screens
+          // offered different event sets for one feature.
+          act('A deadline to attach your side','On')]},
         {name:'Language', rows:[ act('App language','English') ]},
         {name:'Your data', rows:[
           act('Send me everything','By email, within 24 hours'),

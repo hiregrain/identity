@@ -40,8 +40,7 @@
                       border-bottom:1px solid var(--hairline)">
             <span style="flex:0 0 20px;padding-top:2px">
               <sc-if value="{{ s.done }}" hint-placeholder-val="{{ true }}">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--ink)"
-                     stroke-width="1.5" aria-hidden="true"><use href="#i-tick"></use></svg>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="#i-done"></use></svg>
               </sc-if>
             </span>
             <span class="t-body" style="flex:1;min-width:0;color:{{ s.color }}">{{ s.label }}</span>

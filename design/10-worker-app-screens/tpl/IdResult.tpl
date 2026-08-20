@@ -24,7 +24,7 @@
   <main class="dissolve" style="position:absolute;top:52px;bottom:88px;left:0;right:0;overflow-y:auto;padding:0 20px 32px">
     <div style="padding:24px 0 16px;border-bottom:1px solid var(--ink)">
       <div class="said">
-        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-tick"></use></svg>
+        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-done"></use></svg>
         <span style="flex:1;min-width:0">
           <span class="t-rec" style="display:block">A document was checked</span>
           <span class="t-meta" style="display:block;color:var(--secondary);padding-top:4px">Today, by Persona</span>
@@ -40,14 +40,13 @@
           Identity document checked, which says nothing about the work below</p>
       </div>
       <p class="t-meta" style="margin:12px 0 0;color:var(--secondary);text-wrap:pretty">
-        That is the whole sentence, on every surface. Grain does not print
-        "verified" anywhere, because a document check says who you are and
-        nothing at all about what you did.</p>
+        That is the whole sentence, on every surface. Grain never calls a
+          person verified, because a document check says who you are and nothing
+          at all about what you did.</p>
     </div>
 
     <div class="grp">
       <div class="sechead"><h3 class="t-sec" style="margin:0">What Grain kept</h3></div>
-      <div class="sinerule">@@SINERULE@@</div>
       <sc-for list="{{ kept }}" as="k" hint-placeholder-count="3">
         <div class="srow">
           <span class="t-body" style="flex:1;min-width:0;text-wrap:pretty">{{ k.label }}</span>

@@ -73,6 +73,27 @@ const SPACING =
 const failures = [];
 let scanned = 0;
 
+// Extra files to hold to the registers, named on the command line after the
+// screens directory. The review artifact redefined .t-body, .t-meta and
+// .t-micro at different values while stating it read its tokens from
+// _shared.css, so every conformance figure in it described a ramp that does not
+// ship. A file that speaks the system's class names has to mean the system's
+// values.
+for (const extra of process.argv.slice(3)) {
+  const text = readFileSync(extra, "utf8");
+  for (const m of text.matchAll(/\.(t-[a-z]+)\s*\{([^}]*)\}/g)) {
+    const size = m[2].match(/font-size:\s*([\d.]+)px/);
+    if (!size) continue;
+    const canonical = registers.get(m[1]);
+    if (canonical === undefined)
+      failures.push(`${extra}: defines .${m[1]}, which is not a §6 register`);
+    else if (Number(size[1]) !== canonical)
+      failures.push(
+        `${extra}: .${m[1]} is ${size[1]}px here and ${canonical}px in _shared.css`,
+      );
+  }
+}
+
 for (const name of readdirSync(TPL)) {
   if (PARTS.has(name) || FROZEN.has(name) || !name.endsWith(".tpl")) continue;
   scanned++;

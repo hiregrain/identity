@@ -47,6 +47,22 @@
     <p class="t-meta" style="margin:16px 0 0;color:var(--secondary);text-wrap:pretty">
       Everything else is said where it applies, and you agree to it there rather
       than here.</p>
+
+    <!-- This screen is BLOCKED and says so on its own surface. Decision 054's
+         gate: attesting parties are asked to describe the work on seven set
+         measures, the ledger stores what they answer, and no surface tells the
+         worker that. A consent instrument that claims completeness while
+         omitting the most sensitive collection in the system is the one thing
+         this screen may not be. The wording is deliberately unwritten. -->
+    <div style="margin-top:24px" class="warn">
+      <p class="t-rec" style="margin:0;color:var(--paper);text-wrap:pretty">
+        This screen is not finished, and cannot ship</p>
+      <p class="t-data" style="margin:8px 0 0;text-wrap:pretty">
+        Parties are asked to describe your work on seven set measures and Grain
+        keeps what they answer. Nothing on this screen tells you that yet, and
+        the line above claiming everything else is said elsewhere is not true
+        until it does. Decision 054's open gate.</p>
+    </div>
     <div style="padding-top:12px">
       <button class="btn-tertiary press" style="padding-left:0">Read the full text</button>
     </div>

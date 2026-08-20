@@ -32,8 +32,10 @@
       <div class="ruled"><input id="pt" value="{{ title }}" onInput="{{ onT }}" autocapitalize="words"></div>
       <div style="display:flex;gap:12px;padding-top:24px">
         <sc-for list="{{ months }}" as="m" hint-placeholder-count="2">
-          <button class="press" style="flex:1;min-height:44px;border:1px solid var(--rule);
-                  border-radius:3px;padding:10px 12px;text-align:left">
+          <!-- A ruled line, not a box. §8: inputs are ruled lines and boxed
+               fields do not exist, and a month picker is an input. -->
+          <button class="press" style="flex:1;min-height:44px;padding:8px 0;text-align:left;
+                  border-bottom:1px solid var(--rule)">
             <span class="t-micro" style="display:block;color:var(--secondary)">{{ m.label }}</span>
             <span class="t-data" style="display:block;padding-top:4px">{{ m.value }}</span>
           </button>

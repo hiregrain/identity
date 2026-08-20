@@ -29,15 +29,13 @@
         record that parties have signed should not change quietly.</p>
 
       <div class="sechead"><h3 class="t-sec" style="margin:0">What we can change</h3></div>
-      <div class="sinerule">@@SINERULE@@</div>
       <sc-for list="{{ can }}" as="c" hint-placeholder-count="4">
         <div class="srow"><span class="t-body" style="flex:1;min-width:0">{{ c }}</span></div>
       </sc-for>
 
       <div class="grp">
         <div class="sechead"><h3 class="t-sec" style="margin:0">What nobody can change</h3></div>
-        <div class="sinerule">@@SINERULE@@</div>
-        <sc-for list="{{ cannot }}" as="c" hint-placeholder-count="3">
+          <sc-for list="{{ cannot }}" as="c" hint-placeholder-count="3">
           <div class="srow">
             <span class="t-body" style="flex:1;min-width:0;color:var(--secondary);text-wrap:pretty">{{ c }}</span>
           </div>

@@ -15,6 +15,11 @@
     /* §9's sine-modulated divider and the rung scale live in the chassis, not in
        one screen's helmet: both are shared vocabulary, and a class defined in
        Main only meant every other screen rendered them unstyled. */
+    /* §9's sine-modulated divider carries the figure's own frequency, so it
+       means "this section is about the record the figure draws". It was under
+       every section header on every screen, including settings groups, which is
+       01-banned-patterns test 3: a device applied uniformly is a tell rather
+       than a system. It now appears only on surfaces that show the figure. */
     .sinerule{margin-top:-2px;line-height:0;opacity:.9}
     /* No .rung. It drew the seven measures as a graded ladder, and decision 054
        renders nothing derived from them: a ladder with a mark on it is an
@@ -144,6 +149,17 @@
     .srow{display:flex;gap:12px;align-items:baseline;padding:12px 0;
           border-bottom:1px solid var(--hairline);width:100%;min-height:44px;
           text-align:left}
+    /* An interactive row and a static one were the same object: label left,
+       value right, hairline under. The only boundary in the system is
+       --hairline, which is deliberately below 3:1 because it may never carry a
+       state, so nothing marked what responded to touch. Every button row now
+       carries the chevron, from the chassis, so no screen can forget it and no
+       static row can borrow it. */
+    button.srow::after{content:'';flex:0 0 7px;height:7px;align-self:center;
+      border-right:1.5px solid var(--rule);border-top:1.5px solid var(--rule);
+      transform:rotate(45deg);margin-left:4px}
+    button.srow.press:active::after{border-color:var(--ink)}
+    button.srow:has(.chev)::after{content:none}
     .warn{background:var(--ink);color:var(--paper);padding:14px 16px}
     .warn .t-data{color:var(--paper)}
 

@@ -98,7 +98,7 @@ class Component extends DCLogic {
        prov:'Attested by Sunrise Foods Manufacturing, and a second party agrees.',
        from:'Mar 2019', to:'Sep 2021', sw:'#sw-multi'},
       {party:'R. Santos Dry Goods', kind:'Stall assistant, Divisoria',
-       prov:'Attested by a coworker who was there. The business is not registered with Grain.',
+       prov:'Attested by a coworker the worker named. The business is not registered with Grain.',
        from:'Sep 2020', to:'Mar 2023', sw:'#sw-peer'},
       {party:'Metro Manila Logistics', kind:'Warehouse coordinator',
        prov:'Attested by Metro Manila Logistics. No second party has agreed.',

@@ -44,8 +44,7 @@
       <div class="grp">
         <div class="sechead"><h2 class="t-sec" style="margin:0">{{ g.month }}</h2>
           <span class="t-data" style="color:var(--secondary)">{{ g.count }}</span></div>
-        <div class="sinerule">@@SINERULE@@</div>
-        <sc-for list="{{ g.rows }}" as="e" hint-placeholder-count="5">
+          <sc-for list="{{ g.rows }}" as="e" hint-placeholder-count="5">
           <div class="erow">
             <span class="when t-data" style="color:var(--secondary)">{{ e.day }}</span>
             <span style="flex:1;min-width:0">
@@ -85,7 +84,7 @@ class Component extends DCLogic {
         {day:'2 Jul',  what:'You asked Cebu Pacific Cargo Services to attest a chapter',
          who:'You agreed there that asking cannot be undone'},
         {day:'2 Jul',  what:'Cebu Pacific Cargo Services attested your dates and employment',
-         who:'Registered business, signed by their verified domain'},
+         who:'Registered business, signed from the domain Grain checked'},
         {day:'19 Jul', what:'You granted Teleperformance Philippines your whole record',
          who:'Sent to recruiting@teleperformance.ph, confirmed 20 Jul 2026'}
       ]},

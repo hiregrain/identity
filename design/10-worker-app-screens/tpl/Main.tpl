@@ -171,9 +171,14 @@
 
     <!-- ===== outstanding verification ===================================== -->
     <section id="sec-1" style="padding-top:32px">
+      <!-- No count. "Outstanding verification, 3" made a numbered list of the
+           worker's unattested chapters on the screen they see most, which is a
+           deficiency scoreboard however carefully the rows are worded, and it
+           put a peer-attested chapter in a queue as though a coworker were a
+           lesser answer (055 says it is not). A count of chapters is a fact; a
+           count of chapters nobody has asked about is a score. -->
       <div class="sechead">
-        <h2 class="t-sec" style="margin:0">Outstanding verification</h2>
-        <span class="t-data" style="color:var(--secondary)">3</span>
+        <h2 class="t-sec" style="margin:0">Where you could ask a party</h2>
       </div>
       <div class="sinerule">@@SINERULE@@</div>
       <sc-for list="{{ outstanding }}" as="o" hint-placeholder-count="3">
@@ -313,7 +318,7 @@ class Component extends DCLogic {
        positions:[{title:'Packing line operator', span:'Mar 2019 – Jun 2020'},
                   {title:'Line lead', span:'Jun 2020 – Sep 2021'}]},
       {party:'R. Santos Dry Goods', kind:'Stall assistant, Divisoria',
-       prov:'Attested by a coworker who was there. The business is not registered with Grain.',
+       prov:'Attested by a coworker the worker named. The business is not registered with Grain.',
        from:'Sep 2020', to:'Mar 2023', sw:'#sw-peer', positions:[], attested:true},
       {party:'Metro Manila Logistics', kind:'Warehouse coordinator',
        prov:'Attested by Metro Manila Logistics. No second party has agreed.',
@@ -330,10 +335,10 @@ class Component extends DCLogic {
     const outstanding = [
       {i:4, gap:'They attested the dates and the employment, not the work.', sw:'#sw-emp',
        kicker:'Request attestation', cta:'Send the request',
-       body:'Cebu Pacific is registered with Grain. The request goes to their verified domain, and whoever answers it signs in first. They write what you did. You cannot edit it, and you can attach your side to it.'},
+       body:'Cebu Pacific is registered with Grain. The request goes to the domain Grain checked, and whoever answers it signs in first. They write what you did. You cannot edit it, and you can attach your side to it.'},
       {i:2, gap:'A coworker attested this. The business can attest it too.', sw:'#sw-peer',
        kicker:'Ask a manager', cta:'Ask a manager',
-       body:'A coworker who was there is a real witness, and a manager who confirms their work email at this business adds the business itself alongside them. Confirming that email also confirms their own time there.'},
+       body:'A coworker you named is a real witness. If someone confirms a work address at the business, the record shows a person at a business Grain recognises. Grain checks control of the address and records nothing about when they worked there.'},
       {i:0, gap:'No party has attested these dates yet.', sw:'#sw-self',
        kicker:'Confirm dates', cta:'Ask the employer',
        body:'Ask the employer to confirm when you worked there, or leave the chapter as your own account of it.'}

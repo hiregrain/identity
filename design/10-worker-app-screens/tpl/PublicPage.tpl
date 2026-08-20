@@ -51,7 +51,6 @@
 
     <div class="grp">
       <div class="sechead"><h3 class="t-sec" style="margin:0">What it will show</h3></div>
-      <div class="sinerule">@@SINERULE@@</div>
       <sc-for list="{{ facts }}" as="f" hint-placeholder-count="4">
         <div class="srow">
           <span style="flex:1;min-width:0">
@@ -88,7 +87,7 @@ class Component extends DCLogic {
       figOnGo: () => this.setState({fig: !this.state.fig}),
       facts: [
         {label:'Chapters, parties and dates', note:'Who you worked for, when, and in what position.', state:'Always', color:'var(--ink)'},
-        {label:'Which party attested each chapter', note:'The business, a coworker who was there, or none.', state:'Always', color:'var(--ink)'},
+        {label:'Which party attested each chapter', note:'The business, a coworker the worker named, or none.', state:'Always', color:'var(--ink)'},
         {label:'Your imprint', note:'Only to someone who opens the page.', state: this.state.fig ? 'Visitors' : 'Off', color:'var(--ink)'},
         {label:'Your phone and email', note:'Never on a page and never in anything you send.', state:'Never', color:'var(--secondary)'}
       ]

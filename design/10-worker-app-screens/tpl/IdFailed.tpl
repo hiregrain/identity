@@ -18,7 +18,7 @@
     <button class="iconbtn press" aria-label="Back to your record">
       <svg width="22" height="22" viewBox="0 0 24 24"><use href="#i-back"></use></svg>
     </button>
-    <h1 class="t-serial" style="margin:0">Could not check it</h1>
+    <h1 class="t-serial" style="margin:0">Identity</h1>
   </header>
 
   <main class="dissolve" style="position:absolute;top:52px;bottom:88px;left:0;right:0;overflow-y:auto;padding:0 20px 32px">
@@ -35,7 +35,6 @@
 
     <div class="grp">
       <div class="sechead"><h3 class="t-sec" style="margin:0">What usually fixes it</h3></div>
-      <div class="sinerule">@@SINERULE@@</div>
       <sc-for list="{{ fixes }}" as="f" hint-placeholder-count="4">
         <div class="srow">
           <span class="t-body" style="flex:1;min-width:0;text-wrap:pretty">{{ f }}</span>

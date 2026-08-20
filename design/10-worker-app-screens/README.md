@@ -56,6 +56,10 @@ They are not a specification. `design/06-worker-app-ia.md` owns the structure,
 reviews found in this exact source, several of which are still open in it.
 Read 07 before treating any screen here as settled.
 
-**Nine of fifty-two surfaces are drawn.** The other forty-three are listed in
-`08` with no drawing behind them, and under the mockup gate in
-`plans/worker-surface/LAYER.md` none of them is buildable yet.
+**Every surface in `design/08-app-inventory.md` §1 is drawn except two, and both
+are blocked in place.** `Consent` is blocked by decision 054's gate on what
+consent says about measures collected and not rendered; the app icon is blocked
+by `mark/README.md`'s provisional lobe count and break angle. Counting them is
+`ls design/10-worker-app-screens/*.dc.html`, not a sentence here: the sentence
+this replaces carried two counts, and both had drifted within a day, which is
+why CLAUDE.md bans hand-written counts of checkable things.

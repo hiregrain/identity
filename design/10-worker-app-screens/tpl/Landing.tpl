@@ -59,8 +59,8 @@
     </svg>
 
     <div style="display:flex;justify-content:space-between;align-items:baseline;padding:12px 0 0">
-      <span class="t-micro" style="color:var(--secondary)">Liezel Mendoza</span>
-      <span class="t-micro">{{ readout }}</span>
+      <span class="t-data" style="color:var(--secondary)">Liezel Mendoza</span>
+      <span class="t-data" style="color:var(--secondary)">{{ readout }}</span>
     </div>
 
     <div style="padding-top:28px">
@@ -85,7 +85,7 @@
             <span class="t-rec" style="display:block">Cebu Pacific Cargo Services</span>
             <span class="t-meta" style="display:block;color:var(--secondary);padding-top:2px">{{ rowState }}</span>
           </span>
-          <span class="t-micro" style="text-align:right;white-space:nowrap;padding-top:2px">Jan 2025 – present</span>
+          <span class="t-data" style="color:var(--secondary)" style="text-align:right;white-space:nowrap;padding-top:2px">Jan 2025 – present</span>
         </div>
       </div>
     </div>
@@ -114,11 +114,12 @@ class Component extends DCLogic {
     return {
       phase: this.state.phase,
       readout: done ? '4 chapters attested. 1 recorded by you.' : '3 chapters attested. 2 not yet.',
-      headline: done ? 'Cebu Pacific attested your work.' : 'Cebu Pacific is attesting your work.',
+      headline: done ? 'Cebu Pacific confirmed your dates and employment.'
+                     : 'Cebu Pacific is answering your request.',
       subhead: done
         ? 'They attested the dates and the employment. No second party has agreed, so it stands at their reading alone.'
         : 'Watch the ring for that chapter fill in.',
-      sectionLabel: done ? 'Work history' : 'Outstanding verification',
+      sectionLabel: done ? 'Work history' : 'Where you could ask a party',
       rowState: done ? 'Attested by Cebu Pacific Cargo Services. No second party has agreed.'
                      : 'They attested the dates and the employment. Nothing about the work.',
       sw: done ? '#sw-single' : '#sw-emp',

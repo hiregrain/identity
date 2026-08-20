@@ -47,7 +47,7 @@
   <header style="height:52px;display:flex;align-items:center;justify-content:space-between;
                  padding:0 20px;border-bottom:1px solid var(--hairline);position:relative;z-index:3;
                  background:var(--paper)">
-    <h1 class="t-serial" style="margin:0">Liezel Mendoza · Imprint</h1>
+    <h1 class="t-serial" style="margin:0">Imprint</h1>
     <button class="press" aria-label="Close" style="width:44px;height:44px;display:flex;
             align-items:center;justify-content:flex-end">
       <svg width="18" height="18" viewBox="0 0 18 18" class="icon"><path d="M3 3 L15 15"/><path d="M15 3 L3 15"/></svg>
@@ -147,14 +147,14 @@ const CHAPTERS = [
   {r0:58.00,  r1:95.35,  party:'Bataan Poultry Processing',   span:'Sep 2017 to Mar 2019', sw:'#sw-self',
    attested:false,
    prov:'Recorded by Liezel Mendoza. No attesting party.',
-   standing:'Nobody who was there has attested this chapter, so it is her own account of it. Its ring is drawn dotted, which is how the figure says that.'},
+   standing:'No party has attested this chapter, so it is her own account of it. Its ring is drawn dotted, which is how the figure says that.'},
   {r0:95.35,  r1:145.14, party:'Sunrise Foods Manufacturing', span:'Mar 2019 to Sep 2021', sw:'#sw-multi',
    attested:true,
    prov:'Attested by Sunrise Foods Manufacturing on 14 October 2021, and a second party agrees.',
    standing:'Two parties attested this independently, which is the densest weave the figure draws.'},
   {r0:145.14, r1:194.93, party:'R. Santos Dry Goods',         span:'Sep 2020 to Mar 2023', sw:'#sw-peer',
    attested:true,
-   prov:'Attested by a coworker who was there, on 2 April 2023. The business is not registered with Grain.',
+   prov:'Attested by a coworker the worker named, on 2 April 2023. The business is not registered with Grain.',
    standing:'A person who was present attested this. The business itself has not, and it can, which is what the outstanding item on the record is for.'},
   {r0:194.93, r1:240.58, party:'Metro Manila Logistics',      span:'Mar 2023 to Jan 2025', sw:'#sw-single',
    attested:true,

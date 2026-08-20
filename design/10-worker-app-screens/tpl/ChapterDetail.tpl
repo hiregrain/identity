@@ -114,14 +114,14 @@
 class Component extends DCLogic {
   renderVals(){
     const atts = [
-      {party:'Sunrise Foods Manufacturing', kind:'Registered business, signed from their verified domain', when:'14 Oct 2021'},
-      {party:'A coworker who was there', kind:'Individual, confirmed a work email at this business', when:'2 Nov 2021'}
+      {party:'Sunrise Foods Manufacturing', kind:'Registered business, signed from the domain Grain checked', when:'14 Oct 2021'},
+      {party:'A coworker Liezel named', kind:'Individual, confirmed a work email at this business', when:'2 Nov 2021'}
     ];
     return {
       n: atts.length, atts,
       facts: [
         {k:'Business', v:'Sunrise Foods Manufacturing'},
-        {k:'Registry', v:'Registered with Grain, verified domain'},
+        {k:'Registry', v:'Registered with Grain, domain checked'},
         {k:'Dates', v:'Mar 2019 to Sep 2021'},
         {k:'Positions', v:'Packing line operator, then Line lead'},
         {k:'Title', v:'Line lead', was:'Line leader', when:'6 Nov 2021'},

@@ -48,10 +48,10 @@
           <span class="prov" tabindex="0">
             <svg viewBox="0 0 34 16" width="34" height="16" fill="none" aria-hidden="true"
                  stroke="var(--ink)" stroke-width="1"><use href="#sw-peer"></use></svg>
-            <span class="tip t-meta">Attested by a coworker who was there. The business is not registered with Grain.</span>
+            <span class="tip t-meta">Attested by a coworker the worker named. The business is not registered with Grain.</span>
           </span>
           <span class="t-body" style="flex:1;min-width:0;text-wrap:pretty">
-            Attested by a coworker who was there, and the business named as not
+            Attested by a coworker Liezel named, and the business named as not
             registered. The mark says which, and does not say less of you for it.</span>
         </div>
       </div>

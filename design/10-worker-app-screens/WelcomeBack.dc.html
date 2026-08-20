@@ -8,10 +8,26 @@
     @import url('https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap');
     /* Grain, per DESIGN.md §5 colour, §6 type, §7 spacing/radius/depth */
     :root{
-      --ink:#1B2A44; --paper:#F8F5EE; --secondary:#5C6878;
-      --rule:#7E8794;      /* 3.35:1, every line that carries meaning */
-      --hairline:#D3D7D6;  /* 1.34:1, pure separation, never a state */
+      --ink:#1B2A44; --paper:#F8F5EE;
+      /* Ratios are given for BOTH grounds, because the reader surfaces (Grant,
+         Public, PublicReduced) sit on --page and the old single figure was the
+         paper one. --rule was 7E8794: 3.34 on paper, 2.89 on page, so the token
+         whose comment reads "every line that carries meaning" failed 1.4.11 on
+         exactly the surfaces a partner reads. Both tokens are darkened until the
+         worse ground clears with headroom rather than by hundredths. */
+      --secondary:#55606E; /* 5.87:1 paper, 5.09:1 page, text */
+      --rule:#727C8A;      /* 3.88:1 paper, 3.37:1 page, every line that carries meaning */
+      --hairline:#D3D7D6;  /* 1.33:1 paper, 1.16:1 page. Pure separation, never a state, so
+                              contrast is deliberately below 3:1 and it may never carry one. */
       --page:#E9E5DE;
+
+      /* The spacing scale, which lived only in the review artifact and in
+         DESIGN.md §7, in two versions that disagreed, while the templates used
+         thirteen raw values on neither. checks/design-system.mjs reads this
+         block, so the scale and its check can no longer diverge. */
+      --sp1:2px; --sp2:4px; --sp3:6px; --sp4:8px; --sp5:10px; --sp6:12px;
+      --sp7:14px; --sp8:16px; --sp9:20px; --sp10:24px; --sp11:28px;
+      --sp12:32px; --sp13:40px; --sp14:56px;
     }
     *{box-sizing:border-box}
     body{margin:0;background:var(--page);color:var(--ink);
@@ -36,8 +52,14 @@
     .t-body  {font-weight:400;font-size:14px;line-height:1.6}
     .t-data  {font-weight:500;font-size:13px;line-height:1.35;font-variant-numeric:tabular-nums}
     .t-meta  {font-weight:400;font-size:12px;line-height:1.4}
-    /* labels ONLY, never a value, a date, a name or a sentence (§6) */
-    .t-micro {font-weight:500;font-size:9.5px;letter-spacing:0.08em;text-transform:uppercase;line-height:1.3}
+    /* The two uppercase registers, and what each may hold. The old comment said
+       "labels ONLY, never a value, a date, a name or a sentence" and governed
+       both, which made every screen title a violation of its own rule. Split:
+       t-serial names the screen, which is a label for the surface; t-micro
+       labels a field or a group inside one. Neither may carry a value, a date, a
+       name or a sentence, because uppercase with tracking is unreadable at
+       length and meaningless in Devanagari, which is on the roadmap. */
+    .t-micro {font-weight:500;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;line-height:1.3}
     .t-serial{font-weight:500;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;line-height:1.2}
     .t-inst  {font-stretch:125%;font-weight:800;font-size:40px;line-height:1;font-variant-numeric:tabular-nums;white-space:nowrap}
     /* §7 depth presses down. Verified rows have zero press-give, and rigidity is
@@ -54,7 +76,14 @@
     .btn-tertiary{font-weight:600;font-size:14px;text-decoration:underline;
                   text-underline-offset:3px;min-height:44px;padding:12px 8px;display:inline-block}
     /* a disabled control loses its ink, never its contrast (law 8) */
-    .btn-primary[disabled]{background:none;color:var(--ink);border:1px solid var(--rule)}
+    /* A disabled control loses its ink, never its contrast (§7). It also has to
+       lose its resemblance to an ENABLED secondary, which is a hairline box with
+       ink text: the two were separable only by border colour, and an outside
+       reviewer read a disabled primary as a deliberate secondary and concluded
+       the button grammar had no rule. Dashed is the state grammar's own word for
+       not-yet, and it cannot be mistaken for a solid hairline. */
+    .btn-primary[disabled]{background:none;color:var(--ink);
+                           border:1px dashed var(--rule);cursor:default}
     :focus-visible{outline:2px solid var(--ink);outline-offset:2px}
     @media (prefers-reduced-motion:reduce){
       *{animation-duration:1ms !important;transition-duration:1ms !important;
@@ -78,6 +107,11 @@
     /* §9's sine-modulated divider and the rung scale live in the chassis, not in
        one screen's helmet: both are shared vocabulary, and a class defined in
        Main only meant every other screen rendered them unstyled. */
+    /* §9's sine-modulated divider carries the figure's own frequency, so it
+       means "this section is about the record the figure draws". It was under
+       every section header on every screen, including settings groups, which is
+       01-banned-patterns test 3: a device applied uniformly is a tell rather
+       than a system. It now appears only on surfaces that show the figure. */
     .sinerule{margin-top:-2px;line-height:0;opacity:.9}
     /* No .rung. It drew the seven measures as a graded ladder, and decision 054
        renders nothing derived from them: a ladder with a mark on it is an
@@ -207,6 +241,17 @@
     .srow{display:flex;gap:12px;align-items:baseline;padding:12px 0;
           border-bottom:1px solid var(--hairline);width:100%;min-height:44px;
           text-align:left}
+    /* An interactive row and a static one were the same object: label left,
+       value right, hairline under. The only boundary in the system is
+       --hairline, which is deliberately below 3:1 because it may never carry a
+       state, so nothing marked what responded to touch. Every button row now
+       carries the chevron, from the chassis, so no screen can forget it and no
+       static row can borrow it. */
+    button.srow::after{content:'';flex:0 0 7px;height:7px;align-self:center;
+      border-right:1.5px solid var(--rule);border-top:1.5px solid var(--rule);
+      transform:rotate(45deg);margin-left:4px}
+    button.srow.press:active::after{border-color:var(--ink)}
+    button.srow:has(.chev)::after{content:none}
     .warn{background:var(--ink);color:var(--paper);padding:14px 16px}
     .warn .t-data{color:var(--paper)}
 
@@ -274,7 +319,12 @@
   <g id="i-add"><path d="M12 5 L12 19"/><path d="M5 12 L19 12"/></g>
   <g id="i-camera"><path d="M3.5 7.5 L8 7.5 L9.5 5.5 L14.5 5.5 L16 7.5 L20.5 7.5 L20.5 18.5 L3.5 18.5 Z"/><circle cx="12" cy="13" r="3.6"/></g>
   <g id="i-link"><path d="M13 5.5 L18.5 5.5 L18.5 11"/><path d="M18.5 5.5 L10.5 13.5"/><path d="M15.5 14.5 L15.5 18.5 L5.5 18.5 L5.5 8.5 L9.5 8.5"/></g>
-  <g id="i-tick"><path d="M4.5 12.5 L9.5 17.5 L19.5 6.5"/></g>
+  <!-- No tick. DESIGN.md §8 is flat: the product contains no checkmarks, and
+       the same sentence names what replaces one, the state grammar. A step that
+       is done is filled; a step that is not is hollow. A tick beside an identity
+       claim is the verified badge 027 prohibits, arriving through the icon set. -->
+  <g id="i-done"><rect x="7" y="7" width="10" height="10" fill="#1B2A44" stroke="none"/></g>
+  <g id="i-open"><rect x="7.5" y="7.5" width="9" height="9"/></g>
   <g id="i-alert"><path d="M12 4.5 L21 19.5 L3 19.5 Z"/><path d="M12 10 L12 14"/><path d="M12 16.4 L12 17.2"/></g>
 </defs></svg>
 
