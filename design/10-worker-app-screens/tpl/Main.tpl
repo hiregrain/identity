@@ -44,9 +44,12 @@
     .figground svg{width:100%;max-width:292px;aspect-ratio:1;height:auto;
                    border-radius:50%;overflow:hidden}
     .idx-tick{height:1px;background:var(--rule);transition:width 180ms cubic-bezier(0.2,0,0,1)}
-    .sheet{position:absolute;left:0;right:0;bottom:0;background:var(--paper);
+    .sheet{position:absolute;z-index:5;left:0;right:0;bottom:0;background:var(--paper);
            border-top:1px solid var(--ink);padding:20px 20px 24px}
-    .scrim{position:absolute;inset:0;background:rgba(230,230,228,.86)}
+    /* Above the masthead, which is z-index 3. A scrim that stops at the header
+       leaves the record's own controls at full contrast while a dialog claims
+       to own the screen, so the header reads live when it is not. */
+    .scrim{position:absolute;inset:0;z-index:4;background:rgba(230,230,228,.86)}
     /* Disclosure is a line quality on the plate's own header band (law 4).
        Grants are whole-record, so this is a property of the record and never of
        a chapter, since a per-chapter mark would be identical on every row. */
@@ -176,7 +179,7 @@
       <sc-for list="{{ outstanding }}" as="o" hint-placeholder-count="3">
         <button class="row press" onClick="{{ o.open }}">
           <span class="gutter">
-            <svg viewBox="0 0 34 16" width="34" height="16" fill="none"
+            <svg viewBox="0 0 34 16" width="34" height="16" fill="none" aria-hidden="true"
                  stroke="var(--ink)" stroke-width="1"><use href="{{ o.sw }}"></use></svg>
           </span>
           <span style="flex:1;min-width:0">
@@ -196,11 +199,11 @@
       </div>
       <div class="sinerule">@@SINERULE@@</div>
       <sc-for list="{{ chapters }}" as="c" hint-placeholder-count="5">
-        <div class="row {{ c.give }}">
+        <div class="row">
           <!-- The mark carries provenance and the sentence it stands for is one
                string: the tip's text content is what a pointer reveals, what a
                screen reader reads, and what a crawler indexes (055). -->
-          <span class="prov" tabindex="0">
+          <span class="prov {{ c.give }}" tabindex="0">
             <svg viewBox="0 0 34 16" width="34" height="16" fill="none" aria-hidden="true"
                  stroke="var(--ink)" stroke-width="1"><use href="{{ c.sw }}"></use></svg>
             <span class="tip t-meta">{{ c.prov }}</span>
@@ -359,8 +362,15 @@ class Component extends DCLogic {
       movedCls: 'moved-band moved' + movedCh,
       figureAlt: 'Your imprint. Five chapters: two attested by the business, one by a coworker, one dates only, one you recorded yourself.',
       outstanding,
+      // §7 makes rigidity the expression of permanence, and it has to sit on
+      // something a thumb actually touches. It sat on the row, and when the rows
+      // became static the class had no press transform left to cancel: the
+      // metaphor was live code expressing nothing. It sits on the provenance
+      // mark now, which is the pressable element in the row and the right one:
+      // the thing you touch to ask who says so refuses to yield exactly when a
+      // party has signed for it.
       chapters: chs.map((c) => ({...c,
-        give: c.attested ? 'rigid' : ''})),   // §7 rigidity is permanence
+        give: c.attested ? 'rigid' : 'press'})),
       openImprint: () => open({kicker:'Imprint', title:'Your imprint, full size',
         body:'Every ring is one chapter, drawn as wide as the time it covers. The weave shows who attested it. Open it to walk the rings and read each one.',
         cta:'Open it', dismiss:'Close'}),

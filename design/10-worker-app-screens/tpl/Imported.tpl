@@ -64,7 +64,7 @@
       <sc-for list="{{ rows }}" as="r" hint-placeholder-count="5">
         <button class="row proud press">
           <span class="gutter">
-            <svg viewBox="0 0 34 16" width="34" height="16" fill="none"
+            <svg viewBox="0 0 34 16" width="34" height="16" fill="none" aria-hidden="true"
                  stroke="var(--ink)" stroke-width="1"><use href="#sw-self"></use></svg>
           </span>
           <span style="flex:1;min-width:0">

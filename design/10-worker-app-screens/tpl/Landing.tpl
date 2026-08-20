@@ -83,7 +83,7 @@
         <div class="contact" style="position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--ink)"></div>
         <div class="row seat">
           <span class="gutter">
-            <svg viewBox="0 0 26 14" width="26" height="14" fill="none"
+            <svg viewBox="0 0 26 14" width="26" height="14" fill="none" aria-hidden="true"
                  stroke="var(--ink)" stroke-width="0.9"><use href="{{ sw }}"></use></svg>
           </span>
           <span style="flex:1;min-width:0">

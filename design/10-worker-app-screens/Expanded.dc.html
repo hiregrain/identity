@@ -173,7 +173,7 @@
        which lobe was which measure, and no measure renders. What it does now is
        the thing every reader wanted and none could do, which is read the figure.
        Touching a ring selects its chapter. -->
-  <div class="stage {{ phase }} {{ give }}" style="position:absolute;top:52px;left:0;right:0;height:300px"
+  <div class="stage {{ phase }} {{ give }}" style="position:absolute;top:52px;left:0;right:0;height:282px"
        onPointerDown="{{ down }}" onPointerMove="{{ move }}" onPointerUp="{{ up }}">
     <svg viewBox="0 0 600 600" width="100%" height="100%" role="img" aria-label="{{ figureAlt }}"
          style="display:block">
@@ -190,9 +190,12 @@
     </svg>
   </div>
 
+  <p class="t-meta" style="position:absolute;top:336px;left:0;right:0;margin:0;
+            text-align:center;color:var(--secondary)">Touch a ring to read that chapter</p>
+
   <!-- A ring is 10 to 25px of stroke, which is not a touch target, so the name
-       is also a control. -->
-  <div style="position:absolute;top:352px;left:0;right:0;min-height:60px;display:flex;
+       is also a control, and it is the path a keyboard and a screen reader take. -->
+  <div style="position:absolute;top:358px;left:0;right:0;min-height:60px;display:flex;
               align-items:center;border-bottom:1px solid var(--ink)">
     <button class="press" aria-label="Previous chapter" onClick="{{ prevCh }}"
             style="width:44px;height:44px;display:flex;align-items:center;justify-content:center">
@@ -210,7 +213,7 @@
     </button>
   </div>
 
-  <div class="dissolve" style="position:absolute;top:414px;left:0;right:0;bottom:0;overflow-y:auto;padding:0 20px">
+  <div class="dissolve" style="position:absolute;top:420px;left:0;right:0;bottom:0;overflow-y:auto;padding:0 20px">
     <div style="padding:16px 0 4px">
       <span class="t-micro" style="display:block;color:var(--secondary)">This ring</span>
       <p class="t-body" style="margin:7px 0 0;text-wrap:pretty">{{ prov }}</p>

@@ -159,9 +159,12 @@
     .figground svg{width:100%;max-width:292px;aspect-ratio:1;height:auto;
                    border-radius:50%;overflow:hidden}
     .idx-tick{height:1px;background:var(--rule);transition:width 180ms cubic-bezier(0.2,0,0,1)}
-    .sheet{position:absolute;left:0;right:0;bottom:0;background:var(--paper);
+    .sheet{position:absolute;z-index:5;left:0;right:0;bottom:0;background:var(--paper);
            border-top:1px solid var(--ink);padding:20px 20px 24px}
-    .scrim{position:absolute;inset:0;background:rgba(230,230,228,.86)}
+    /* Above the masthead, which is z-index 3. A scrim that stops at the header
+       leaves the record's own controls at full contrast while a dialog claims
+       to own the screen, so the header reads live when it is not. */
+    .scrim{position:absolute;inset:0;z-index:4;background:rgba(230,230,228,.86)}
     /* Disclosure is a line quality on the plate's own header band (law 4).
        Grants are whole-record, so this is a property of the record and never of
        a chapter, since a per-chapter mark would be identical on every row. */
@@ -291,7 +294,7 @@
       <sc-for list="{{ outstanding }}" as="o" hint-placeholder-count="3">
         <button class="row press" onClick="{{ o.open }}">
           <span class="gutter">
-            <svg viewBox="0 0 34 16" width="34" height="16" fill="none"
+            <svg viewBox="0 0 34 16" width="34" height="16" fill="none" aria-hidden="true"
                  stroke="var(--ink)" stroke-width="1"><use href="{{ o.sw }}"></use></svg>
           </span>
           <span style="flex:1;min-width:0">
@@ -311,11 +314,11 @@
       </div>
       <div class="sinerule"><svg viewBox='0 0 320 6' width='100%' height='6' preserveAspectRatio='none' fill='none' stroke='#D3D7D6' stroke-width='1' vector-effect='non-scaling-stroke'><path d='M0.0 3.00 L2.0 3.31 L4.0 3.60 L6.0 3.84 L8.0 4.02 L10.0 4.13 L12.0 4.15 L14.0 4.08 L16.0 3.93 L18.0 3.71 L20.0 3.44 L22.0 3.14 L24.0 2.82 L26.0 2.52 L28.0 2.25 L30.0 2.04 L32.0 1.91 L34.0 1.85 L36.0 1.88 L38.0 2.00 L40.0 2.19 L42.0 2.44 L44.0 2.73 L46.0 3.05 L48.0 3.36 L50.0 3.64 L52.0 3.87 L54.0 4.04 L56.0 4.14 L58.0 4.14 L60.0 4.06 L62.0 3.90 L64.0 3.68 L66.0 3.40 L68.0 3.09 L70.0 2.78 L72.0 2.48 L74.0 2.22 L76.0 2.02 L78.0 1.89 L80.0 1.85 L82.0 1.89 L84.0 2.02 L86.0 2.22 L88.0 2.48 L90.0 2.78 L92.0 3.09 L94.0 3.40 L96.0 3.68 L98.0 3.90 L100.0 4.06 L102.0 4.14 L104.0 4.14 L106.0 4.04 L108.0 3.87 L110.0 3.64 L112.0 3.36 L114.0 3.05 L116.0 2.73 L118.0 2.44 L120.0 2.19 L122.0 2.00 L124.0 1.88 L126.0 1.85 L128.0 1.91 L130.0 2.04 L132.0 2.25 L134.0 2.52 L136.0 2.82 L138.0 3.14 L140.0 3.44 L142.0 3.71 L144.0 3.93 L146.0 4.08 L148.0 4.15 L150.0 4.13 L152.0 4.02 L154.0 3.84 L156.0 3.60 L158.0 3.31 L160.0 3.00 L162.0 2.69 L164.0 2.40 L166.0 2.16 L168.0 1.98 L170.0 1.87 L172.0 1.85 L174.0 1.92 L176.0 2.07 L178.0 2.29 L180.0 2.56 L182.0 2.86 L184.0 3.18 L186.0 3.48 L188.0 3.75 L190.0 3.96 L192.0 4.09 L194.0 4.15 L196.0 4.12 L198.0 4.00 L200.0 3.81 L202.0 3.56 L204.0 3.27 L206.0 2.95 L208.0 2.64 L210.0 2.36 L212.0 2.13 L214.0 1.96 L216.0 1.86 L218.0 1.86 L220.0 1.94 L222.0 2.10 L224.0 2.32 L226.0 2.60 L228.0 2.91 L230.0 3.22 L232.0 3.52 L234.0 3.78 L236.0 3.98 L238.0 4.11 L240.0 4.15 L242.0 4.11 L244.0 3.98 L246.0 3.78 L248.0 3.52 L250.0 3.22 L252.0 2.91 L254.0 2.60 L256.0 2.32 L258.0 2.10 L260.0 1.94 L262.0 1.86 L264.0 1.86 L266.0 1.96 L268.0 2.13 L270.0 2.36 L272.0 2.64 L274.0 2.95 L276.0 3.27 L278.0 3.56 L280.0 3.81 L282.0 4.00 L284.0 4.12 L286.0 4.15 L288.0 4.09 L290.0 3.96 L292.0 3.75 L294.0 3.48 L296.0 3.18 L298.0 2.86 L300.0 2.56 L302.0 2.29 L304.0 2.07 L306.0 1.92 L308.0 1.85 L310.0 1.87 L312.0 1.98 L314.0 2.16 L316.0 2.40 L318.0 2.69 L320.0 3.00'/></svg></div>
       <sc-for list="{{ chapters }}" as="c" hint-placeholder-count="5">
-        <div class="row {{ c.give }}">
+        <div class="row">
           <!-- The mark carries provenance and the sentence it stands for is one
                string: the tip's text content is what a pointer reveals, what a
                screen reader reads, and what a crawler indexes (055). -->
-          <span class="prov" tabindex="0">
+          <span class="prov {{ c.give }}" tabindex="0">
             <svg viewBox="0 0 34 16" width="34" height="16" fill="none" aria-hidden="true"
                  stroke="var(--ink)" stroke-width="1"><use href="{{ c.sw }}"></use></svg>
             <span class="tip t-meta">{{ c.prov }}</span>
@@ -474,8 +477,15 @@ class Component extends DCLogic {
       movedCls: 'moved-band moved' + movedCh,
       figureAlt: 'Your imprint. Five chapters: two attested by the business, one by a coworker, one dates only, one you recorded yourself.',
       outstanding,
+      // §7 makes rigidity the expression of permanence, and it has to sit on
+      // something a thumb actually touches. It sat on the row, and when the rows
+      // became static the class had no press transform left to cancel: the
+      // metaphor was live code expressing nothing. It sits on the provenance
+      // mark now, which is the pressable element in the row and the right one:
+      // the thing you touch to ask who says so refuses to yield exactly when a
+      // party has signed for it.
       chapters: chs.map((c) => ({...c,
-        give: c.attested ? 'rigid' : ''})),   // §7 rigidity is permanence
+        give: c.attested ? 'rigid' : 'press'})),
       openImprint: () => open({kicker:'Imprint', title:'Your imprint, full size',
         body:'Every ring is one chapter, drawn as wide as the time it covers. The weave shows who attested it. Open it to walk the rings and read each one.',
         cta:'Open it', dismiss:'Close'}),
