@@ -1,4 +1,4 @@
-# Attestation interface: schema_version 0.3 (PROPOSED over ratified 0.2)
+# Attestation interface: schema_version 0.3 (A-6 and A-7 RATIFIED; measures section open)
 
 The contract between the ledger and any vertical or external partner
 attached to it. Ratified 2026-08-17 (decision 006) from Dispatch's
@@ -6,12 +6,15 @@ attached to it. Ratified 2026-08-17 (decision 006) from Dispatch's
 `design/interface-verdict-0.1.md` applied. **This repo owns the standard**;
 Dispatch's `model/attestation.md` is the conforming copy.
 
-> **0.3 is PROPOSED and not ratified** (decision 033, 2026-08-19). Two
-> amendments, each marked **[A-6]** or **[A-7]** at its point of use. Until
-> ratified, 0.2 remains the binding version and conforming copies should not
-> change. A-6 aligns the packet with decision 028, which the contract never
+> **A-6 and A-7 are RATIFIED** (decision 068, 2026-08-20), the subset
+> precedent from schema 0.2 applied here: both amendments bind and
+> conforming copies update. A-6 aligns the packet with decision 028,
+> which the contract never
 > absorbed; A-7 adds the `evaluation` scope that manager references and
-> assessment results both require.
+> assessment results both require. **The responsibility-dimensions
+> section remains open**: the decision 054 divergence (which set of
+> seven measures is canonical) still gates it, and full 0.3
+> ratification waits on that ruling.
 >
 > **Companion:** `roster-firewall.md` (0.1-proposed, decision 032) governs what
 > may reach this boundary from a vertical's operational data at all. Nothing
