@@ -1,4 +1,4 @@
-# Stack Litigation — Consolidated Rulings 0.1 (2026-08-17)
+# Stack Litigation, Consolidated Rulings 0.1 (2026-08-17)
 
 > **RATIFIED by the founder, 2026-08-17.** All four rulings bind, with these
 > sub-rulings: D2 is ratified contingent on the T1 agent-fluency spike
@@ -20,13 +20,13 @@ once the founder ratifies.
 
 ## The four rulings
 
-**D1 — System of record: managed Postgres.** Two-plane, subject-partitioned,
+**D1, System of record: managed Postgres.** Two-plane, subject-partitioned,
 regional payload databases + tiny global no-readable-PII spine. Conditioned
-on four launch-blocking obligations: (1) ack watermark — no attestation
+on four launch-blocking obligations: (1) ack watermark, no attestation
 acknowledged until durable across failure domains (Aurora's managed RPO
 primitive `rds.global_db_rpo` as the backstop, tightened); (2) checkpoint-
 escrow watermark; (3) two-phase issuance receipts to parties; (4) fresh-read
-discipline — grant/deletion liveness checks read the primary, never a
+discipline, grant/deletion liveness checks read the primary, never a
 replica. Regional-Spanner-day-one rejected (defuses the invoice, not the
 dev-loop and agent-fluency costs; placement optionality already held open by
 schema discipline). Dispositive: the acknowledged-loss attack dissolves
@@ -36,14 +36,14 @@ is the anchored checkpoint sequence (per D3), mooting TrueTime; documented
 migrations run OFF CockroachDB (Motion, ZITADEL) while Figma/Notion chose
 sharded Postgres at the decision point.
 
-**D2 — Language: Go core, TypeScript surfaces, one generated contract
+**D2, Language: Go core, TypeScript surfaces, one generated contract
 layer.** Go owns kernel, ingestion, registry, read path, deletion, partner
 API; TS owns worker web surface and steward console; a language-neutral
 schema generates both sides plus the cross-language canonicalization test
 vectors (needed for partners anyway). Dispositive: the 2025–26 npm
 supply-chain record (Shai-Hulud et al.) vs. Go's structural properties
 (no install-time execution, sumdb transparency, audited stdlib crypto with
-an actual FIPS 140-3 certificate) — decisive for the kernel because a
+an actual FIPS 140-3 certificate), decisive for the kernel because a
 poisoned dependency in the verification path can accept forgeries without
 touching a key; the TS agent-fluency evidence did not survive verification;
 the dangerous seam is the partner/wire boundary, which must be
@@ -51,7 +51,7 @@ language-neutral regardless. The language boundary coincides with the
 two-human-review trust boundary. Conditional on the T1 pre-code
 agent-fluency spike.
 
-**D3 — Transparency: day-one anchoring launch-blocking; witnessed tile log
+**D3, Transparency: day-one anchoring launch-blocking; witnessed tile log
 at a registry-enforced deadline.** Launch requires: per-stream Merkle roots
 checkpointed every ≤5 minutes, KMS-signed, to compliance-mode WORM object
 lock in a separate account, mirrored to a second cloud; frozen
@@ -60,13 +60,13 @@ inclusion receipts to parties. The Tessera-class log starts construction
 immediately post-launch, runs beside Postgres as integrity authority (never
 the synchronous write path), and must be live, witnessed, and genesis-proven
 against the day-one anchors before the first external party's `active`
-transition or 1M identities — enforced in the registry state machine so
+transition or 1M identities, enforced in the registry state machine so
 slipping it is a visible governance act. If the founder confirms an external
 party within ~2 quarters, the log moves into pre-launch scope. Consequence:
-D6 resolved — the anchored checkpoint sequence is the system's ordering
+D6 resolved, the anchored checkpoint sequence is the system's ordering
 authority.
 
-**D4 — Party keys: party-held custody for registry-grade keys.**
+**D4, Party keys: party-held custody for registry-grade keys.**
 Partner-side KMS via a ledger-shipped integration kit; ledger-provisioned-
 then-ownership-transferred bootstrap tier for small parties; short-lived
 (30–90 day) auto-rotating keys; no code path by which the operator can
@@ -76,9 +76,10 @@ evidence in the log, party-visible signature feed, periodic party
 countersignatures. Dispositive: compensating controls restore detectability,
 not impossibility, and the product's margin is not assuming the operator's
 honesty; verified precedent uniform (eIDAS sole-control, CA/BF prohibition,
-Sigstore's keyless model is client-held ephemeral keys + transparency —
-exactly this shape); repair asymmetry — partner leaks are bounded and
-reparable in-system, operator-forgery capability recolors the record forever.
+Sigstore's keyless model is client-held ephemeral keys + transparency,
+exactly this shape); repair asymmetry, namely that partner leaks are bounded
+and reparable in-system while operator-forgery capability recolors the
+record forever.
 
 ## The consolidated stack (what the rulings + convergence map now specify)
 
@@ -102,11 +103,11 @@ reparable in-system, operator-forgery capability recolors the record forever.
 - Trust kernel <~3k lines, two-human review, golden vectors + fuzzing +
   differential testing against a reference model; mutation testing on
   agent-written tests; two TLA+ specs (merge/unmerge concurrency; deletion
-  vs. read path) — D5 rides with the AI-native verification architecture,
+  vs. read path). D5 rides with the AI-native verification architecture,
   now on Go core (PBT/mutation tooling thinner in Go; mitigated by a TS
   reference model per D2 verdict).
 - Human queues (merge stewardship, disputes, party vetting) built as a
-  product line with throughput design — the actual 10⁸ wall.
+  product line with throughput design, the actual 10⁸ wall.
 
 ## Trigger register (contractual; full definitions in verdict files)
 
@@ -122,9 +123,9 @@ reparable in-system, operator-forgery capability recolors the record forever.
   ruling the category argument inert; commodity sole-control hosted signing;
   operator signing incident (any) → immediate re-litigation.
 
-## [FOUNDER-CALL] register — the items that are yours
+## [FOUNDER-CALL] register, the items that are yours
 
-1. **Ratify the four rulings** (or overrule any — D2 is the one that
+1. **Ratify the four rulings** (or overrule any, D2 is the one that
    overturned the perspectives' majority lean, on verified evidence).
 2. **D3 timeline input:** is the first external attesting party realistically
    within ~2 quarters? If yes, the witnessed log moves into pre-launch scope.
