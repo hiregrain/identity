@@ -2581,3 +2581,49 @@ template for future execution runs. Each run still requires an explicit
 founder go and a delegation entry naming its layer scope; nothing merges
 between runs. Execution is paused after foundation on the founder's ruling;
 the frontier (trust-kernel/01, trust-kernel/06, person-identity/01) waits.
+
+## 052 — Prose standard, deletion window, and four recorded invariants (2026-08-20)
+
+Founder rulings from the foundation design review.
+
+**The unslop standard binds repo-wide, and this entry is the one-time
+approval to amend frozen records for it.** Em dashes, curly quotes,
+decorative emoji, title-case headings, and the tell vocabulary are removed
+from every tree, including closed decisions entries, verification logs,
+discharged spikes, and rendered UI copy. UI copy gets no exception; it is
+the prose workers actually see. The append-only principle is not weakened:
+this amendment is style-only, meaning-preserving, approved once, here. A
+future style amendment to a closed record requires a new entry. Going
+forward, `checks/unslop.mjs` enforces the mechanical patterns; the
+judgment patterns bind through review. Numeric ranges keep their en dash;
+the rule targets dashes used as separators.
+
+**Constraint-stating comments cite their enforcement.** A code comment may
+state a constraint only alongside the check, test, or database constraint
+that enforces it, or an explicit "enforced by reading". Comment drift is a
+review defect. Recorded in CLAUDE.md.
+
+**The deletion confirmation window is 72 hours,** cancellable in-app and
+through support. Access cuts immediately on filing; the window delays only
+the irreversible shred, and exists so nobody can be forced to destroy
+their record on the spot. `copy/deletion.md` states the number;
+`consent-and-deletion` implements it.
+
+**Four invariants from the review, recorded so future work cannot
+unknowingly break them:**
+
+1. Ciphertext binds the person id as AEAD associated data, so a row
+   written under a pre-merge id decrypts only under that id.
+   Person-identity's merge design must keep each row's original subject
+   id reachable on the read path; re-encryption on merge is not an
+   option against append-only content.
+2. Every payload serving path consults the restore gate through
+   core/envelope. Any future caching of the gate must fail closed, and
+   the gate check stays inside the envelope.
+3. No payload read path may exist outside core/envelope. A server that
+   queries payload tables directly bypasses the restore gate and the
+   ciphertext discipline. Enforced by review until a mechanical form
+   exists.
+4. Restore replay re-applies the entire deletion journal by design. An
+   optimization that replays a subset must first prove the restored
+   backup cannot contain data for any person it skips.
