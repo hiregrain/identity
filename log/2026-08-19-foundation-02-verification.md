@@ -1,6 +1,6 @@
-# foundation/02 — clean-context verification
+# foundation/02: clean-context verification
 
-- Task: `foundation/02` — Migration harness and type generation
+- Task: `foundation/02`: Migration harness and type generation
 - Verifier: clean-context session, 2026-08-19
 - Head SHA verified: `1db47f577163b8f3b78683197e78a58a67c5b4d0` (PR #2,
   branch `task/foundation-02`)
@@ -88,7 +88,7 @@ scope item or a declared judgment call.
   1db47f5..11b1b2f`: the two duplicate-number red-path fixtures renamed
   to `spine/0002-redpath-left.sql` and `payload/0002-redpath-right.sql`,
   with the table names inside neutralized to match
-  (`redpath_left`/`redpath_right`). Nothing else in the diff — no scope
+  (`redpath_left`/`redpath_right`). Nothing else in the diff, no scope
   creep.
 - Re-runs from a fresh clone at the new head: `make check-red` exit 0,
   red path 4 failing on `number 0002 used twice under the shared

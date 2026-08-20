@@ -1,4 +1,4 @@
-# foundation/04 — clean-context verification
+# foundation/04: clean-context verification
 
 - Task: `plans/foundation/04-two-plane-split.md` (satisfies foundation criteria 3, 4, 8)
 - PR: #4, branch `task/foundation-04`
@@ -6,14 +6,14 @@
 - Verifier: clean-context session, 2026-08-19. Fresh clone; no implementer
   transcripts consulted. CI at this SHA: all seven checks SUCCESS
   (run 32305345776).
-- Verdict: **PASS** — every mechanical criterion re-run green, criterion 8
+- Verdict: **PASS**. Every mechanical criterion re-run green, criterion 8
   adjudicated pass.
 
 ## Mechanical outcomes (re-run, not re-read)
 
 All commands run in a fresh clone at the head SHA, both planes booted from
 empty (`make db-up`; verifier-local compose port override only, host ports
-being held by another session — every check connects via
+being held by another session, every check connects via
 `docker compose exec`, so the override touches nothing the checks use).
 
 1. **Both chains replay; append-only holds on both planes.**
@@ -41,9 +41,9 @@ being held by another session — every check connects via
    plane aborts on a qualified reference to the other
    (`cross-database references are not implemented`), a probe role created
    on one plane absent from the other, own `identity`/`identity_app` role
-   set per plane. Verifier's own additional spanning attempt — an open
-   transaction on spine INSERTing into `payload.public.schema_migrations`
-   — aborted (psql exit 3, ON_ERROR_STOP); no write landed.
+   set per plane. Verifier's own additional spanning attempt, an open
+   transaction on spine INSERTing into `payload.public.schema_migrations`,
+   aborted (psql exit 3, ON_ERROR_STOP); no write landed.
 4. **Criterion 4 red paths, verifier's own plants:**
    - Planted `probe_no_res (x integer)` on payload →
      `node checks/payload-residency.mjs` exit 1, message naming the rule
@@ -67,7 +67,7 @@ being held by another session — every check connects via
 > re-identified without the payload plane."
 
 Judged from the correlation checklist (task file / lint header) and the
-spine schema alone — the payload schema was not consulted for this
+spine schema alone, the payload schema was not consulted for this
 section. The live spine schema at this head is one table,
 `schema_migrations (number integer, name text, applied_at timestamptz)`,
 plus three domains with no columns yet (`spine_object_id`,
@@ -75,23 +75,23 @@ plus three domains with no columns yet (`spine_object_id`,
 
 **Per column, all five questions:**
 
-- `schema_migrations.number` — (1) ordering reveals migration apply
+- `schema_migrations.number`: (1) ordering reveals migration apply
   order, which is a fact about the schema and already public in the
   repository's file listing; no person appears in it. (2) Not a
   timestamp. (3) The only join target is the repository's own migration
   files; there is no person-linked value to join a roster against.
   (4) Not a commitment; no salt. (5) An adversary with a partial external
-  dataset learns which migrations ran — public information. The table has
+  dataset learns which migrations ran, public information. The table has
   one row per migration, not per person; there is no subject dimension to
   re-identify.
-- `schema_migrations.name` — the one column of a genuinely readable type
+- `schema_migrations.name`: the one column of a genuinely readable type
   (bare `text`). (1) No ordering beyond `number`'s. (2) Not a timestamp.
   (3)/(5) Values are repository filenames; nothing person-derived reaches
   the column through the migration runner, and the residual risk (a
   future migration named after a person) is a review-time concern on the
   migration itself, not a schema leak. (4) No commitment, no salt.
   Cannot re-identify anyone.
-- `schema_migrations.applied_at` — (2) full-precision timestamps reveal
+- `schema_migrations.applied_at`: (2) full-precision timestamps reveal
   when the operator ran migrations: an activity pattern of the
   **operator**, not of any subject on the ledger. (1) Duplicates
   `number`'s ordering. (3)/(5) Joinable only to deployment history.
@@ -103,7 +103,7 @@ plus three domains with no columns yet (`spine_object_id`,
 - **The three domains** carry no columns yet, so nothing to judge live;
   their pre-answered checklists in `0003` correctly bind the reasoning to
   the *purpose* and explicitly defer per-column review to the migration
-  that first uses each — they do not claim to discharge future columns.
+  that first uses each, they do not claim to discharge future columns.
 
 **Honesty of the written justifications (0001/0003):** each block answers
 all five questions specifically rather than gesturing. The strongest
@@ -132,7 +132,7 @@ honestly answer the checklist.
   algorithm, which no decisions entry has ruled; the deferral is explicit
   in the migration and the PR body rather than chosen quietly, and no
   committing write exists yet to widen the exposure.
-- **uuid-v4-as-convention**: sound, and the weakest of the three — a
+- **uuid-v4-as-convention**: sound, and the weakest of the three, a
   convention the type cannot enforce. Acceptable here because no
   generation site exists yet and the migration names the exact failure a
   reviewer must catch (UUIDv7/ULID leaking enrollment order, checklist
@@ -153,7 +153,7 @@ red-path fixtures, connection plumbing, comment-only justification edit
 to `0001` with matching allow-list exceptions, regenerated types, and
 CI/Makefile wiring the task called for. No scope creep found.
 
-## Delta re-verification — review-fix head `638a51aa69a4ff426e0190a6662bf7636c86cdef`
+## Delta re-verification: review-fix head `638a51aa69a4ff426e0190a6662bf7636c86cdef`
 
 One review-fix commit landed after the PASS above (`638a51a`,
 `fix(foundation/04): bind exception justifications to the declared
@@ -161,7 +161,7 @@ migration file; a decoy block elsewhere is not a match`). Re-verified in
 a fresh clone at that SHA; CI green there (run 32306243967, all seven
 checks SUCCESS).
 
-**Delta confirmed exhaustive** — three files, nothing else:
+**Delta confirmed exhaustive.** Three files, nothing else:
 `checks/spine-schema.mjs` (an exception's justification now resolves
 ONLY from the migration file its `migration` field names, with two
 distinct failures: the declared file absent; the declared file blockless,
@@ -174,7 +174,7 @@ creep.
 - `make check` green end to end at `638a51a` (spine-schema "3 columns
   checked" present; append-only 18 assertions both planes;
   two-plane-split 8 assertions).
-- `make check-red-db`: every red path fails as designed, including 5b —
+- `make check-red-db`: every red path fails as designed, including 5b,
   the decoy block fails with the message naming the decoy file as "not a
   match".
 - Verifier's own decoy variant: a real exception
@@ -187,12 +187,12 @@ creep.
 
 **Deviation judged legitimate, not a dodge:** the decoy red path lives
 in `check-red-db` rather than `check-red` because the lint iterates live
-spine columns from `information_schema` — without the planted live
+spine columns from `information_schema`, without the planted live
 column, the justification branch is unreachable (the stale-exception
 failure would fire instead, which is a different rule). The placement
 follows from the lint's structure.
 
-**Criterion 8 stands unchanged:** the delta touches no schema — no
+**Criterion 8 stands unchanged:** the delta touches no schema: no
 migration, no domain, no column. The adjudication above applies verbatim
 at `638a51a`.
 
