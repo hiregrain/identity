@@ -2553,3 +2553,31 @@ own account, and the pictogram is what makes it readable on sight.
 
 **Dark mode is explicitly out of this run** (gap 6, decision 037), and stays
 outstanding.
+
+## 051 — Post-foundation rulings: frontier is strict, retention is 30 days, delegation terms stand (2026-08-19)
+
+Three founder rulings closing the foundation run's open items.
+
+**The strict layer gate governs the frontier.** A task is workable only when
+every layer in its layer's `depends_on` is `done`. `soft_depends_on` remains
+advisory prose — it names work that can be *prepared* early, and it never
+unlocks a task in the computed queue. This resolves the raise recorded on
+foundation/06's PR: the fine-grained reading of ORDER.md's prior-packet
+sentence is rejected because it would let tasks build on neighbors whose
+layer has not finished verification. `checks/plan-graph.mjs` as shipped is
+the ruled behaviour.
+
+**Backup retention is 30 days, ratified.** The number in
+`db/deletion-policy.json` and `copy/deletion.md` — written as implementer
+judgment in foundation/08 — is now a decision. Changing it is a config and
+copy edit that `checks/deletion-copy.mjs` keeps consistent, plus a
+superseding entry here.
+
+**Merge-delegation terms are standing, activation is per run.** The
+arrangement decision 043 defined — the executive merges once CI, clean-context
+verification, and resolved review findings are all green; unresolved judgment
+calls wait for the founder; raises park and batch — is approved as the
+template for future execution runs. Each run still requires an explicit
+founder go and a delegation entry naming its layer scope; nothing merges
+between runs. Execution is paused after foundation on the founder's ruling;
+the frontier (trust-kernel/01, trust-kernel/06, person-identity/01) waits.
