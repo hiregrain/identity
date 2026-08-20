@@ -3110,3 +3110,97 @@ is disabled, so every screenshot of a screen with a conditional disable
 showed a dead button. One reviewer read a disabled primary as a deliberate
 secondary and concluded the button grammar was incoherent. The grammar was
 consistent; the images were wrong.
+
+## 062 — Self-asserted record grilled: education and documents enter, extraction becomes a layer (2026-08-20)
+
+Rulings from the founder grilling of `self-asserted-record`, 2026-08-20.
+This is the grill-before-ready record for that layer; the engineering
+review still has to run before it goes `ready`.
+
+**The layer's scope line and the schema disagreed on what exists, and
+each wins one.** Skills stay nonexistent; the schema's reasoning is the
+thesis's reasoning, and the scope line was a leftover from before the
+schema settled. Education and credentials enter as record objects.
+Degree-granting institutions are the one issuer population where
+authoritative registries already exist (US DAPIP, UK register of
+learning providers, PH TESDA), so an education claim resolves against a
+curated institution registry through propose-and-confirm, with the
+raw-string-plus-country fallback for everything the registries miss.
+Credential issuers are an open set like employers and get no registry of
+their own; a credential issuer is matched against the party registry
+instead, since a certifying body may be a registered party. Schema 0.2
+carries both shapes, and the chapter, position and envelope sections of
+0.1 are ratified as they stand. research/17 surveys the prior art these
+shapes were checked against; the registry argument is weakest exactly
+where the target population is, since India's UGC/AICTE and the
+Philippine CHED publish recognition data as documents rather than
+queryable registries, and that limit is recorded in the schema's open
+items rather than discovered later.
+
+**Worker-supplied documents come in now; decision 053's gate is
+discharged.** A worker may attach a certificate or similar document to a
+credential record without waiting for counsel. Three defaults hold: the
+file lives in the payload plane under the subject's DEK, so it dies at
+profile deletion; a prior packet says "document on file, self-asserted"
+and never carries the file; and a document's presence never upgrades
+provenance, because an uploaded PDF read as verification is a graded
+claim collapsing into a yes. The question 053 wanted counsel to answer,
+what Grain asserts by accepting a document, goes out as brief 7 and
+blocks nothing.
+
+**Self-asserted writes are hash-chained through the trust kernel from
+day one.** Trust-kernel is already on the first-product milestone, so
+deferring the chains bought nothing except a guaranteed migration and a
+second write path. The layer's dependencies gain trust-kernel.
+
+**Freeze is whole-object at first verification.** Once any attestation
+lands on a chapter, the worker's edit path on that chapter closes at the
+API and the database, whole chapter, never per field. Corrections after
+freeze are new claims or the dispute path. Before any verification a
+claim is fully worker-owned, including deletion; delete is the far end
+of edit.
+
+**Version history is read by the worker and by operators, nobody
+else.** An operator's read is reason-gated, logged, and lands in the
+worker's disclosure record. Edit history reaching a reading party would
+turn pre-verification editing into a performance signal, which is the
+credential logic this product refuses.
+
+**Import proposes; the worker disposes.** The uploaded resume is
+ephemeral: extracted, shown for confirmation, discarded, never written
+to either plane. Extraction may propose only values literally present in
+the source text; anything absent, including a country when only a city
+appears, comes back blank and required at confirmation. Matching
+proposes registered parties first, then the institution registry, then
+falls back to the raw string, and the raw asserted string is stored
+unmutated even when a match is confirmed. Worker confirmation is the
+floor, always: batch-level when extraction confidence is high, per-claim
+when there is doubt, and zero-action auto-binding never, because an
+unconfirmed match makes Grain the asserter of the match. The confidence
+threshold is a declared gated criterion until the extraction layer
+defines it.
+
+**Parsing, extraction and matching become their own layer.**
+`plans/extraction/` enters the tree as draft on the first-product
+milestone, since that milestone's own definition includes a resume
+import. The pipeline is built on open-source, self-hosted components so
+it survives any vendor; research/18 surveys the component landscape, and
+two of its strongest components (Marker for layout, Zingg for entity
+resolution) carry restrictive licenses and are not adopted silently.
+Self-hosting also keeps resume text inside Grain's infrastructure, which
+dissolves most of the third-party-processor question the vendor path
+raised. Model and infrastructure choice is a decisions entry once the
+layer's design work produces a shortlist, and the open cloud-provider
+gate now also gates this layer's production infrastructure.
+
+**Boundaries.** The layer ends at model, API and validation;
+worker-surface owns rendering. Dispute handling, coworker attestation
+and registry badges are explicit non-scope. The position non-overlap
+claim in `AddPosition` is dropped and the schema's inside-chapter-bounds
+rule stands alone, because overlapping positions are real and rejecting
+them at entry forces workers to falsify dates. The screens audit that
+ran during the grilling found the freeze warning describing the wrong
+permanence, the manual path never asking `party_country` or
+`relationship_kind`, and `ChapterDetail` claiming to show every raw fact
+while missing half the field set; the defect list is recorded in the
+layer file for the design pass.
