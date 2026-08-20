@@ -1,14 +1,14 @@
-# Record schema: schema_version 0.2 (PROPOSED; §2, §3, §7 RATIFIED)
+# Record schema: schema_version 0.2 (§2, §3, §7, §8, §9 RATIFIED)
 
 Closes `DESIGN.md` gap 4: *"no field list exists anywhere for a work-history row,
 a skill, or a credential. Every surface in this document renders data that is not
 yet specified."*
 
 **Ratification state.** Decision 062 ratifies the chapter (§2), position
-(§3) and envelope (§7) sections as they stood in 0.1; those sections bind.
-0.2 adds `education` (§8) and `credential` (§9), which are PROPOSED until a
-founder ratifies them. Section numbers §1 through §7 are stable across the
-version because other documents cite them.
+(§3) and envelope (§7) sections as they stood in 0.1. Decision 063
+ratifies `education` (§8) and `credential` (§9) with the engineering
+review's corrections applied. All five bind. Section numbers §1 through
+§9 are stable because other documents cite them.
 
 **Scope.** This defines the ledger's own record objects: what a worker owns, what
 the imprint renders, what a surface displays. It does **not** redefine the
@@ -24,24 +24,32 @@ is what the record holds; standing is what the ledger derives.**
 
 | Object | Created by | Mutable | Renders as |
 |---|---|---|---|
-| `chapter` | the worker | until first attestation, then frozen | one band of the imprint |
+| `chapter` | the worker | until a verification request, then the freeze rule | one band of the imprint |
 | `position` | the worker | until its chapter freezes | a division inside the band |
 | `attestation` | a registered party | never, append-only | thread density on the band |
 | `chapter_standing` | derived by the ledger | recomputed | lobe depth |
 | `grant` | the worker | revocable | not drawn |
 | `dispute` | the worker | resolvable | a mark on the chapter |
-| `education` | the worker | until first attestation, then frozen | undecided, owned by worker-surface |
-| `credential` | the worker | until first attestation, then frozen | undecided, owned by worker-surface |
+| `education` | the worker | until a verification request, then the freeze rule | undecided, owned by worker-surface |
+| `credential` | the worker | until a verification request, then the freeze rule | undecided, owned by worker-surface |
+| `verification_request` | the worker | state transitions only | the freeze warning moment |
 
-**The freeze rule (decision 062).** A worker-created object is fully
-worker-owned until the first attestation lands on it: editable with
-version history, and deletable. From that moment its edit path closes at
-the API and the database, whole object, never per field. Corrections
-after freeze are new objects (`superseded_by`) or the dispute path. Prior
-versions stay readable by the worker and by operators whose reads are
-reason-gated, logged, and written to the worker's disclosure record;
-they never reach a reading party, because edit history read by a party
-turns pre-verification editing into a performance signal.
+**The freeze rule (decision 062, trigger amended by 063).** A
+worker-created object is fully worker-owned until a verification request
+is issued on it: editable with version history, and deletable. Freeze
+happens at request creation, not at attestation landing, so a party
+never signs a version the worker changed after asking. The edit path
+closes at the API and the database, whole object, never per field. If
+the request ends with no attestation, declined or expired, the object
+thaws back to worker-owned; once an attestation lands, the freeze is
+permanent. Corrections after permanent freeze are new objects
+(`superseded_by`) or the dispute path. Prior versions live in the
+payload plane under the subject's DEK, die with the profile, and stay
+readable by the worker and by operators; an operator read is a
+privileged-operator-action event in the trust kernel's chain, carrying
+a recorded reason. Prior versions never reach a reading party, because
+edit history read by a party turns pre-verification editing into a
+performance signal.
 
 **There is no `skill` object.** The seven responsibility dimensions replace it.
 A skill list is a self-asserted claim about capability; a dimension level is an
@@ -191,7 +199,9 @@ institution is a new record, parallel to the rehire rule on chapters.
 
 **The institution registry** is a curated table seeded from national
 accreditation lists (US DAPIP, UK UKRLP, PH TESDA and equivalents), each
-row carrying its source. Coverage is honest, not global: India's
+row carrying its source. The table and its seeding belong to the
+`self-asserted-record` layer (decision 063); `extraction` proposes
+against it and stores nothing. Coverage is honest, not global: India's
 UGC/AICTE and the Philippine CHED publish recognition data as documents,
 not queryable registries (research/17 §8), so resolution in the target
 population leans on the raw-string fallback. The registry proposes;
@@ -229,7 +239,29 @@ with counsel (brief 7) and blocks nothing here.
 
 ---
 
-## 10. Open
+## 10. `verification_request`: the freeze trigger (decision 063)
+
+Defined by the `self-asserted-record` layer so freeze is testable in
+first-product; the `verification` layer later owns issuance flows
+against it. `ingestion`'s roster firewall already presumes this object
+(`verification_request_id`).
+
+| Field | Type | Notes |
+|---|---|---|
+| `request_id` | opaque id | |
+| `subject_id` | `ledger_person_id` | |
+| `claim_ref` | chapter, education, or credential id | freeze scope is this whole object |
+| `party_ref` | registered party id | who is asked |
+| `state` | enum | `open \| attested \| declined \| expired \| withdrawn_before_send` |
+| `requested_at` · `expires_at` | | **Expiry is mandatory**, the grant precedent: no open-ended state may exist. An unanswered request to a dissolved employer expires and the claim thaws. |
+
+Freeze on create; thaw on `declined` or `expired`; permanent once
+`attested`. The expiry default is set at task level and is copy the
+worker sees at the moment of asking.
+
+---
+
+## 11. Open
 
 0. **Employer normalization at scale.** `party_country` and `party_locality`
    exist because most chapters in the target population name businesses that never
@@ -269,7 +301,7 @@ with counsel (brief 7) and blocks nothing here.
    Philippine sources need scraping or third-party data (research/17
    §8), and nothing yet rules what sourcing standard a registry row must
    meet.
-7. **Credential freeze is unreachable in 0.2.** `credential.provenance`
-   is `self_asserted` only, so the freeze rule in §1 never triggers for
-   credentials until a verification layer gives them attestations. Stated
-   so the gap reads as declared, not overlooked.
+7. **Credential freeze is unreachable in first-product.** The freeze
+   trigger is a `verification_request` (§10), and nothing issues
+   requests against credentials until a verification layer exists.
+   Stated so the gap reads as declared, not overlooked.
