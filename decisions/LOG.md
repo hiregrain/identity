@@ -3204,3 +3204,88 @@ permanence, the manual path never asking `party_country` or
 `relationship_kind`, and `ChapterDetail` claiming to show every raw fact
 while missing half the field set; the defect list is recorded in the
 layer file for the design pass.
+
+## 063 — Engineering review of self-asserted-record: eleven rulings, layer goes ready (2026-08-20)
+
+The grill-before-ready second half for `self-asserted-record` ran
+2026-08-20: a four-section engineering review plus an independent
+outside-model challenge whose eighteen findings were triaged live. Every
+ruling below was made individually by the founder during the review. The
+layer's criteria are final and its status is `ready`.
+
+**Freeze triggers at request, not at landing, and thaws on terminal
+failure.** This supersedes 062's "once any attestation lands" wording.
+Between request and landing the worker could otherwise edit, and the
+party would sign a version the worker had already changed. A
+`verification_request` carries a mandatory expiry, the grant precedent
+that no open-ended state may exist: freeze on request creation, thaw on
+decline or expiry. A request to a dissolved employer therefore cannot
+freeze a chapter forever. This layer defines the request table; the
+verification layer later owns issuance flows against it. The
+`RequestAttestation` copy defect deepens: it must say editing pauses at
+the ask and returns only if no attestation arrives.
+
+**The institution registry is this layer's to build.** Education CRUD
+held a foreign key into a table no plan created. The registry table and
+its seeding task (per-row source: DAPIP, UKRLP, TESDA and equivalents)
+join this layer's scope; extraction stays a pure proposer with no
+storage; sourcing governance remains schema open item 6.
+
+**Issuer matching is split and gated.** The party registry is a v1
+layer, and decision 051's strict gate makes matching against it
+untaskable in first-product. Criterion 8 keeps the institution half; the
+issuer-match half becomes its own criterion, declared gated on
+party-registry being done. First-product ships raw issuer strings,
+which the schema already makes authoritative.
+
+**Worker record writes join trust-kernel's governing-event list.** The
+kernel's coverage criterion proves every listed event type is chained;
+an unlisted type is invisible to it. The list in a ready layer is
+amended by this founder ruling, here, so the coverage check enforces
+chains-day-one forever. A consequence is recorded, not hidden: with the
+strict layer gate, no task in this layer is workable until all of
+trust-kernel is done, on the local software-key path.
+
+**Chain deletion semantics bind decision 009.** The layer's chain
+criterion requires a delete-after-chain fixture proving no hash
+retention across deletion survives in worker streams.
+
+**Operator reads of version history are kernel privileged-operator
+events, not a new table.** The review's own first ruling created a
+duplicate logging mechanism beside the kernel's chained privileged
+actions; it was revised in the same session. This layer emits the event
+with a recorded reason; worker-surface later renders these into the
+disclosure record. One tamper-evident record of operator actions,
+never two.
+
+**The sensitive-data ban for worker-authored writes is interface A-4,
+verbatim, including free-text scanning.** One list, enforced at both
+doors, so ingestion and the worker path cannot drift apart.
+
+**A chain criterion exists because a ruled constraint must be
+gradeable.** 062 ruled chains day one; no criterion verified it. Added.
+
+**The packet pointer-not-file rule moves to prior-packet.** This layer
+proves DEK storage and provenance-unchanged; what a packet renders is
+provable only where packets are built. Recorded in prior-packet's file
+as an inherited criterion candidate, an obligation for its grilling.
+
+**Schema 0.2 §8 and §9 are RATIFIED**, with the review's corrections
+applied first. The shapes were founder-ruled in 062 with the research
+folded in; the review stress-tested them; the formal act happens here.
+
+**Criteria name their enforcement points.** "At the API and the
+database" was on one criterion and absent from the others stating
+universal negatives; confirmation and match writes now name the
+database-level constraint a verifier greps for. Version history rows
+live in the payload plane under the subject's DEK and die with the
+profile; they are the worker's own record, not an operational log.
+
+Rebutted outside-voice findings, recorded so they are not re-raised:
+operator plaintext access rides the same serving path that already
+decrypts packets for parties, the gate is authorization; batch-commit
+tiering stands as the founder ruled it, and its gated threshold can be
+set to never-batch if extraction's benchmarks disappoint; the
+ask-not-guess confirmation cost is real and goes to the extraction
+grilling and the design pass; import infeasibility does not rewrite this
+layer because manual entry is the ruled fallback.
