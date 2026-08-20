@@ -3,14 +3,13 @@ id: extraction
 type: layer
 status: ready
 milestone: first-product
-depends_on: []
-soft_blocks: [self-asserted-record]
+depends_on: [self-asserted-record]
 binds:
   - decisions/LOG.md#062
   - decisions/LOG.md#067
   - decisions/LOG.md#072
+  - decisions/LOG.md#073
   - model/record-schema.md
-  - research/18-oss-resume-parsing-landscape.md
 gated_criteria: [7]
 evidence: []
 verified_by: null
@@ -26,13 +25,20 @@ the engineering review over these criteria and tasks runs before any
 task is claimed.
 
 **Nothing is self-hosted** (decision 072, superseding the self-hosted
-half of 062/066): the extraction engine is a cheap commercial API model
-with native document input, behind a model-agnostic seam. The schema,
+half of 062/066): the extraction engine is a cheap commercial API
+model behind a model-agnostic seam, and **only the extracted text
+layer crosses the wire, never the document bytes** (decision 073). The
+schema,
 traceability rule, and confidence contract are engine independent; the
 engine is per-environment configuration under zero-data-retention API
-terms, and the production engine choice is a gated founder ruling.
+terms, and the production engine choice is a gated founder ruling
+naming the model, its terms, its residency posture, and the eval
+numbers it cleared (ORDER.md decision gate).
 Switching vendors, or self-hosting if scale ever justifies it, is an
-adapter and a config change.
+adapter and a config change. This layer depends on
+self-asserted-record, which completes with its gated criteria
+outstanding per the layer-done rule (decision 073); the batch
+threshold there promotes when this layer's contract lands.
 
 Scope, per decisions 062/067/072:
 
@@ -47,15 +53,21 @@ Scope, per decisions 062/067/072:
   otherwise; per-claim and per-match confidence slots filled per the
   contract below.
 - Matching: Splink run locally as a library, proposals against the
-  Grain party registry first, then the institution registry, then raw
+  institution registry, then raw
   string, calibrated match probabilities, proposing never asserting.
+  The party tier defers to v1 with the registry it needs (decision
+  073), a declared extension, not a silent absence.
 - The confidence contract, published: field traceability is binary;
   match confidence is the calibrated probability; the batch threshold
   self-asserted-record consumes is stated here and renders from the
   live configuration.
-- The eval harness: an in-house corpus per language and script,
+- The eval harness: a synthetic-only, English-only corpus in v0
+  (decision 073; languages expand by entry as markets are entered, no
+  donated document without recorded consent and a deletion path);
   per-engine accuracy published; proposals are enabled per script only
-  with passing numbers, everything else routes to manual entry.
+  with passing numbers in `contract/eval-registry.json`, committed
+  empty from the start, so extraction proposes nothing until the
+  harness has run, which is the honest starting state.
 - CI and verifiers run the stub and golden outputs; only the eval
   harness calls engines, in its own environment.
 - The uploaded artifact is ephemeral (decision 062): staging TTL in
@@ -68,9 +80,10 @@ Scope, per decisions 062/067/072:
 Acceptance:
 
 1. **Extraction writes nothing.** (mechanical) the extraction package
-   holds no INSERT or UPDATE privilege on any table in either plane
-   and no write path exists, asserted by privilege inspection and the
-   grep-class check with a red-path fixture.
+   holds no INSERT, UPDATE, DELETE, or TRUNCATE privilege on any table
+   in either plane, asserted by privilege inspection, and the
+   grep-class check this layer builds fails any database access from
+   the package, red-path fixture included.
 2. **Every proposed field is a literal span or it is blank.**
    (mechanical) every populated field in a proposal carries its source
    span and the span verifier finds the value verbatim in the text
@@ -81,10 +94,12 @@ Acceptance:
    each yield the no-proposal result routing to manual entry, never a
    proposal.
 4. **Matches carry calibrated confidence and the right priority.**
-   (mechanical) match proposals try registered parties, then the
-   institution registry, then fall back to raw, proven by fixtures at
-   each tier; every match carries its calibrated probability; nothing
-   is ever auto-bound.
+   (mechanical) match proposals try the institution registry and fall
+   back to raw, proven by fixtures at each tier (the party tier is a
+   declared v1 extension, decision 073); every match carries its
+   calibrated probability; the proposal payload schema carries no
+   binding field, so a pre-bound ref cannot exist in a proposal,
+   asserted at the schema.
 5. **The published contract cannot drift.** (mechanical) the
    confidence contract and batch threshold render from the live
    configuration; the drift check diffs published against rendered at

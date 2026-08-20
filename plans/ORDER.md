@@ -74,7 +74,11 @@ reading.
 - `gated_criteria`: criteria a `ready` layer knowingly cannot reach yet,
   because the only task that would satisfy them is still `draft`. **Declaring
   it is the point.** The undeclared case is the one that drifts. Adopted on
-  Dispatch's reasoning (decision 042).
+  Dispatch's reasoning (decision 042). **A layer is `done` when every
+  non-gated criterion is met** (decision 073); gated criteria discharge
+  later through their declared draft tasks, and the strict layer gate
+  reads `done` in this sense, or any milestone containing a layer with a
+  gated criterion deadlocks.
 - `discharged_at_layer`: a criterion settled by adjudication with no
   implementation behind it. A task carrying one would be a PR containing
   nothing, so it is declared here instead.
@@ -290,6 +294,7 @@ rather than one discovery at a time.
 | **What consent and the packet say about measures collected and not rendered** (decision 054). Attesting parties are still asked; nothing draws a level. The wording is not settled and is deliberately unwritten | `Consent` shipping at all: its fourth term promises levels that travel to a public page they no longer reach | open, founder |
 | **Worker-supplied document evidence as a distinct class.** Contracts, stamped drawings, completion certificates. The only representation for real and unconfirmable work today is the absence of an attester, which falls on dissolved employers, informal work and cross-border history (decision 053) | nothing in v1; it is an addition to `model/`, not a gap in it | open, founder, and it needs counsel on what Grain asserts by accepting a document |
 | **Whether the consent instrument can be split without weakening the consent Grain relies on** (decision 058). Just-in-time is better comprehension and, on its face, stronger consent; the brief stays on file as the question | `consent-and-deletion` going `ready` | open; founder ruling backed by an internal research memo (decision 070) |
+| **The extraction engine ruling** (decisions 072/073). Names the model, its zero-data-retention terms, its residency posture, and the eval numbers it cleared. Discharges extraction criterion 7 and promotes its draft flip task | live extraction proposals; the stub path and everything else is ungated | open, founder, after the eval harness runs |
 | **Postgres driver adoption** (decision 065). The trust-kernel/08 seam keeps the change to one file; compose-exec is fine for tests and unusable for production load. Trigger: before any layer serving external reads goes `ready`, so it is decided on schedule rather than in an incident | nothing in the current frontier; the first serving layer | open |
 | **The mark set is not a total function** (decision 061). Five states cannot encode two peers and no business, an agency plus its client as two registered businesses, or a peer at a registered business that never answered, for which the legend's own sentence is false. Determinism is claimed on every surface; it holds for the drawn examples and not for the reachable space | `worker-surface` going `ready`; the packet's provenance field | open, founder, and it is a model question before it is a drawing |
 | **A confirmation link makes a non-user the subject of a claim** (decision 061). Asking a manager to attest asked them to confirm a work address, and the copy took that as confirming their own time at the business: a person-record created as a side effect, upstream of any consent, for someone the product says does not need the app. The copy is withdrawn; whether the ledger may write anything at all about a third party from a confirmation is not settled | `peer-references`, and `public-web`'s attestation flow | open, founder, and it presses on entry 007's two-entity rule so it probably needs counsel |

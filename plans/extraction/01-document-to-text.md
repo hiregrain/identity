@@ -26,8 +26,11 @@ against; anything else says so honestly and routes to typing.
 - Born-digital detection: a document with no usable text layer (image
   PDF, photo) yields the structured no-proposal result that routes the
   worker to manual entry (decision 072); no OCR exists in v0.
-- Script gating hook: the detector consults the eval registry (task
-  05) and yields no-proposal for scripts without passing numbers.
+- Script gating hook: the detector consults
+  `contract/eval-registry.json`, which this task commits empty with
+  its schema comment (task 05 owns writing entries); an empty registry
+  means no proposals for anything, the honest starting state (decision
+  073).
 - Stateless: input bytes in, text or no-proposal out; nothing
   persists here (staging is self-asserted-record's).
 

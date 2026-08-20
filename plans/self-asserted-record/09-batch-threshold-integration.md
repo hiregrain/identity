@@ -4,7 +4,7 @@ type: task
 layer: self-asserted-record
 satisfies: [3]
 status: draft
-depends_on: [self-asserted-record/05]
+depends_on: [self-asserted-record/05, extraction/04]
 migrations: []
 binds: [decisions/LOG.md#062, decisions/LOG.md#063]
 evidence: []

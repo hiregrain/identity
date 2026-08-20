@@ -33,11 +33,14 @@ and its retention terms, and not a day before.
 1. AC (mechanical): the production configuration cites the ruling's
    decisions entry and its terms reference at the site; startup fails
    without them.
-2. AC (mechanical): a production-flow fixture in the vendor's test
-   mode yields proposals identical in shape to the stub's, diffed
-   against the contract schema.
+2. AC (mechanical): the eval harness report attached as this task's
+   evidence shows the ruled engine's proposals validating against the
+   contract schema; the verifier reads the report and re-validates the
+   attached proposal samples against the schema without holding vendor
+   credentials (decision 073).
 
 ## Outside check
 
 Verifier reads the ruling entry, confirms the citations at the site,
-and diffs production and stub proposal shapes.
+and re-validates the attached harness evidence against the contract
+schema, never calling an engine.

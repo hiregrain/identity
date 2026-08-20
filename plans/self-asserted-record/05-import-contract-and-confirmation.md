@@ -25,9 +25,15 @@ and a dead import always lands the worker in manual entry.
   carries its source span; absent fields are blank, never inferred; a
   per-claim and per-match confidence slot exists but nothing reads a
   threshold yet (task 09).
-- `0027-import-proposals` (payload plane): the short-lived staging store
-  proposals live in while the worker reviews, TTL in hours per decision
-  062, swept on expiry; the uploaded artifact itself is never persisted.
+- `0027-import-proposals` (payload plane): the short-lived staging
+  store holding proposals and the extracted text layer while the
+  worker reviews, TTL in hours per decision
+  062, swept on expiry; the uploaded artifact's bytes are never
+  written to any table or disk, resolved by decision 073.
+- The upload disclosure (decisions 058/073): one sentence at upload
+  stating the resume's text goes to a named third-party processor, and
+  a consent flag recorded with the upload; no extraction call happens
+  without the flag.
 - The stub proposer: a fixture implementation of the contract, so this
   task and criterion 2 verify without `extraction` existing.
 - The confirmation flow: per-claim confirm, edit, and discard; commit
@@ -52,14 +58,16 @@ and a dead import always lands the worker in manual entry.
    credential carries `self_asserted` provenance and
    `origin: resume_parsed`; discarded and
    expired proposals leave no trace in the record tables.
-3. AC (mechanical): the staging sweep removes expired proposals; the
-   import path writes the uploaded artifact only to the staging store,
-   proven by grep of the import code for file writes plus a
-   planted-artifact fixture showing the artifact gone from the staging
-   store after extraction completes.
+3. AC (mechanical): the staging sweep removes expired proposals and
+   text layers; the artifact's bytes appear in no table and on no disk
+   at any point, proven by grep of the import code for file and byte
+   writes plus a planted-artifact scan during and after the flow.
 4. AC (adjudicated): each failure mode in scope resolves to manual entry
    with no dead end; the verifier walks unreadable-file, proposer-error,
    and expiry against the stub.
+5. AC (mechanical): no extraction call happens without the recorded
+   consent flag, proven by a flagless red-path fixture; the disclosure
+   copy is present at the upload step.
 
 ## Outside check
 

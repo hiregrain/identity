@@ -6,7 +6,7 @@ satisfies: []
 status: ready
 depends_on: [extraction/02]
 migrations: []
-binds: [decisions/LOG.md#072, research/18-oss-resume-parsing-landscape.md]
+binds: [decisions/LOG.md#072, decisions/LOG.md#073]
 evidence: []
 verified_by: null
 ---
@@ -20,13 +20,13 @@ and every engine competes on the same corpus.
 
 ## Scope
 
-- The corpus: fixture resumes per language and script the product
-  serves (English, Filipino, Hindi and other Indic scripts per the
-  target population), synthetic plus donated, each with golden
-  expected proposals; no published benchmark covers this mix
-  (research/18), which is why the harness exists.
-- Per-engine, per-script accuracy published from harness runs; the
-  eval registry (the gate task 01 consults) holds pass/fail per script
+- The corpus: synthetic-only and English-only in v0 (decision 073),
+  each fixture with golden expected proposals; languages expand by
+  decisions entry as markets are entered, and no donated real document
+  enters without a recorded consent and a deletion path.
+- Per-engine, per-script accuracy published from harness runs into
+  `contract/eval-registry.json` (committed empty by task 01, schema
+  owned here): pass/fail per script
   with the run it came from; a registry entry without a run reference
   fails validation.
 - Engine comparison is the same harness: any candidate engine,
@@ -47,10 +47,10 @@ and every engine competes on the same corpus.
 2. AC (mechanical): an eval-registry entry without a run reference
    fails validation; flipping a script to passing changes task 01's
    gate behavior, riding its fixtures.
-3. AC (adjudicated): the corpus covers every language and script the
-   product's target population documents actually use, judged by a
-   clean-context verifier against the corpus manifest and THESIS.md's
-   population statements.
+3. AC (mechanical): the corpus manifest's language list equals the
+   ruled v0 list, English only (decision 073), and every corpus
+   fixture is tagged synthetic; a donated-tagged fixture fails
+   validation while no consent instrument exists.
 
 ## Outside check
 
