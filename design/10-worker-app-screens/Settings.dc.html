@@ -248,9 +248,14 @@ class Component extends DCLogic {
         {name:'Your data', rows:[
           act('Send me everything','By email, within 24 hours'),
           act('Who can read my record','2 parties'),
-          // Sharing already lists every reader with a date, two taps away. This
-          // row sent the same question to a support conversation.
-          act('Who has read my record','In Sharing')]},
+          // Back to a request, and this time for the reason rather than by
+          // default. 035 B4 does not surface reads, and names the consequence:
+          // "GDPR Art. 15(1)(c) is satisfied by a disclosure record available on
+          // request", which is a required consequence of that ruling and not an
+          // optional one. The row pointed at a list in Sharing that the same
+          // ruling has since removed.
+          act('Who has read my record','By request')],
+         note:'Grain does not show you a live feed of who opened your record, because a read stream during a live application is surveillance of the business as much as it is anxiety for you. Ask, and you get the full disclosure record.'},
         {name:'About', rows:[ act('How the record works',''), act('Terms',''), act('Privacy','') ]}
       ],
       confirming: this.state.confirming,

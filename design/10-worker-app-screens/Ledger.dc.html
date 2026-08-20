@@ -204,15 +204,18 @@ class Component extends DCLogic {
         {day:'19 Jul', what:'You granted Teleperformance Philippines your whole record',
          who:'Sent to recruiting@teleperformance.ph, confirmed 20 Jul 2026'}
       ]},
+      // No read events here either. Decision 035 B4 governs every worker-facing
+      // surface, not just Sharing, and this screen was added in the same pass
+      // that took them off Sharing. What the ledger carries is what the ledger
+      // is for: entries written to the record. A grant issued is an entry; a
+      // grant expiring is an entry; somebody opening it is not.
       {month:'August 2026', rows:[
         {day:'4 Aug',  what:'You agreed that a grant cannot be recalled once read',
          who:'Recorded when you sent the grant'},
         {day:'4 Aug',  what:'You granted Alorica Philippines your whole record',
-         who:'Sent to ramil.antonio@alorica.com, confirmed the same day'},
-        {day:'9 Aug',  what:'Teleperformance Philippines read your record',
-         who:'Grant issued 19 Jul 2026, ends 17 Aug 2026'},
-        {day:'12 Aug', what:'Alorica Philippines read your record',
-         who:'Grant issued 4 Aug 2026, ends 2 Sep 2026'}
+         who:'Sent to ramil.antonio@alorica.com, ends 2 Sep 2026'},
+        {day:'17 Aug', what:'The grant to Teleperformance Philippines ended on its own date',
+         who:'Granted 19 Jul 2026. They can no longer open your record'}
       ]}
     ];
     return { groups: GROUPS.map(g => ({...g, count: g.rows.length})) };
