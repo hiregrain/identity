@@ -250,7 +250,7 @@ regardless of the internal language choice, because:
   adopts as settled ("signing canonicalization test vectors in the
   versioned contract, agreed by planet-scale and security convergence");
 - a contract whose source of truth is a Zod definition is a contract that
-  can only be natively validated from inside TS, for everyone else it is
+  can only be natively validated from inside TS. For everyone else it is
   documentation. The signing canonicalization must be verified from
   *outside* the implementation language to count as a contract at all.
 

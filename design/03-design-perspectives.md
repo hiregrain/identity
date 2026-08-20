@@ -4,7 +4,7 @@ The rooted design position for Grain, argued from the product and from
 field evidence ([02-field-notes/](02-field-notes/), assets referenced
 inline). Everything here is a claim with evidence under it, per the
 research protocol. Color and typography are deliberately not settled
-here, they are decided by eye at the option-board stage, inside these
+here. They are decided by eye at the option-board stage, inside these
 constraints.
 
 ## Premise

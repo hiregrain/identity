@@ -630,10 +630,10 @@ Ranked by what actually protects the attestation-integrity story:
 
 ### Sources (current-facts research)
 
-- [Rekor v2 GA — cheaper to run, simpler to maintain (Sigstore blog)](https://blog.sigstore.dev/rekor-v2-ga/)
-- [sigstore/rekor-tiles — tile-based transparency log for self-hosting](https://github.com/sigstore/rekor-tiles)
+- [Rekor v2 GA - Cheaper to run, simpler to maintain (Sigstore blog)](https://blog.sigstore.dev/rekor-v2-ga/)
+- [sigstore/rekor-tiles, tile-based transparency log for self-hosting](https://github.com/sigstore/rekor-tiles)
 - [AWS KMS EdDSA (Ed25519) support announcement, Nov 2025](https://aws.amazon.com/about-aws/whats-new/2025/11/aws-kms-edwards-curve-digital-signature-algorithm/)
 - [GCP Cloud KMS asymmetric signing (incl. Ed25519) codelab](https://codelabs.developers.google.com/codelabs/sign-and-verify-data-with-cloud-kms-asymmetric)
-- [2026 FIDO report — passkeys at global scale (Descope)](https://www.descope.com/blog/post/2026-fido-report)
-- [Passkey trends 2026 — device-loss and recovery data (Descope)](https://www.descope.com/blog/post/passkey-trends)
+- [2026 FIDO Report: Passkeys at Global Scale (Descope)](https://www.descope.com/blog/post/2026-fido-report)
+- [Passkey Trends for 2026: What the Data Says (Descope)](https://www.descope.com/blog/post/passkey-trends)
 - [Passkey benchmark 2026 (Corbado)](https://www.corbado.com/passkey-benchmark-2026)

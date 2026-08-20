@@ -207,7 +207,7 @@ probation caps, timestamps, rate-limits, and anomaly-scores (design §4).
 The only events signing-time telemetry adds are signatures requested but
 never submitted, empty for a rational attacker, noise for an honest
 party. Enforcement latency is equivalent: freezing a party is one
-registry state change consumed by ingestion, as fast as an IAM change and
+registry state change consumed by ingestion, as fast as an IAM change
 and, unlike the IAM change, visible in the public registry history.
 Research `06`'s prescribed countermeasure for party fraud is
 network-structure anomaly detection on the party×subject graph plus

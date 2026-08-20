@@ -61,7 +61,7 @@ The interface contract and design 0.1 build everything on a three-way
 separation of roles: the party *asserts*, the ledger *records and
 timestamps*, the reader *weighs*. The attestation's evidentiary value is
 exactly the fact that these roles are held by different actors. Design 0.1
-§4 states it as the ledger's oath: it verifies "provenance and form — who
+§4 states it as the ledger's oath: it verifies "provenance and form, who
 said it, that they validly said it," and never substance.
 
 Hosted signing collapses assertion and recording into one actor. The

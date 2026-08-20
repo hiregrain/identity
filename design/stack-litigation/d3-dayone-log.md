@@ -398,7 +398,7 @@ with witnessing staged at first-external-party-or-1M, and rule D6 with it.
 
 ### Sources
 
-- [Rekor v2 GA — cheaper to run, simpler to maintain (Sigstore blog)](https://blog.sigstore.dev/rekor-v2-ga/)
+- [Rekor v2 GA - Cheaper to run, simpler to maintain (Sigstore blog)](https://blog.sigstore.dev/rekor-v2-ga/)
 - [sigstore/rekor-tiles, signature transparency log "designed for ease of use, low cost, and minimal maintenance"; GCP/AWS/POSIX deployment footprints; production instance at 99.5% SLA](https://github.com/sigstore/rekor-tiles)
 - [transparency-dev/tessera, production-ready tile-log library; GCP/AWS/POSIX drivers; "no additional services to manage"; lower TCO than Trillian v1](https://github.com/transparency-dev/tessera)
 - [Announcing Trillian Tessera (transparency.dev blog)](https://blog.transparency.dev/announcing-the-alpha-release-of-trillian-tessera)

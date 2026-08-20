@@ -391,11 +391,11 @@ Any one suffices:
 
 ## Sources
 
-- [Rekor v2 GA — cheaper to run, simpler to maintain (Sigstore blog)](https://blog.sigstore.dev/rekor-v2-ga/). Shard rotation/freeze obligations, TUF key distribution, cost-claim scope, non-GCP caveat, 99.5% SLO.
+- [Rekor v2 GA - Cheaper to run, simpler to maintain (Sigstore blog)](https://blog.sigstore.dev/rekor-v2-ga/). Shard rotation/freeze obligations, TUF key distribution, cost-claim scope, non-GCP caveat, 99.5% SLO.
 - [sigstore/rekor-tiles, tile-based transparency log](https://github.com/sigstore/rekor-tiles). Entry model, self-hosting posture.
 - [Trillian-Tessera storage backends / Rekor v2 announcement](https://blog.sigstore.dev/rekor-v2-alpha/). GCP/AWS/MySQL/POSIX backend support.
 - [Can I Get A Witness (Network)? (transparency.dev blog)](https://blog.transparency.dev/can-i-get-a-witness-network). 15 ArmoredWitness devices, TrustFabric operation, witnessed-log roster, stated maturity gaps.
 - [transparency-dev/armored-witness](https://github.com/transparency-dev/armored-witness), witness-network scope: public ecosystems (Go sumdb, Sigstore, Sigsum, LVFS, Android BT).
 - [Amazon S3 Object Lock (AWS feature page)](https://aws.amazon.com/s3/features/object-lock/) and [Object Lock user guide](https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lock.html). Compliance mode blocks deletion/overwrite by all principals including the account root user.
-- [AWS re:Post — compliance-mode deletability](https://repost.aws/questions/QUIYAWBZdLTMimGlM2MIhTUQ/are-objects-under-compliance-mode-with-retention-period-deletable). Account closure as the sole escape; cross-account copy guidance.
+- [AWS re:Post question on compliance-mode deletability](https://repost.aws/questions/QUIYAWBZdLTMimGlM2MIhTUQ/are-objects-under-compliance-mode-with-retention-period-deletable). Account closure as the sole escape; cross-account copy guidance.
 - Repo inputs: `design/stack-perspectives/convergence-map.md` (D3 docket, settled items 5–6), `design/ledger-design-0.1.md` §3.3, `design/stack-perspectives/boring-pragmatist.md` §4, `design/stack-perspectives/security-infra.md` §3, `design/stack-perspectives/log-centric.md` §7.

@@ -238,8 +238,8 @@ discipline. Design for those.
 
 **v2 (~100M+ identities): partition, don't replatform.** Streams are
 shard-friendly by construction (a person stream never crosses shards; merge
-events are the only cross-stream writes, and they are rare and steward-gated
-, run them through a coordinator). Citus / Aurora Limitless-style sharded
+events are the only cross-stream writes, and they are rare and steward-gated,
+so run them through a coordinator). Citus / Aurora Limitless-style sharded
 Postgres by `stream_id` hash, with the `taxonomy` and `registry-root`
 streams on a designated shard. The event contract, chain rules, and
 projector code do not change.
@@ -500,7 +500,7 @@ The substrate will change; these may not:
    not for grants/deletion (hence the dual-maintained projections).
 4. Counsel does not later mandate per-claim erasure (R2's whole-profile
    deletion holds). If it did, the payload plane already supports
-   object-granular purge, spine semantics would not change.
+   object-granular purge, and spine semantics would not change.
 5. "Hundreds of millions in ~2 years" is identities *enrolled*, not
    concurrently active; the arithmetic uses that reading.
 6. The steward/merge-review function is staffed as an ops function; this
