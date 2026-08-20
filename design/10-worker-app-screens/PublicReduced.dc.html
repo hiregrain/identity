@@ -72,6 +72,11 @@
     .sinerule{margin-top:-1px;line-height:0;opacity:.9}
     .rung{display:inline-flex;align-items:flex-end;gap:2px;height:14px;flex:none}
     .rung i{display:block;width:3px}
+    /* The imprint is capped and centred wherever it appears. A fluid root with an
+       uncapped figure grows until the figure swallows the display — the defect
+       fixed on the record and still live on three other screens. 320 is the size
+       it is drawn and thread-budgeted at (044). */
+    .imprint{display:block;width:100%;max-width:320px;margin-inline:auto}
 
     .prow{display:flex;gap:12px;align-items:flex-start;padding:14px 0;
           border-bottom:1px solid var(--hairline)}
@@ -98,9 +103,12 @@
            §9's ground, doing the job it was defined for. -->
       <div style="position:relative;height:132px;margin:22px 0 4px;overflow:hidden;
                   border-block:1px solid var(--hairline)">
-        <svg viewBox="0 0 296 132" preserveAspectRatio="xMidYMid slice" fill="none"
-             stroke="var(--rule)" stroke-width="0.5" style="position:absolute;inset:0;
-             width:100%;height:100%;opacity:.28"><path d='M0 24 L296 24'/><path d='M0 48 L296 48'/><path d='M0 72 L296 72'/><path d='M0 96 L296 96'/><path d='M0 120 L296 120'/><path d='M0 144 L296 144'/><path d='M0 168 L296 168'/><path d='M0 192 L296 192'/><path d='M0 216 L296 216'/><path d='M0 240 L296 240'/><path d='M0 264 L296 264'/><path d='M0 288 L296 288'/><path d='M24.0 0 Q18.1 148.0 24.0 296'/><path d='M48.0 0 Q43.3 148.0 48.0 296'/><path d='M72.0 0 Q68.4 148.0 72.0 296'/><path d='M96.0 0 Q93.5 148.0 96.0 296'/><path d='M120.0 0 Q118.7 148.0 120.0 296'/><path d='M144.0 0 Q143.8 148.0 144.0 296'/><path d='M168.0 0 Q168.9 148.0 168.0 296'/><path d='M192.0 0 Q194.1 148.0 192.0 296'/><path d='M216.0 0 Q219.2 148.0 216.0 296'/><path d='M240.0 0 Q244.4 148.0 240.0 296'/><path d='M264.0 0 Q269.5 148.0 264.0 296'/><path d='M288.0 0 Q294.6 148.0 288.0 296'/></svg>
+        <!-- Half-scale so the mesh reads as ground rather than as a table: the
+             graticule is drawn on a 296 grid, and stretched across a wide short
+             box its cells become furniture. -->
+        <svg viewBox="0 0 592 264" preserveAspectRatio="xMidYMid slice" fill="none"
+             stroke="var(--rule)" stroke-width="0.7" style="position:absolute;inset:0;
+             width:100%;height:100%;opacity:.22"><path d='M0 24 L296 24'/><path d='M0 48 L296 48'/><path d='M0 72 L296 72'/><path d='M0 96 L296 96'/><path d='M0 120 L296 120'/><path d='M0 144 L296 144'/><path d='M0 168 L296 168'/><path d='M0 192 L296 192'/><path d='M0 216 L296 216'/><path d='M0 240 L296 240'/><path d='M0 264 L296 264'/><path d='M0 288 L296 288'/><path d='M24.0 0 Q18.1 148.0 24.0 296'/><path d='M48.0 0 Q43.3 148.0 48.0 296'/><path d='M72.0 0 Q68.4 148.0 72.0 296'/><path d='M96.0 0 Q93.5 148.0 96.0 296'/><path d='M120.0 0 Q118.7 148.0 120.0 296'/><path d='M144.0 0 Q143.8 148.0 144.0 296'/><path d='M168.0 0 Q168.9 148.0 168.0 296'/><path d='M192.0 0 Q194.1 148.0 192.0 296'/><path d='M216.0 0 Q219.2 148.0 216.0 296'/><path d='M240.0 0 Q244.4 148.0 240.0 296'/><path d='M264.0 0 Q269.5 148.0 264.0 296'/><path d='M288.0 0 Q294.6 148.0 288.0 296'/></svg>
         <div style="position:absolute;inset:0;display:flex;flex-direction:column;
                     align-items:center;justify-content:center;gap:6px;padding:0 24px">
           <span class="t-rec" style="text-align:center;text-wrap:pretty">Her imprint is not on this page</span>

@@ -24,7 +24,7 @@
       <p class="t-data" style="margin:8px 0 0;color:var(--secondary);text-wrap:pretty">
         Philippines · Identity document checked, which says nothing about the work below</p>
 
-      <svg viewBox="0 0 600 600" width="100%" style="display:block;margin:18px 0 0" role="img"
+      <svg class="imprint" viewBox="0 0 600 600" style="margin:18px auto 0" role="img"
            aria-label="Liezel Mendoza's imprint: five chapters, two signed by an employer, one by a coworker">@@WORKING@@</svg>
 
       <div style="border-top:1px solid var(--ink);padding-top:10px;margin-top:4px">

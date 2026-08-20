@@ -9,6 +9,7 @@
 <helmet>
   <style>
 @@CSS@@
+@@CHROME@@
     .plate{position:absolute;inset:0;pointer-events:none}
     .reg{position:absolute;width:11px;height:11px;border:0 solid var(--ink);opacity:.55}
     .row{display:flex;gap:12px;align-items:flex-start;padding:12px 0;
@@ -56,7 +57,7 @@
   </header>
 
   <main style="position:absolute;top:52px;bottom:0;left:0;right:0;padding:20px 20px 0">
-    <svg viewBox="0 0 600 600" width="100%" role="img" aria-label="An attestation lands">
+    <svg class="imprint" viewBox="0 0 600 600" role="img" aria-label="An attestation lands">
       @@CBASE@@
       <g class="before">@@CBEFORE@@</g>
       <g class="after">@@CAFTER@@</g>

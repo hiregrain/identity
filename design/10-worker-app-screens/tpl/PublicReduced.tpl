@@ -32,9 +32,12 @@
            §9's ground, doing the job it was defined for. -->
       <div style="position:relative;height:132px;margin:22px 0 4px;overflow:hidden;
                   border-block:1px solid var(--hairline)">
-        <svg viewBox="0 0 296 132" preserveAspectRatio="xMidYMid slice" fill="none"
-             stroke="var(--rule)" stroke-width="0.5" style="position:absolute;inset:0;
-             width:100%;height:100%;opacity:.28">@@GRATICULE_LG@@</svg>
+        <!-- Half-scale so the mesh reads as ground rather than as a table: the
+             graticule is drawn on a 296 grid, and stretched across a wide short
+             box its cells become furniture. -->
+        <svg viewBox="0 0 592 264" preserveAspectRatio="xMidYMid slice" fill="none"
+             stroke="var(--rule)" stroke-width="0.7" style="position:absolute;inset:0;
+             width:100%;height:100%;opacity:.22">@@GRATICULE_LG@@</svg>
         <div style="position:absolute;inset:0;display:flex;flex-direction:column;
                     align-items:center;justify-content:center;gap:6px;padding:0 24px">
           <span class="t-rec" style="text-align:center;text-wrap:pretty">Her imprint is not on this page</span>

@@ -55,6 +55,32 @@
         animation-delay:0ms !important;transition-delay:0ms !important}
     }
 
+    /* the plate (§9) marks the RECORD. A settings sheet is not one, so the
+       corners appear on the record surface and nowhere else. */
+    .plate{position:absolute;inset:0;pointer-events:none}
+    .reg{position:absolute;width:11px;height:11px;border:0 solid var(--rule)}
+    .row{display:flex;gap:12px;align-items:flex-start;padding:12px 0;
+         border-bottom:1px solid var(--hairline);width:100%}
+    .row-sel{border-bottom:1.5px solid var(--rule)}
+    .gutter{flex:0 0 26px;padding-top:3px}
+    .sechead{display:flex;justify-content:space-between;align-items:baseline;
+             border-bottom:1px solid var(--ink);padding-bottom:8px;gap:12px}
+    .icon{stroke:var(--ink);stroke-width:1.5;fill:none;stroke-linecap:square}
+    .col-r{text-align:right;white-space:nowrap;padding-top:1px}
+    main::-webkit-scrollbar{width:0}
+
+    /* §9's sine-modulated divider and the rung scale live in the chassis, not in
+       one screen's helmet: both are shared vocabulary, and a class defined in
+       Main only meant every other screen rendered them unstyled. */
+    .sinerule{margin-top:-1px;line-height:0;opacity:.9}
+    .rung{display:inline-flex;align-items:flex-end;gap:2px;height:14px;flex:none}
+    .rung i{display:block;width:3px}
+    /* The imprint is capped and centred wherever it appears. A fluid root with an
+       uncapped figure grows until the figure swallows the display — the defect
+       fixed on the record and still live on three other screens. 320 is the size
+       it is drawn and thread-budgeted at (044). */
+    .imprint{display:block;width:100%;max-width:320px;margin-inline:auto}
+
     .plate{position:absolute;inset:0;pointer-events:none}
     .reg{position:absolute;width:11px;height:11px;border:0 solid var(--ink);opacity:.55}
   </style>

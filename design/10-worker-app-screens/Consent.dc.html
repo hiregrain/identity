@@ -72,6 +72,11 @@
     .sinerule{margin-top:-1px;line-height:0;opacity:.9}
     .rung{display:inline-flex;align-items:flex-end;gap:2px;height:14px;flex:none}
     .rung i{display:block;width:3px}
+    /* The imprint is capped and centred wherever it appears. A fluid root with an
+       uncapped figure grows until the figure swallows the display — the defect
+       fixed on the record and still live on three other screens. 320 is the size
+       it is drawn and thread-budgeted at (044). */
+    .imprint{display:block;width:100%;max-width:320px;margin-inline:auto}
 
     .terms{list-style:none;margin:0;padding:0}
     .terms li{padding:16px 0;border-bottom:1px solid var(--hairline)}

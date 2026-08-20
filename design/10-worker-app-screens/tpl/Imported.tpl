@@ -9,6 +9,7 @@
 <helmet>
   <style>
 @@CSS@@
+@@CHROME@@
     .plate{position:absolute;inset:0;pointer-events:none}
     .reg{position:absolute;width:11px;height:11px;border:0 solid var(--ink);opacity:.55}
     .row{display:flex;gap:12px;align-items:flex-start;padding:12px 0;
@@ -34,7 +35,7 @@
 
   <main style="position:absolute;top:52px;bottom:196px;left:0;right:0;overflow-y:auto;padding:0 20px 24px">
     <section style="padding-top:20px">
-      <svg viewBox="0 0 600 600" width="100%" role="img"
+      <svg class="imprint" viewBox="0 0 600 600" role="img"
            aria-label="Five chapters, none confirmed">@@IMPORTED@@</svg>
       <div style="display:flex;justify-content:space-between;align-items:baseline;padding:12px 0 0">
         <span class="t-micro" style="color:var(--secondary)">Liezel Mendoza</span>
