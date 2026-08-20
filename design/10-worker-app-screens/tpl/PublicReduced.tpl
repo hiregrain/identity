@@ -28,7 +28,7 @@
 
       <!-- No imprint. Decision 035: the figure is always behind sign-in, even when
            the page is published, because an indexable imprint is the one thing
-           that cannot be taken back. The graticule stands where it would be —
+           that cannot be taken back. The graticule stands where it would be,
            §9's ground, doing the job it was defined for. -->
       <div style="position:relative;height:132px;margin:22px 0 4px;overflow:hidden;
                   border-block:1px solid var(--hairline)">
@@ -86,7 +86,7 @@
 // layer because a client-painted render ranks badly and cannot serve a distinct
 // crawler payload.
 //
-// What is deliberately absent: the imprint (035 — always behind sign-in, since an
+// What is deliberately absent: the imprint (035, always behind sign-in, since an
 // indexable figure cannot be recalled), and anything a party wrote.
 class Component extends DCLogic {
   renderVals(){

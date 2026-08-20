@@ -113,7 +113,7 @@
 // grants them the whole record.
 //
 // Two constraints this screen exists to obey. It never renders a composite, a
-// score or a badge — CLAUDE.md's constraint that outranks convenience: Grain says
+// score or a badge, CLAUDE.md's constraint that outranks convenience. Grain says
 // what is known and how well, the partner decides what it means and bears the
 // decision. And it states its own limits before its content, not after.
 class Component extends DCLogic {

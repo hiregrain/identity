@@ -24,28 +24,28 @@ tooling (August 2026).
    per-stream sequence numbers for optimistic concurrency, monthly
    partitions. No Kafka, no Kurrent/EventStoreDB, no purpose-built store at
    v1. The arithmetic below shows even the two-year "hundreds of millions of
-   identities" scenario peaks in the low thousands of events/second — small
+   identities" scenario peaks in the low thousands of events/second, small
    by log standards. Kafka's ops burden buys nothing a 3-person team needs,
    and its dual-write hazard (validate against one store, publish to
    another) is precisely the bug class this product cannot afford.
    Postgres-as-log gives synchronous, transactional command validation
-   against projections in the same database — the one honest superpower a
-   small team should not give up.
+   against projections in the same database. That is the one honest
+   superpower a small team should not give up.
 
 3. **Two planes map cleanly onto CQRS-with-a-twist.** The integrity spine is
    the event log itself: events carry pointers to payloads plus *salted*
    commitments, never PII. The erasable payload plane is a separate store,
    one data-encryption-key per person; R2 deletion = destroy the DEK *and*
    hard-delete the rows (crypto-shredding alone is mitigation, not
-   compliance, per EDPB — do both). The hash chain is built into the log:
+   compliance, per EDPB, do both). The hash chain is built into the log:
    per-stream chains plus periodic signed Merkle checkpoints, CT-style, so
    integrity never requires a global serial write lock.
 
 4. **The event contract, not the substrate, is the load-bearing artifact.**
    A versioned event schema (additive-only within a version, upcasters
    across versions, never migrate stored events in place) is what lets the
-   substrate move — partitioned Postgres, then Citus/Aurora Limitless, then
-   a purpose-built store if planet scale ever demands it — under an
+   substrate move: partitioned Postgres, then Citus/Aurora Limitless, then
+   a purpose-built store if planet scale ever demands it, under an
    unchanged contract. Section "Invariants" enumerates what must hold
    regardless of substrate; that list is the real deliverable.
 
@@ -53,7 +53,7 @@ tooling (August 2026).
    event because the worker-visible read log is a product feature, not
    telemetry. Grants, revocations, and disputes are events for the same
    reason. Derived things (standing, current-truth heads, issuer-suspended
-   flags, alias closures) are *never* written as facts — they are
+   flags, alias closures) are *never* written as facts. They are
    projections, recomputable, and versioned by projector code, which is how
    "derived-at-read" stays true when the derivation rule changes.
 
@@ -71,16 +71,16 @@ tooling (August 2026).
 
 Read ledger-design-0.1 with an event-sourcing eye and the pattern is total:
 
-- "A correction is a superseding attestation, never an edit" — appends.
+- "A correction is a superseding attestation, never an edit." Appends.
 - "Merge is a new immutable event... unmerge flips the alias pointer back;
-  because neither event stream was touched, reversal is clean" — that
+  because neither event stream was touched, reversal is clean." That
   sentence only makes sense if streams are the primitive.
 - "Suspension flags past attestations at read time; nothing is written into
-  the attestation" — a projection over two streams (attestations, registry).
+  the attestation." A projection over two streams (attestations, registry).
 - "Standing is a view over the record, recomputable from it, and stored only
-  as cache" — the definition of a read model.
-- "Every attestation receives a ledger hash-chain timestamp at write" — the
-  log's own append position, doing double duty as the trust anchor.
+  as cache." That is the definition of a read model.
+- "Every attestation receives a ledger hash-chain timestamp at write." That
+  is the log's own append position, doing double duty as the trust anchor.
 
 If we build this on mutable rows plus triggers-to-an-audit-table, three
 corruptions creep in within a year, silently:
@@ -106,51 +106,51 @@ under which the product's guarantees are structural rather than behavioral.
 
 Streams (the unit of ordering and optimistic concurrency):
 
-- `person-{ledger_person_id}` — everything about one subject.
-- `party-{party_id}` — registry lifecycle and key events for one issuer.
-- `taxonomy` — one global stream for work_kind versions and crosswalks.
-- `registry-root` — root-of-trust changes, checkpoint signing keys.
+- `person-{ledger_person_id}`, everything about one subject.
+- `party-{party_id}`, registry lifecycle and key events for one issuer.
+- `taxonomy`, one global stream for work_kind versions and crosswalks.
+- `registry-root`, root-of-trust changes, checkpoint signing keys.
 
 Event types (the enumeration; names bind, fields are envelope + typed body):
 
 **Person lifecycle**
-- `PersonRegistered` — issues the UUIDv7, opens the stream.
-- `ContactChannelLinked` / `ContactChannelUnlinked` — channels, never anchors.
-- `PersonMerged {survivor, absorbed, evidence_refs, actor}` — appended to
+- `PersonRegistered`, issues the UUIDv7, opens the stream.
+- `ContactChannelLinked` / `ContactChannelUnlinked`, channels, never anchors.
+- `PersonMerged {survivor, absorbed, evidence_refs, actor}`, appended to
   *both* streams; absorbed stream is thereafter alias-closed, never written.
-- `PersonUnmerged {…}` — same, reversal.
+- `PersonUnmerged {…}`, same, reversal.
 - `ProfileDeletionRequested` / `ProfileDeletionConfirmed` (anti-coercion
-  window) / `ProfileDeleted` — the last one carries no payload at all; it is
+  window) / `ProfileDeleted`, the last one carries no payload at all; it is
   the trigger for payload-plane purge and tombstones the stream.
 
 **Claims and attestations**
-- `SelfClaimAsserted {claim_id, payload_ref, commitment}` — a revision is a
+- `SelfClaimAsserted {claim_id, payload_ref, commitment}`, a revision is a
   new `SelfClaimAsserted` with `revises` pointer; versions are events.
-- `VerificationRecorded {provider_party, method, level, references_claim?}`
-  — freezing of the referenced self-claim is *derived* (a claim is frozen
+- `VerificationRecorded {provider_party, method, level, references_claim?}`,
+  freezing of the referenced self-claim is *derived* (a claim is frozen
   iff any party-grade verification references it), never written.
 - `PeerAttestationRecorded {issuer_person, anchor_ref?, ingest_signals}`
 - `PartyAttestationRecorded {attesting_party, scope, work_kind@version,
-  payload_ref, commitment, signature, supersedes?}` — the interface-contract
+  payload_ref, commitment, signature, supersedes?}`, the interface-contract
   object, verbatim; supersession is the same event type with the pointer set.
-- `LedgerInvalidationIssued {target_attestation, reason}` — ledger-signed.
+- `LedgerInvalidationIssued {target_attestation, reason}`, ledger-signed.
 
 **Disputes**
 - `DisputeFiled {target, grounds_ref}`
 - `DisputeResolvedByCorrection {dispute, superseding_attestation}`
 - `CounterStatementAttached {dispute, payload_ref, commitment}`
-- `DisputeLapsedUnresponsive {dispute}` — feeds party reliability projection.
+- `DisputeLapsedUnresponsive {dispute}`, feeds party reliability projection.
 
 **Access**
 - `GrantIssued {party}` / `GrantRevoked {party}`
-- `PacketIssued {party, purpose_tag, packet_commitment}` — the read log.
+- `PacketIssued {party, purpose_tag, packet_commitment}`, the read log.
   High-volume; see arithmetic. Same log, its own partition strategy.
 
 **Party registry** (on `party-{id}`)
 - `PartyRegistered`, `PartyActivated`, `PartySuspended {reason_class}`,
   `PartyReinstated`, `PartyRevoked {reason_class}`
 - `PartyKeyRegistered {kid, pubkey, valid_from}`, `PartyKeyRotated`,
-  `PartyKeyRevoked`, `PartyKeyCompromiseReported {reported_at}` — the
+  `PartyKeyRevoked`, `PartyKeyCompromiseReported {reported_at}`, the
   "compromise ≠ retroactive invalidation" rule is a pure function over this
   stream plus attestation chain-timestamps.
 
@@ -159,7 +159,7 @@ Event types (the enumeration; names bind, fields are envelope + typed body):
 - `CrosswalkPublished {from_version, to_version | external_std, table_ref}`
 
 **Payload plane bookkeeping**
-- `PayloadPurged {object_ids[], executed_at}` — appended after the purge
+- `PayloadPurged {object_ids[], executed_at}`, appended after the purge
   job completes, so the spine proves deletion happened on schedule without
   saying anything about what was deleted beyond opaque ids.
 
@@ -196,7 +196,7 @@ a big one.** A single well-tuned Postgres primary sustains 10–50k simple
 inserts/s; we need 5k at the two-year peak, and the one high-volume event
 type (`PacketIssued`) has no ordering dependency on anything and can be
 partitioned freely. Planet scale (billions of identities) multiplies this by
-~10x — which is where partitioning by stream becomes real work, and still
+~10x, which is where partitioning by stream becomes real work, and still
 nowhere near needing Kafka-class throughput. The scaling problem here is
 never log throughput; it is projection rebuild time and operational
 discipline. Design for those.
@@ -213,7 +213,7 @@ discipline. Design for those.
   service role. Superuser access is break-glass, logged, and alarmed.
 - Optimistic concurrency: `UNIQUE (stream_id, stream_seq)`; a command
   handler reads the stream head, validates, appends at head+1; conflict =
-  retry. `global_seq` is a bigint from a sequence — advisory ordering, with
+  retry. `global_seq` is a bigint from a sequence, advisory ordering, with
   the *verifiable* ordering supplied by the checkpoint tree (§6).
 - Commands validate transactionally: because projections live in the same
   Postgres at v1, "subject exists and is not tombstoned", "issuer is active
@@ -223,7 +223,7 @@ discipline. Design for those.
 - Why not Kurrent (né EventStoreDB), Axon, et al.: both are real products
   (Kurrent rebranded and refocused in 2025; Axon Framework remains
   JVM-centric), but each is a new operational surface, a new failure
-  domain, and a hiring/knowledge tax on a 3-person team — for throughput we
+  domain, and a hiring/knowledge tax on a 3-person team, for throughput we
   demonstrably do not need and features (built-in subscriptions,
   categories) that are ~300 lines of poller against Postgres. EventStoreDB's
   leader-follower write path scales no better than Postgres's anyway.
@@ -233,13 +233,13 @@ discipline. Design for those.
   them) fight the partition model; and the erasable payload plane is
   awkward against immutable segments. Redpanda and WarpStream reduce the
   *ops* burden, not the *model* mismatch. If a downstream consumer ever
-  needs a firehose, publish one via logical decoding or a polling outbox —
-  the log feeds Kafka; Kafka never feeds the log.
+  needs a firehose, publish one via logical decoding or a polling outbox.
+  The log feeds Kafka; Kafka never feeds the log.
 
 **v2 (~100M+ identities): partition, don't replatform.** Streams are
 shard-friendly by construction (a person stream never crosses shards; merge
-events are the only cross-stream writes, and they are rare and steward-gated
-— run them through a coordinator). Citus / Aurora Limitless-style sharded
+events are the only cross-stream writes, and they are rare and steward-gated,
+so run them through a coordinator). Citus / Aurora Limitless-style sharded
 Postgres by `stream_id` hash, with the `taxonomy` and `registry-root`
 streams on a designated shard. The event contract, chain rules, and
 projector code do not change.
@@ -247,7 +247,7 @@ projector code do not change.
 **v3 (only if reality demands): purpose-built log.** If per-stream Postgres
 sharding ever hits a wall, the invariants section is the spec for the
 replacement. Migration is a stream-by-stream copy with hash-chain
-verification at both ends — possible precisely because the contract was
+verification at both ends, possible precisely because the contract was
 substrate-independent. I assign this <20% probability of ever being needed.
 
 ## 5. Projection architecture
@@ -261,28 +261,28 @@ Strict CQRS discipline, minimal machinery:
   idempotent (keyed on `event_id`). No message broker: a `FOR UPDATE SKIP
   LOCKED` poller or Postgres logical decoding, nothing more.
 - **The projection inventory (v1):**
-  1. `alias_closure` — merge/unmerge → resolves any historical person id.
-  2. `current_truth` — supersession heads per claim/attestation chain.
-  3. `registry_state` — party lifecycle + key validity intervals; serves
+  1. `alias_closure`, merge/unmerge → resolves any historical person id.
+  2. `current_truth`, supersession heads per claim/attestation chain.
+  3. `registry_state`, party lifecycle + key validity intervals; serves
      both ingestion checks and read-time "issuer since suspended" flags.
-  4. `grants_acl` — active grants per (person, party).
-  5. `dimension_standing` — the published deterministic rule, with
+  4. `grants_acl`, active grants per (person, party).
+  5. `dimension_standing`, the published deterministic rule, with
      citations; cache only, carries the projector code version that built it.
-  6. `dispute_state` — open/lapsed/resolved per attestation.
-  7. `read_log_view` — worker-facing read history.
-  8. `duplicate_candidates` — Fellegi-Sunter feature index feeding the
+  6. `dispute_state`, open/lapsed/resolved per attestation.
+  7. `read_log_view`, worker-facing read history.
+  8. `duplicate_candidates`, Fellegi-Sunter feature index feeding the
      steward review queue (reads payload plane; its index rows are
      themselves PII-bearing and are purged with the person).
-  9. `party_reliability` — internal-only anomaly/dispute-rate signals.
+  9. `party_reliability`, internal-only anomaly/dispute-rate signals.
 - **The prior packet is a query, not a projection.** Assembled at read time
   from projections 1–6 plus payload fetches, then discarded; only
   `PacketIssued` (with a commitment to what was served) persists. This is
-  how revocation, deletion, and registry changes are always reflected —
+  how revocation, deletion, and registry changes are always reflected,
   the design doc's requirement, satisfied by construction.
 - **Rebuild is a rehearsed operation, not an emergency.** Every projection
   can be rebuilt from `global_seq` 0 into a shadow table and swapped. At
   year-2 volume (~10^10 events, dominated by reads), a full rebuild of a
-  non-read projection scans ~10^9 events — hours, not days, and read-log
+  non-read projection scans ~10^9 events, hours, not days, and read-log
   events can be skipped by type filter. We rebuild one projection in staging
   monthly as a drill. When the standing rule changes version, the rebuild
   *is* the migration.
@@ -301,15 +301,15 @@ Strict CQRS discipline, minimal machinery:
 - **Salted commitments.** The spine's `payload_commitment` is
   `H(salt ‖ canonical_payload)` with the salt stored *only* in the payload
   row. After purge, the commitment is an opaque value that cannot be
-  dictionary-tested against guessed payloads — this materially strengthens
+  dictionary-tested against guessed payloads. This materially strengthens
   the "hashes of personal data are still personal data" posture the design
   doc flags. The commitment still proves integrity while the payload lives.
 - **R2 deletion = three steps, all evented:** `ProfileDeleted` appended →
   purge job destroys the DEK, hard-deletes payload rows and PII-bearing
   projection rows (duplicate-candidate features, contact channels), vacuums
   → `PayloadPurged` appended with the object-id list and execution time.
-  The spine then proves deletion happened within the published window —
-  deletion itself becomes attestable, which no update-in-place design gives
+  The spine then proves deletion happened within the published window.
+  Deletion itself becomes attestable, which no update-in-place design gives
   you.
 - Backups: payload-plane backups are encrypted per the same DEK scheme, so
   DEK destruction renders backup copies unreadable immediately; hard-delete
@@ -342,8 +342,8 @@ Strict CQRS discipline, minimal machinery:
   steward console). Matches the team default, maximizes AI-codegen
   leverage, one toolchain. The crypto core (canonicalization, hashing,
   chain verification, JWS) is a single small package with a frozen
-  interface and exhaustive vectors — the one component where a later Rust
-  rewrite is pre-authorized if profiling demands it. Zod (or equivalent)
+  interface and exhaustive vectors. This is the one component where a later
+  Rust rewrite is pre-authorized if profiling demands it. Zod (or equivalent)
   schemas generated from the event-contract source of truth; the contract
   repo is the artifact both engineers and the AI tooling are pointed at.
 - **Hosting:** one cloud (AWS), one primary region. Aurora Postgres (or
@@ -363,10 +363,10 @@ Strict CQRS discipline, minimal machinery:
     `GET /taxonomy/*`. No generic query API; no endpoint ever exposes
     another tenant's projection.
   - Internal: steward console (merge review, dispute ops) drives the same
-    command API — no side doors into the database.
+    command API. No side doors into the database.
 - **Observability:** the north-star metrics are (1) projection lag per
   projector, alarmed against per-projection SLOs (grants/ACL: seconds;
-  standing: minutes); (2) chain-verification audit — a continuous job
+  standing: minutes); (2) chain-verification audit, a continuous job
   re-walks recent stream chains and re-verifies a random sample of issuer
   signatures, because tamper-evidence you never check is decoration;
   (3) event-count reconciliation between spine and each projection;
@@ -395,9 +395,9 @@ The substrate will change; these may not:
 6. **Derived values are never re-ingested as facts.** Standing, flags,
    closures live only in projections and packets; nothing writes them back
    into the log. (Mirrors the contract's "derived estimates never sync as
-   fact" — the same rule, applied internally.)
+   fact." The same rule, applied internally.)
 7. **Supersession, merge, unmerge, deletion, suspension are events**, and
-   their semantics are read-time interpretations — no event's stored bytes
+   their semantics are read-time interpretations. No event's stored bytes
    are ever modified by any later event.
 8. **The event contract is versioned; stored events are immutable in
    schema.** New readers upcast old versions; old events are never
@@ -415,7 +415,7 @@ The substrate will change; these may not:
 - **True planet scale with hot cross-stream operations.** Merge review at
   hundreds of millions of identities (the ~10% organic duplicate rate the
   research warns about) is a human-throughput problem this architecture
-  does not solve — the log makes merges safe, not cheap. The steward queue,
+  does not solve. The log makes merges safe, not cheap. The steward queue,
   not the event store, is the scaling wall.
 - **Projection rebuild time grows linearly with the log.** At 10^11+ events,
   full rebuilds stop being an afternoon. Mitigations (type-filtered scans,
@@ -427,7 +427,7 @@ The substrate will change; these may not:
   if packet reads grow 10x faster than modeled (e.g., programmatic
   vertical polling), the "small system" arithmetic bends first there.
   Countermeasure is contractual (packet caching rules for verticals) plus
-  the separate partition — but it is the number to watch.
+  the separate partition, but it is the number to watch.
 - **Serializable ingestion transactions couple write throughput to
   projection reads.** At v2 shard scale the transactional-validation
   convenience narrows to per-shard; cross-shard invariants (merge) need the
@@ -450,20 +450,20 @@ The substrate will change; these may not:
    through current projectors on every merge.
 3. **Small team drowning in infrastructure.** Avoided by the central call
    of this whole document: no broker, no separate event store, no
-   microservices — one Postgres, one repo, pollers. The event-sourcing
+   microservices, one Postgres, one repo, pollers. The event-sourcing
    *discipline* is kept; the event-sourcing *industrial complex* is not.
 4. **Event soup** (hundreds of anemic CRUD-shaped events like
    `PersonUpdated`). Avoided by the enumerated, decision-shaped event
    catalog in §2 and the review rule that computable fields don't ship in
    events. The catalog is small because the domain's real decisions are few.
-5. **Kafka-as-database drift** — teams start with "just a topic" and wake
+5. **Kafka-as-database drift.** Teams start with "just a topic" and wake
    up with infinite-retention topics as their system of record and no
    transactional validation. Avoided by ruling it out in writing: the log
    feeds brokers; brokers never feed the log.
 6. **GDPR-vs-immutability improvisation.** Event-sourced systems commonly
    bolt on crypto-shredding late and discover PII in event bodies. Avoided
-   because the two-plane split is in the envelope itself (invariant 4) —
-   there is no compliant-by-cleanup phase, only compliant-by-construction.
+   because the two-plane split is in the envelope itself (invariant 4).
+   There is no compliant-by-cleanup phase, only compliant-by-construction.
 
 ## 12. What I'd veto from other schools
 
@@ -477,8 +477,8 @@ The substrate will change; these may not:
   team should not run consensus infrastructure to avoid running `pg_dump`.
 - **Microservices at v1.** Service boundaries multiply the dual-write
   problem this design exists to eliminate. One deployable command service,
-  N projector workers, one packet service — a modular monolith over one log.
-- **Writing derived standing (or any derived flag) as stored fact** — the
+  N projector workers, one packet service, a modular monolith over one log.
+- **Writing derived standing (or any derived flag) as stored fact.** The
   moment a "performance optimization" persists standing outside a
   rebuildable projection, the published-deterministic-rule promise is
   unenforceable.
@@ -500,7 +500,7 @@ The substrate will change; these may not:
    not for grants/deletion (hence the dual-maintained projections).
 4. Counsel does not later mandate per-claim erasure (R2's whole-profile
    deletion holds). If it did, the payload plane already supports
-   object-granular purge — spine semantics would not change.
+   object-granular purge, and spine semantics would not change.
 5. "Hundreds of millions in ~2 years" is identities *enrolled*, not
    concurrently active; the arithmetic uses that reading.
 6. The steward/merge-review function is staffed as an ops function; this

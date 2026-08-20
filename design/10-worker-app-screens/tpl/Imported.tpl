@@ -45,7 +45,7 @@
 
     <section style="padding-top:32px">
       <!-- The reading is how much of this nobody has confirmed, set in §6's
-           instrument register — defined across ten screens and used by none. -->
+           instrument register, defined across ten screens and used by none. -->
       <div class="reading" style="padding-bottom:20px">
         <span class="t-inst">5</span>
         <span style="flex:1;min-width:0">

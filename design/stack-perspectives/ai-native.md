@@ -28,7 +28,7 @@ testing.
    Rust and Go both lose on the axis that matters (below).
 
 3. **One stateful system: managed Postgres**, holding both planes (integrity
-   spine and payload store) with append-only enforced *in the database* —
+   spine and payload store) with append-only enforced *in the database*,
    revoked UPDATE/DELETE on spine tables, trigger-rejected mutation, hash
    chain as a table. The scale math (§5) says partitioned Postgres carries
    hundreds of millions of identities comfortably; this is a low-write-rate,
@@ -52,10 +52,10 @@ testing.
    merged on green machine verification, not human eyes.
 
 6. **Operations are API-first and reconcilable**: declarative IaC (Pulumi in
-   TypeScript — same language), GitOps reconciliation, a production
+   TypeScript, same language), GitOps reconciliation, a production
    *invariant auditor* that continuously recomputes hash-chain integrity,
    supersession acyclicity, alias-closure consistency, and orphan-payload
-   absence — so agents can both operate the system and *prove* it is
+   absence, so agents can both operate the system and *prove* it is
    correct, not just observe that it is up.
 
 7. **Honest weaknesses are routed around, not denied**: agents remain weak
@@ -66,7 +66,7 @@ testing.
    human-gated contract phases). §7.
 
 8. **Where this breaks** (§8): if merge-steward and dispute human-review
-   volume at 10⁸ identities swamps the humans — that is an ops-tooling
+   volume at 10⁸ identities swamps the humans, that is an ops-tooling
    product problem this architecture surfaces early but cannot dissolve; and
    if frontier-agent capability plateaus, this is an understaffed team with
    excellent tests.
@@ -85,7 +85,7 @@ Two consequences the other schools will get wrong:
 
 **Conway's law inverts.** Microservice decomposition exists to give human
 teams independent deploy cadences and bounded contexts. There are no human
-teams. Agents do not benefit from network boundaries — they benefit from
+teams. Agents do not benefit from network boundaries. They benefit from
 *legibility*: one repository they can grep end-to-end, one type system that
 carries an invariant from the DB row to the API response without a
 serialization boundary laundering it, one idiom so that every file looks
@@ -99,16 +99,16 @@ empirical record on agent-written code is sobering where it is unassisted:
 agents write tests at the same rate whether or not they actually fixed the
 bug, and prefer value-revealing print statements to assertions
 ([arXiv 2601.18827](https://arxiv.org/pdf/2601.18827)). The industry answer
-that is actually working is not "review harder" — it is moving correctness
+that is actually working is not "review harder." It is moving correctness
 into machinery: property-based testing, deterministic simulation testing
 (TigerBeetle's VOPR, Antithesis's whole-system PBT under fault injection,
-now with 2026 production case studies —
+now with 2026 production case studies,
 [Antithesis/Tigris](https://antithesis.com/blog/2026/tigris_report/),
 [Antithesis PBT docs](https://antithesis.com/docs/resources/property_based_testing/)),
 and a re-emergent formal-methods discipline aimed specifically at agentic
 engineering ([PAgE @ PLDI 2026](https://pldi26.sigplan.org/home/page-2026)).
-This system's core semantics — append-only spine, supersession chains,
-alias closures, two-plane deletion — are *exactly* the kind of
+This system's core semantics are append-only spine, supersession chains,
+alias closures, and two-plane deletion, exactly the kind of
 crisply-specifiable invariants this machinery is best at. That is the
 architectural gift of ledger-design-0.1: it is already written as a set of
 invariants. Build the system so those invariants are executable.
@@ -117,7 +117,7 @@ invariants. Build the system so those invariants are executable.
 
 ## 2. Language: TypeScript, end-to-end, one idiom
 
-**Choice: TypeScript everywhere** — services, semantic kernel, worker-facing
+**Choice: TypeScript everywhere**, services, semantic kernel, worker-facing
 web surface, IaC (Pulumi), internal tooling. Node LTS runtime. Strictness
 maxed: `strict`, `exactOptionalPropertyTypes`,
 `noUncheckedIndexedAccess`, no `any` (lint-fatal), no type assertions
@@ -136,7 +136,7 @@ Why this maximizes agent reliability:
   status, merge/alias state, deletion state. Discriminated unions +
   exhaustive `switch` checking mean an agent that forgets a lifecycle state
   gets a compile error, not a production incident. Go cannot express this
-  (no sum types — the checking degrades to convention, and convention is
+  (no sum types, the checking degrades to convention, and convention is
   what agents silently violate). This single feature outweighs everything
   Go offers.
 - **One schema source of truth.** Zod (or Effect Schema) definitions are
@@ -159,12 +159,12 @@ Why this maximizes agent reliability:
 Why not the alternatives:
 
 - **Rust** buys memory safety this I/O-bound system does not need, at the
-  cost of lower agent fluency and — decisively — *human* review cost: when
+  cost of lower agent fluency and, decisively, *human* review cost: when
   a human must audit a crypto-path diff, three founders' worth of Rust
   expertise does not exist. The borrow checker is a superb reviewer of
   problems we do not have.
 - **Go** is the respectable boring pick, and its uniformity is genuinely
-  agent-friendly — but no sum types means the state machines live in
+  agent-friendly, but no sum types means the state machines live in
   comments, and the whole verification strategy (§4) leans on the type
   system carrying semantics. Also reintroduces a second language for the
   web surface.
@@ -175,7 +175,7 @@ Why not the alternatives:
 
 Performance honesty: Node is not the fastest runtime. It does not need to
 be (§5 scale math). If a hot path ever genuinely needs it, push it into
-SQL or a single audited native module — do not fork the language strategy.
+SQL or a single audited native module. Do not fork the language strategy.
 
 **Idiom enforcement is infrastructure, not culture.** A ~50-rule lint/style
 regime (functional core, imperative shell; no classes outside adapters; DB
@@ -200,15 +200,15 @@ Both planes live in it, as separate schemas with separate grant regimes:
 - **`spine` schema (append-only):** attestation spine rows, verification
   spine rows, party/key event logs, merge/unmerge events, grant/revocation
   events, hash-chain table, tombstones. The application role has
-  INSERT+SELECT only — **no UPDATE or DELETE grant exists**, and BEFORE
+  INSERT+SELECT only, **no UPDATE or DELETE grant exists**, and BEFORE
   UPDATE/DELETE triggers raise unconditionally as a second fence. The
   hash chain (each row carries `prev_hash`; chain heads checkpointed) is a
   plain table, built from day one per design §3.3, Merkle/CT-style proofs
   exposable later.
 - **`payload` schema (erasable):** claim content, PII, contact channels,
-  evidence details, keyed by spine object ID. A single deletion pathway —
+  evidence details, keyed by spine object ID. A single deletion pathway,
   one stored procedure, executable only by the deletion service's role,
-  invocable only through the human-gated deletion workflow (§6) — is the
+  invocable only through the human-gated deletion workflow (§6), is the
   *only* thing in the system that can destroy data.
 - **State machines in SQL too:** party lifecycle and claim-class
   transitions enforced by CHECK constraints and transition-table foreign
@@ -217,7 +217,7 @@ Both planes live in it, as separate schemas with separate grant regimes:
   correct posture when the application layer is agent-written.
 
 Why one database: every additional stateful system (Kafka, a second store,
-a cache with authority) multiplies the cross-system invariants — exactly
+a cache with authority) multiplies the cross-system invariants, exactly
 the class of bug (distributed interleaving) agents are worst at and humans
 have no time to hunt. Postgres serializable transactions make the hard
 concurrency problems *disappear as problems*: merge + concurrent ingestion,
@@ -234,13 +234,13 @@ authority.
   (`ingestion`, `registry`, `identity`, `read`, `deletion`, `worker-app`)
   are directories with lint-enforced import boundaries, not network
   services. Split a module into a service only when a *measured* runtime
-  constraint demands it — predicted splits: none before ~10⁸ identities,
+  constraint demands it. Predicted splits: none before ~10⁸ identities,
   and then only `read` (packet generation) for independent scaling.
 - **Declarative IaC in Pulumi/TypeScript**, whole environment in the
   monorepo, GitOps-reconciled. Agents change infrastructure by PR, never by
   console; the reconciler makes actual state converge to declared state, so
-  an agent can also *diagnose* infra by diffing declared vs. actual —
-  reconcilability is what makes infrastructure agent-operable.
+  an agent can also *diagnose* infra by diffing declared vs. actual.
+  Reconcilability is what makes infrastructure agent-operable.
 - **Managed services with good APIs everywhere**: KMS/HSM for the ledger's
   own signing and timestamping keys, object storage for exported artifacts,
   managed identity-verification vendors via the registry (per contract).
@@ -270,21 +270,21 @@ makes the next three layers cheap.
 
 ### 4.2 Property-based testing against a reference model
 
-- An **independent naive reference model** — the ledger semantics
-  implemented as slow, obvious, in-memory code (hundreds of lines) — is
+- An **independent naive reference model**, the ledger semantics
+  implemented as slow, obvious, in-memory code (hundreds of lines), is
   maintained *separately from the kernel*, and differential-tested against
   it under generated operation sequences (fast-check). This is the standard
   defense against the documented failure mode of agent-written tests
   mirroring the implementation's own bugs: the model and the kernel would
   have to be wrong *identically*.
 - Named invariants, each an executable property, each traceable to a line
-  of `ledger-design-0.1.md` — a sample of the suite:
+  of `ledger-design-0.1.md`. A sample of the suite:
   - Spine rows are never mutated; hash chain re-verifies from genesis.
   - Supersession chains are acyclic, same-issuer (or ledger-invalidation),
     and current-truth derivation is deterministic and total.
   - Merge then unmerge restores exact pre-merge read-time resolution for
-    all attestations except those flagged for steward review (design §1.4)
-    — a round-trip property agents can regression-run forever.
+    all attestations except those flagged for steward review (design §1.4),
+    a round-trip property agents can regression-run forever.
   - Alias closure: every historical `subject_id` resolves; no packet ever
     omits an attestation reachable through the closure; no packet ever
     includes one that is not.
@@ -300,38 +300,38 @@ makes the next three layers cheap.
     changes read-time flags and nothing at rest; compromise-report ordering
     vs. ledger timestamp enforced (design §3.3's load-bearing rule).
 - **Mutation testing** (Stryker) on the kernel with a high enforced
-  mutation score. This is the honesty check *on the tests themselves* —
+  mutation score. This is the honesty check *on the tests themselves*,
   the specific corrective for agents that write green-but-vacuous tests.
 
-### 4.3 Formal specification: yes, narrowly — and the calculus has changed
+### 4.3 Formal specification, yes narrowly, and the calculus has changed
 
 The traditional case against TLA+ was cost: specs are expensive to write
 and drift from code. Both halves weaken when agents do the mechanical work
 and the 2026 tooling context is what it is (formal methods re-entering the
-agentic mainstream — [PAgE 2026](https://pldi26.sigplan.org/details/page-2026-papers/6/Formal-Methods-for-Frontier-AI-Systems)).
+agentic mainstream, [PAgE 2026](https://pldi26.sigplan.org/details/page-2026-papers/6/Formal-Methods-for-Frontier-AI-Systems)).
 The remaining scarce input is *human judgment about what the spec should
-say* — which is precisely the artifact three humans have time to review.
+say*, which is precisely the artifact three humans have time to review.
 
 Verdict: **two TLA+ specs, no more.**
 
-1. **Merge/unmerge under concurrent attestation ingestion** — the one place
+1. **Merge/unmerge under concurrent attestation ingestion.** The one place
    design 0.1 itself admits a manual residue (attestations landing during a
    merged period). Model-check that no interleaving of
    merge/unmerge/ingest/read loses, duplicates, or mis-attributes an
    attestation.
-2. **Deletion pipeline vs. the read path** — grants revoked, reads
+2. **Deletion pipeline vs. the read path.** Grants revoked, reads
    stopped, payloads purged, spine retained, across concurrent packet
    generation. Model-check that no packet is ever issued containing data
    from a person whose deletion has been accepted.
 
-Everything else — supersession, standing, freezing, registry — is
-sequential, single-transaction logic where the executable property suite is
+Supersession, standing, freezing, and registry are all sequential,
+single-transaction logic where the executable property suite is
 strictly cheaper and equally rigorous. A spec beyond these two must earn
 its place by exhibiting a concurrency structure the property suite cannot
 reach. The specs live in the monorepo, model-checked in CI (small
 configurations), and each spec action is comment-linked to the kernel
 functions implementing it; agents keep the linkage current, humans review
-spec diffs — which are rare, small, and semantically dense: the ideal
+spec diffs, which are rare, small, and semantically dense: the ideal
 human-review substrate.
 
 ### 4.4 Deterministic simulation testing
@@ -342,7 +342,7 @@ randomness, virtual Postgres transaction interleaving), TigerBeetle-VOPR
 style ([vopr.md](https://github.com/tigerbeetle/tigerbeetle/blob/main/docs/internals/vopr.md)),
 exploring crash/retry/interleave schedules over ingestion, merge, and
 deletion workflows, checking the §4.2 invariants continuously. Every
-failure replays exactly from its seed — which converts the worst class of
+failure replays exactly from its seed, which converts the worst class of
 bug (heisenbug an agent cannot reproduce) into the best class (failing seed
 an agent can fix autonomously). When budget allows, whole-system
 fault-injection via Antithesis
@@ -369,11 +369,11 @@ caught by machinery, not by a human noticing.
 The arithmetic, so nobody over-builds:
 
 - **~1M identities in months:** ~10⁶ persons, attestations arriving per
-  engagement/period — call it 10–50/person/year. Tens of millions of spine
+  engagement/period, call it 10–50/person/year. Tens of millions of spine
   rows/year. A single unpartitioned Postgres yawns.
 - **Hundreds of millions in ~2 years:** ~10⁸ persons × ~20 attestations/yr
   ≈ 2×10⁹ small spine rows/yr, low-terabyte range with payloads. Writes:
-  even 10⁹/yr averages ~30/sec (peaks in the low thousands) — modest.
+  even 10⁹/yr averages ~30/sec (peaks in the low thousands). Modest.
   Reads: packet generation is bounded by grant activity, not by traffic
   fashion. Hash-partition both planes by `ledger_person_id` (every query
   in the system is person-scoped or party-scoped; the two-plane model
@@ -381,23 +381,23 @@ The arithmetic, so nobody over-builds:
   read replicas for the worker view.
 - **Planet scale:** move the partitions onto a Postgres-compatible
   distributed layer (Citus-class) or shard-by-person with a routing layer
-  in the app — the access pattern (no cross-person transactions except
+  in the app. The access pattern (no cross-person transactions except
   merge, which touches exactly two persons) makes this one of the
   friendliest sharding problems in databases. Merge across shards is the
   one two-shard transaction; it is already human-gated and low-volume.
-  Regionalization for data-residency is a payload-plane concern only —
-  the spine contains no readable personal data (design §2.1), which is a
+  Regionalization for data-residency is a payload-plane concern only.
+  The spine contains no readable personal data (design §2.1), which is a
   quietly enormous infrastructure gift: the integrity layer can be global
   while payloads localize.
 
-What actually scales superlinearly is not compute — it is **human-touch
+What actually scales superlinearly is not compute. It is **human-touch
 workflows**: merge steward review at an up-to-10% organic duplicate rate,
 dispute handling, party vetting. At 10⁸ identities that is millions of
 review items. The architecture's answer is to treat these as *products*
-from day one — queue, evidence panel, decision log, agent-prepared
-recommendation with human click-through — so the marginal human cost per
-review falls continuously and review labor can eventually be hired/scaled
-independently of engineering. But see §8: this is the trajectory's real
+from day one, a queue, evidence panel, decision log, and agent-prepared
+recommendation with human click-through. That keeps the marginal human cost
+per review falling continuously, and lets review labor eventually be hired
+and scaled independently of engineering. But see §8: this is the trajectory's real
 bottleneck, and no stack choice dissolves it.
 
 ---
@@ -408,10 +408,10 @@ bottleneck, and no stack choice dissolves it.
 diffs, dependency updates, migration *authoring*, incident triage and
 first-response, documentation, the reference model's extension (with the
 adversarial-pairing rule: the agent context that writes a kernel change
-never writes the corresponding model change — separate contexts, separate
+never writes the corresponding model change, separate contexts, separate
 prompts, so differential testing retains its independence).
 
-**Humans gate — enforced by path-based CODEOWNERS and deploy machinery,
+**Humans gate, enforced by path-based CODEOWNERS and deploy machinery,
 not by convention:**
 
 1. **The spec/invariant layer**: TLA+ specs, the named property list, the
@@ -429,18 +429,18 @@ not by convention:**
    attested history (design §1.3 already demands this); the deletion
    pipeline's destructive phase; the *contract* phase of schema migrations;
    IAM/network IaC changes.
-4. **Taxonomy versions** (`work_kind`) — council-governed per design §6,
+4. **Taxonomy versions** (`work_kind`), council-governed per design §6,
    mechanically versioned.
 
 **How review load scales sublinearly:** an ordinary PR merges on machine
-verification alone — typecheck, lint, property suite, mutation-score
+verification alone, typecheck, lint, property suite, mutation-score
 floor, differential tests, DST smoke, migration lint, and a generated
 **invariant impact statement** (which named invariants' coverage the diff
 touches, which gated paths it does not touch). Humans sample-audit merged
 work and spend their attention on the four gates above. Migrations are
 expand/contract only: expand phases auto-deploy; contract phases queue for
 human approval with shadow-read verification evidence attached. Deploys are
-progressive with auto-rollback on SLO burn — rollback is an agent-safe
+progressive with auto-rollback on SLO burn. Rollback is an agent-safe
 operation because deploys are stateless and migrations are
 backward-compatible by construction.
 
@@ -463,7 +463,7 @@ backward-compatible by construction.
   executes the safe playbook set (rollback, replica failover, rate-limit),
   and writes the incident narrative. Humans are paged for: invariant-auditor
   violations, anything touching the §6 gates, and agent-triage timeout.
-  Every incident feeds a postmortem whose action items are — in this shop —
+  Every incident feeds a postmortem whose action items are, in this shop,
   usually new machine checks, not new human vigilance.
 - **The audit log is a product surface, not an ops afterthought**: read
   logs, grant history, registry history are worker-visible by design
@@ -479,13 +479,13 @@ backward-compatible by construction.
    kernel-path transactions, no cross-system authority; plus DST exploring
    interleavings mechanically, plus the two TLA+ specs on the only
    genuinely concurrent protocols. The architecture's simplicity is not
-   aesthetic — it is the containment strategy.
+   aesthetic. It is the containment strategy.
 2. **Security-sensitive code.** Agents produce plausible-but-subtly-wrong
    crypto and authz. Contained by minimizing the surface (one frozen
    kernel, audited libraries, no hand-rolls), mandatory human review on
    the path class, external audit before the first external attesting
-   party, and secrets/keys living in KMS where application code — and
-   therefore agent code — never touches key material.
+   party, and secrets/keys living in KMS where application code, and
+   therefore agent code, never touches key material.
 3. **Vacuous or implementation-mirroring tests.** Documented 2026 failure
    mode. Contained by the independent reference model, differential
    testing, mutation-score floors, and adversarial pairing (§6).
@@ -493,7 +493,7 @@ backward-compatible by construction.
    stateful transitions. Contained by expand/contract discipline (every
    step individually reversible and verifiable), shadow-read verification
    producing evidence artifacts, human gates on contract phases, and the
-   invariant auditor running throughout — a migration that violates an
+   invariant auditor running throughout. A migration that violates an
    invariant halts itself.
 5. **Slop accumulation and idiom drift.** Each agent diff is locally fine;
    the sum is entropy. Contained by mechanical idiom enforcement, code
@@ -512,8 +512,8 @@ backward-compatible by construction.
   ~10% duplicate rate, dispute windows, and party vetting are
   *constitutionally* human under this design (and under design 0.1). At
   10⁸ identities the stack keeps the marginal cost per review falling, but
-  the total is a staffing and product problem — thousands of review-hours
-  a week — that three people cannot absorb and this document cannot
+  the total is a staffing and product problem, thousands of review-hours
+  a week, that three people cannot absorb and this document cannot
   architect away. If that is not confronted as a first-class product line
   (or the auto-merge criteria loosened, with career-contamination risk),
   it is the trajectory's real wall.
@@ -527,7 +527,7 @@ backward-compatible by construction.
   The escape hatch (push hot paths into SQL, or one audited native module)
   is real but has a ceiling; a rewrite of the read path in a systems
   language at year 4 is a plausible, bounded cost this design knowingly
-  defers — correctly, because the kernel semantics it would reimplement
+  defers, correctly, because the kernel semantics it would reimplement
   are, by then, an executable specification.
 - **Single-vendor Postgres gravity.** Everything-in-Postgres is the right
   2026 call; it does concentrate migration risk if the distributed-Postgres
@@ -561,7 +561,7 @@ backward-compatible by construction.
   will accept Postgres (good) and then treat property-based testing, DST,
   and the two TLA+ specs as gold-plating (fatal). In a human-built system
   that machinery is a luxury; in an agent-built system it *is* the review
-  process. Cutting it does not save effort — it silently converts machine
+  process. Cutting it does not save effort. It silently converts machine
   verification back into human review that no one has capacity to perform.
 - **Hiring as the scaling strategy.** Adding engineers before adding
   verification machinery lowers the leverage of every agent and every
@@ -578,7 +578,7 @@ backward-compatible by construction.
    the two-plane model of design 0.1 is the semantic ground truth this
    stack executes.
 3. Write volume stays attestation-shaped (per-engagement/period
-   aggregates), never behavioral-trace-shaped — the contract's "what never
+   aggregates), never behavioral-trace-shaped. The contract's "what never
    crosses" holds. If per-unit work rows ever cross the boundary, the §5
    scale math and the one-database strategy must be redone.
 4. Managed Postgres (then a Postgres-compatible distributed layer) remains

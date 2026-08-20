@@ -35,7 +35,7 @@
          this screen should learn what is already true before deciding anything. -->
     <!-- Exposure said as a state, because that is what it is. A bare figure here
          would read as a score, and §6's instrument register is for readings where
-         the number IS the fact — ledger length, days left — not for a count of
+         the number IS the fact, such as ledger length or days left, not for a count of
          who can see you. -->
     <div style="padding:24px 0 18px;border-bottom:1px solid var(--ink)">
       <p class="t-sec" style="margin:0;font-size:19px;line-height:1.35;text-wrap:pretty">{{ exposure }}</p>
@@ -113,7 +113,7 @@
       </sc-for>
       <p class="t-meta" style="margin:12px 0 0;color:var(--secondary);text-wrap:pretty">
         Ending a grant stops future reads. It cannot pull back what a business
-        already read and kept — this screen says so rather than implying otherwise.</p>
+        already read and kept. This screen says so rather than implying otherwise.</p>
     </div>
 
     <div class="grp">
@@ -147,7 +147,7 @@
 //
 // Every control here is drawn but inert: this is a mockup, and what a revoke or
 // the imprint lever actually does is not decided. Decision 035 fixes that the
-// lever is the imprint, full or absent, and nothing between — so this screen
+// lever is the imprint, full or absent, and nothing between, so this screen
 // carries one control and states the rest as facts rather than drawing three
 // settings that do not exist.
 class Component extends DCLogic {

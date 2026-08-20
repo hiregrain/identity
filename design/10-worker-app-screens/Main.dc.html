@@ -9,11 +9,11 @@
 <helmet>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap');
-    /* Grain — DESIGN.md §5 colour, §6 type, §7 spacing/radius/depth */
+    /* Grain, per DESIGN.md §5 colour, §6 type, §7 spacing/radius/depth */
     :root{
       --ink:#1B2A44; --paper:#F8F5EE; --secondary:#5C6878;
-      --rule:#7E8794;      /* 3.35:1 — every line that carries meaning */
-      --hairline:#D3D7D6;  /* 1.34:1 — pure separation, never a state */
+      --rule:#7E8794;      /* 3.35:1, every line that carries meaning */
+      --hairline:#D3D7D6;  /* 1.34:1, pure separation, never a state */
       --page:#E9E5DE;
     }
     *{box-sizing:border-box}
@@ -23,23 +23,23 @@
     a{color:var(--ink);text-decoration:underline;text-underline-offset:2px}
     a:hover{color:var(--ink);text-decoration-thickness:2px}
     button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;text-align:left}
-    /* §6 — one family, hierarchy from width, weight and tracking */
+    /* §6 uses one family, hierarchy from width, weight and tracking */
     .t-title {font-stretch:125%;font-weight:700;font-size:28px;line-height:1.12;text-wrap:balance}
     .t-sec   {font-weight:600;font-size:17px;line-height:1.2;text-wrap:balance}
     .t-rec   {font-weight:600;font-size:15px;line-height:1.3}
     .t-body  {font-weight:400;font-size:14px;line-height:1.6}
     .t-data  {font-weight:500;font-size:13px;line-height:1.35;font-variant-numeric:tabular-nums}
     .t-meta  {font-weight:400;font-size:12px;line-height:1.4}
-    /* labels ONLY — never a value, a date, a name or a sentence (§6) */
+    /* labels ONLY, never a value, a date, a name or a sentence (§6) */
     .t-micro {font-weight:500;font-size:9.5px;letter-spacing:0.08em;text-transform:uppercase;line-height:1.3}
     .t-serial{font-weight:500;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;line-height:1.2}
     .t-inst  {font-stretch:125%;font-weight:800;font-size:40px;line-height:1;font-variant-numeric:tabular-nums;white-space:nowrap}
-    /* §7 depth presses down; verified rows have zero press-give — rigidity is
+    /* §7 depth presses down. Verified rows have zero press-give, and rigidity is
        how permanence is expressed. Both halves are load-bearing. */
     .press{transition:transform 60ms cubic-bezier(0.2,0,0,1)}
     .press:active{transform:translateY(2px)}
     .rigid:active{transform:none}
-    /* §8 buttons — no pills, no icons inside. 44px minimum (§12). */
+    /* §8 buttons have no pills, no icons inside. 44px minimum (§12). */
     .btn-primary{background:var(--ink);color:var(--paper);border-radius:3px;
                  padding:13px 16px;font-weight:600;font-size:15px;width:100%;
                  text-align:center;min-height:44px}
@@ -76,27 +76,27 @@
     .rung{display:inline-flex;align-items:flex-end;gap:2px;height:14px;flex:none}
     .rung i{display:block;width:3px}
     /* The imprint is capped and centred wherever it appears. A fluid root with an
-       uncapped figure grows until the figure swallows the display — the defect
+       uncapped figure grows until the figure swallows the display, the defect
        fixed on the record and still live on three other screens. 320 is the size
        it is drawn and thread-budgeted at (044). */
     .imprint{display:block;width:100%;max-width:320px;margin-inline:auto}
     /* An instrument reading: the figure and what it counts. baseline alignment
        hung the small text off the numeral's foot, which reads as two things that
        missed each other. The text block is centred against the numeral instead,
-       and the numeral gets its own optical trim — a 40px 800-weight Expanded
+       and the numeral gets its own optical trim, a 40px 800-weight Expanded
        figure sits high in its line box. */
     .reading{display:flex;align-items:center;gap:14px}
     .reading .t-inst{flex:0 0 auto;line-height:.82;position:relative;top:1px}
     .reading > span:last-child{flex:1;min-width:0}
     /* A row that goes somewhere says so. Rows that only state a fact carry no
-       chevron — a fact dressed as a control lies about what can be changed. */
+       chevron, since a fact dressed as a control lies about what can be changed. */
     .chev{flex:0 0 16px;display:flex;align-items:center;padding-left:4px}
     /* The bottom of a scroller is where the system's own bar begins. Content that
        simply stops there reads as cut off, and a large empty band reads as a
        mistake. `.dissolve` fades the last 28px of the scroll into the paper, so
        the record ends rather than being truncated, and the home indicator has
        something to sit against. 28 is the smallest band that reads as intentional
-       at the 16px body size — below that it is a hairline nobody sees. */
+       at the 16px body size, below that it is a hairline nobody sees. */
     .dissolve{-webkit-mask-image:linear-gradient(to bottom, #000 calc(100% - 28px), transparent 100%);
               mask-image:linear-gradient(to bottom, #000 calc(100% - 28px), transparent 100%)}
     @media (prefers-reduced-transparency:reduce){
@@ -114,12 +114,12 @@
        drawn and budgeted at. */
     .fig{display:block;width:100%;max-width:320px;margin-inline:auto}
     /* The plate's registration corners, at the figure's own scale. Same object
-       as `.reg` on the record plate — the chart's mark for a framed thing. */
+       as `.reg` on the record plate, the chart's mark for a framed thing. */
     .figreg{position:absolute;width:13px;height:13px;border:0 solid var(--rule);
             pointer-events:none}
     /* 050: only the band that changed is re-scribed. Its resting state is the
        finished drawing, so an environment that suppresses animation shows the
-       whole figure rather than a blank one — the defect design/07 found in the
+       whole figure rather than a blank one, the defect design/07 found in the
        first build's ceremony, where rest was stroke-dashoffset:1. */
     .moved-band .ch4 path,.moved-band .ch4 circle{stroke-dasharray:1;stroke-dashoffset:1;
       animation:scribe-band 900ms cubic-bezier(0.2,0,0,1) 260ms forwards}
@@ -128,7 +128,7 @@
       .moved-band .ch4 path,.moved-band .ch4 circle{animation-duration:1ms;animation-delay:0ms}
     }
     /* §9's sine-modulated divider, carrying the figure's own frequency, and the
-       graticule ground. Both specified in §9 and unused until now — the record
+       graticule ground. Both specified in §9 and unused until now, the record
        had the plate and nothing else, which is most of why it read as bare. */
     /* The ground is clipped to the figure's own shape. Left square it stopped at
        a hard rectangle behind a circular drawing, which reads as a stray box. */
@@ -142,7 +142,7 @@
     .scrim{position:absolute;inset:0;background:rgba(230,230,228,.86)}
     /* Disclosure is a line quality on the plate's own header band (law 4).
        Grants are whole-record, so this is a property of the record and never of
-       a chapter — a per-chapter mark would be identical on every row. */
+       a chapter, since a per-chapter mark would be identical on every row. */
     .disclosed{border-bottom-width:1px}
     .disclosed::after{content:'';position:absolute;left:0;right:0;bottom:-4px;
                       height:1px;background:var(--rule)}
@@ -175,7 +175,7 @@
       <!-- Sharing is a destination now, not a section buried under the record
            (decision 045). This is its entry point. -->
       <!-- Sharing is where custody is exercised, so it carries more than the menu
-           does — but by ink and by saying a number out loud, not by a box. §8
+           does, but by ink and by saying a number out loud, not by a box. §8
            deletes containers; a border here would be the one thing the system
            forbids, put in to buy prominence it can get honestly. -->
       <button class="press" aria-label="{{ shareLabel }}" onClick="{{ openSharing }}"
@@ -189,7 +189,7 @@
         <span class="t-data" style="font-size:13px">{{ shareCount }}</span>
       </button>
       <!-- An account glyph, not a hamburger. The hamburger is the universal sign
-           for a menu of places to go, and this opens one screen — a bar carrying
+           for a menu of places to go, and this opens one screen. A bar carrying
            no navigation read as a navigation bar that did nothing (048). -->
       <button class="press" aria-label="Account and settings" onClick="{{ openSettings }}"
               style="min-width:44px;width:44px;height:44px;display:flex;align-items:center;
@@ -210,7 +210,7 @@
     <section id="sec-0" style="padding-top:20px">
       <!-- No portrait slot. It was a drawn container (§8 deletes those) holding a
            placeholder for a picture of a person, in a product that refuses to draw
-           people — and decision 044 settled that a person is their name and their
+           people, and decision 044 settled that a person is their name and their
            imprint. A box waiting for a face contradicts both. -->
       <div style="padding-bottom:20px">
         <div style="min-width:0">
@@ -225,7 +225,7 @@
            was not one of them. The corners are the plate's own mark for a framed
            object, which is what this is. -->
       <sc-if value="{{ hasNews }}" hint-placeholder-val="{{ true }}">
-        <!-- What moved since you last looked. Not a greeting — a record that
+        <!-- What moved since you last looked. Not a greeting. A record that
              welcomes you is a record performing (050). It states the fact and
              stops, and says nothing at all when nothing has changed. -->
         <p class="t-rec" style="margin:0 0 16px;text-wrap:pretty">{{ news }}</p>
@@ -333,7 +333,7 @@
          and work history, which is where a product puts what does not matter. -->
   </main>
 
-  <!-- No section index. It sat at right:0, 32px wide — entirely inside the
+  <!-- No section index. It sat at right:0, 32px wide, entirely inside the
        ~24dp strip Android gives the back gesture from both edges, so dragging it
        navigated back. 037 had already demoted it to an accelerator; an
        accelerator that fights the platform is worse than none. -->

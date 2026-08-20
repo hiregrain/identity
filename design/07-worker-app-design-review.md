@@ -1,4 +1,4 @@
-# Worker app — design review, round 1
+# Worker app design review, round 1
 
 2026-08-19. Six independent reviewers, each given one lens and no sight of the
 others, run against the nine artboards of the worker surface. Method follows
@@ -6,11 +6,11 @@ others, run against the nine artboards of the worker surface. Method follows
 or more reviewers *independently* is signal; a single-reviewer finding is
 evidence. Disagreements are preserved, never averaged.
 
-**Lenses.** W — a worker in the target population on a cheap Android.
-B — an adversarial critic auditing against `01-banned-patterns.md` and
-`DESIGN.md`'s eight laws, briefed to fail the work. A — accessibility and
-low-end-device measurement. I — interaction and information architecture.
-T — typography and system rigour. L — an employer reading the record, and a
+**Lenses.** W, a worker in the target population on a cheap Android.
+B, an adversarial critic auditing against `01-banned-patterns.md` and
+`DESIGN.md`'s eight laws, briefed to fail the work. A, accessibility and
+low-end-device measurement. I, interaction and information architecture.
+T, typography and system rigour. L, an employer reading the record, and a
 lawyer checking the interface does not claim more than the system delivers.
 
 **Standing limitation.** No reviewer could render the files. Every size, weight,
@@ -20,7 +20,7 @@ NEEDS RENDER and is not settled.
 
 ---
 
-## 1. Convergent — five or six reviewers
+## 1. Convergent, five or six reviewers
 
 ### 1.1 The state channel is invisible · W B A I T
 
@@ -32,7 +32,7 @@ same way, because opacity on a stroke alpha-blends into paper rather than
 dimming: `.11` → **1.22:1**, `.28` → 1.74, `.45` → 2.62, `.5` → 2.97, `.4` → 2.31.
 
 Worst instance: `Main`'s `.disclosed::after`, the sole carrier of *a live grant
-exists on this record*, is a 1.34:1 line 4px below another line — and
+exists on this record*, is a 1.34:1 line 4px below another line, and
 `headerCls` is hardcoded to `'disclosed'`, so the private state never renders
 and there is nothing to learn the signal against.
 
@@ -47,14 +47,14 @@ to exactly 44px, which is deliberate and correct.
 
 ---
 
-## 2. Convergent — four reviewers
+## 2. Convergent, four reviewers
 
 ### 2.1 The 9.5px micro-caption is the product's data register · W B A T
 
 `t-micro` is applied **56 times** across nine screens against `t-title`'s 6 and
 `t-inst`'s 0; **73 of 117 register applications are 12px or smaller**. It carries
 every date span, duration, grant state, expiry, settings value, and the imprint
-readout — and, because it sets `text-transform:uppercase`, it renders the user's
+readout. Because it sets `text-transform:uppercase`, it renders the user's
 own name as `LIEZEL MENDOZA` and their permanent address as
 `/U/LIEZEL-MENDOZA`, on a handle specified Latin-only lowercase.
 
@@ -66,7 +66,7 @@ defines no register for a tabular data column**, so the caption absorbed the job
 
 `Step ${level} of 6` beside a seven-rung ladder with one rung inked. W read it as
 "one out of six" on a dimension whose name sounds like trustworthiness. I found
-the axis named two ways — `Slot 4 of 7` and `Step 3 of 6` against seven rows,
+the axis named two ways, `Slot 4 of 7` and `Step 3 of 6`, against seven rows,
 zero-indexed. L noted `Step 0 of 6` renders for "Not exercised", which
 `record-schema.md` §4 and `imprint/README.md` §3 both insist is non-pejorative
 and which a 0–6 ladder converts into the bottom of a rank. B cites `05` §6:
@@ -78,12 +78,12 @@ than people. The numeral is the defect; the ladder is the asset.
 
 ---
 
-## 3. Convergent — three reviewers
+## 3. Convergent, three reviewers
 
 - **The permanence metaphor is dead code · B T A.** `.rigid` is defined in all
   nine files and applied **zero** times, so an attested chapter compresses under
   the thumb exactly like a self-asserted one. `.press:active` declares no
-  transition, so §10's 60ms press is 0ms. No file contains `navigator.vibrate` —
+  transition, so §10's 60ms press is 0ms. No file contains `navigator.vibrate`,
   including the artboard whose only purpose is to demonstrate the seat.
 - **Opacity carries six variables · B A I.** Decoration, unselected chapter,
   guide lines, level-below-vs-above, active nav section, ceremony progress.
@@ -95,7 +95,7 @@ than people. The numeral is the defect; the ladder is the asset.
   note is `--ink`, so the error is quieter than the success.
 - **The dispute promise has no door · W I L.** Consent row 04 says "You can
   dispute anything"; there is no path anywhere, by ruling. L adds that the
-  promise itself over-claims — what exists is the right to attach a statement
+  promise itself over-claims. What exists is the right to attach a statement
   the party may decline and Grain will never adjudicate.
 - **The figure may not resolve on target hardware · W A T.** NEEDS RENDER, but
   the arithmetic: threads at 0.70 units × 0.49 scale = **0.32–0.37 CSS px**.
@@ -103,12 +103,12 @@ than people. The numeral is the defect; the ladder is the asset.
   they paint around **1.9–2.0:1**, at dpr 1.5 roughly 3.8–4.5:1. dpr 1.5 panels
   are live in the named markets. T raises the same question of the gutter
   swatches: 7 threads in a ~9px band is a 1.3px pitch against a 0.9px stroke, so
-  2-vs-4 will read and **4-vs-7 may not** — which would put the corroboration
+  2-vs-4 will read and **4-vs-7 may not**, which would put the corroboration
   tier on a channel the eye cannot count.
 
 ---
 
-## 4. Convergent — two reviewers
+## 4. Convergent, two reviewers
 
 - **Provenance is legible to employers and not to the worker · W I.** `Public`
   prints "Attested and corroborated" / "Self-asserted" in words beside each
@@ -119,14 +119,14 @@ than people. The numeral is the defect; the ladder is the asset.
   selection; the Settings sheet's CTA calls `close`. Expanded, chapter detail,
   dimension standing and Settings are unreachable. Separately, `Expanded`'s stage
   is a bare `<div>` with pointer handlers and no `tabindex`, `role` or key
-  handling, and it is the *only* control for the dimension axis — so a keyboard
+  handling, and it is the *only* control for the dimension axis, so a keyboard
   or screen-reader user is locked to the constructor's defaults. `role="img"`
   additionally prunes `Main`'s band hit areas from the accessibility tree; that
   screen survives only because the work-history rows set the same state, which is
   the correct dual-path pattern and exactly what Expanded lacks.
 - **Settings' navigational rows are inert `<div>`s · I A.** Terms, Privacy, How
-  the record works, Export everything, App language — no button, no handler, no
-  href.
+  the record works, Export everything, App language, none carry a button, a
+  handler, or an href.
 - **Registration corners are uniform treatment and document cosplay · B T.**
   32 identical instances across 8 of 9 screens, non-interactive, encoding
   nothing. `Public` drops them with a comment explaining why, which proves the
@@ -143,7 +143,7 @@ than people. The numeral is the defect; the ladder is the asset.
   zero logical properties, zero bidi isolation. `Main`'s 44px right padding
   exists solely to clear the edge nav, so mirroring breaks the layout rather than
   flipping it. `text-transform:uppercase` is a no-op in CJK and Arabic and the
-  8%/14% tracking breaks Arabic cursive joining — which is the only thing
+  8%/14% tracking breaks Arabic cursive joining, which is the only thing
   distinguishing the micro and serial registers.
 
 ---
@@ -155,7 +155,7 @@ Not convergent, but verifiable against the repo and therefore not opinion.
 - **Three statements in the UI are false · L.** `Public`'s closing line "Records
   on Grain are written by the parties named, never by the person" sits above a
   self-asserted chapter. `Main`'s "Removing a chapter needs a written request"
-  describes a path that does not exist — consent row 05 and
+  describes a path that does not exist. Consent row 05 and
   `ledger-design-0.1.md` §8.2.5 both say individual records never come out at
   all. `Empty`'s "Nothing is drawn until someone who was there confirms it" is
   contradicted by the next screen, which draws five unconfirmed chapters.
@@ -174,8 +174,8 @@ Not convergent, but verifiable against the repo and therefore not opinion.
   durations but not `animation-delay`, so every stagger survives: a 600ms
   staggered pop, worse for a vestibular-sensitive user than the original. One
   line fixes it. Separately, `Expanded`'s resting state is
-  `stroke-dashoffset:1` — invisible, revealed only by the animation's `forwards`
-  fill — so any environment that suppresses animations renders the imprint
+  `stroke-dashoffset:1`, invisible, revealed only by the animation's `forwards`
+  fill, so any environment that suppresses animations renders the imprint
   permanently blank. `Landing` already guards this with an explicit `.done` end
   state; the pattern is in the codebase and was not carried over.
 - **The handle's transliteration does not exist · A.** The code comment claims
@@ -191,7 +191,7 @@ Not convergent, but verifiable against the repo and therefore not opinion.
   `01-banned-patterns.md`. Plus "48 entries · last today", which is broken
   English.
 - **Quantified drift · T.** 37.8% of 172 spacing declarations are off the 4px
-  scale. One primitive — the ledger row — is expressed four times at three
+  scale. One primitive, the ledger row, is expressed four times at three
   different heights (`.row` 12px, `.prow` 13/gap 14, `.srow` 13, `.cRow` 14/gap
   14). Two off-scale type sizes (34px, 13px). `tabular-nums` is set globally on
   `body`, so every digit in running prose is tabular, which §5 names as a
@@ -203,8 +203,8 @@ Not convergent, but verifiable against the repo and therefore not opinion.
 
 Recorded rather than resolved. Each needs a ruling, not a merge.
 
-1. **May the figure carry a printed label?** I argues for one line under it —
-   "Your imprint, touch a ring" — reasoning that a label present *before* any
+1. **May the figure carry a printed label?** I argues for one line under it,
+   "Your imprint, touch a ring", reasoning that a label present *before* any
    interaction is an affordance, not a legend. B's standing position is that any
    printed explanation of the motif is the round-1 legend failure. Both cite the
    same document.
@@ -228,27 +228,27 @@ Recorded rather than resolved. Each needs a ruling, not a merge.
 
 Named so it survives revision.
 
-- **The state-swatch ladder** — dashed rule, solid rule, 2 threads, 4, 7. B ran
+- **The state-swatch ladder.** Dashed rule, solid rule, 2 threads, 4, 7. B ran
   the three-question test on it and passed it on all three, calling it the best
   object in the set: self-assertion drawn as a *different line quality* rather
   than a fainter one is law 8 done right and law 4 done right.
 - **Colour discipline.** No accent, zero red, danger by ink inversion with
   explicit words and a two-step. Ink on paper 13.25:1. §5 fully honoured. §12's
   "never signal by colour alone" holds by construction.
-- **Radius** — exactly two values across 1,794 lines: 3px on controls, 0px
+- **Radius.** Exactly two values across 1,794 lines: 3px on controls, 0px
   everywhere else.
 - **Nothing countable that reads as a rating on the core screen.** No checkmarks,
   badges, shields, stars, percentages or composite scores anywhere. Grepped.
-- **`Empty`** — the graticule clipped to the fixed canvas, no core, no boundary
+- **`Empty`.** The graticule clipped to the fixed canvas, no core, no boundary
   ring, one line of what happens next.
-- **`Consent`'s copy** — six mechanics, permanence before commitment, the exit
+- **`Consent`'s copy.** Six mechanics, permanence before commitment, the exit
   at row 05 at the same weight as the rest. Best writing in the set; only the
   zero-padded `01`–`06` numbering is wrong with it.
-- **`Public`'s separate chassis** — the one place the system proves it can vary
+- **`Public`'s separate chassis.** The one place the system proves it can vary
   by meaning.
 - **Promotions as hairline divisions inside a chapter**, tighter than the
   inter-chapter gap. §8 implemented correctly.
-- **`Main`'s grant sheet copy** — L calls it the most accurate text in the
+- **`Main`'s grant sheet copy.** L calls it the most accurate text in the
   product and wants it moved into the consent instrument verbatim.
 - **The focus ring**, present in all nine files exactly as §12 specifies and
   never overridden.

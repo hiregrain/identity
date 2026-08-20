@@ -1,4 +1,4 @@
-# Field Notes A — Named Apps as Screens (Duolingo, Flighty, X)
+# Field Notes A, Named Apps as Screens (Duolingo, Flighty, X)
 
 Method: every note below is grounded in a screenshot captured from official sources
 (App Store listings, blog.duolingo.com, flighty.com, X's own embed component) and
@@ -6,13 +6,13 @@ saved under `assets/a-named-apps/`. Mechanisms only; no trend articles consulted
 
 ---
 
-## Duolingo — the celebration economy
+## Duolingo, the celebration economy
 
 **1. Celebration is metered by a state ladder, not sprinkled.**
 The in-lesson progress bar has discrete visual states: normal green fill; then at
 a combo threshold the bar itself turns gold with sparkle particles around it
 (`duolingo-lesson-screens-progressbar-states.png`, 4th phone). The reward is a
-*state change of an existing element*, not a new overlay — cheap to notice,
+*state change of an existing element*, not a new overlay, cheap to notice,
 impossible to miss, and it withholds until earned: the first three phones show the
 same bar staying plain green.
 
@@ -20,7 +20,7 @@ same bar staying plain green.
 Answer tiles and CTA buttons all carry a slightly darker bottom edge simulating
 depth, and the selected tile swaps to a blue fill + blue border pair
 (`duolingo-lesson-screens-progressbar-states.png`). The press interaction reads as
-pushing the edge flat — the haptic pairs with a visible compression. Word-bank
+pushing the edge flat. The haptic pairs with a visible compression. Word-bank
 chips change fill color (gray → green) when placed correctly: state = color swap
 on the same shape, never a new shape.
 
@@ -39,20 +39,20 @@ attached to the meter, so filling the meter visually approaches the prize.
 **5. "You" is one full-row highlight in a factual list.**
 The leaderboard renders every competitor as a plain row (rank, avatar, name,
 right-aligned XP); the user's own row gets a full-width green tint and green XP
-text — the only tinted row on screen
+text, the only tinted row on screen
 (`duolingo-core-tabs-path-quests-leaderboard.png`). Personal placement is a
 background color, not a bigger font.
 
 **6. Rarity is a material, and the number is embossed into the artifact.**
 Personal-record badges are one mascot silhouette re-rendered in different
-materials — lava/fire for Longest Streak 365, molten gold for Daily Most XP 624,
-green slime for Perfect Lessons, holographic pastel for Highest League #3 — each
+materials, lava/fire for Longest Streak 365, molten gold for Daily Most XP 624,
+green slime for Perfect Lessons, holographic pastel for Highest League #3, each
 with a soft glow halo on a dark field, with the record number rendered as part of
 the badge itself (`duolingo-personal-record-badge-materials.png`). Achievement =
 object you own, not stat you read.
 
 **7. Escalating emotional state as retention pressure; the icon carries risk state.**
-The home-screen widget is: streak flame + count, one short line, and Duo's face —
+The home-screen widget is: streak flame + count, one short line, and Duo's face,
 which degrades through the day from cheerful ("Let's get rolling!") to pleading to
 sobbing to "Last chance!" with flames as midnight nears; the flame icon itself
 turns red with an "!" when the streak is at risk
@@ -64,11 +64,11 @@ In the friend feed, a milestone entry ("Did more than 10 lessons in a day") ship
 with a bordered "CELEBRATE" button and stacked emoji reactions with counts
 (`duolingo-core-tabs-path-quests-leaderboard.png`, feed phone). Duolingo per its
 own blog reserves fresh animation spends for exactly three moments: streak
-milestones, friend streaks, and lesson-end screens — everything else stays static.
+milestones, friend streaks, and lesson-end screens. Everything else stays static.
 
 ---
 
-## Flighty — the live ledger and the passport
+## Flighty, the live ledger and the passport
 
 **9. Color is a state grammar applied to typographic facts.**
 The flight detail screen prints times huge; green = confirmed actual ("11:40AM"
@@ -76,7 +76,7 @@ with the superseded "11:30AM" struck through beside it), pink/magenta with a
 sparkle glyph = prediction ("Predicting 12:10AM ・ Departs in 1h 15m"), yellow
 chips = physical facts (gate "F4", baggage "2"), gray = static metadata ("5h 50m ・
 2,586 mi") (`flighty-flight-detail-prediction-colors.png`). Strikethrough keeps
-the old value on screen, so every row shows its own change history — ledger, not
+the old value on screen, so every row shows its own change history, ledger, not
 dashboard.
 
 **10. Every alert carries its cause.**
@@ -85,11 +85,11 @@ The delay banner is two lines: bold state ("✦ Delayed 30m") then mechanism
 (`flighty-flight-detail-prediction-colors.png`). Same pattern in airport cards:
 "Flights to JFK Grounded" + probability of extension ("30-60%")
 (`flighty-inbound-plane-chain-timeline.png`). Stating the cause converts an
-anxiety event into an information event — this is the "truth" register the whole
+anxiety event into an information event. This is the "truth" register the whole
 app trades on.
 
 **11. Provenance chain: your row is the tail of a visible history.**
-"Where's My Plane?" renders the aircraft's whole day as a vertical rail — prior
+"Where's My Plane?" renders the aircraft's whole day as a vertical rail, prior
 legs as rows ("San Diego to New York / Arrived 8:00AM", "New York to San
 Francisco / Landing in 1h 10m") each with a right-aligned red lateness figure
 ("52m Late"), your flight at top with its predicted consequence
@@ -99,9 +99,9 @@ old ・ Named 'Pretty Fly for a Blue Guy'"). Records feel alive because they poi
 at a specific physical thing that is somewhere right now.
 
 **12. The shareable borrows the material language of official documents.**
-The Flighty Passport card ends in a real machine-readable zone — monospaced
+The Flighty Passport card ends in a real machine-readable zone, monospaced
 `2023<<<MARKUS<<<<<MEMBER12AUG19<<<<@FLIGHTYAPP<<` chevron-padded lines exactly
-like a passport's MRZ — under a trilingual caps label ("PASSPORT ・ PASS ・
+like a passport's MRZ, under a trilingual caps label ("PASSPORT ・ PASS ・
 PASAPORTE") and an all-caps stat grid where units are set in a lighter weight than
 digits ("93 931km", "132h 30m") (`flighty-passport-card-mrz-detail.png`). The
 delay report card uses split-flap flip digits ("32 HRS lost to delays") and an
@@ -115,39 +115,39 @@ board texture.
 
 **13. Personal records are framed as comparable, arguable scoreboards.**
 The delay report's framing ("Worst airline: United ・ 67 hours late in total",
-bar-raced against other airlines) is built for the group chat argument — the
+bar-raced against other airlines) is built for the group chat argument. The
 share card anticipates its social use
 (`flighty-passport-delay-aircraft-cards.png`).
 
 **14. The compact live row: route + two times + one status word.**
-The Live Activity is one row — "SFO 09:10 → 17:12 JFK", "T1 ・ On Time" in green,
-"Gate Departure in 43m", one yellow chip — legible at lock-screen glance
+The Live Activity is one row, "SFO 09:10 → 17:12 JFK", "T1 ・ On Time" in green,
+"Gate Departure in 43m", one yellow chip, legible at lock-screen glance
 (`flighty-lockscreen-live-activity-forecast.png`). Its big sibling screen sets
 times in terminal-green with strikethroughs and per-row chevrons; the punctuality
 forecast is a histogram whose rows (Early / On Time / 15m late / ... / Canceled)
-carry a green→amber→red color ramp — a probability distribution rendered as a
+carry a green→amber→red color ramp, a probability distribution rendered as a
 timetable (`flighty-lockscreen-live-activity-forecast.png`).
 
 ---
 
-## X — what the restraint consists of
+## X, what the restraint consists of
 
 **15. Content is the largest type on screen; chrome is text.**
 In the official tweet component, the tweet body is set larger than the author
 name; author line is bold-name + gray @handle + gray timestamp all at one size;
 metadata below in gray (`x-tweet-component-dark-light.png`). Feed tabs are plain
-words — active = bold white with a short blue underline, inactive = gray — no
+words, active = bold white with a short blue underline, inactive = gray, no
 pills, no backgrounds (`x-feed-density-detail.png`).
 
 **16. Two text colors + one accent, and the accent is meaning-bearing.**
-The entire surface runs on primary text, secondary gray, and blue — and blue is
+The entire surface runs on primary text, secondary gray, and blue. Blue is
 never decoration: it marks verification, links, and the active tab. Red exists
 only as engaged-heart state (79K in red = you liked it)
 (`x-feed-density-detail.png`, `x-tweet-component-dark-light.png`). Because color
 is scarce, every colored pixel is information.
 
 **17. What they deleted: containers.**
-Tweets have no cards, borders, or alternating backgrounds in the feed — rows
+Tweets have no cards, borders, or alternating backgrounds in the feed. Rows
 separate by hairline + whitespace; the only boxed element is a quoted tweet,
 which gets a rounded hairline inset card, i.e. the container itself signals
 "embedded object" (`x-feed-density-detail.png`). Buttons are ghost icons with
@@ -176,7 +176,7 @@ without shouting; on the profile, the follower count is the hero figure
   Change-in-place is what makes a screen feel "live."
 - **Numbers carry the identity; labels are small caps or gray.** Duolingo streak
   counts, Flighty's stat grids, X's follower/engagement counts: digits big and
-  heavy, units/labels light — a shared "instrument panel" typography.
+  heavy, units/labels light, a shared "instrument panel" typography.
 - **The shareable artifact imitates a physical document class.** Flighty's
   passport/MRZ and split-flap board; Duolingo's badges as minted physical medals
   in different materials. Pride ≈ owning an object, so the pixel treatment
@@ -189,15 +189,15 @@ without shouting; on the profile, the follower count is the hero figure
 
 All in `design/02-field-notes/assets/a-named-apps/`:
 
-- `duolingo-lesson-screens-progressbar-states.png` — App Store gallery: tile physics, progress bar plain vs gold-sparkle state
-- `duolingo-core-tabs-path-quests-leaderboard.png` — blog.duolingo.com core-tabs refresh: path nodes, quest bars with chest, "you" row highlight, CELEBRATE feed button
-- `duolingo-personal-record-badge-materials.png` — personal-record badges as material-swapped mascot medals
-- `duolingo-widget-streak-escalation-states.png` — widget states: Duo's mood + flame risk-state escalation
-- `flighty-passport-card-mrz-detail.png` — passport shareable close-up with MRZ lines and stat grid
-- `flighty-passport-delay-aircraft-cards.png` — passport / split-flap delay report / blueprint aircraft cards
-- `flighty-flight-detail-prediction-colors.png` — flight detail: green actuals, pink predictions, strikethrough history, causal alert
-- `flighty-inbound-plane-chain-timeline.png` — Where's My Plane inbound-leg provenance chain; named aircraft
-- `flighty-lockscreen-live-activity-forecast.png` — lock-screen Live Activity row; punctuality histogram
-- `x-appstore-gallery-feed-profile.png` — X App Store gallery: feed, community, profile screens
-- `x-feed-density-detail.png` — feed density crop: tab underline, row anatomy, quote-tweet inset card
-- `x-tweet-component-dark-light.png` — official embed component in dark + light: type hierarchy, two-gray + blue palette
+- `duolingo-lesson-screens-progressbar-states.png`, App Store gallery: tile physics, progress bar plain vs gold-sparkle state
+- `duolingo-core-tabs-path-quests-leaderboard.png`, blog.duolingo.com core-tabs refresh: path nodes, quest bars with chest, "you" row highlight, CELEBRATE feed button
+- `duolingo-personal-record-badge-materials.png`, personal-record badges as material-swapped mascot medals
+- `duolingo-widget-streak-escalation-states.png`, widget states: Duo's mood + flame risk-state escalation
+- `flighty-passport-card-mrz-detail.png`, passport shareable close-up with MRZ lines and stat grid
+- `flighty-passport-delay-aircraft-cards.png`, passport / split-flap delay report / blueprint aircraft cards
+- `flighty-flight-detail-prediction-colors.png`, flight detail: green actuals, pink predictions, strikethrough history, causal alert
+- `flighty-inbound-plane-chain-timeline.png`, Where's My Plane inbound-leg provenance chain; named aircraft
+- `flighty-lockscreen-live-activity-forecast.png`, lock-screen Live Activity row; punctuality histogram
+- `x-appstore-gallery-feed-profile.png`, X App Store gallery: feed, community, profile screens
+- `x-feed-density-detail.png`, feed density crop: tab underline, row anatomy, quote-tweet inset card
+- `x-tweet-component-dark-light.png`, official embed component in dark + light: type hierarchy, two-gray + blue palette

@@ -6,7 +6,7 @@
 <helmet>
   <style>
 @@CSS@@
-    /* iPhone 17 — 402x874 pt at 3x, status bar 54, safe area top 62, bottom 34.
+    /* iPhone 17, 402x874 pt at 3x, status bar 54, safe area top 62, bottom 34.
        The frame is drawn from those published metrics. The insets are reserved
        and measured, never simulated: no clock, no battery, no home-bar glyph,
        because a real device draws its own into exactly that space. */
