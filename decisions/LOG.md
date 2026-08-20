@@ -3465,3 +3465,52 @@ the founder at that task's review.
 ORDER.md's three analytics decision-gate rows resolve accordingly: the
 threshold gate narrows to the numeric ruling at calibration; the
 pseudonym and fork gates are discharged here.
+
+## 067 — Analytics review: the consent instrument is 057's, and five corrections close twenty-four defects (2026-08-20)
+
+The engineering review over the analytics layer and its six tasks
+returned twenty-four defects. The largest was the review working: the
+grilling had rebuilt the expiring share link that decision 057, ruled
+earlier the same day, had already withdrawn. Nineteen defects were
+mechanical and are fixed in place; five corrections were confirmed by
+the founder:
+
+**The consent instrument is 057's named-recipient grant.** The worker
+sends access to a named person, who opens it by proving control of the
+address it was sent to; an account is required for analytics, never to
+read the record; that account is the run record's requesting party,
+which also resolves the review's finding that an anonymous link left
+the surviving spine record with no party to name. 066's share-link
+wording is corrected by this entry. Schema §5's share-link paragraph
+is amended to the 057 shape.
+
+**The spine timestamp is day precision.** The full timestamp lives
+payload-side and dies at deletion; the surviving half keeps the date.
+Requesting party plus a precise timestamp plus a rare instrument
+version was a singling-out vector; day precision removes it at no
+audit cost that matters.
+
+**The refusal never states the person's count.** The published
+threshold rule is a product rule; the insufficient-data output renders
+the rule, never how many sources the person has, keeping the schema's
+never-a-number-on-any-surface line intact.
+
+**The insufficient-data suggestion diverges from 022 knowingly.** It
+suggests adding evidence, never an assessment product that does not
+exist; it reverts to 022's wording when assessment ships.
+
+**Mapping fidelity and customer-authored views defer to v1.** The
+artifact is modeled nowhere and blocked on chapter_standing, which
+first-product does not derive. Criterion 4 trims to the slope
+disclosures; the view machinery arrives with its own ruling.
+
+Recorded with them: the read log lives payload-side and dies with the
+subject; workers never see analytics runs, so no read event feeds any
+worker surface (the contradicting line died); the run record's model
+version field exists and stays null until a decisions entry admits a
+model into the instrument; grant state is event pairs with schema §5's
+nullable columns as the projection; the threshold's numeric parameters
+get a draft task so the gated criterion follows ORDER.md's convention;
+and analytics/02 lands the named-recipient grant subset before
+consent-and-deletion builds the party-level machinery, noted in both
+layers.
