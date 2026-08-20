@@ -1,4 +1,4 @@
-# The Roster Firewall — 0.1 PROPOSED
+# The roster firewall: 0.1 PROPOSED
 
 The boundary between a vertical's operational data about its own workforce and
 the ledger's record of a person. Companion to `attestation-interface.md`, which
@@ -44,7 +44,7 @@ require.
 
 ## 3. Permitted and prohibited uses
 
-**Permitted.** Running the employer's own operations — openings opening and
+**Permitted.** Running the employer's own operations: openings opening and
 closing from team state, scheduling, the employer's own team views; showing the
 employer its own roster, which it already holds; carrying the employer's
 invitation to its own staff (§6).
@@ -73,12 +73,12 @@ load-bearing.
 1. **The worker holds a Grain identity**, created by them at self-signup.
    `ledger_person_id` exists because they made it exist.
 
-2. **The worker names the employer**, asserting a chapter — employer, role,
-   dates — which enters the record as `self_asserted`. At this point it is the
+2. **The worker names the employer**, asserting a chapter (employer, role,
+   dates) which enters the record as `self_asserted`. At this point it is the
    only object that exists.
 
    **Grain may not prompt this from roster knowledge.** Surfacing "this employer
-   is connected — is this you?" requires knowing the worker appears on that
+   is connected. Is this you?" requires knowing the worker appears on that
    employer's roster, which is the crossing this document forbids. The worker
    names the employer unprompted, or selects from a list of connected employers
    shown identically to everyone. Without this constraint the firewall leaks at
@@ -93,7 +93,7 @@ load-bearing.
    their own roster, or a human at the employer answers. Grain does not answer
    on the employer's behalf from a store it holds for them.
 
-5. **The employer signs an attestation** — `party_attested`, scope `period`,
+5. **The employer signs an attestation**: `party_attested`, scope `period`,
    chained to the worker's `ledger_person_id`, carrying the
    `verification_request_id`.
 
@@ -106,7 +106,7 @@ load-bearing.
 
 - **Its own roster:** everything it holds, which it already holds.
 - **Any other worker:** only what a live worker grant discloses, generated at
-  read time as a prior packet — never stored, never edge-cached
+  read time as a prior packet, never stored, never edge-cached
   (`attestation-interface.md`, down direction).
 - **Never:** that a candidate appears on another employer's roster, or any
   inference derived from roster data it did not supply.
@@ -117,7 +117,7 @@ An employer may invite its own staff to Grain. That is an employer contacting
 its own employee, which it may do, and it is the vertical's acquisition channel.
 
 The invitation names the employer and states that a record can be claimed. **It
-carries no worker-specific content beyond addressing** — no employment dates, no
+carries no worker-specific content beyond addressing**: no employment dates, no
 role, no assertion about the person. The moment it carries record content, Grain
 is asserting something about a non-user and the boundary has been crossed by the
 message rather than the database.
@@ -130,9 +130,9 @@ shadow-log promotion gate. A firewall enforced by convention is not a firewall.
 
 | # | Check | Fails on | Owning layer |
 |---|---|---|---|
-| RF-1 | Plane separation at the schema — roster and ledger tables in separate schemas, **no foreign key from any roster table to `ledger_person_id`** | any such constraint appearing | `foundation` (04 two-plane split, 06 checks port) |
-| RF-2 | Worker initiation required — ingestion validation rejects any attestation with employer-roster provenance lacking a live `verification_request_id`; no write path accepts a roster row as a source of truth | any roster-derived write without the id | `ingestion` (criterion 5) |
-| RF-3 | Analytics input allowlist — roster tables are not on it | any addition to the input set | `analytics` |
+| RF-1 | Plane separation at the schema: roster and ledger tables in separate schemas, **no foreign key from any roster table to `ledger_person_id`** | any such constraint appearing | `foundation` (04 two-plane split, 06 checks port) |
+| RF-2 | Worker initiation required: ingestion validation rejects any attestation with employer-roster provenance lacking a live `verification_request_id`; no write path accepts a roster row as a source of truth | any roster-derived write without the id | `ingestion` (criterion 5) |
+| RF-3 | Analytics input allowlist: roster tables are not on it | any addition to the input set | `analytics` |
 | RF-4 | Cross-plane join ban | any query joining a roster table to a ledger table | `foundation` (06 checks port) |
 | RF-5 | Invitation payload schema-constrained to employer identity plus addressing | any worker-specific field | `integration-surface` (criterion 6) |
 
@@ -144,7 +144,7 @@ ready; until then the constraint lives here and in decision 032.
 ## 8. Costs, stated
 
 Cold start is slower: no pre-built records waiting to be claimed. Verification
-latency depends on the employer's system being connected and responsive — the
+latency depends on the employer's system being connected and responsive. The
 fast confirmation is the good case, not the guaranteed one. An employer cannot
 be told that some of its applicants already hold verified history elsewhere
 unless those workers granted it.
@@ -158,7 +158,7 @@ unless those workers granted it.
    request*. Rename or documented reinterpretation, plus the RF-2 gate.
 2. **The negative answer is undesigned.** A worker asserts a chapter at a
    connected employer and the roster returns no match. Silence, dispute, or a
-   stated non-confirmation — each has a different failure mode, and the third is
+   stated non-confirmation, each has a different failure mode, and the third is
    the one most likely to injure a worker telling the truth about an employer
    with poor records. Counsel brief 5, question 5.
 3. **Partial and stale rosters.** An employer connected in 2026 holds no rows
