@@ -1,4 +1,4 @@
-# Attestation Interface — schema_version 0.1-proposed
+# Attestation interface, schema_version 0.1-proposed
 
 > **SUPERSEDED, 2026-08-18.** This is the handoff copy as Dispatch authored it.
 > The live contract is [`../model/attestation-interface.md`](../model/attestation-interface.md),
@@ -17,14 +17,14 @@ Two objects cross the boundary, one in each direction. Nothing else does.
 ## Down (ledger → vertical): the prior packet
 
 Identity reference plus coarse portable facts. A vertical consumes these as
-**cold-start priors, overridden by local evidence** — the ledger holds
+**cold-start priors, overridden by local evidence**. The ledger holds
 evidence and coarse claims; each vertical computes its own routing-grade
 estimates locally and never treats ledger claims as locally observed evidence.
 
 | Field | Notes |
 |---|---|
-| `ledger_person_id` | The ledger's stable person ID. A vertical holds it as a reference — one identity proof among others, never its primary key. |
-| `verification` | Identity verification attestation: issuer, level, verified-at. Verification itself is bought from external providers, not built — the ledger records the resulting attestation. |
+| `ledger_person_id` | The ledger's stable person ID. A vertical holds it as a reference, one identity proof among others, never its primary key. |
+| `verification` | Identity verification attestation: issuer, level, verified-at. Verification itself is bought from external providers, not built. The ledger records the resulting attestation. |
 | `credentials[]` | Coarse, ledger-verified claims. |
 | `dimension_standing[]` | Position on the responsibility dimensions (below), as last attested across all verticals. |
 | `prior_attestations[]` | Attestations from other verticals, in this same schema. |
@@ -43,16 +43,16 @@ correction is a superseding attestation, never an edit.
 | `scope` | `engagement` (with reference) or `period` (with bounds + work kind). |
 | `work_kind` | The kind of work, at the ledger's standardized cross-vertical grain. Each vertical translates its local work taxonomy into this vocabulary; local rows stay local. |
 | `volume` | Units completed in scope. |
-| `score_summary` | Scoring against the vertical's quality bar, aggregated from graded evaluations, **broken out by evaluation basis** — customer acceptance and independent adjudication are never pooled into one number. |
+| `score_summary` | Scoring against the vertical's quality bar, aggregated from graded evaluations, **broken out by evaluation basis**. Customer acceptance and independent adjudication are never pooled into one number. |
 | `dimensions_exercised[]` | Which responsibility dimensions the work exercised, at what demonstrated level. |
-| `stretch_selections[]` | Deliberate above-level assignments taken in scope, and their outcomes. A below-bar stretch outcome carries its development context — it was a development bet, not a routing error, and must not read as evidence against the worker. |
+| `stretch_selections[]` | Deliberate above-level assignments taken in scope, and their outcomes. A below-bar stretch outcome carries its development context: it was a development bet, not a routing error, and must not read as evidence against the worker. |
 | `supersedes` | Optional. The attestation this one corrects. |
 | `issued_at` · `signature` | |
 
 ## The responsibility dimensions
 
 Progression is measured as movement along responsibility dimensions,
-demonstrated in real work — never as titles granted by administrative act.
+demonstrated in real work, never as titles granted by administrative act.
 The founder's axis set:
 
 - ambiguity handled
@@ -92,7 +92,7 @@ datacenter deployment as in managed customer operations.
 
 Flagged by Dispatch, expected to be resolved here:
 
-1. The `work_kind` taxonomy — who authors it, at what grain.
+1. The `work_kind` taxonomy: who authors it, at what grain.
 2. Whether `score_summary` needs a cross-period anchor reference for
    comparability, or per-basis breakout suffices at ledger grain.
 3. The signature mechanism for attesting parties.
