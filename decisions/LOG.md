@@ -1592,8 +1592,8 @@ verification already does the only prospective work v1 needs.
    issuance is logged and visible to the worker") and §8.1 ("the full read
    log"), `model/record-schema.md` §5 (`grant.last_read_at`), and `design/05` §3
    ("the worker sees every grant issued, and whether it was opened") are
-   **superseded**: the worker sees the grant's **state**: issued, active,
-   expired, revoked, and no read events. Public-profile views are counted;
+   **superseded**: the worker sees the grant's **state** (issued, active,
+   expired, revoked) and no read events. Public-profile views are counted;
    full-record reads are not surfaced. Reason: a read stream during a live
    application is an anxiety feed and surveillance of the employer. **GDPR Art.
    15(1)(c) is satisfied by a disclosure record available on request**, which is
@@ -1854,7 +1854,7 @@ audit, and four verification agents. Evaluation record: `design/09-app-framework
 
 ### A. The framework
 
-**Expo SDK 57, React Native 0.86, React 19.2.3, with CNG and config plugins,
+**Expo SDK 57 (React Native 0.86, React 19.2.3) with CNG and config plugins,
 expo-router, and `@shopify/react-native-skia` as the imprint renderer.** One
 codebase for iOS, Android and the installable PWA. Pin SDK 57; take 58
 deliberately. The New Architecture is not a decision: RN 0.82 made it the only
@@ -2167,8 +2167,8 @@ rather than the drawing.
 units, and it passes: the dense reference record's outermost band carries ten
 threads at 1.67 units of pitch against a required 1.54. At the 296 px the
 core screen actually renders, that pitch is **0.82 CSS px** with a 0.35 px
-stroke. Adjacent threads less than one pixel apart is why the band
-paints as a dark ring rather than as threads. This is the defect gap 10a
+stroke, which puts adjacent threads less than one pixel apart and is why
+the band paints as a dark ring rather than as threads. This is the defect gap 10a
 already found in the *stroke*, one level up, and fixing the stroke alone
 makes it worse: crisper strokes at sub-pixel spacing merge sooner than pale
 ones do. Measured across the same record at 296 px, the four bands draw
@@ -2519,8 +2519,8 @@ that follows them.
 only the band that moved.** §10's ceremony fires when an attestation lands and
 the record at rest had nothing, which is the live half of "this feels cold". The
 answer is not a greeting: a record that welcomes you is a record performing. It
-is that *the record is alive*, so it says what moved: a chapter signed, a grant
-about to end, and the figure redraws the one band that changed rather than
+is that *the record is alive*, so it says what moved (a chapter signed, a grant
+about to end), and the figure redraws the one band that changed rather than
 re-scribing the whole thing. When nothing changed it says nothing.
 
 **Press physics belong to `Expanded`, not to the record.** The figure yielding
@@ -2574,9 +2574,9 @@ copy edit that `checks/deletion-copy.mjs` keeps consistent, plus a
 superseding entry here.
 
 **Merge-delegation terms are standing, activation is per run.** The
-arrangement decision 043 defined: the executive merges once CI, clean-context
+arrangement decision 043 defined (the executive merges once CI, clean-context
 verification, and resolved review findings are all green; unresolved judgment
-calls wait for the founder; raises park and batch, is approved as the
+calls wait for the founder; raises park and batch) is approved as the
 template for future execution runs. Each run still requires an explicit
 founder go and a delegation entry naming its layer scope; nothing merges
 between runs. Execution is paused after foundation on the founder's ruling;
