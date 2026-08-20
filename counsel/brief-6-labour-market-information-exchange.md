@@ -8,7 +8,7 @@
 
 ---
 
-## 1. What the company and product are
+## 1. Background: what the company and product are
 
 Grain operates a **persistent worker identity and work-attestation ledger**. A worker holds a permanent opaque identity (`ledger_person_id`, issued at self-signup with no proofing gate) and accumulates **signed attestations** about work performed, issued by registered "attesting parties," initially Grain's own operating verticals and later external employers and partner companies. Attestations are Ed25519/JWS-signed over a canonical payload, hash-chain timestamped, append-only (a correction is a superseding attestation, never an edit), and carry an explicit provenance class (`self_asserted | peer_attested | party_attested`). The full field set is `model/attestation-interface.md` (schema_version 0.2 ratified, decision 006; 0.3 proposed).
 
@@ -62,7 +62,7 @@ Grain operates a **persistent worker identity and work-attestation ledger**. A w
 
 5. **Does the vertical structure aggravate it?**
    Grain holds the record **and** operates hiring products on it. `THESIS.md` §2 concedes neutrality rests on contract, published rules and audit rather than corporate separation, and sets no trigger for when structural separation becomes necessary.
-   (a) Does Grain's own participation as a market participant convert a third-party-administered exchange into something worse? Consider a hub in a hub-and-spoke structure, or a participant with its own incentive to use the pooled data competitively.
+   (a) Does Grain's own participation as a market participant convert a third-party-administered exchange into something worse (a hub in a hub-and-spoke structure, or a participant with its own incentive to use the pooled data competitively)?
    (b) **What conduct or scale should trigger structural separation** (separate legal entity, separate governance, information barriers, or divestiture of the verticals)? We are asking counsel to specify the trigger, because we have not been able to, and it is recorded as an open gap.
    (c) If Grain ever places trained specialists who compete with the partners whose attestations fill the graph (`THESIS.md` §8), does that change the answer?
 
@@ -133,8 +133,8 @@ Sequencing:
 - **Not** the worker-initiated verification mechanic, consumer-reporting-agency status under the FCRA or its state analogues, or the data-protection lawful basis for any processing described here. See **Brief 5**. Where an antitrust answer depends on a characterisation those briefs own, please flag the dependency rather than resolving it here.
 - **Not** employment discrimination, disparate impact, or selection-procedure validity under Title VII, the Uniform Guidelines, the EU AI Act or Colorado SB 26-189. Those sit with the analytics product's own workstream and are tracked separately.
 - **Not** merger control, and not any question about the company's own financing or corporate structure except as it bears on Question 5.
-- **Not** labour or employment law as such, such as collective bargaining, works councils, or the statutory-labour exemptions, except where counsel considers an exemption or safe harbour relevant to Questions 1–5, in which case please raise it.
+- **Not** labour or employment law as such (collective bargaining, works councils, the statutory-labour exemptions), except where counsel considers an exemption or safe harbour relevant to Questions 1–5, in which case please raise it.
 
 ## Internal research corpus available to counsel on request
 
-`THESIS.md` (§2 neutrality and its contractual basis; §4 comparable channels and the party-local quality rule; §5 grading, the levelling spine and customer frameworks; §7 regulatory position; §9 and §10 item 9, where this exposure is recorded as an unscoped gap); `model/attestation-interface.md` (the full schema, the authoritative statement of what data does and does not exist, including the absence of any compensation field); `model/roster-firewall.md` (what may reach the ledger from a vertical's operational data); `decisions/LOG.md` entries 003 (founder rulings R1/R2), 006 (interface ratification), 007 (organisations are never subjects), 022 (analytics as first product and the grading rulings), 024 (free record layer; worker-controlled visibility; neutrality is contractual, not structural), 026 (run records), 029–030 (worker-initiated verification, roster firewall); `research/01-regulatory-perimeter.md` (regulatory perimeter, with a full source list that contains no antitrust analysis); Counsel Briefs 1–5.
+`THESIS.md` (§2 neutrality and its contractual basis; §4 comparable channels and the party-local quality rule; §5 grading, the levelling spine and customer frameworks; §7 regulatory position; §9 and §10 item 9, where this exposure is recorded as an unscoped gap); `model/attestation-interface.md` (the full schema, the authoritative statement of what data does and does not exist, including the absence of any compensation field); `model/roster-firewall.md` (what may reach the ledger from a vertical's operational data); `decisions/LOG.md` entries 003 (founder rulings R1/R2), 006 (interface ratification), 007 (organisations are never subjects), 022 (analytics as first product and the grading rulings), 024 (free record layer; worker-controlled visibility; neutrality is contractual, not structural), 026 (run records), 029–030 (worker-initiated verification, roster firewall); `research/01-regulatory-perimeter.md` (regulatory perimeter, with full source list; the memo contains no antitrust analysis); Counsel Briefs 1–5.
