@@ -42,6 +42,7 @@ organisations that attested about you keep their own records of the work
 itself — those were never in Grain.
 
 Deletion is your right, with no gate. Filing the request stops access at
-once; the erasure itself completes after a short confirmation window
-that exists only so nobody can force you to delete your record on the
+once; the erasure itself completes after a 3 days confirmation window,
+which you can cancel at any time in the app or through support. The
+window exists only so nobody can force you to delete your record on the
 spot.

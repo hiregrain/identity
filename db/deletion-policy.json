@@ -1,5 +1,6 @@
 {
-  "about": "The deletion residual window, stated as numbers (foundation/08, decision 017). backup_retention_days bounds how long any backup of the payload plane may exist — db/backup.mjs enforces it by refusing to keep older dumps — and purge_interval_days is the stated schedule on which shredded rows are physically removed (core/deletion, `deletion purge`). These numbers ARE the disclosure: the worker-facing deletion copy (copy/deletion.md) states them in prose, and checks/deletion-copy.mjs fails the build when the copy and this file drift. Changing a number here is changing a promise made to workers — the check forces the copy to move in the same commit.",
+  "about": "The deletion residual window, stated as numbers (foundation/08, decision 017). backup_retention_days bounds how long any backup of the payload plane may exist \u2014 db/backup.mjs enforces it by refusing to keep older dumps \u2014 and purge_interval_days is the stated schedule on which shredded rows are physically removed (core/deletion, `deletion purge`). These numbers ARE the disclosure: the worker-facing deletion copy (copy/deletion.md) states them in prose, and checks/deletion-copy.mjs fails the build when the copy and this file drift. Changing a number here is changing a promise made to workers \u2014 the check forces the copy to move in the same commit. confirmation_window_days is the cancellable window between filing a deletion request and the irreversible shred (decision 052); access cuts immediately on filing.",
   "backup_retention_days": 30,
-  "purge_interval_days": 30
+  "purge_interval_days": 30,
+  "confirmation_window_days": 3
 }

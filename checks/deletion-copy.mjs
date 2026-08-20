@@ -36,7 +36,7 @@ const failures = [];
 
 const policy = JSON.parse(readFileSync(policyFile, "utf8"));
 const enforced = new Map(); // number -> config key(s)
-for (const key of ["backup_retention_days", "purge_interval_days"]) {
+for (const key of ["backup_retention_days", "purge_interval_days", "confirmation_window_days"]) {
   const value = policy[key];
   if (!Number.isInteger(value) || value <= 0) {
     console.error(
