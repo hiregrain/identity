@@ -121,7 +121,7 @@ host bindings (foundation/04 verifier precedent; the whole pipeline speaks
 - **Alias closure as an input set: sound.** Merge machinery belongs to
   person-identity; the contract (complete closure, canonical id included,
   single-element set for unmerged people) is documented on
-  `envelope.Destroy``envelope.Destroy` where the caller reads it. The residual risk, a
+  `envelope.Destroy` where the caller reads it. The residual risk, a
   caller passing a partial closure, is exactly the risk the documented
   contract names, and computing closures here would be scope creep into a
   layer that does not exist.
