@@ -1,4 +1,4 @@
-// checks/run.mjs — the repo verifies itself, then the queue is printed
+// checks/run.mjs verifies the repo, then prints the workable queue
 // (foundation/06). Runs every check, then prints the workable frontier;
 // `node checks/run.mjs` is the only source of what is workable
 // (plans/ORDER.md's executive loop reads this and nothing else).
@@ -9,8 +9,8 @@
 //   --metadata  file checks, no database required
 //   --schema    live-schema checks, both plane databases up and migrated
 //
-// With no flag, both groups run. Every check runs even after a failure —
-// the executive wants the whole picture, not the first stumble — and the
+// With no flag, both groups run. Every check runs even after a failure.
+// The executive wants the whole picture, not the first stumble, and the
 // frontier prints only when the metadata group is green, because a
 // frontier computed over an invalid graph is noise. Exempt from the plan
 // gate: this file verifies the repo, not the product (CLAUDE.md).
@@ -34,6 +34,7 @@ const METADATA = [
   "cross-schema-queries",
   "cross-plane-constructs",
   "deletion-copy",
+  "unslop",
 ];
 const SCHEMA = ["spine-schema", "payload-residency", "scored-columns"];
 
@@ -43,7 +44,7 @@ if (flag === undefined) groups = [...METADATA, ...SCHEMA];
 else if (flag === "--metadata") groups = METADATA;
 else if (flag === "--schema") groups = SCHEMA;
 else {
-  console.error(`run: unknown flag "${flag}" — use --metadata or --schema`);
+  console.error(`run: unknown flag "${flag}", use --metadata or --schema`);
   process.exit(2);
 }
 
@@ -56,7 +57,7 @@ for (const check of groups) {
 }
 
 if (failed.length > 0) {
-  console.error(`run: FAILED — ${failed.join(", ")}`);
+  console.error(`run: FAILED: ${failed.join(", ")}`);
   process.exit(1);
 }
 console.log(`run: every check green (${groups.join(", ")})`);

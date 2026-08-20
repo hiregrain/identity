@@ -1,17 +1,17 @@
 // Package deletion is the deletion-promise runner (foundation/08,
 // decisions 014, 017; design ledger-design-0.1 §2.5). foundation/05
 // owns the destroy PRIMITIVE (core/envelope: destroy the key, content
-// becomes unreadable); this package owns what makes the PROMISE true —
-// the spine deletion journal, the restore-time replay that gates a
+// becomes unreadable); this package owns what makes the PROMISE true.
+// That is the spine deletion journal, the restore-time replay that gates a
 // restored payload plane, and the scheduled physical purge of shredded
 // rows.
 //
 // Write ordering for a destruction, executed by Destroy: the journal
-// row commits FIRST on the spine (migration 0021 — the record a future
+// row commits FIRST on the spine (migration 0021, the record a future
 // restore replays), then the payload-plane destroy (core/envelope:
 // registry row, then provider shred). Every half is idempotent, so a
 // crash anywhere is retried forward by running Destroy again with the
-// same closure — the same recovery grammar as the cross-plane outbox
+// same closure, the same recovery grammar as the cross-plane outbox
 // (foundation/07), and for the same reason there is no compensation
 // path: the spine is append-only.
 //
@@ -22,9 +22,9 @@
 // after re-destroying every journaled person. A crash mid-replay leaves
 // the gate closed and the rerun is a no-op over what already completed.
 //
-// Purge runs as identity_purge — the only role holding DELETE on any
+// Purge runs as identity_purge, the only role holding DELETE on any
 // payload table (0022's licensed exemption, enumerated in
-// test/append-only.test.mjs) — and row security narrows even that role
+// test/append-only.test.mjs), and row security narrows even that role
 // to shredded 'created' rows. The deletes and the purge_audit row
 // commit in ONE transaction: a purge that removed rows without its
 // audit row is not representable. The schedule is the stated number in
@@ -55,8 +55,8 @@ import (
 )
 
 // RequesterClasses is the closed vocabulary of who a destruction is
-// recorded for (migration 0021's CHECK): 'worker' — the in-app control
-// that files the deletion request (decision 038); 'support' — the
+// recorded for (migration 0021's CHECK): 'worker', the in-app control
+// that files the deletion request (decision 038); 'support', the
 // support-mediated execution path (decision 036).
 var RequesterClasses = []string{"worker", "support"}
 
@@ -64,13 +64,13 @@ var RequesterClasses = []string{"worker", "support"}
 // the alias closure. The closure contract is envelope.Destroy's: the
 // caller supplies the COMPLETE closure, canonical id included; an
 // unmerged person is the single-element set. Journal first, per id
-// (idempotent — deletion_journal_one_per_person plus ON CONFLICT DO
+// (idempotent, deletion_journal_one_per_person plus ON CONFLICT DO
 // NOTHING), then the payload destroy for the whole closure. Retry
 // forward on any failure by calling Destroy again.
 //
 // The envelope is the caller's: foundation/05 owns the destroy
-// primitive, and this package runs it rather than constructing its own
-// — one provider instance per process is also what makes the software
+// primitive, and this package runs it rather than constructing its own.
+// One provider instance per process is also what makes the software
 // provider's in-memory shred coherent (decision 011). The CLI builds
 // one with NewEnvelope.
 func Destroy(ctx context.Context, env *envelope.Envelope, closure []string, requester string) error {
@@ -132,7 +132,7 @@ func Replay(ctx context.Context, env *envelope.Envelope) (replayed int, err erro
 			ON CONFLICT (restore_id, event) DO NOTHING;`, restoreID)); err != nil {
 			return replayed, fmt.Errorf("deletion: replay: balancing restore %s: %w", restoreID, err)
 		}
-		fmt.Printf("replay: restore %s balanced — the payload plane serves again\n", restoreID)
+		fmt.Printf("replay: restore %s balanced, the payload plane serves again\n", restoreID)
 	}
 	fmt.Printf("replay: %d journaled destruction(s) re-applied, %d open restore(s) balanced\n",
 		len(people), len(open))
@@ -145,9 +145,9 @@ type PurgeResult struct {
 	RowsDeleted int
 }
 
-// Purge physically removes every shredded 'created' registry row —
+// Purge physically removes every shredded 'created' registry row,
 // dead wrapped-DEK ciphertext whose person already holds a 'destroyed'
-// row — and writes the run's purge_audit row in the same transaction,
+// row, and writes the run's purge_audit row in the same transaction,
 // all as identity_purge. The WHERE clause states the intent; row
 // security (0022) enforces the same boundary even without it. A run
 // that removes nothing still writes its audit row, so the stated
@@ -191,7 +191,7 @@ func Purge(initiatedBy string) (PurgeResult, error) {
 }
 
 // OpenRestores lists the restore_ids of restores that have not been
-// replayed — the state core/envelope's serving gate refuses on. Empty
+// replayed, the state core/envelope's serving gate refuses on. Empty
 // means serving.
 func OpenRestores() ([]string, error) { return openRestores() }
 
@@ -213,7 +213,7 @@ func openRestores() ([]string, error) {
 
 // NewEnvelope builds the destroy primitive over the payload plane as
 // identity_app, under the configured key provider (GRAIN_KEY_PROVIDER,
-// default software — the same configuration seam as everywhere else).
+// default software, the same configuration seam as everywhere else).
 func NewEnvelope() (*envelope.Envelope, error) {
 	name := os.Getenv("GRAIN_KEY_PROVIDER")
 	if name == "" {
@@ -267,7 +267,7 @@ func isHexLiteral(s string) bool {
 }
 
 // quoteLiteral renders a validated arg as a SQL literal; hex bytea args
-// use E” escape-string form so the backslash survives.
+// use the E-prefixed escape-string form so the backslash survives.
 func quoteLiteral(s string) string {
 	if isHexLiteral(s) {
 		return `E'\\x` + s[2:] + `'`

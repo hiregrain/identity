@@ -1,18 +1,18 @@
-// checks/decisions-index.mjs — decisions/LOG.md entry numbering
+// checks/decisions-index.mjs enforces decisions/LOG.md entry numbering
 // (foundation/06, adapted from Dispatch). The log is append-only and
 // numbered; a reversal is a new entry, never an edit. What a file
 // snapshot can prove of that:
 //
 //   * no entry number appears twice;
-//   * the numbers form an unbroken run from 001 to the highest — a
+//   * the numbers form an unbroken run from 001 to the highest. A
 //     missing number is an entry that was silently removed or never
-//     written, both of which append-only forbids —
+//     written, both of which append-only forbids.
 //   * EXCEPT a number the log itself marks as never assigned. One such
 //     gap exists deliberately: 029/030 were consumed in the 2026-08-19
 //     two-checkout collision, and an italic note between 028 and 031
-//     records the gap as permanent. The check keys on that note's form —
+//     records the gap as permanent. The check keys on that note's form,
 //     an emphasized paragraph "*Numbers NNN and NNN were never
-//     assigned. …*" — so a marked gap passes and an unmarked one still
+//     assigned. …*", so a marked gap passes and an unmarked one still
 //     fails. A marked number that nonetheless has an entry is a
 //     contradiction and fails too.
 //
@@ -38,7 +38,7 @@ for (const match of text.matchAll(/^## (\d{3}) — .+$/gm)) {
   if (seen.has(number)) {
     failures.push(
       `${logFile}: entry ${match[1]} appears twice ("${seen.get(number)}" ` +
-        `and "${match[0]}") — the log is append-only and numbered, a ` +
+        `and "${match[0]}"). The log is append-only and numbered, a ` +
         `number is used once`,
     );
   } else {
@@ -69,13 +69,13 @@ for (let number = 1; number <= max; number++) {
     if (neverAssigned.has(number)) {
       failures.push(
         `${logFile}: entry ${padded} exists but the log marks it "never ` +
-          `assigned" — the marker and the entry contradict each other`,
+          `assigned". The marker and the entry contradict each other`,
       );
     }
   } else if (!neverAssigned.has(number)) {
     failures.push(
       `${logFile}: entry ${padded} is missing and not marked never ` +
-        `assigned — an unmarked gap in an append-only numbered log means ` +
+        `assigned. An unmarked gap in an append-only numbered log means ` +
         `an entry was lost or a number was skipped silently`,
     );
   }

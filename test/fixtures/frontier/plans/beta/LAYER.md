@@ -9,5 +9,5 @@ verified_by: null
 
 # beta (frontier fixture)
 
-Ready layer whose one layer dependency (gamma) is done — the layer gate
+Ready layer whose one layer dependency (gamma) is done. The layer gate
 is open, so its tasks gate on tasks alone.

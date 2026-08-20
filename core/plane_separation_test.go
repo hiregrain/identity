@@ -10,8 +10,8 @@ import (
 
 // The generated types are namespaced per plane (foundation/02, decision
 // 017): a payload type must not satisfy a spine-typed parameter, even
-// when the row shapes coincide — as they do today, both planes carrying
-// only schema_migrations. Go assignability is what parameter passing
+// when the row shapes coincide, as they do today, with both planes
+// carrying only schema_migrations. Go assignability is what parameter passing
 // uses, so AssignableTo false in both directions is the claim, asserted
 // against the identically shaped pair so the test cannot pass by shape
 // divergence alone.

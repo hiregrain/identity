@@ -1,6 +1,6 @@
 # CI as a dependency graph (foundation/01; db stages foundation/02,
 # checks port foundation/06). Repo-metadata checks validate files and
-# need no schema, so they run before any database boots — `make
+# need no schema, so they run before any database boots. `make
 # metadata` is `node checks/run.mjs --metadata`, which also prints the
 # workable frontier; the database chain then gates the language suites.
 #
@@ -9,9 +9,12 @@
 # Postgres pair down before finishing. The plane-separation tests those
 # jobs run are compile/typecheck-level and need no database; when a later
 # task adds Go/TS tests that talk to one, those jobs must boot their own
-# Postgres (compose or a service container) — they cannot reach
+# Postgres, compose or a service container, since they cannot reach
 # db-migrate's.
 name: ci
+
+permissions:
+  contents: read
 
 on:
   push:
@@ -80,7 +83,7 @@ jobs:
       - run: make typegen-check
       # The standing append-only proof (foundation/03): grants, default-
       # privilege inheritance, SECURITY DEFINER bodies, incompatible
-      # schema pairs — against both live planes.
+      # schema pairs, checked against both live planes.
       - run: make append-only
       # The spine schema lint (foundation/04): live spine columns are
       # allow-listed domains or justified exceptions.
@@ -130,8 +133,9 @@ jobs:
 
   # The envelope acceptance suite (foundation/05): needs a live payload
   # database AND the Go toolchain, which no existing job pairs; runs in
-  # its own runner with its own Postgres pair (see the header note — no
-  # job can reach another's databases). Once per key provider, swap by
+  # its own runner with its own Postgres pair. The header note above
+  # already covers why no job can reach another's databases. Once per
+  # key provider, swap by
   # configuration only (make envelope-test).
   envelope:
     name: envelope suite (both key providers)
@@ -151,8 +155,8 @@ jobs:
       - run: make db-down
 
   # The cross-plane write consistency scenarios (foundation/07). Boots
-  # its own Postgres pair — per this file's header, no job can reach
-  # db-migrate's — because the worker binary needs Go and the scenarios
+  # its own Postgres pair. Per this file's header, no job can reach
+  # db-migrate's, because the worker binary needs Go and the scenarios
   # need both live planes, which db-migrate's toolchain does not carry.
   # `needs: [db-migrate]` is ordering only: schema problems fail there
   # first, with the cheaper checks.
@@ -180,8 +184,8 @@ jobs:
 
 
   # The deletion-mechanics acceptance suite (foundation/08). Boots its
-  # own Postgres pair — per this file's header, no job can reach
-  # db-migrate's — because the suite needs Go, Node (the backup/restore
+  # own Postgres pair. Per this file's header, no job can reach
+  # db-migrate's, because the suite needs Go, Node (the backup/restore
   # scripts) and both live planes: it takes a real pg_dump backup,
   # restores it into a recreated payload container, proves the restore
   # gate refuses traffic until the journal replay, and audits a purge

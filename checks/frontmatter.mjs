@@ -3,14 +3,14 @@
 // and vocabulary plans/ORDER.md defines. foundation/01 landed the
 // well-formedness core; this is foundation/06's full validation:
 //
-//   * field allow-list per type — an unknown field is vocabulary drift,
+//   * field allow-list per type, an unknown field is vocabulary drift,
 //     not an extension point;
-//   * status enum (draft/ready/in_progress/done/abandoned — blocked is
+//   * status enum (draft/ready/in_progress/done/abandoned; blocked is
 //     computed, never stored);
 //   * evidence entries as `<kind>:<ref>`, kind in test|diff|log|review;
 //   * verified_by as null or `<verifier>@<YYYY-MM-DD>`;
-//   * `status: done` is not typeable without evidence and verified_by —
-//     a completion claim with no linked evidence does not stick;
+//   * `status: done` is not typeable without evidence and verified_by.
+//     A completion claim with no linked evidence does not stick;
 //   * ids derived, never invented: a layer's id is its directory, a
 //     task's id is `<dir>/<NN>` matching its filename;
 //   * depends_on grammar: tasks depend on `<layer>/<NN>`, layers on
@@ -43,7 +43,7 @@ const TASK_FIELDS = ["layer", "satisfies"];
 // The full vocabulary per type (plans/ORDER.md, "Frontmatter, and what
 // each field is for"). `soft_blocks` predates this check on main
 // (plans/app-shell/LAYER.md) and is admitted as the inverse notation of
-// soft_depends_on; ORDER.md does not list it — flagged at authoring.
+// soft_depends_on; ORDER.md does not list it, so it is flagged at authoring.
 const LAYER_ALLOWED = new Set([
   ...COMMON_FIELDS,
   "binds",
@@ -112,7 +112,7 @@ for (const file of readPlanFiles(root)) {
     } else if (id !== expected) {
       failures.push(
         `${path}: id "${id}" does not match its path-derived id ` +
-          `"${expected}" — names are derived, never invented (ORDER.md)`,
+          `"${expected}". Names are derived, never invented (ORDER.md)`,
       );
     }
   }
@@ -155,8 +155,8 @@ for (const file of readPlanFiles(root)) {
   for (const entry of requireList(path, fields, "satisfies") ?? []) {
     if (!/^\d+$/.test(entry)) {
       failures.push(
-        `${path}: satisfies entry "${entry}" is not a criterion number — ` +
-          `criteria are identified by position (decision 042)`,
+        `${path}: satisfies entry "${entry}" is not a criterion number. ` +
+          `Criteria are identified by position (decision 042)`,
       );
     }
   }
@@ -187,13 +187,13 @@ for (const file of readPlanFiles(root)) {
   if (status === "done") {
     if ((evidence ?? []).length === 0) {
       failures.push(
-        `${path}: status done with empty evidence — a completion claim ` +
+        `${path}: status done with empty evidence. A completion claim ` +
           `with no linked evidence does not stick (CLAUDE.md)`,
       );
     }
     if (verifiedBy === undefined || verifiedBy === "null") {
       failures.push(
-        `${path}: status done with verified_by null — only the ` +
+        `${path}: status done with verified_by null. Only the ` +
           `verification recorder writes done (ORDER.md)`,
       );
     }

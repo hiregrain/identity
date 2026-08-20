@@ -1,20 +1,20 @@
-// checks/plan-graph.mjs — the dependency graph is valid and the workable
-// frontier is computed, never hand-maintained (plans/ORDER.md,
+// checks/plan-graph.mjs proves the dependency graph is valid and computes
+// the workable frontier, never hand-maintained (plans/ORDER.md,
 // foundation/06). Two halves:
 //
-//   1. Validation. Every depends_on referent resolves — a layer names
+//   1. Validation. Every depends_on referent resolves. A layer names
 //      existing layers; a task names `<layer>/<NN>` where the layer
 //      exists. A task file missing under a `draft` layer is UNAUTHORED,
 //      not dangling: ORDER.md authors task files only when a layer's
 //      grilling closes, so forward references to unauthored tasks are
 //      the normal state and simply block. The same missing file under a
-//      non-draft layer IS dangling — that layer's decomposition is
+//      non-draft layer IS dangling, because that layer's decomposition is
 //      final, so the referent should exist. No dependency cycle may
 //      exist among layers or among tasks.
 //
 //   2. The frontier. A task is workable when its own status is `ready`,
 //      every task in its depends_on is `done`, its layer is `ready`, and
-//      every layer in its layer's depends_on is `done` — the layer-level
+//      every layer in its layer's depends_on is `done`, the layer-level
 //      gate on the layer's tasks. ORDER.md's "dependencies are per task,
 //      not per layer" sentence reads as if a task-level dep into a layer
 //      could override that gate; no decision rules it, so the strict
@@ -56,7 +56,7 @@ export function analyze(root) {
       if (!layers.has(dep)) {
         failures.push(
           `${layer.path}: layer ${id} depends on "${dep}", which is not a ` +
-            `layer — dangling reference`,
+            `layer, a dangling reference`,
         );
       }
     }
@@ -68,16 +68,16 @@ export function analyze(root) {
       if (!layers.has(depLayer)) {
         failures.push(
           `${task.path}: task ${id} depends on "${dep}", but no layer ` +
-            `"${depLayer}" exists — dangling reference`,
+            `"${depLayer}" exists, a dangling reference`,
         );
       } else if (layers.get(depLayer).status !== "draft") {
         failures.push(
           `${task.path}: task ${id} depends on "${dep}", which does not ` +
-            `exist although layer ${depLayer} is not draft — a non-draft ` +
+            `exist although layer ${depLayer} is not draft. A non-draft ` +
             `layer's decomposition is final, so the referent must exist`,
         );
       }
-      // else: unauthored task under a draft layer — blocks, legal.
+      // else: unauthored task under a draft layer. Blocks, legal.
     }
   }
 
@@ -89,7 +89,7 @@ export function analyze(root) {
     const cycle = findCycle(nodes);
     if (cycle !== null) {
       failures.push(
-        `${kind} dependency cycle: ${cycle.join(" -> ")} — a cycle makes ` +
+        `${kind} dependency cycle: ${cycle.join(" -> ")}, which makes ` +
           `every member permanently unworkable`,
       );
     }
@@ -141,14 +141,14 @@ export function analyze(root) {
 export function printFrontier(result) {
   console.log("frontier (ready, all dependencies done):");
   if (result.workable.length === 0) {
-    console.log("  (empty — nothing is workable right now)");
+    console.log("  (empty, nothing is workable right now)");
   }
   for (const id of result.workable) console.log(`  ${id}`);
   if (result.inProgress.length > 0) {
     console.log(`claimed (in_progress): ${result.inProgress.join(", ")}`);
   }
   for (const { id, reasons } of result.blocked) {
-    console.log(`blocked: ${id} — ${reasons.join("; ")}`);
+    console.log(`blocked: ${id} due to ${reasons.join("; ")}`);
   }
 }
 
@@ -196,7 +196,7 @@ if (import.meta.url === pathToFileURL(process.argv[1]).href) {
   }
   console.log(
     `plan-graph: ${result.layerCount} layers and ${result.taskCount} task ` +
-      `files form a valid graph — no cycles, no dangling references`,
+      `files form a valid graph, with no cycles and no dangling references`,
   );
   if (!process.argv.includes("--no-frontier")) printFrontier(result);
 }

@@ -1,4 +1,4 @@
-// checks/lib/plan-files.mjs — the one frontmatter reader the plan checks
+// checks/lib/plan-files.mjs is the one frontmatter reader the plan checks
 // share (foundation/06). Three checks (frontmatter, plan-graph,
 // migration-order) read the same blocks; parsing them three ways is how
 // the readings drift apart, so the reader lives here once. Dependency-free.
@@ -14,8 +14,8 @@ import { join } from "node:path";
 
 // Read every .md file inside the layer directories under `root`.
 // Returns [{ path, dir, name, fields, errors }] where `fields` maps each
-// frontmatter key to { raw, list } — `list` is the parsed array for list
-// values and null for scalars — and `errors` carries parse problems.
+// frontmatter key to { raw, list }. `list` is the parsed array for list
+// values and null for scalars, and `errors` carries parse problems.
 export function readPlanFiles(root) {
   const out = [];
   for (const entry of readdirSync(root)) {

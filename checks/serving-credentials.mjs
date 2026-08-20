@@ -1,9 +1,9 @@
-// checks/serving-credentials.mjs — no serving process holds owner or
+// checks/serving-credentials.mjs asserts no serving process holds owner or
 // migration credentials (foundation/03, decision 017).
 //
 // This repo has no server yet, so "serving process" is defined here,
 // concretely, ahead of the first one: a serving process is any process
-// whose code lives in the runtime trees — `surfaces/` and `core/`,
+// whose code lives in the runtime trees, `surfaces/` and `core/`,
 // excluding generated types (`core/gen/`) and Go test files. Everything
 // such code may hold is the application-role connection (`identity_app`,
 // migration 0002). The owner/migration credential is the compose
@@ -14,8 +14,8 @@
 //
 // What this check is, exactly: a lexical lint. It scans every file under
 // the runtime trees for the literal owner-credential shapes listed below
-// and fails on any hit. That catches the ordinary failure — a hardcoded
-// owner DSN or `-U identity` in serving code — and nothing subtler: a
+// and fails on any hit. That catches the ordinary failure, a hardcoded
+// owner DSN or `-U identity` in serving code, and nothing subtler: a
 // dynamically constructed DSN, or credentials fetched from an
 // environment this lint cannot see, pass it. The real enforcement layer
 // is the database-side role restriction: whatever credential a serving

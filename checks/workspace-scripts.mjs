@@ -2,7 +2,7 @@
 // silently skips a package that never declared the script, so a surface
 // could dodge typecheck/test forever without failing anything. This check
 // makes the ts stage honest: it states explicitly when zero workspace
-// packages matched (allowed — surfaces/ is an empty seed until its own
+// packages matched (allowed, since surfaces/ is an empty seed until its own
 // tasks land), and fails if any workspace package lacks a `typecheck` or
 // `test` script.
 //
@@ -27,7 +27,7 @@ for (const pkgPath of packages) {
   for (const script of REQUIRED_SCRIPTS) {
     if (typeof pkg.scripts?.[script] !== "string") {
       failures.push(
-        `${pkgPath}: missing script "${script}" — pnpm -r would silently skip it`,
+        `${pkgPath}: missing script "${script}"; pnpm -r would silently skip it`,
       );
     }
   }

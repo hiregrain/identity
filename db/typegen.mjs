@@ -1,11 +1,11 @@
 // Type generation from both live schemas (foundation/02). Reads every
 // base table in each plane's database and emits row types into Go and TS,
-// namespaced by plane — one Go package and one TS module per database,
+// namespaced by plane. One Go package and one TS module per database,
 // no shared namespace. The TS types carry a per-plane unique-symbol brand
 // because TS typing is structural: without the brand, two identically
 // shaped rows would be interchangeable across planes, which is exactly
-// the reuse the plane split forbids. Go types are nominal already —
-// distinct named types in distinct packages do not assign.
+// the reuse the plane split forbids. Go types are nominal already.
+// Distinct named types in distinct packages do not assign.
 //
 // `--check` regenerates in memory and diffs against the committed output;
 // any difference exits 1, which is how CI fails a table edited without
@@ -70,7 +70,7 @@ function introspect(plane) {
     const [table, column, dataType, isNullable] = line.split("\t");
     if (!TYPE_MAP.has(dataType)) {
       console.error(
-        `typegen: ${plane}.${table}.${column} has type "${dataType}" with no mapping in db/typegen.mjs — add one deliberately`,
+        `typegen: ${plane}.${table}.${column} has type "${dataType}" with no mapping in db/typegen.mjs. Add one deliberately`,
       );
       process.exit(1);
     }
@@ -91,7 +91,7 @@ function goSource(plane, tables) {
     ``,
     `// Package ${plane} holds row types for the ${plane} plane only. It is`,
     `// generated per database with no shared namespace: a ${other(plane)} type`,
-    `// must not satisfy a ${plane}-typed parameter, and does not — the types`,
+    `// must not satisfy a ${plane}-typed parameter, and does not. The types`,
     `// are distinct named types in distinct packages.`,
     `package ${plane}`,
     ``,
@@ -143,7 +143,7 @@ function emit(path, source) {
     const committed = existsSync(path) ? readFileSync(path, "utf8") : null;
     if (committed !== content) {
       failures.push(
-        `${path} does not match the live schema — run \`make typegen\` and commit the result`,
+        `${path} does not match the live schema. Run \`make typegen\` and commit the result`,
       );
     }
     return;

@@ -12,15 +12,15 @@ import (
 // key-id/version header a real KMS token carries. It makes the stub's
 // wire format visibly distinct from the software provider's, so a test
 // that swaps providers by config cannot pass by the two being the same
-// code in two coats — and it gives Unwrap a KMS-shaped failure mode
+// code in two coats. It also gives Unwrap a KMS-shaped failure mode
 // (token not from this KMS) separate from a bad ciphertext.
 var stubKMSHeader = []byte("stub-kms/v1\x00")
 
 // StubKMS stands in for the production KMS provider until the cloud
 // ruling lands (decision 011). It mimics the KMS contract the
-// conformance suite states — remote-call shape (context honored before
-// any cryptography), per-scope keys, schedule-free irreversible
-// destruction, idempotent destroy — over in-memory key material. The
+// conformance suite states over in-memory key material. That contract is
+// remote-call shape (context honored before any cryptography), per-scope
+// keys, schedule-free irreversible destruction, and idempotent destroy. The
 // real KMS provider replaces it behind FromConfig after passing the
 // same conformance suite in an ephemeral environment (the provisioning
 // gate).
@@ -69,7 +69,7 @@ func (s *StubKMS) Unwrap(ctx context.Context, scope string, wrapped []byte) ([]b
 	return gcmOpen(kek, scope, wrapped[len(stubKMSHeader):])
 }
 
-// Destroy implements Provider. Immediate and irreversible — the stub
+// Destroy implements Provider. Immediate and irreversible, the stub
 // models the post-schedule state a real KMS reaches, not the pending
 // window, because the conformance contract is about the end state.
 func (s *StubKMS) Destroy(ctx context.Context, scope string) error {

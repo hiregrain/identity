@@ -1,10 +1,10 @@
-// checks/verbatim-copies.mjs — labeled constraint blockquotes diff
+// checks/verbatim-copies.mjs diffs labeled constraint blockquotes
 // exactly against their sources (foundation/06, ported from Dispatch).
 // In Dispatch this check is the precondition for quoting any constraint
 // into a plan file: a labeled blockquote is an exact copy, `[…]` marks a
 // deliberate splice, and commentary sits outside the quote. Identity's
 // plan files today carry pointers rather than quotes, so the check has
-// nothing to fail on — it is ported anyway, because its absence is what
+// nothing to fail on. It is ported anyway, because its absence is what
 // makes quoting look free.
 //
 // The label grammar (this check's contract; the Dispatch source was not
@@ -93,8 +93,8 @@ function checkFile(path) {
 
     if (!existsSync(source)) {
       failures.push(
-        `${path}: verbatim label names "${source}", which does not exist — ` +
-          `a labeled blockquote is an exact copy of a real source`,
+        `${path}: verbatim label names "${source}", which does not exist. ` +
+          `A labeled blockquote is an exact copy of a real source`,
       );
       continue;
     }
@@ -117,11 +117,11 @@ function checkFile(path) {
         failures.push(
           `${path}: quote labeled "Verbatim from ${source}" ` +
             (anywhere
-              ? `has segments out of order — ${SPLICE} splices must ` +
+              ? `has segments out of order. ${SPLICE} splices must ` +
                 `preserve source order`
               : `is not an exact copy: segment starting ` +
-                `"${segment.slice(0, 60)}" does not appear in the source — ` +
-                `fix the quote or drop the Verbatim label`),
+                `"${segment.slice(0, 60)}" does not appear in the source. ` +
+                `Fix the quote or drop the Verbatim label`),
         );
         break;
       }

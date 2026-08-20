@@ -2,7 +2,7 @@
 // contract (foundation/05). It exists because decision 011 ruled out a
 // standing staging environment, so no environment exercises the real KMS
 // before production: the mitigation is this suite, which every provider
-// must pass — the two in-repo providers pass it in CI on every run, and
+// must pass. The two in-repo providers pass it in CI on every run, and
 // the real KMS provider must pass it in an ephemeral environment before
 // first production use, as part of the provisioning gate. It is a
 // deliverable of foundation/05, not a TODO.
@@ -13,9 +13,9 @@
 //  2. A wrapped blob is not the DEK in the clear and never contains it.
 //  3. A blob wrapped under one scope does not unwrap under another.
 //  4. A tampered blob does not unwrap.
-//  5. Destroy makes Unwrap fail for the scope — the crypto-shred.
-//  6. Destroy makes Wrap fail for the scope — a destroyed scope never
-//     carries key material again (decision 014: ids are never reissued).
+//  5. Destroy makes Unwrap fail for the scope, the crypto-shred.
+//  6. Destroy makes Wrap fail for the scope, since a destroyed scope
+//     never carries key material again (decision 014: ids are never reissued).
 //  7. Destroy is idempotent, including on a never-seen scope.
 //  8. Other scopes survive a destroy untouched.
 //  9. No provider error message carries DEK or plaintext material.
@@ -88,7 +88,7 @@ func Run(t *testing.T, factory func() keys.Provider) {
 		t.Fatalf("Destroy: %v", err)
 	}
 	if got, err := p.Unwrap(ctx, subject, wrapped); err == nil {
-		t.Fatal("Unwrap succeeded after Destroy — destruction is not a crypto-shred")
+		t.Fatal("Unwrap succeeded after Destroy, destruction is not a crypto-shred")
 	} else {
 		if !errors.Is(err, keys.ErrScopeDestroyed) {
 			t.Fatalf("Unwrap after Destroy: got %v, want ErrScopeDestroyed", err)
@@ -96,7 +96,7 @@ func Run(t *testing.T, factory func() keys.Provider) {
 		assertNoMaterial(t, err, dek, got)
 	}
 	if _, err := p.Wrap(ctx, subject, dek); !errors.Is(err, keys.ErrScopeDestroyed) {
-		t.Fatalf("Wrap after Destroy: got %v, want ErrScopeDestroyed — a destroyed scope never carries key material again", err)
+		t.Fatalf("Wrap after Destroy: got %v, want ErrScopeDestroyed, since a destroyed scope never carries key material again", err)
 	}
 
 	// 7. Idempotent, including a scope the provider has never seen.

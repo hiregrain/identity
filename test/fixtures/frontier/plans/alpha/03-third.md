@@ -9,4 +9,4 @@ evidence: []
 verified_by: null
 ---
 
-# alpha/03 (ready, but alpha/02 is only ready — BLOCKED)
+# alpha/03 is ready, but alpha/02 is only ready, so alpha/03 is BLOCKED

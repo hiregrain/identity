@@ -9,4 +9,4 @@ evidence: []
 verified_by: null
 ---
 
-# beta/02 (ready, but epsilon/01 is unauthored under a draft layer — BLOCKED)
+# beta/02 is ready, but epsilon/01 is unauthored under a draft layer, so it is BLOCKED

@@ -5,7 +5,7 @@
 --
 -- The spine carries ordering and commitments, never content. Every
 -- column type permitted on the spine is enumerated in
--- db/spine-allow-list.json — the allow-list IS the definition of
+-- db/spine-allow-list.json. The allow-list IS the definition of
 -- "permitted spine column type" (decision 017: "readable-content type"
 -- was never defined, so the boundary is enumerated rather than
 -- described). checks/spine-schema.mjs enforces it against the live
@@ -28,12 +28,12 @@
 --     time-ordered id (UUIDv7, ULID) would leak enrollment order and
 --     volume; the type cannot enforce the version, so generation sites
 --     are the review point.
---   2 timestamp-granularity: none — a random id carries no time.
+--   2 timestamp-granularity: none. A random id carries no time.
 --   3 external-roster-join: a random id joins to nothing external until
 --     it is disclosed alongside identifying context; disclosure surfaces
 --     are governed above the spine.
 --   4 commitment-salt-reuse: not a commitment; an id is reused across
---     rows by design — that reuse is the linkage the ledger itself
+--     rows by design. That reuse is the linkage the ledger itself
 --     needs, reviewed per column when one is added.
 --   5 partial-dataset-adversary: an adversary holding an external
 --     dataset learns nothing from the id value itself; joins require a
@@ -58,6 +58,6 @@ CREATE DOMAIN spine_commitment AS bytea;
 -- granularity exposing an activity pattern) applies to every column of
 -- this domain; a migration adding one answers it for that column's
 -- semantics. Kept at full timestamptz precision here because the domain
--- is shared — a column needing coarser granularity coarsens at write
+-- is shared. A column needing coarser granularity coarsens at write
 -- time and records that answer in its justification.
 CREATE DOMAIN spine_ledger_timestamp AS timestamptz;

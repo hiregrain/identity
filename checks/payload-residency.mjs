@@ -1,13 +1,13 @@
-// checks/payload-residency.mjs — the residency check (foundation/04,
+// checks/payload-residency.mjs is the residency check (foundation/04,
 // decision 017; layer criterion foundation-4).
 //
 // The DATABASE is authoritative for residency; the `residency_region`
-// column is a checked assertion of it — the column is what survives a
+// column is a checked assertion of it. The column is what survives a
 // dump or restore, exactly when the database name is lost. Two halves,
 // both against the live payload database:
 //
 //   1. Structural: every base table carries `residency_region` NOT NULL.
-//      No exemption list exists, bookkeeping included — "every table"
+//      No exemption list exists, bookkeeping included. "Every table"
 //      stays checkable only while it is literally true
 //      (0004-payload-us-bootstrap adds the column to schema_migrations
 //      for exactly this reason).
@@ -43,14 +43,14 @@ for (const line of tables) {
   const [schema, table, nullable] = line.split("|");
   if (nullable === "MISSING") {
     failures.push(
-      `payload table ${schema}.${table} has no residency_region column — ` +
-        `every payload table carries residency_region NOT NULL ` +
+      `payload table ${schema}.${table} has no residency_region column. ` +
+        `Every payload table carries residency_region NOT NULL ` +
         `(foundation/04, decision 017)`,
     );
   } else if (nullable !== "NO") {
     failures.push(
-      `payload table ${schema}.${table}.residency_region is nullable — ` +
-        `the residency assertion is NOT NULL on every payload table ` +
+      `payload table ${schema}.${table}.residency_region is nullable. ` +
+        `The residency assertion is NOT NULL on every payload table ` +
         `(foundation/04, decision 017)`,
     );
   }
@@ -62,7 +62,7 @@ const declared = psql(`SELECT residency_region FROM database_residency`);
 if (declared.length !== 1) {
   failures.push(
     `database_residency must hold exactly one declared region, found ` +
-      `${declared.length} rows — the database's declaration is a singleton ` +
+      `${declared.length} rows. The database's declaration is a singleton ` +
       `(0004-payload-us-bootstrap)`,
   );
 } else {
@@ -77,8 +77,8 @@ if (declared.length !== 1) {
     if (disagreeing !== "0") {
       failures.push(
         `${disagreeing} row(s) in ${schema}.${table} carry a ` +
-          `residency_region other than this database's declared '${region}' ` +
-          `— the database is authoritative and the column is a checked ` +
+          `residency_region other than this database's declared '${region}'. ` +
+          `The database is authoritative and the column is a checked ` +
           `assertion (foundation/04, decision 017)`,
       );
     }

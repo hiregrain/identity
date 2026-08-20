@@ -6,7 +6,7 @@
 // requiring Docker, Go and Node (the backup/restore scripts are
 // db/backup.mjs and db/restore.mjs, driven here exactly as an operator
 // runs them). The restore scenario recreates the payload container from
-// a real pg_dump backup mid-test — on the green path the suite leaves
+// a real pg_dump backup mid-test. On the green path the suite leaves
 // both planes migrated and consistent; on a failure the next
 // `make db-reset && make migrate` rebuilds from empty.
 package deletion_test
@@ -43,7 +43,7 @@ func composePsql(plane, role, sql string) (string, error) {
 	return string(out), nil
 }
 
-// ownerSQL runs a statement as the owner role — harness setup and
+// ownerSQL runs a statement as the owner role, harness setup and
 // out-of-band inspection only, never the path under test.
 func ownerSQL(t *testing.T, plane, sql string) string {
 	t.Helper()
@@ -144,7 +144,7 @@ func newPersonID(t *testing.T) string {
 }
 
 // contentTable creates the harness-scoped payload content table (no
-// product content table exists yet by design — foundation/05's stated
+// product content table exists yet by design, foundation/05's stated
 // boundary) and registers its drop.
 func contentTable(t *testing.T) string {
 	t.Helper()
@@ -204,7 +204,7 @@ func TestRestoreReplayGateEndToEnd(t *testing.T) {
 	deleted, deletedCipher := provisionWithContent(t, env, table, deletedMarker)
 	living, _ := provisionWithContent(t, env, table, livingMarker)
 
-	// A real pg_dump backup, taken BEFORE the deletion — the scenario
+	// A real pg_dump backup, taken BEFORE the deletion, the scenario
 	// decision 017 exists for.
 	backups := filepath.Join(t.TempDir(), "backups")
 	node(t, "db/backup.mjs", backups)
@@ -228,21 +228,21 @@ func TestRestoreReplayGateEndToEnd(t *testing.T) {
 	}
 
 	// Restore the pre-deletion backup: the person is back at the byte
-	// level — the wrapped DEK row exists again — which is exactly the
+	// level, the wrapped DEK row exists again, which is exactly the
 	// resurrection the gate and the replay exist to close.
 	node(t, "db/restore.mjs", dumpFile)
 	resurrected := ownerSQL(t, "payload", fmt.Sprintf(
 		"SELECT count(*) FROM dek_registry WHERE person_id = '%s' AND event = 'created'", deleted))
 	if resurrected != "1" {
-		t.Fatalf("restored backup does not hold the pre-deletion created row (count %s) — scenario broken", resurrected)
+		t.Fatalf("restored backup does not hold the pre-deletion created row (count %s), scenario broken", resurrected)
 	}
 	if destroyed := ownerSQL(t, "payload", fmt.Sprintf(
 		"SELECT count(*) FROM dek_registry WHERE person_id = '%s' AND event = 'destroyed'", deleted)); destroyed != "0" {
-		t.Fatalf("restored backup already holds a destroyed row — the backup was not pre-deletion")
+		t.Fatalf("restored backup already holds a destroyed row, the backup was not pre-deletion")
 	}
 
 	// GATED: a restored system that has not replayed refuses traffic on
-	// every serving path — including for the living person — and the
+	// every serving path, including for the living person, and the
 	// refusal is ErrNotServing, never "this person was deleted".
 	if _, err := env.Decrypt(ctx, living, deletedCipher); !errors.Is(err, envelope.ErrNotServing) {
 		t.Fatalf("restored-without-replay Decrypt: want ErrNotServing, got %v", err)
@@ -258,8 +258,8 @@ func TestRestoreReplayGateEndToEnd(t *testing.T) {
 		t.Fatalf("expected exactly one open restore, got %v (%v)", open, err)
 	}
 
-	// The replay: re-destroys every journaled person, then — and only
-	// then — balances the gate.
+	// The replay: re-destroys every journaled person, then, and only
+	// then, balances the gate.
 	if _, err := deletion.Replay(ctx, env); err != nil {
 		t.Fatalf("Replay: %v", err)
 	}
@@ -268,9 +268,9 @@ func TestRestoreReplayGateEndToEnd(t *testing.T) {
 	}
 
 	// Nothing readable for the deleted person: the read path fails
-	// closed at the registry, and the registry-bypass path — pulling
+	// closed at the registry, and the registry-bypass path, pulling
 	// the restored wrapped DEK as the owner and unwrapping at the
-	// provider — fails at the crypto-shred.
+	// provider, fails at the crypto-shred.
 	if _, err := env.Decrypt(ctx, deleted, deletedCipher); !errors.Is(err, envelope.ErrNoActiveDEK) {
 		t.Fatalf("post-replay Decrypt for the deleted person: want ErrNoActiveDEK, got %v", err)
 	}
@@ -281,7 +281,7 @@ func TestRestoreReplayGateEndToEnd(t *testing.T) {
 		t.Fatalf("wrapped dek hex: %v", err)
 	}
 	if dek, err := provider.Unwrap(ctx, deleted, wrapped); err == nil || dek != nil {
-		t.Fatal("provider unwrapped the restored DEK after replay — the crypto-shred did not hold")
+		t.Fatal("provider unwrapped the restored DEK after replay, the crypto-shred did not hold")
 	}
 
 	// The living person is served again, content intact.
@@ -357,7 +357,7 @@ func TestOnlyPurgeRoleHoldsDeleteOnPayloadTables(t *testing.T) {
 		t.Fatal("identity_purge can SET ROLE to the owner")
 	}
 
-	// The standing append-only proof — with the exemption enumerated —
+	// The standing append-only proof, with the exemption enumerated,
 	// still passes on both planes.
 	out := node(t, "test/append-only.test.mjs")
 	if !strings.Contains(out, "assertions passed on both planes") {
@@ -417,7 +417,7 @@ func TestPurgeRemovesShreddedRowsAndAudits(t *testing.T) {
 		t.Fatalf("audit row wrong:\n got %s\nwant %s", audit, want)
 	}
 
-	// A run that removes nothing is still audited — the schedule's
+	// A run that removes nothing is still audited. The schedule's
 	// execution is itself auditable.
 	second, err := deletion.Purge("deletion-harness")
 	if err != nil {
@@ -440,7 +440,7 @@ func TestPurgeRemovesShreddedRowsAndAudits(t *testing.T) {
 
 	// Row security is the backstop, not the runner's WHERE clause: an
 	// unqualified DELETE issued raw as the purge role removes exactly
-	// the licensed set — here, a fresh shredded row — and nothing else.
+	// the licensed set, here a fresh shredded row, and nothing else.
 	rlsShredded := newPersonID(t)
 	rlsLiving := newPersonID(t)
 	for _, p := range []string{rlsShredded, rlsLiving} {
@@ -486,7 +486,7 @@ func TestDeletionJournalCarriesNothingIdentifying(t *testing.T) {
 		t.Fatalf("deletion_journal column set drifted:\n got:\n%s\nwant:\n%s", cols, want)
 	}
 
-	// requester_class is a closed vocabulary — free text cannot reach
+	// requester_class is a closed vocabulary. Free text cannot reach
 	// the spine through it.
 	person := newPersonID(t)
 	if _, err := roleSQL("spine", "identity_app", fmt.Sprintf(

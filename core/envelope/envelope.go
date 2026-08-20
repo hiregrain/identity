@@ -5,8 +5,8 @@
 // package produced; nothing else in the system may hold payload content
 // in the clear.
 //
-// The single state-derivation rule, identical to the one migration 0005
-// documents — this package executes it, never a second one:
+// The single state-derivation rule is identical to the one migration 0005
+// documents. This package executes it, never a second one:
 //
 //	A person's DEK is ACTIVE iff the registry holds a 'created' row for
 //	the person and no 'destroyed' row for the person; otherwise there is
@@ -15,15 +15,15 @@
 // activeWrappedDEKSQL is that sentence as one query, so every read
 // resolves the state in a single statement snapshot: a destroy committed
 // before the read sees no key (fail closed), one committed after leaves
-// the read completing against the live key — never anything partial.
+// the read completing against the live key, never anything partial.
 //
 // Business logic here is provider-agnostic (decision 017): the package
 // holds a keys.Provider and never branches on which one it is. The
 // provider's name is recorded on registry rows because operational
 // surfaces legitimately need it; no code path reads it back.
 //
-// No function logs, and no error carries plaintext or key material —
-// errors name the person id (a ledger uuid, spine-visible by design) and
+// No function logs, and no error carries plaintext or key material.
+// Errors name the person id (a ledger uuid, spine-visible by design) and
 // the operation, nothing else.
 package envelope
 
@@ -42,13 +42,13 @@ import (
 )
 
 // Querier executes one SQL statement with $n placeholders against the
-// payload database as the serving role (identity_app — SELECT and
+// payload database as the serving role (identity_app, SELECT and
 // INSERT only, migration 0002; this package needs nothing more, which
 // is the point of an append-only registry). Rows come back as text
 // fields, bytea values in Postgres hex form ("\x..."). The production
 // implementation arrives with the first server; tests implement it over
 // psql. Implementations must transmit args as values (parameters or
-// exact literals), never by interpolating into the SQL text — every arg
+// exact literals), never by interpolating into the SQL text. Every arg
 // this package passes is a validated uuid, a hex string, or a provider
 // name, so a literal-quoting implementation has nothing to escape.
 type Querier interface {
@@ -101,7 +101,7 @@ RETURNING person_id`
 
 	// destroySQL appends the 'destroyed' row. ON CONFLICT against the
 	// at-most-one-destroyed constraint is what makes a second destroy a
-	// no-op — not an error, not a second row. It inserts whether or not
+	// no-op, not an error, not a second row. It inserts whether or not
 	// a 'created' row exists: a destroyed row for a never-keyed person
 	// fails closed too, blocking any later provision.
 	destroySQL = `
@@ -109,15 +109,15 @@ INSERT INTO dek_registry (person_id, event, wrapped_dek, key_provider, residency
 SELECT $1, 'destroyed', NULL, $2, residency_region FROM database_residency
 ON CONFLICT (person_id) WHERE event = 'destroyed' DO NOTHING`
 
-	// servingGateSQL executes migration 0022's restore-gate rule — the
-	// only place it is executed:
+	// servingGateSQL executes migration 0022's restore-gate rule. It is the
+	// only place that rule is executed:
 	//
 	//   A restored payload plane is SERVING iff no 'restored' row lacks
 	//   a 'replayed' row for the same restore_id.
 	//
 	// The query returns a row exactly when the system is GATED (an
 	// unbalanced restore exists), so a query failure and a returned row
-	// both refuse — the gate fails closed in every branch of
+	// both refuse. The gate fails closed in every branch of
 	// assertServing.
 	servingGateSQL = `
 SELECT 1 FROM restore_gate r
@@ -135,7 +135,7 @@ type Envelope struct {
 }
 
 // New returns an Envelope over the payload plane and the configured
-// provider (keys.FromConfig — the only place a provider is chosen).
+// provider (keys.FromConfig, the only place a provider is chosen).
 func New(q Querier, p keys.Provider) *Envelope {
 	return &Envelope{q: q, p: p}
 }
@@ -188,7 +188,7 @@ func (e *Envelope) Encrypt(ctx context.Context, person string, plaintext []byte)
 
 // Decrypt opens ciphertext under the person's ACTIVE DEK. After
 // destruction it fails closed with ErrNoActiveDEK (registry) or the
-// provider's destruction error — never partial plaintext: the AEAD
+// provider's destruction error, never partial plaintext: the AEAD
 // authenticates the whole message or returns nothing.
 func (e *Envelope) Decrypt(ctx context.Context, person string, ciphertext []byte) ([]byte, error) {
 	if err := e.assertServing(ctx); err != nil {
@@ -207,9 +207,9 @@ func (e *Envelope) Decrypt(ctx context.Context, person string, ciphertext []byte
 
 // Destroy crypto-shreds every person id in the alias closure.
 //
-// The closure contract: the caller supplies the COMPLETE alias closure —
-// every ledger person id that has ever referred to the person, canonical
-// id included. This package does not compute closures; merge machinery
+// The closure contract: the caller supplies the COMPLETE alias closure,
+// meaning every ledger person id that has ever referred to the person,
+// canonical id included. This package does not compute closures; merge machinery
 // and its closure derivation belong to person-identity, and until it
 // lands an unmerged person's closure is the single-element set of their
 // own id. Destroying a merged person with a partial closure would leave
@@ -223,7 +223,7 @@ func (e *Envelope) Decrypt(ctx context.Context, person string, ciphertext []byte
 //
 // Destroy is deliberately NOT behind the serving gate (foundation/08):
 // the restore-time deletion replay re-destroys every journaled person
-// while the gate is closed — destruction must always be possible, and
+// while the gate is closed. Destruction must always be possible, and
 // gating it would deadlock the very step that opens the gate. Every
 // serving path (Provision, Encrypt, Decrypt) is gated.
 func (e *Envelope) Destroy(ctx context.Context, closure []string) error {
@@ -249,8 +249,8 @@ func (e *Envelope) Destroy(ctx context.Context, closure []string) error {
 // assertServing refuses every serving path while the payload plane
 // stands restored-but-not-replayed (foundation/08, decision 017): the
 // restore gate (migration 0022, restore_gate) is consulted before any
-// key is touched, and both failure branches — an unbalanced restore and
-// an unqueryable gate — refuse. ErrNotServing is deliberately distinct
+// key is touched, and both failure branches, an unbalanced restore and
+// an unqueryable gate, refuse. ErrNotServing is deliberately distinct
 // from ErrNoActiveDEK: "this system is not serving anyone" must never
 // read as "this person was deleted".
 func (e *Envelope) assertServing(ctx context.Context) error {
@@ -319,7 +319,7 @@ func hexValue(s string) ([]byte, error) {
 }
 
 // seal/open: AES-256-GCM over content, nonce prepended, the person id
-// bound as additional authenticated data — a ciphertext is verifiable
+// bound as additional authenticated data. A ciphertext is verifiable
 // only under the subject's DEK and the subject's id, so content cannot
 // be replayed under another person even if key material coincided.
 func seal(dek []byte, person string, plaintext []byte) ([]byte, error) {

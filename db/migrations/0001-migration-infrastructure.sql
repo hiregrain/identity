@@ -3,7 +3,7 @@
 -- Plane-agnostic: this file sits at the chain root and the runner applies
 -- it to every database before that database's own chain, so both planes
 -- record their applied migrations in the same shape. It occupies number
--- 0001 once — the two chains share one numbering sequence (decision 017),
+-- 0001 once. The two chains share one numbering sequence (decision 017),
 -- and a file applied to both databases is still one number.
 --
 -- Executes as the table owner, like every migration; foundation/03

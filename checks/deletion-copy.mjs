@@ -1,4 +1,4 @@
-// checks/deletion-copy.mjs — the residual-window disclosure check
+// checks/deletion-copy.mjs is the residual-window disclosure check
 // (foundation/08, decision 017; layer criterion foundation-6's
 // disclosure half).
 //
@@ -7,11 +7,11 @@
 // worker-facing deletion copy (copy/deletion.md, the canonical text
 // every deletion surface renders) states the numbers, and the numbers
 // it states are the numbers the retention config enforces
-// (db/deletion-policy.json — backup_retention_days, which db/backup.mjs
+// (db/deletion-policy.json, specifically backup_retention_days, which db/backup.mjs
 // enforces, and purge_interval_days, the stated purge schedule). This
 // check fails when they drift, in either direction:
 //
-//   1. Every day count written in the copy ("<number> days" — the
+//   1. Every day count written in the copy ("<number> days", the
 //      grammar the copy's own header commits to) must equal one of the
 //      config's values. A number in the copy the config does not
 //      enforce is a promise nothing keeps.
@@ -19,7 +19,7 @@
 //      enforced window the copy does not state is a hidden window,
 //      which is the exact thing decision 017 ruled against.
 //
-// HTML comments in the copy are stripped first — the header is
+// HTML comments in the copy are stripped first. The header is
 // maintainer guidance, not worker-facing text.
 //
 // Usage: node checks/deletion-copy.mjs [copy.md] [policy.json]
@@ -58,7 +58,7 @@ const stated = [...copy.matchAll(/(\d+)\s+days?\b/g)].map((m) => Number(m[1]));
 
 if (stated.length === 0) {
   failures.push(
-    `${copyFile} states no day count at all — the residual window is ` +
+    `${copyFile} states no day count at all. The residual window is ` +
       `disclosed in the copy, as "<number> days" (decision 017)`,
   );
 }
@@ -67,7 +67,7 @@ for (const value of stated) {
   if (!enforced.has(value)) {
     failures.push(
       `${copyFile} states "${value} days" but ${policyFile} enforces ` +
-        `${[...enforced.keys()].join(", ")} — a stated window the config ` +
+        `${[...enforced.keys()].join(", ")}. A stated window the config ` +
         `does not enforce is a promise nothing keeps`,
     );
   }
@@ -77,7 +77,7 @@ for (const [value, keys] of enforced) {
   if (!stated.includes(value)) {
     failures.push(
       `${policyFile} enforces ${keys.join(" and ")} = ${value} but ` +
-        `${copyFile} never states "${value} days" — an enforced window ` +
+        `${copyFile} never states "${value} days". An enforced window ` +
         `the copy does not state is a hidden window (decision 017)`,
     );
   }

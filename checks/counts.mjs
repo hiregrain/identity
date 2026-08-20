@@ -1,19 +1,19 @@
-// checks/counts.mjs — no hand-written count of a checkable thing outside
-// a closed record (CLAUDE.md, foundation/06). "All six layers",
-// "seventeen layers", "three objects" — every such count in this repo
-// drifted or was wrong within days of being written; the rule is to say
+// checks/counts.mjs flags a hand-written count of a checkable thing
+// outside a closed record (CLAUDE.md, foundation/06). "All six layers",
+// "seventeen layers", "three objects". Every such count in this repo
+// drifted or was wrong within days of being written. The rule is to say
 // "every layer", point at the table, or let a check count.
 //
 // What is flagged, precisely: a numeral or number-word followed by a
 // plural noun (one optional modifier between them) naming a CHECKABLE
-// repo structure — layers, tasks, criteria, checks, migrations,
-// decisions, and their kin, the enumerated vocabulary below — inside the
+// repo structure. Layers, tasks, criteria, checks, migrations,
+// decisions, and their kin, the enumerated vocabulary below, inside the
 // paragraph or heading that IMMEDIATELY precedes an enumerable
 // structure: a table, a bulleted or numbered list, or a fenced listing.
 // Both narrowings are deliberate and were tuned against the real tree:
 //
 //   * adjacency, because that is where the prose counts the very thing
-//     the structure enumerates — the count that drifts when the
+//     the structure enumerates, the count that drifts when the
 //     structure changes;
 //   * the noun vocabulary, because "checkable things" is the rule's own
 //     scope (CLAUDE.md): a count of repo structures a check can recount
@@ -23,8 +23,10 @@
 //     over. A wolf-crying variant without the vocabulary flagged twelve
 //     legitimate phrases on the day it was written.
 //
-// Scanned: plans/, model/, DESIGN.md, and the READMEs outside frozen
-// trees. Excluded, as closed records whose counts are frozen facts:
+// Scanned: plans/, model/, DESIGN.md, the READMEs outside frozen trees,
+// and the leading `--` comment header of every db/migrations/**/*.sql
+// file (the SQL statements after it are not prose and are not scanned).
+// Excluded, as closed records whose counts are frozen facts:
 // decisions/LOG.md (not in the scanned trees), discharged spikes (a
 // "**Discharged" banner in the file head), handoff/ (Dispatch's frozen
 // package), and blockquotes (quotes of other documents). "One"/"1" is
@@ -59,7 +61,7 @@ const COUNT = new RegExp(
 const roots =
   process.argv.length > 2
     ? process.argv.slice(2)
-    : ["plans", "model", "DESIGN.md", ...findReadmes(".")];
+    : ["plans", "model", "DESIGN.md", "db/migrations", ...findReadmes(".")];
 
 const failures = [];
 let filesScanned = 0;
@@ -67,6 +69,7 @@ let filesScanned = 0;
 for (const root of roots) {
   if (!existsSync(root)) continue;
   if (statSync(root).isDirectory()) walk(root);
+  else if (root.endsWith(".sql")) checkSqlMigrationHeader(root);
   else checkFile(root);
 }
 
@@ -99,6 +102,60 @@ function walk(dir) {
     const path = join(dir, entry.name);
     if (entry.isDirectory()) walk(path);
     else if (entry.name.endsWith(".md")) checkFile(path);
+    else if (entry.name.endsWith(".sql")) checkSqlMigrationHeader(path);
+  }
+}
+
+// A migration's header is its leading run of `--` comment lines (blank
+// comment lines included); the SQL statements after it are not prose
+// and are not scanned. Reuses checkFile's list/table adjacency logic
+// against the stripped header text.
+function checkSqlMigrationHeader(path) {
+  const lines = readFileSync(path, "utf8").split("\n");
+  const header = []; // [lineNumber, strippedText]
+  for (const [i, line] of lines.entries()) {
+    if (line.startsWith("--")) {
+      header.push([i + 1, line.replace(/^--\s?/, "")]);
+    } else if (line.trim() === "" && header.length > 0) {
+      header.push([i + 1, ""]);
+    } else {
+      break;
+    }
+  }
+  if (header.length === 0) return;
+  filesScanned += 1;
+
+  let paragraph = [];
+  for (let i = 0; i < header.length; i++) {
+    const [lineNumber, text] = header[i];
+    if (text.trim() === "") continue;
+    if (/^\s*([-*+]\s|\d+\.\s)/.test(text)) {
+      flagAdjacent(path, paragraph, "a list");
+      paragraph = [];
+      while (
+        i + 1 < header.length &&
+        (/^\s*([-*+]\s|\d+\.\s|\s{2,}\S)/.test(header[i + 1][1]) ||
+          header[i + 1][1].trim() === "")
+      ) {
+        if (
+          header[i + 1][1].trim() !== "" ||
+          (i + 2 < header.length &&
+            /^\s*([-*+]\s|\d+\.\s)/.test(header[i + 2][1]))
+        ) {
+          i++;
+        } else break;
+      }
+      continue;
+    }
+    if (/^\s*\|/.test(text)) {
+      flagAdjacent(path, paragraph, "a table");
+      paragraph = [];
+      while (i + 1 < header.length && /^\s*\|/.test(header[i + 1][1])) i++;
+      continue;
+    }
+    if (paragraph.length > 0 && header[i - 1]?.[1]?.trim() === "")
+      paragraph = [];
+    paragraph.push([lineNumber, text]);
   }
 }
 
@@ -171,7 +228,7 @@ function flagAdjacent(path, paragraph, structure) {
     COUNT.lastIndex = 0;
     for (const match of line.matchAll(COUNT)) {
       failures.push(
-        `${path}:${lineNumber}: "${match[0].trim()}" — a hand-written ` +
+        `${path}:${lineNumber}: "${match[0].trim()}" is a hand-written ` +
           `count immediately preceding ${structure}; say "every", point ` +
           `at the structure, or let a check count (CLAUDE.md)`,
       );
