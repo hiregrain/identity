@@ -24,18 +24,17 @@ issuer-state flags; dimension-standing derivation: the published
 deterministic coarse rule (two-independent-attestation corroboration,
 freshness window, `singly_attested` marking, below-bar stretch exclusion,
 citations on every entry), introduced behind the shadow/promotion-gate
-pattern and stored only as cache; **the post-selection gate for
-work-authorization** (decision 008): the field is absent from any packet
-served in a pre-selection context and available only via the post-selection
-read path, enforced structurally, with reads logged; fresh-read discipline
+pattern and stored only as cache; fresh-read discipline
 (D1 obligation): grant/deletion liveness checks read the primary;
 per-packet issuance logging visible to the worker.
 
 Acceptance:
 1. **The packet is generated live, so nothing stale can survive in it.** (mechanical) revocation, deletion, supersession, and a registry
    suspension are each reflected in the very next packet read.
-2. **Work authorization is unreadable before a selection has been made.** (mechanical) no code path serves `work_authorization` to a
-   pre-selection read; attempts are logged and structurally rejected.
+2. ~~**Work authorization is unreadable before a selection has been
+   made.**~~ Removed by decision 070: work authorization is not stored
+   at all, so no packet carries it and no read gate for it exists. The
+   criterion number is retired, not reused.
 3. **Every standing entry resolves to the attestations behind it.** every `dimension_standing` entry resolves to its supporting
    attestations; dropping the cache and recomputing reproduces identical
    packets (Dispatch AC-REP-2 pattern).

@@ -1,74 +1,106 @@
 ---
 id: verification
 type: layer
-status: draft
+status: ready
 milestone: v1
-depends_on: [person-identity, party-registry]
+depends_on: [person-identity, party-registry, ingestion, self-asserted-record]
 binds:
-  - decisions/LOG.md#040
-  - research/09-idv-vendor-landscape.md
   - decisions/LOG.md#010
+  - decisions/LOG.md#040
+  - decisions/LOG.md#070
+  - research/09-idv-vendor-landscape.md
   - design/ledger-design-0.1.md#1.2
+gated_criteria: [7]
 evidence: []
 verified_by: null
 ---
 
 # verification
 
-Bought verification, stored as attestations. One internal interface:
-`verify(person, method) → verification attestation {issuer, method, level,
-verified_at, expiry/decay, evidence_commitment}`.
+Bought verification, stored as attestations, and the worker-initiated
+request flows that start every attestation in the system.
 
-**Vendor order inverted 2026-08-19 (decision 040 §C): Persona is primary,
-Sumsub secondary.** Both advocacy briefs and two verification agents independently
-established that **neither vendor permits the capture step to be hosted inside the
-host app's own chrome**. Persona's docs direct you to a "Transactions-based"
-integration if you want your own UI; Sumsub offers four buckets of theming and
-requires modal presentation because its SDK "contains its own navigation stack."
-**Decision 036's F3 is relaxed accordingly**: Grain's screen hands off with the
-vendor named on it, not Grain's viewfinder around the vendor's camera. This is
-framework-independent.
+Grilled 2026-08-20 (decision 070); tasks authored in the same session;
+the engineering review over these criteria and tasks runs before any
+task is claimed.
 
-**`research/09`, the document decision 010 rests on, contains no mobile-SDK
-analysis at all.** The vendor choice was ratified without examining client
-integration. That gap is closed by decision 040 and by the evaluation record, and
-the SDK facts belong in this layer's task files: both vendors ship maintained
-first-party React Native SDKs, **neither declares `codegenConfig`** (both are
-legacy-bridge modules against an RN line that has begun deleting legacy classes),
-neither ships an Expo config plugin, and both force a location permission prompt.
+**Work authorization does not exist here or anywhere** (decision 070,
+superseding 008's shape): not stored, not requested, not shown. An
+employer cannot outsource its own verification duty, so the field was a
+prior signal with no compliance value carrying sensitive status.
 
-**Counsel gate before contracting**: Persona lists 16 US subprocessors including
-Anthropic, OpenAI and Groq for "data extraction and analysis". Identity documents
-and selfies reaching three model providers. Decision 010 forbids document images
-in the *ledger* and says nothing about the vendor's onward processing. India DPDP
-residency is unproven for both vendors and must be answered in writing.
+One internal interface: `verify(person, method) → verification
+attestation {issuer, method, level, verified_at, expiry/decay,
+evidence_commitment}`. **Results enter the record through ingestion and
+only through ingestion** (decision 070): vendors are registered
+attesting parties, a result is a signed attestation submitted through
+the same admission pipeline as any employer's, under the
+worker-initiated request that started the flow. No second door.
 
-Scope: the adapter layer (thin, internal, no commercial orchestrator per
-research/09); Persona integration first (free tier covers pilot;
-results-only, **no document image, biometric, or raw PII from the vendor
-ever persists in the ledger**; vendor retention/destruction schedules in
-the DPA); Sumsub second (PH document coverage, region-pinnable storage);
-method extensions on the same interface: PhilSys-QR validation, NBI-QR
-check; per-region fallback ladders with pilot-measured pass rates (DHS
-finding: vendor claims overstate); vendors registered as attesting parties
-(one trust machinery); derived assurance level computed from the
-verification set at read (none/channel/document/biometric ladder);
-work-authorization verification per decision 008: jurisdiction-scoped
-boolean + basis class + expiry, readable only post-selection (the access
-gate itself lands in `prior-packet`).
+**Vendor order per decision 040 §C: Persona primary, Sumsub secondary.**
+Neither vendor permits the capture step inside the host app's own
+chrome; Grain's screen hands off with the vendor named on it (036's F3
+relaxed). Both ship legacy-bridge React Native SDKs with no
+`codegenConfig` and no Expo config plugin, and both force a location
+prompt; those facts live in the adapter task. **Sandbox-first**
+(decision 070): every task builds and verifies against vendor sandboxes
+and the synthetic adapter; production contracting is gated on the
+founder reading the vendor terms and ruling go, informed by an internal
+research memo. No counsel is engaged or planned; the gate names its
+real owner.
+
+Scope: worker-initiated verification request flows (issuance, delivery
+to the party carrying the pairwise pseudonym per decision 069, party
+notification, the expiry copy the worker sees; self-asserted-record
+owns the table, this layer owns the flows); the thin internal adapter
+layer, no commercial orchestrator (research/09); Persona sandbox
+integration, results-only, **no document image, biometric, or raw PII
+from the vendor ever persists in the ledger** (decision 010); method
+extensions on the same interface: PhilSys-QR validation, NBI-QR check;
+per-region fallback ladders with pilot-measured pass rates (the DHS
+finding: vendor claims overstate); vendors registered as attesting
+parties, one trust machinery; the derived assurance level
+(none/channel/document/biometric) computed at read from the
+verification set under published one-sentence-per-level rules
+(decision 070).
+
+Out of scope: work authorization in any form; the live vendor contract
+(gated criterion 7); packet rendering of verification state
+(prior-packet); request-creation UX surfaces (worker-surface renders,
+this layer exposes the flows).
 
 Acceptance:
-1. **No document image or biometric ever persists in the ledger.** (mechanical) the ledger stores no image/biometric payloads after
+
+1. **No document image or biometric ever persists in the ledger.**
+   (mechanical) the ledger stores no image or biometric payloads after
    any verification flow, asserted by schema and by an integration test
-   inspecting all writes.
-2. **Two issuers can both verify the same person without collision.** (mechanical) two verifications from different issuers coexist on one
-   person; a fixture table of (issuer, method, level, verified_at, expiry) pairs
-   maps to the expected assurance level for every row, and a verification whose
-   expiry has passed contributes nothing to the level.
-3. **A second vendor drops in behind the same internal interface.** (mechanical) a second provider adapter is added behind the internal
-   `verify(person, method)` interface using only a new adapter module and a
-   registry entry, and `git diff` over `db/migrations/` for that change is
-   empty. A synthetic second adapter satisfies this; it does not wait on a
-   commercial provider landing.
-4. **A failed verification leaves the account working at the level it already had.** a failed/abandoned verification leaves the account usable at its
-   prior assurance level (progressive proofing never gates signup).
+   inspecting all writes during each fixture flow.
+2. **The assurance ladder is published, deterministic, and honest about
+   expiry.** (mechanical) two verifications from different issuers
+   coexist on one person; a fixture table of (issuer, method, level,
+   verified_at, expiry) rows maps to the expected assurance level for
+   every row; identical verification sets always derive identical
+   levels; an expired verification contributes nothing; the published
+   one-sentence rule per level renders from the live derivation
+   configuration, so published and enforced cannot drift.
+3. **A second method drops in behind the same interface.** (mechanical)
+   a new provider or method lands as an adapter module and a registry
+   entry only, and `git diff` over `db/migrations/` for that change is
+   empty, proven by the PhilSys adapter and by a synthetic adapter.
+4. **A failed verification leaves the account working at the level it
+   already had.** (mechanical) a failed or abandoned verification flow
+   leaves the account's derived assurance level byte-identical to its
+   pre-flow value; progressive proofing never gates signup.
+5. **Results enter only through ingestion.** (mechanical) no adapter or
+   verification code path writes to any fact table; the only egress is
+   a signed attestation submitted to the ingestion pipeline, asserted
+   by the foundation/06 schema-grep check and privilege inspection.
+6. **A request reaches the party carrying what the party needs and
+   nothing more.** (mechanical) a delivered request carries the
+   pairwise pseudonym and never a ledger id, the RF-1 serializer
+   pattern; the worker sees the request's state and its expiry copy at
+   the moment of asking; the party is notified on issuance.
+7. **The live vendor flip is a ruling, not a drift.** (mechanical,
+   gated) production vendor credentials configure only alongside a
+   recorded founder ruling entry; the satisfying task is draft until
+   that ruling exists.
