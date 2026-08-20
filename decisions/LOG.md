@@ -33,7 +33,7 @@ Recorded in `research/00`, "Founder rulings" section.
 ## 004 — Independent design 0.1 adopted as the working design (2026-08-17)
 
 `design/ledger-design-0.1.md`, produced clean-context per the handoff
-protocol. Diff against Dispatch positions: `design/dispatch-diff-0.1.md` —
+protocol. Diff against Dispatch positions is `design/dispatch-diff-0.1.md`:
 nine of eleven positions independently re-derived; positions 3 and 8
 modified by rulings 003/002; one genuine disagreement (see 007).
 
@@ -65,8 +65,8 @@ Dispatch's `model/attestation.md` becomes the conforming copy
 Founder ruling on the one genuine Dispatch disagreement (Dispatch open
 question 9, Dispatch leaned customers-as-identities). Ledger-native entity
 types remain exactly two: persons (subjects) and attesting parties
-(issuers). A customer organization — e.g., an in-person electrician
-training program a worker is routed to — registers as an attesting party
+(issuers). A customer organization, e.g., an in-person electrician
+training program a worker is routed to, registers as an attesting party
 and writes performance attestations back; it never holds a subject profile.
 Approval-authority needs are met by party-registry entries or
 vertical-local records.
@@ -75,15 +75,15 @@ vertical-local records.
 
 Founder ratified the `research/08` proposal: work-authorization status may
 live in the ledger as a jurisdiction-scoped, expiring verification
-attestation carrying only a boolean + coarse basis-class — never documents,
-visa type, or nationality — and readable only AFTER candidate selection.
+attestation carrying only a boolean + coarse basis-class, never documents,
+visa type, or nationality, and readable only AFTER candidate selection.
 Access is architecturally incapable of influencing routing/selection
 (the eTeam/§1324b constraint expressed as access control). Reflected in
 `model/attestation-interface.md` §work-authorization.
 
 ## 009 — No identity-evidence retention across deletion; reportability hook stays (2026-08-17)
 
-(a) No salted document-hash survives profile deletion — R2's spirit
+(a) No salted document-hash survives profile deletion. R2's spirit
 controls; the Uber-style retain-and-flag alternative is rejected. Revisit
 trigger: fresh-start fraud materializing at measurable rates. (b) The
 policy-configurable reportability window on adverse content (default: no
@@ -108,11 +108,11 @@ Founder rulings from the first per-layer grilling (the grill-before-ready
 protocol now recorded in `plans/ORDER.md`):
 
 - **Code lives in this repo** beside plans/model/decisions (Dispatch
-  pattern) — the plan gate only self-enforces when code and plans share CI.
+  pattern). The plan gate only self-enforces when code and plans share CI.
 - **Physical spine/payload split from day one**: two databases (global
   spine + `payload-us`) from the first migration, so the residency seam is
   real from hour zero.
-- **No standing staging environment** — founder override of the
+- **No standing staging environment.** Founder override of the
   recommendation; add later if needed. Consequence accepted: D1 game-day
   drills (durability-and-launch) run on ephemeral environments spun up for
   the drill and torn down after, not a standing copy.
@@ -136,12 +136,12 @@ protocol now recorded in `plans/ORDER.md`):
 
 Founder ruling after `research/12` (deletion vs. reputation evasion).
 Supersedes the universal contentless enrollment token in entry 013.
-Entry 009(a)'s original instinct — no retention by default — is restored
+Entry 009(a)'s original instinct, no retention by default, is restored
 and refined.
 
 **Legal correction on the record.** The argument that carried 013's
 universal token was wrong in a specific way: **GDPR Art. 17(3) contains
-no fraud exemption** — the list is closed at five items. Recital 47
+no fraud exemption.** The list is closed at five items. Recital 47
 establishes fraud prevention as an Art. 6(1)(f) *legal basis for
 processing*, not an erasure carve-out; post-erasure retention must win on
 necessity at Art. 17(1) with the burden on the controller. Hashing does
@@ -151,7 +151,7 @@ makes the token personal data.
 
 **Two findings aimed at 013's design.** AEPD fined Goldcar €80,000 over a
 customer blacklist, reasoning that the retained flag "does not refer with
-certainty to a fraud committed by the claimant" — which is definitionally
+certainty to a fraud committed by the claimant", which is definitionally
 true of a universal contentless token. CNIL authorises exclusion
 registers for a single controller but **expressly excludes mutualised
 (cross-party) sharing**, which is this ledger's architecture. California
@@ -164,9 +164,9 @@ registers for a single controller but **expressly excludes mutualised
   performance-based exits leave no token, no hash, no marker.
 - **Exception: a severity-gated safety/fraud marker**, with all of:
   filed by the **party that made the finding** (a party act, not a ledger
-  act — which is also what defeats the delete-before-the-finding race,
+  act, which is also what defeats the delete-before-the-finding race,
   since the party holds its own records and can file after the fact);
-  keyed to the **document identifier only** (industry convergence — no
+  keyed to the **document identifier only** (industry convergence, no
   platform uses device or IP as a match key); **no payload**; an
   evidential floor (Cifas standard: "could confidently report to the
   police"); a **fixed expiry clock**, not retention discretion; **joint
@@ -181,7 +181,7 @@ registers for a single controller but **expressly excludes mutualised
   matching triggers steward review, never an automatic block.
 
 **Escalations recorded, outside this decision.** (1) "Delete means gone"
-cannot be a global invariant — Seattle's deactivation ordinance and India
+cannot be a global invariant. Seattle's deactivation ordinance and India
 DPDP Rule 8(3) create retention *obligations* in tension with R2; counsel
 brief 1 must carry this before the worker agreement is drafted. (2) The
 reputational exposure attaches to the **product**, not the policy: a
@@ -204,7 +204,7 @@ enrollment-token ruling below.
   academic study), buys almost no uniqueness in target markets (India
   ~1.88 SIMs/person; PH 18% multi-SIM), and email is materially cheaper
   at scale. Industry pattern (Airbnb, Login.gov, CLEAR, ID.me) is
-  email-or-phone; phone-mandatory platforms gate at payout, not signup —
+  email-or-phone; phone-mandatory platforms gate at payout, not signup,
   matching the founder's point that KYC lands at task completion/payout.
   **The real anti-Sybil control is risk scoring** (VOIP line-type,
   carrier reputation, velocity), not channel possession.
@@ -219,13 +219,13 @@ enrollment-token ruling below.
   notification to every channel on file (defeats takeover-then-destroy).
 
 **Names** (three strictly separated layers, per `research/11`; vendor
-practice is NOT the standard to copy — three of six major IDV vendors
+practice is NOT the standard to copy. Three of six major IDV vendors
 corrupt mononyms): worker-owned free-text `display_name`; immutable
 per-verification `document_name` in ICAO 9303 vocabulary
 (primary/secondary identifier, mononym flag, raw MRZ + raw visual zone,
 native script + ISO code, source); derived regenerable `name_index` for
 fuzzy matching (transliterations alongside originals, never phonetic
-hashing of non-Latin, candidates only — never auto-merge). Name changes
+hashing of non-Latin, candidates only, never auto-merge). Name changes
 are appends with use-type and validity periods; prior names are
 queryable for matching but withheld from employer-visible views at the
 query layer. PhilID middle name (mother's maiden surname) gets its own
@@ -237,12 +237,12 @@ field, never initialized; Aadhaar-style single strings are UNSPLIT.
   are triage evidence only, never identity proof (grain prior art:
   cafés, offices, VPNs, shared households produce false matches).
 - Workers may **report their own duplicates** (pull). Suspected
-  duplicates are **never proactively surfaced** to a worker — founder
+  duplicates are **never proactively surfaced** to a worker. Founder
   ruling; proactive disclosure leaks the existence of a matching account
   and teaches detection thresholds.
 - No automatic merge touches attested history. **Two stewards** required
   where both records carry verified attestations; one otherwise.
-- Concurrent multi-accounting: **flag for steward review only** — no
+- Concurrent multi-accounting: **flag for steward review only**, no
   visible enforcement, no automatic consequence.
 
 **Deletion and re-registration (supersedes 009a).**
@@ -250,22 +250,22 @@ field, never initialized; Aadhaar-style single strings are UNSPLIT.
 - A **universal, contentless enrollment token** survives every deletion:
   a one-way hash of verified document identifiers (primary strength),
   plus phone/email if present (weak). It carries **no outcome tag, no
-  cause label, no reputation content** — this is what keeps it lawful
+  cause label, no reputation content**. This is what keeps it lawful
   (fraud prevention is the named legitimate interest; retaining a
   judgment about a person is not) and simple (no cause classification, no
   adjudication surface, no race condition where a bad actor deletes
   before a finding lands).
 - **Never expires**, until counsel says otherwise.
-- Re-registration matching a token: **new ledger ID, internally linked**
-  — a tombstoned ID is never reissued (spine signatures reference it
+- Re-registration matching a token: **new ledger ID, internally linked**,
+  a tombstoned ID is never reissued (spine signatures reference it
   forever). First re-registration: usable, flagged for review. Repeat
   velocity: created but **restricted** (no verification, attestations, or
-  grants) pending steward decision. **No automatic hard block** —
-  matching after erasure is defensible fraud prevention; denying service
+  grants) pending steward decision. **No automatic hard block.**
+  Matching after erasure is defensible fraud prevention; denying service
   on it is the sharpest legal exposure, and a contentless token cannot
   distinguish fraud from a change of mind.
 - **Disclosed plainly at deletion**, not buried: the record is
-  unrecoverable, and the identity remains known — re-signup with the same
+  unrecoverable, and the identity remains known. Re-signup with the same
   documents will be recognized and may require review.
 - Open: `research/12` (deletion vs. reputation evasion) is in flight and
   counsel brief 1 carries the retention/restriction question. A contrary
@@ -280,7 +280,7 @@ submission, zero defect separation by language or model tier**, including
 deliberately Go-hostile canonicalization terrain and cheap-model cells.
 Evidence: `log/2026-08-17-t1-interim-results.md`.
 
-The gate is discharged on this interim evidence by founder ruling — the
+The gate is discharged on this interim evidence by founder ruling. The
 pre-committed rule was defect-rate-based and showed no separation; the
 undischarged discriminator tasks (state machines, folds,
 underspecification) tested ergonomics the rule would not have flipped on.
@@ -295,7 +295,7 @@ verbatim in `contract/CONTRACT.md` and vector regeneration is a
 deliverable of `trust-kernel/01` (lesson recorded: spike artifacts worth
 keeping go in the repo, not the scratchpad). Secondary finding for the
 executive loop: model tier showed no reliability cliff under the
-blind-first + differential-self-test discipline — routine kernel-adjacent
+blind-first + differential-self-test discipline, routine kernel-adjacent
 tasks may dispatch to cheaper models.
 
 ## 015 — Party-registry grilling rulings; D4 confirmed with an operator carve-out (2026-08-18)
@@ -310,10 +310,10 @@ the founder ruled **partner-held keys stand**. External parties hold
 their own registry-grade signing keys; the ledger ships the installer
 that provisions the key inside the partner's own environment; **no code
 path signs as a partner**. The dispositive reasoning in
-`design/stack-litigation/d4-verdict.md` §II(a) — that the ledger is never
+`design/stack-litigation/d4-verdict.md` §II(a), that the ledger is never
 a disinterested third party in a dispute about its own record, so
-"who could have produced this signature?" must answer *only the partner*
-— is reaffirmed as the controlling argument. Recorded because the
+"who could have produced this signature?" must answer *only the partner*,
+is reaffirmed as the controlling argument. Recorded because the
 question was put and answered, not assumed.
 
 **Amendment to the D4 invariant (narrow).** D4 §2 read "no tier in which
@@ -322,7 +322,7 @@ the operator can invoke a registry-grade party key." The operator signs
 verify through the same registry lookup as any other. The invariant is
 restated: **no code path invokes a registry-grade key other than the
 operator's own**, with the operator holding a single self-entry
-(`custody_model: ledger_kms`) enforced unique by a partial index — one
+(`custody_model: ledger_kms`) enforced unique by a partial index, one
 row, structurally. The alternative (operator keys in a table outside the
 registry) was rejected: it duplicates key-lifecycle machinery and hides
 the operator's own rotations from the public status history, which is the
@@ -335,13 +335,13 @@ Vendors hold registry entries (so accreditation re-checks and status
 machinery reach them) with `custody_model: none`. Rationale: no
 realistic KYC vendor will run the ledger's signing SDK, and requiring it
 would block the `verification` layer on an integration the ledger does
-not control. The claim as signed is also the truthful one — *the ledger
+not control. The claim as signed is also the truthful one. *The ledger
 obtained this result from that vendor*.
 
 **Vetting tier and capability are orthogonal.** `vetting_tier`
 (`internal | external_probationary | external_standard | vendor`) drives
-internal trust weighting only. Capabilities — `may_attest(scope)`,
-`may_request_packet`, `may_file_safety_marker` — are **granted
+internal trust weighting only. Capabilities, `may_attest(scope)`,
+`may_request_packet`, `may_file_safety_marker`, are **granted
 individually as append-only events**, revocable, never implied by tier.
 Safety-marker filing additionally **requires a signed addendum on file**,
 referenced by the grant record: decision 014 attaches joint
@@ -361,25 +361,25 @@ the ledger caught it at something.
 "suspended" invites readers to assume the worst of every record that
 party ever wrote; a specific reason is a defamation surface. Broad
 categories from a fixed enum. **No free-text column adjacent to
-suspension anywhere** — a text box eventually gets typed into and read
+suspension anywhere.** A text box eventually gets typed into and read
 back in a deposition.
 
 **Party principals are not ledger entities.** Partner console logins are
 `party_users`: WebAuthn-bound auth records scoped to a party, carrying no
 `ledger_person_id` and no path to one. Decision 007's two-entity rule is
-untouched — a console login is not a ledger entity. The founder noted the
+untouched. A console login is not a ledger entity. The founder noted the
 same human may separately hold a worker record; therefore **duplicate
 detection is barred from linking `party_users` to persons**, enforced, not
 merely unimplemented.
 
 **Activation gates are computed, never stored.** Two limbs, both required
 at transition and re-asserted by a check: (1) the witnessed transparency
-log exists and is accepting, queried live from the kernel — no cached
+log exists and is accepting, queried live from the kernel, no cached
 boolean, which is one UPDATE away from being flipped under deadline
 pressure; (2) the conditional liability-shield instrument
 (`design/ledger-design-0.1.md` §3.1) is executed and recorded as a
 precondition row. The **1M-attestation limb of decision 005 is a build
-deadline for the log, not a second route to activation** — recorded
+deadline for the log, not a second route to activation.** Recorded
 explicitly so it is not later read as an escape hatch.
 
 **Countersignature cadence: monthly**, or at each registry event, per
@@ -390,12 +390,12 @@ than cutting across it.
 
 **Probation caps: declared here, enforced at ingestion, never cached.**
 Default cap ≈10× the party's stated expected volume, reviewed at 90 days.
-**Accreditation re-checked every 90 days** and on any registry event —
-one scheduled job shared with the key-renewal rhythm. Falling off an
+**Accreditation re-checked every 90 days** and on any registry event.
+One scheduled job shared with the key-renewal rhythm. Falling off an
 external allowlist **flags a human and freezes new writes; it never
 auto-suspends** (name changes and data errors in external registries are
 common enough that automation would take legitimate parties offline).
-**Public per-party status pages live at plain, guessable URLs** — the
+**Public per-party status pages live at plain, guessable URLs.** The
 transparency claim is void if checking a party's standing requires
 asking us.
 
@@ -435,7 +435,7 @@ open enforcement question.
   column.
 - **Party principals are erasable; their actions are not.** A party admin is
   a natural person with erasure rights, and the reason worker records are
-  append-only — attestations must survive to stay verifiable — does not
+  append-only, attestations must survive to stay verifiable, does not
   apply to a console login. Actions carry an opaque `actor_id` that outlives
   the principal row. Requires a table-scoped exemption under foundation/03's
   documented license. **This is a gap in decision 015, not merely in a task
@@ -444,13 +444,13 @@ open enforcement question.
 - **Per-party issuance root, added to the kernel surface.** Task 07 assumed
   a per-party Merkle root that no task in the graph produced;
   `trust-kernel/04` builds one global tree over stream heads. A party must
-  countersign something it can recompute from its own records — signing the
+  countersign something it can recompute from its own records. Signing the
   global root would attest to the ledger's arithmetic instead. Recorded as
   an extension `trust-kernel`'s own grilling round did not anticipate.
 - **`person-identity/07` corrected.** Written before 015 created
   `may_file_safety_marker`, its acceptance said only "the filing party."
   Now binds 015, requires a live grant, and tests that a fully vetted
-  `external_standard` party without the grant is refused — tier confers
+  `external_standard` party without the grant is refused, tier confers
   nothing.
 - **Ingestion halt is derived, not stored.** A party is halted exactly when
   no key's validity window covers now. No `halted` column exists, matching
@@ -458,7 +458,7 @@ open enforcement question.
 - **Transactional projections on the write path.** Status, name, freeze, and
   capability reads on ingestion's hot path resolve against projections
   written in the same transaction as their events. Not a cache: no staleness
-  window, nothing to invalidate — which satisfies 015's no-cached-copy
+  window, nothing to invalidate, which satisfies 015's no-cached-copy
   ruling rather than working around it.
 
 **Found by the outside voice.**
@@ -466,7 +466,7 @@ open enforcement question.
   current key still signs, so missed expiry, cloud lockout, or admin
   compromise had no path. Recovery is **re-registration**: fresh key,
   ordinary proof-of-possession challenge, operator review, registry event.
-  No privileged bypass is created — an unwritten ceremony is not an absent
+  No privileged bypass is created. An unwritten ceremony is not an absent
   one, it is one improvised under pressure in the single place where
   improvisation destroys the D4 argument.
 - **The D3 deadline clock starts at `pending`.** Gating activation alone
@@ -482,7 +482,7 @@ open enforcement question.
   results rendering clean. Both inputs now feed the computation.
 - **Freeze is an orthogonal condition, not a lifecycle state.** A frozen
   party stays `active`, carries valid history, and is under no finding
-  (015). Adding `frozen` to the enum would render it as a mild suspension —
+  (015). Adding `frozen` to the enum would render it as a mild suspension,
   precisely what 015 forbids.
 - **Legal name is an append-only rename event.** "What was this party called
   when it signed that record" is the question a dispute asks; prior names
@@ -498,7 +498,7 @@ open enforcement question.
   are not substitutes: the root says a record is wrong, the feed says which.
 - **Unlinkability restated and structurally enforced.** The prior wording
   ("no person-identifying column") contradicted its own tests and the
-  erasure ruling above — an admin login needs an email. The invariant is: no
+  erasure ruling above. An admin login needs an email. The invariant is: no
   foreign key to a person, no shared identifier, and **no role that can read
   both `party_users` and the person tables**, with the pair in separate
   schemas and a lint on cross-schema queries. Intent is not enforcement.
@@ -511,14 +511,14 @@ open enforcement question.
   test.** A non-operator `kid` is unrepresentable at the signing boundary;
   the test proves the boundary has not widened. Partial disagreement with
   the outside voice recorded: it proposed replacing the test with the
-  boundary — the boundary is the control, the test is the alarm, and both
+  boundary. The boundary is the control, the test is the alarm, and both
   are kept.
 - **Operator uniqueness needs three constraints, not one.** A partial unique
   index on `is_operator` proves only "at most one operator." Added: a check
   binding `is_operator ⇔ custody_model = 'ledger_kms'` in both directions,
   and a seeded existence invariant.
 - **The free-text ban is scoped to reason and detail fields** adjacent to
-  adverse lifecycle events, not to text being reachable at all — the name
+  adverse lifecycle events, not to text being reachable at all. The name
   exemption above made the original wording unsatisfiable.
 - **Countersignature acceptance proves the protocol against a harness, not
   the shipped kit.** "A partner runs one install and it works" is
@@ -527,7 +527,7 @@ open enforcement question.
 
 Consequences: eight task files in `party-registry` (08 added);
 `person-identity/07` amended; `party-registry/08` declares a dependency on
-`ingestion/01`, which is not yet authored — a known dangling reference of
+`ingestion/01`, which is not yet authored, a known dangling reference of
 the same class as 07's, discharged when `ingestion` is decomposed.
 
 ## 017 — foundation engineering review; layer re-decomposed 6 → 9 tasks (2026-08-18)
@@ -537,7 +537,7 @@ Codex, high reasoning effort, 33 findings; 9 more from the seam pass. The
 volume was the finding: roughly a third were not defects in what the tasks
 said but concerns **no task covered**, which is a different failure from
 party-registry's (decision 016, all patches). Founder ruled the layer is
-**re-decomposed rather than patched** — the missing concerns become tasks
+**re-decomposed rather than patched**. The missing concerns become tasks
 with their own acceptance criteria and verifiers, because a missing rule for
 what happens when a two-database write half-fails costs every layer that
 writes, while a missing acceptance criterion costs one PR.
@@ -546,8 +546,8 @@ writes, while a missing acceptance criterion costs one PR.
 (`foundation/07`, new). There is no shared transaction across two physical
 databases (decision 011), so every spine+payload write could commit one side
 and lose the other, and nothing said what happens next. The spine write and
-an outbox row commit together — the spine is the ordering authority, so its
-commit is what "recorded" means — then a worker applies payload
+an outbox row commit together, the spine is the ordering authority, so its
+commit is what "recorded" means, then a worker applies payload
 idempotently, a reconciler surfaces stragglers, and acknowledgment waits for
 both planes. **No compensation path**: the spine is append-only, so
 "undoing" a spine write means writing a retraction, which would put an
@@ -563,12 +563,12 @@ keyed to the subject and **never dual-wrapped**. Deleting the person makes
 the row unreadable to everyone, the issuing party included. Grounded in
 decision 014, whose reasoning already depends on parties holding their own
 work records outside the ledger. A dual wrap would leave a readable copy of
-a deleted person's record — the structure 014 rejected on AEPD and CNIL
+a deleted person's record, the structure 014 rejected on AEPD and CNIL
 reasoning. Consequence for the partner agreement: it must state plainly that
 the ledger-side copy does not survive the subject's deletion.
 
 **Deletion mechanics** (`foundation/08`, new). Three gaps closed at once.
-(1) **Backups defeated deletion and nothing addressed it** — a backup holds
+(1) **Backups defeated deletion and nothing addressed it.** A backup holds
 the wrapped key, so a restore resurrects a deleted person. Ruling: bounded,
 stated backup retention plus a **mandatory restore-time deletion replay**
 that gates traffic; a restored system that has not replayed does not serve.
@@ -579,7 +579,7 @@ cloud ruling and worker-scale volume is where they bite. The residual window
 is **disclosed**, and a check fails if the number in worker-facing copy
 drifts from the number in config. (2) **Scheduled physical purge** of
 shredded rows, with the purge role the only role holding DELETE on payload
-tables — this is also the concrete rule replacing foundation/04's
+tables. This is also the concrete rule replacing foundation/04's
 placeholder exemption "where deletion requires it." (3) **Crypto-shredding
 is recorded as a documented legal position, not a mechanical proof**, citing
 014's *EDPS v SRB* analysis: the ledger cannot re-identify, and that is the
@@ -587,51 +587,51 @@ load-bearing fact.
 
 **One shared migration numbering sequence across both chains.** Task 06
 checked "collisions and gaps across both chains" while task 04 created two
-independent chains — two different models, both asserted. Ruling: numbers
+independent chains, two different models, both asserted. Ruling: numbers
 are globally unique across spine and payload; each chain has gaps where the
 other's fall. Only a shared sequence can express a cross-plane ordering
 constraint, and the constraint is live rather than hypothetical:
 `0014-safety-markers` references the party table created in
-`0009-party-core`. A new `checks/migration-order.mjs` enforces it —
-collisions and gaps do not catch reference ordering.
+`0009-party-core`. A new `checks/migration-order.mjs` enforces it.
+Collisions and gaps do not catch reference ordering.
 
 **AC-F3 narrowed to what it can prove, with the rest made explicit.** The
 criterion claimed no spine column holds readable personal data and enforced
 it with a type lint. A lint blocks a `text` column; it cannot prove an
 opaque `bytea` or an id does not encode a name, and it says nothing about
-the harder direction — stable ids, timestamps, and issuer patterns identify
+the harder direction: stable ids, timestamps, and issuer patterns identify
 people by **correlation** with zero readable columns present. Ruling: an
 **exhaustive allow-list** of permitted spine types (the term
 "readable-content type" was never defined, so implementers would have
 invented the boundary), a **written justification** in-migration for
 anything outside it reviewed by a human, and the correlation risk as its own
-deliverable — `foundation/09`, the **spine linkage threat model**, new, a
+deliverable, `foundation/09`, the **spine linkage threat model**, new, a
 document task with no code, because every layer above adds spine columns and
 needs something to review them against.
 
 **Append-only had holes; the claim is now scoped and the boundaries are
 operational.** The unqualified "cannot UPDATE or DELETE any table" would
 have gone false the moment the first exemption landed, and a test trained to
-ignore exceptions is worse than no test — the exemption list is now
+ignore exceptions is worse than no test. The exemption list is now
 enumerated in the test. Beyond the grant: serving processes hold no owner or
 migration credentials, and **SECURITY DEFINER recording functions may only
-INSERT** (asserted by inspecting bodies) — `ingestion` writes through them
+INSERT** (asserted by inspecting bodies). `ingestion` writes through them
 by design, which was a legitimate path around the restriction. Default-
 privilege inheritance is proven across both databases, multiple schemas, and
 a second owner role, because Postgres default privileges are per granting
 role and per schema and a single-schema test proved far less than claimed.
-The inherited derived/cache exemption clause is **dropped** — imported from
+The inherited derived/cache exemption clause is **dropped**. Imported from
 Dispatch before this repo has derived/cache semantics, it was an unused
 escape hatch.
 
 **Smaller rulings applied.** Typegen output is **namespaced per plane** so a
-payload type cannot satisfy a spine-typed parameter — accidental cross-plane
+payload type cannot satisfy a spine-typed parameter. Accidental cross-plane
 type reuse violates the split in application code while every database check
 passes. CI is a **dependency graph, not a linear slogan**: metadata checks
 (frontmatter, plan graph, numbering, ordering, decisions) run before any
 database boots. Red-path CI acceptance uses **excluded fixtures**, not
 genuinely broken committed files, which would make the tree permanently red.
-`make check` **never requires cloud credentials** — local Docker and managed
+`make check` **never requires cloud credentials**. Local Docker and managed
 D1 were conflated. The DEK registry's derived state is specified: at most
 one active DEK per person by constraint, one documented resolution rule,
 idempotent destruction. `destroy(person)` is defined for **merged
@@ -639,7 +639,7 @@ identities** (every id in the alias closure) and under concurrency (fail
 closed, never partial plaintext). Encryption evidence is **stronger than a
 dump grep**, which only proves one planted literal is absent. The provider
 invariant is corrected: **business logic is provider-agnostic; operational
-code may know** — observability and incident response legitimately need to.
+code may know**. Observability and incident response legitimately need to.
 The **KMS verification gap** created by decision 011's no-staging ruling is
 named and mitigated with a provider conformance suite the real KMS must pass
 in an ephemeral environment before first production use. Layer `binds`
@@ -681,7 +681,7 @@ Closes the items decision 017 recorded as open or applied-without-ruling.
   and `party-registry/04` now depends on `foundation/03` accordingly.
   Chosen over a one-off grant because a second boundary is likely
   (verification evidence, safety markers) and when the mechanism is
-  schemas plus grants, the general version costs almost nothing more —
+  schemas plus grants, the general version costs almost nothing more,
   while a second one-off would give one invariant two expressions and the
   cross-schema lint would be written twice.
 - **The payload database is authoritative for residency; the column is a
@@ -689,7 +689,7 @@ Closes the items decision 017 recorded as open or applied-without-ruling.
   column stays because it is what survives a dump or restore, which is
   precisely when the database name is lost, and a check now fails any row
   whose `residency_region` disagrees with the database holding it. Dropping
-  the column was rejected — it would make a separated payload dump
+  the column was rejected. It would make a separated payload dump
   unidentifiable and reverse AC-F4. Demoting the database to a naming
   convention was rejected as undoing decision 011's physical seam.
 
@@ -705,18 +705,18 @@ its statements had gone stale rather than being wrong when written.
 freezes the protected header to **the exact 15 bytes** `{"alg":"EdDSA"}`,
 compared byte-for-byte. There is nowhere in the header for it. Ruling: the
 key identifier is a **signed payload field**, which places key identity
-inside the signed bytes — nobody can change which key a record claims
+inside the signed bytes. Nobody can change which key a record claims
 without breaking the signature. Amending the contract to admit a two-field
 header was rejected: it invalidates every golden vector and the byte-
 exactness is deliberate (seven ambiguity resolutions were recorded to reach
-it). An unprotected header was rejected outright — unsigned key identity is
+it). An unprotected header was rejected outright. Unsigned key identity is
 the substitution attack the registry lookup exists to prevent.
 **Consequence requiring separate action:** `model/attestation-interface.md`
 (schema_version 0.2, ratified in decision 006) must carry the field. Not
 amended here; flagged as an interface change needing its own ratification.
 
 **Signing takes no key parameter.** `sign(kid, bytes)` made "no non-operator
-key is invokable" a runtime string check — the exact regression decision 016
+key is invokable", a runtime string check, the exact regression decision 016
 wanted structurally prevented. Ruling: `sign(bytes)` returns the signature
 plus the key identifier used; key selection and rotation are internal to the
 operator provider. With no key parameter, the wrong key is **unexpressible
@@ -726,7 +726,7 @@ for anything, and as a parameter whose only valid value is always the same.
 
 **Chains cover every governing event, not only attestations.** D3's anchored
 contents are broader than the attestation record, and **D4's dispositive
-argument depends on registry manipulation being visible in the log** — which
+argument depends on registry manipulation being visible in the log**, which
 is false if registry events are unchained. Added streams: registry and party
 lifecycle events, key events, privileged operator actions, deletion journal
 entries. An audited-but-unanchored operator action is alterable by the
@@ -747,7 +747,7 @@ resolution layer; unmerge is trivially correct in exchange.
 
 **Anchoring and acknowledgment are two different moments, stated.** A spine
 row whose payload apply is still in flight (decision 017's outbox) **is
-anchored** — coupling the ≤5-minute cadence to a background worker would let
+anchored**. Coupling the ≤5-minute cadence to a background worker would let
 a retry loop stall a launch-blocking commitment. The signed receipt to a
 party fires on the acknowledgment watermark instead. Anchoring proves
 ordering; acknowledgment proves durability. Anchoring only acknowledged
@@ -758,7 +758,7 @@ spine commit was rejected as reversing decision 017's acknowledgment rule.
 the cloud-ruling line.** `trust-kernel/04` specified the tree and a local
 WORM stand-in; D3 also requires each checkpoint to **name its predecessor**,
 a **continuous reconciliation job**, signed receipts at ingest, a dedicated
-compliance-mode object-lock account, and a second-cloud mirror — so AC-TK3
+compliance-mode object-lock account, and a second-cloud mirror, so AC-TK3
 could not be met by what the task described. Predecessor chaining and
 reconciliation are pure logic and stay in `04` (the predecessor is a format
 decision: deferring it means the first checkpoints are written in a format
@@ -770,7 +770,7 @@ explicitly rather than silently.
 
 **The independently-authored reference model becomes `trust-kernel/06`.** The
 layer promised it and AC-TK1 referenced it; no task created it. Golden
-vectors cannot substitute — **the vectors are generated by the implementation
+vectors cannot substitute. **The vectors are generated by the implementation
 they test**, so a contract misreading baked into the generator produces
 vectors that agree with the bug. The task is dispatched with explicit
 instruction not to read `core/kernel/`: independence is enforced by
@@ -778,7 +778,7 @@ assignment, because one author writing both shares the misreading twice.
 Folding it into `01` was rejected for that reason.
 
 **The 3k line budget holds; orchestration moves out.** The budget bounds what
-gets two-human review, fuzzing, and formal specs — it does not measure the
+gets two-human review, fuzzing, and formal specs. It does not measure the
 layer. Frozen core: canonicalization, sign/verify, chain append/verify, tree
 construction and proofs. Kernel-adjacent, ordinary review: scheduler,
 publisher, reconciliation, per-party root assembly. Raising the cap was
@@ -789,20 +789,20 @@ perfunctory, and a budget that moves when inconvenient is not a budget.
 (decisions 015/016 gave the operator a self-entry it signs with; the old
 absolute wording was false). Layer and task `binds` extended to 012, 015,
 016, 017, 019. `0007-stream-heads` re-licensed as a **named, role-scoped**
-exemption — decision 017 dropped foundation/03's blanket derived/cache
+exemption. Decision 017 dropped foundation/03's blanket derived/cache
 clause, so the table can no longer claim it; foundation/03's exemption list
 now names it alongside `party_users` erasure and the payload purge role.
 Layer no longer claims inclusion *receipts* (kernel provides proofs;
 `ingestion` issues receipts) and no longer says "KMS-only" custody, which
 contradicted decision 011's software provider for local/CI. Two-human review
-acceptance now checks the **host branch-protection policy** — CODEOWNERS
+acceptance now checks the **host branch-protection policy**. CODEOWNERS
 requests reviewers, it does not require them, and a synthetic PR in local CI
 cannot prove a rule living in the host's settings. The **per-party issuance
 root relocated** from `party-registry/07` to `trust-kernel/04` under decision
 015's boundary rule; party-registry consumes the API. `trust-kernel/05`'s
 dependencies corrected: Spec B models deletion, purge, restore replay, and
 alias-closure key destruction, so it can no longer depend on
-`trust-kernel/03` alone — it now declares `foundation/08`,
+`trust-kernel/03` alone. It now declares `foundation/08`,
 `person-identity/06`, and `consent-and-deletion/01`, and its invariants gain
 decision 017's surface (alias-closure key destruction, purge never partially
 observable, an unreplayed restore cannot serve a read).
@@ -824,11 +824,11 @@ said `document_identifier_hash` and stopped. Document identifiers are
 **low-entropy and follow published per-country formats**, so a plain hash is
 enumerable: generate every valid number for a jurisdiction, hash each,
 compare. The marker table would become a de-anonymizable list of who has
-been flagged — the structure the AEPD fined Goldcar over, and exactly the
+been flagged. The structure the AEPD fined Goldcar over, and exactly the
 re-identification capability decision 014's *EDPS v SRB* analysis identifies
 as what makes a value personal data. Ruling: keyed hash with **the key in
 the key management service, never in the database**, plus the parts that
-were missing entirely — issuer and document-type canonicalization (one
+were missing entirely: issuer and document-type canonicalization (one
 document written two ways must yield one key, or matching does not work),
 a key-rotation and re-derivation story with a stated window, a collision
 policy, and a written brute-force analysis against the weakest
@@ -838,7 +838,7 @@ data does nothing against an attacker holding the table.
 **The recovery freeze had a time bomb.** A deletion requested during the
 7-day freeze was to execute automatically at expiry. So an attacker
 recovers the account, requests deletion, waits a week, and the system
-destroys the record for them — the exact attack the freeze exists to stop,
+destroys the record for them. The exact attack the freeze exists to stop,
 merely delayed, and the task's own outside check would have passed. Ruling:
 the queued deletion **requires fresh authenticated confirmation after
 expiry**. A legitimate owner is never permanently blocked, which was the
@@ -849,7 +849,7 @@ execution.
 **One-time-code sessions get step-up on a closed sensitive set.** The code
 path is first-class by design, but nothing said what such a session may do.
 If it can enroll a passkey, change channels, create grants, request a
-packet, or start a deletion, then AC-PI2 is performative — an attacker never
+packet, or start a deletion, then AC-PI2 is performative. An attacker never
 needs the hardened recovery path when ordinary login reaches everything.
 Ruling: those five operations require a session whose assurance **matches
 the account's derived level**, reusing the concept recovery already uses
@@ -863,7 +863,7 @@ cold-start with "no linkage artifact" after deletion; decision 014 creates a
 usable-but-restricted account on a live marker match plus internal linkage
 and a steward flag. New criteria: unmarked deletion (truly clean), live
 marker (restricted pending review, never denial), **expired marker (clean,
-marker inert)** — the case where an expiry bug would otherwise hide forever —
+marker inert)**, the case where an expiry bug would otherwise hide forever,
 and prior-merge history. The layer's "never fresh-start prevention" line and
 its `decisions/LOG.md#009` binding are both corrected; 009(a) was superseded
 twice over.
@@ -876,27 +876,27 @@ would never be recorded there. An auditor walking either chain alone must
 see a complete story. Unmerge likewise appends to both.
 
 **Names get explicit generous bounds.** "No length cap" is not an
-implementable instruction — a column, a rendered packet, a search index, and
+implementable instruction: a column, a rendered packet, a search index, and
 an abuse check on worker-submittable free text each need a bound, and absent
 one the first oversized input decides the behavior in whichever component
 fails first. The model's principle was that no *cultural structure* is
 imposed, not that no limit exists. Bounds are stated with reasoning at the
 schema site, and over-length input is **rejected loudly, never truncated
-silently** — silent truncation being the precise harm the model exists to
+silently**. Silent truncation is the precise harm the model exists to
 prevent.
 
 **Corrections applied.** Layer `binds` moved from `#009` alone to 013, 014,
 016, 017, 019, 020. `person-identity/01` gains `foundation/07` (signup
 writes both planes) and defines "instantly" as spine commit, with payload
-following through the outbox — three different claims were hiding in one
+following through the outbox. Three different claims were hiding in one
 word. `person-identity/06`'s "permanent alias table" with a flipped pointer
 becomes **append-only alias events plus a named, role-scoped projection
 exemption**, since decision 017 removed the blanket derived/cache license.
 `06` also gains the deletion-under-merge obligation: it owns the alias
 closure, so it owns proving the deletion subsystem receives the correct one
 under a merge-or-unmerge racing a deletion. `07`'s `challenge_state` becomes
-**append-only challenge events** — a mutable field on an append-only marker
-row is a contradiction — and marker filings and steward approvals join the
+**append-only challenge events**, a mutable field on an append-only marker
+row is a contradiction, and marker filings and steward approvals join the
 chained and anchored governing-event set from decision 019. `07`'s raw-dump
 deletion assertion is replaced by decision 017's full evidence set.
 
@@ -916,7 +916,7 @@ prior draft's self-description was wrong and is superseded.
 
 - **Authority.** The thesis is the topline vision for the identity layer.
   Where a plan disagrees with it the plan is flagged, and usually the plan
-  changes. It does not silently override ratified mechanics — a conflict with
+  changes. It does not silently override ratified mechanics. A conflict with
   `model/attestation-interface.md` or `contract/CONTRACT.md` is a defect
   resolved by a decision entry, not by whichever file was written last.
 - **The draft header claiming it "supersedes nothing" is struck.** It was
@@ -925,7 +925,7 @@ prior draft's self-description was wrong and is superseded.
 - **Scope is the identity layer.** Dispatch holds its own thesis, aligned.
   Identity is the platform; adjacent businesses are secondary to it.
 - **`handoff/founder-thesis.md` is stale**, marked as such in its own header,
-  and superseded on every point where the two differ — notably its placement
+  and superseded on every point where the two differ: notably its placement
   of commodity assessments on the buy-don't-build list, and its framing of the
   four verticals as the primary object.
 - **Correction of record.** The prior draft cited three rulings dated
@@ -943,7 +943,7 @@ instrument is a precondition for selling grading.
   likely the first thing sold. It runs on partially verified history.
 - **Input set**: work history at whatever verification level exists; skills
   assessment results where any exist; performance in Grain's courses or
-  others'; structured references (entry 023); and observable meta-signals —
+  others'; structured references (entry 023); and observable meta-signals:
   average tenure in role, described responsibility, seniority.
 - **Every input is weighted by provenance class.** A self-asserted history and
   a party-attested one never carry equal weight.
@@ -955,7 +955,7 @@ instrument is a precondition for selling grading.
   the product returns insufficient data and suggests an assessment rather than
   producing a number. **OPEN: the threshold itself**, and whether it is
   published.
-- **Slope ships with its limits disclosed** — the three known failure modes
+- **Slope ships with its limits disclosed.** The three known failure modes
   (routing flattens raw grades while ability rises; frozen difficulty priors
   read promotions as decline; grader drift tracks the trend being measured)
   are stated on the face of every trajectory output. The fixed instrument is
@@ -970,7 +970,7 @@ instrument is a precondition for selling grading.
 - **Workers do not see when analytics are run on them.** They see raw work
   history and facts. Recorded as a deliberate cost and the largest departure
   from the worker-ownership story.
-- **Worker-facing job-match suggestions** are permitted in principle — ranking
+- **Worker-facing job-match suggestions** are permitted in principle: ranking
   roles for a person, never candidates for a partner, and no Grain-computed
   ranking is transmitted to a partner. Longer-term surface: build
   compatibility, do not build first. **OPEN: employer-side matching.**
@@ -985,7 +985,7 @@ New day-one mechanism, absent from the interface and every plan.
 - **A reference is tied to a real person profile** and carries its own
   provenance.
 - **Attester trust is tracked over time.** Veracity **events** are stored as
-  facts — this attestation was found falsified, this one corroborated — and
+  facts: this attestation was found falsified, this one corroborated, and
   the trust weight is **derived at read time** from those events. Storing the
   events rather than a computed score is what keeps this compatible with the
   interface rule that derived estimates never enter as fact.
@@ -1002,7 +1002,7 @@ New day-one mechanism, absent from the interface and every plan.
 
 ## 024 — Record-layer and posture rulings (2026-08-18)
 
-- **The record layer is free to everyone, permanently** — candidates and
+- **The record layer is free to everyone, permanently**, candidates and
   employers alike. The compiled data is the asset, not access to it. Consistent
   with entry 002's "no economics embedded": the thesis states the layer is free
   and carries no pricing.
@@ -1014,7 +1014,7 @@ New day-one mechanism, absent from the interface and every plan.
   byproduct of work the partner already does. Contractual reciprocity is the
   backstop; Grain's own verticals seed the graph meanwhile. Nothing is designed
   yet.
-- **Nobody re-inks the mark** — third-party embeds and Grain's own verticals
+- **Nobody re-inks the mark**, third-party embeds and Grain's own verticals
   alike. Supersedes the draft thesis's asymmetry, which justified Grain's own
   re-inking by ownership and thereby undercut the neutrality argument it sits
   beside.
@@ -1041,7 +1041,7 @@ would be trusted less across the network afterwards. Entry 014 had already
 ruled against exactly this shape and the reasoning was not revisited when 023
 was written: default is that nothing survives deletion, and **performance-based
 exits leave no token, no hash, no marker**. Attester trust does not fit 014's
-severity-gated carve-out on four counts — the marker is keyed to a document
+severity-gated carve-out on four counts: the marker is keyed to a document
 identifier with no payload, carries a fixed expiry, requires an evidential floor
 of "could confidently report to the police", and produces **review, never
 denial**, whereas attester trust produces automatic network-wide down-weighting
@@ -1051,13 +1051,13 @@ as one.
 
 `research/13` closes the remaining argument. **AEPD PS-00176-2024 (Iberia
 Cards)** fined a controller that retained precisely the minimal link needed to
-recognise a returning applicant and used it against them — an Article 6(1)
+recognise a returning applicant and used it against them, an Article 6(1)
 infringement, with no fraud and no safety involved.
 
 **Consequences.**
-- `peer-references` keeps its Sybil apparatus — reciprocity caps, velocity
+- `peer-references` keeps its Sybil apparatus: reciprocity caps, velocity
   limits, device/IP clustering, verified-anchor weighting, `excluded` grading,
-  the shadow/promotion gate — which already addresses the abuse case that
+  the shadow/promotion gate, which already addresses the abuse case that
   motivated attester trust. It loses veracity events and read-time trust
   derivation.
 - Serious falsification routes to entry 014's existing safety marker. Below that
@@ -1085,12 +1085,12 @@ input attestation refs, instrument and model versions, and **the output**" for
 output may not lawfully be retained about a person who has deleted, and that no
 regime surveyed requires it.
 
-**The AI Act does not compel it.** Art. 12(1) is a design duty — the system
-"shall technically allow for" logging — not a retention duty. Art. 12(3) is the
+**The AI Act does not compel it.** Art. 12(1) is a design duty, the system
+"shall technically allow for" logging, not a retention duty. Art. 12(3) is the
 only provision itemising log content, including input data, and it applies only
 to Annex III point 1(a) biometric identification. Grain is Annex III point 4, so
 **no minimum log content is prescribed at all**. Art. 19 is the sole retention
-duty: a six-month floor, risk-based, expressly subordinated — "unless provided
+duty: a six-month floor, risk-based, expressly subordinated, "unless provided
 otherwise in the applicable Union or national law, **in particular in Union law
 on the protection of personal data**". A provision that yields to the GDPR
 cannot be the Art. 17(3)(b) legal obligation that displaces a GDPR right. Art.
@@ -1099,14 +1099,14 @@ and *SS SIA* (C-175/20) each independently confine it further.
 
 **No other regime asks for it either.** Colorado SB 26-189 §6-1-1702(4) imposes
 a three-year retention duty directly on Grain as developer, but over **system
-version identifiers, changelogs, and deployer notices** — system artifacts, not
+version identifiers, changelogs, and deployer notices**, system artifacts, not
 person records. California 11 CCR §7101(e) says expressly that a business is not
 required to retain personal information to fulfil a consumer request; §7155(c)'s
 five-year duty covers risk assessments about the processing. US federal
 recordkeeping binds the employer, not the vendor.
 
 **The ruling.** A run record holds the **requesting party, the timestamp, the
-instrument and model versions, and the input references** — and **not the
+instrument and model versions, and the input references**, and **not the
 output**, and nothing else attributable to a person. It is reachable by
 regulator and by audit and by no read path that touches ranking or a worker's
 packet. Retention is six months minimum per Art. 19, with the period stated as a
@@ -1115,7 +1115,7 @@ periods across the regimes surveyed.
 
 **Two open items this creates.**
 - **OPEN: the pseudonym.** Pseudonymised run records work only if the pseudonym
-  is not the `ledger_person_id` — entries 013 and 020 make tombstoned ids
+  is not the `ledger_person_id`. Entries 013 and 020 make tombstoned ids
   permanent and referenced in spine signatures forever, which is a retained
   means of singling out (EDPB Guidelines 01/2025). What identifier a run record
   carries is undesigned.
@@ -1126,8 +1126,8 @@ periods across the regimes surveyed.
 
 **Recorded, not ruled.** Two findings from `research/13` and `research/14` that
 belong to the founder and are not decided here: worker-facing job suggestions
-match 42 U.S.C. §2000e(c)'s definition of an employment agency — "to procure for
-employees opportunities to work for an employer" — which would make Grain a
+match 42 U.S.C. §2000e(c)'s definition of an employment agency, "to procure for
+employees opportunities to work for an employer", which would make Grain a
 covered entity in its own right rather than a vendor supplying documentation to
 one; and a cross-employer performance register is a labour-market information
 exchange under the January 2025 DOJ/FTC guidelines, where third-party
@@ -1138,7 +1138,7 @@ intermediation is expressly not a defence. Both are in `ORDER.md`'s gate table.
 Recorded in `mark/README.md` and `DESIGN.md` §3; generator and assets in `mark/`.
 
 **The mark.** Three concentric threaded bands, seven lobes, unequal band widths,
-one lobe deliberately deepened. Provisional — the lobe count may change and the
+one lobe deliberately deepened. Provisional. The lobe count may change and the
 generator is parameterised accordingly. Four purpose-drawn size tiers; scaling
 the master is what fails below ~40px. Dark renders stronger than light under
 ~120px.
@@ -1191,13 +1191,13 @@ findings in entry 026 stay open and are not treated as blocking. Order of work:
   commit.
 - **Once work history is added, only minor edits are possible.** Removal requires
   contacting support with a justification. Coherent with decision 003: the worker's
-  exit is all-or-nothing — whole-profile deletion remains available at any time,
+  exit is all-or-nothing, whole-profile deletion remains available at any time,
   but individual chapters cannot be quietly excised.
 
 **Attestation.**
 - **Partners write freely. No worker countersign.** Founder ruling: the employer is
   inherently more trustworthy. Consequence to design for: GDPR Art. 16 gives a
-  right of rectification regardless, so a correction path must exist — it moves
+  right of rectification regardless, so a correction path must exist, it moves
   from a countersign gate to a post-hoc dispute.
 - **The party registers, not the person.** Attesting from a registered party's
   verified domain is a signed link and one click, no account. An individual with no
@@ -1209,8 +1209,8 @@ findings in entry 026 stay open and are not treated as blocking. Order of work:
 
 **Disputes.**
 - **Grain adjudicates authenticity, never substance.** Whether an attestation was
-  genuinely signed by that party, whether it is a duplicate or spam — yes. Whether
-  a performance claim is fair — never. Reason: FCRA §611 requires a consumer
+  genuinely signed by that party, whether it is a duplicate or spam: yes. Whether
+  a performance claim is fair: never. Reason: FCRA §611 requires a consumer
   reporting agency to conduct reasonable reinvestigation of disputed information;
   performing substantive reinvestigation voluntarily is a defining CRA duty and
   cuts against the R1 posture in decision 003.
@@ -1223,7 +1223,7 @@ findings in entry 026 stay open and are not treated as blocking. Order of work:
 - **Custom share link**: full record including the imprint. Sensitive, carries a
   warning, expires by default, revocable, and the worker can see every link issued.
 
-**Verification tiers.** Four internally — recorded, contact, document, biometric.
+**Verification tiers.** Four internally: recorded, contact, document, biometric.
 **Only two surface to partners: identity verified, or not.** Document is the line;
 contact tier is the most likely to be misread as meaning more than an email
 round-trip. Biometric stays opt-in for a stated reason, given BIPA, the EU AI Act
@@ -1250,7 +1250,7 @@ employers connected their HR systems and Grain held verified employment records
 about people who had not signed up, for those people to claim later.
 
 **The mechanic.** A worker creates a Grain identity themselves. They assert a
-chapter — employer, role, dates — which enters the record as `self_asserted`.
+chapter: employer, role, dates, which enters the record as `self_asserted`.
 They then request verification from that employer; the request is timestamped
 and carries a `verification_request_id`. The employer confirms against its own
 roster, through a connected system or a human, and signs an attestation. The
@@ -1263,13 +1263,13 @@ attestation enters the ledger; the employer's roster row never does.
   reporting agency.** Pre-claim collection removes the last non-frivolous
   argument. FTC comment 603(d)(2)(A)(i)-1E holds that a reference communication
   from an employer is excluded but the same information from a CRA to a
-  potential employer *is* a consumer report — privity runs to the source and
+  potential employer *is* a consumer report. Privity runs to the source and
   does not travel with the data. The market has sorted on this axis: the
   employer-pushed platforms are CRAs and the one consumer-initiated platform is
   the only non-CRA claimant. The founder ruled against accepting that
   classification. **R1 (decision 003) is preserved by changing the mechanic, not
   by argument.**
-- **EU: no lawful basis for the employer-push shape.** Consent fails twice —
+- **EU: no lawful basis for the employer-push shape.** Consent fails twice:
   sought from the wrong person under Art. 4(11), and unfree in the employment
   context. Contract fails on the face of Art. 6(1)(b). Legitimate interests
   fails at the *necessity* limb before balancing, under *KNLTB* C-621/22
@@ -1277,14 +1277,14 @@ attestation enters the ledger; the employer's roster row never does.
   and Grain can ask first.
 - **The value was unavailable in any case.** Data protection, competition law,
   AI Act Art. 26(7) and this repo's own ratified schema independently converge
-  on the same constraint — no employer may read a record it did not supply
+  on the same constraint: no employer may read a record it did not supply
   unless the worker discloses it, and nothing unclaimed may feed analytics.
   The employer-side flywheel the mechanic existed to create could not have been
   built from it.
 
-**Consequences.** The ratified rule at `model/attestation-interface.md` — *"A
+**Consequences.** The ratified rule at `model/attestation-interface.md`, *"A
 person without a ledger ID cannot be attested for; the attestation waits until
-the reference exists"* — is correct as written and needs no amendment. The
+the reference exists"*, is correct as written and needs no amendment. The
 retention question for unclaimed records is moot. Art. 14 becomes ordinary
 Art. 13 notice to a user. Maryland's minimisation standard (Com. Law
 § 14-4607(b)(1)(i)), which benchmarks collection against a service *requested by
@@ -1297,7 +1297,7 @@ reasoning that the employer is inherently more trustworthy. A required
 about a subject unprompted. The narrowing is confined to what it must be: **the
 worker initiates the first attestation from a given party; that party writes
 freely thereafter**, within the relationship the worker opened. The countersign
-is still absent — a worker never approves the content of what is written about
+is still absent. A worker never approves the content of what is written about
 them, only whether the relationship enters their record at all. 028's dispute
 path remains the correction mechanism.
 
@@ -1311,7 +1311,7 @@ worker-initiation story. Brief 5 carries it.
 antitrust exposure on multi-employer pooling (brief 6, new); the CPPA ADMT
 compliance date of 1 January 2027 for the ranking surface; Colorado 4 CCR 904-3
 Rule 4.06(D)(4) against R2; and the counsel-brief overlap at 15 U.S.C.
-§ 1681h(e), whose qualified immunity runs only to CRAs — briefs 3 and 4 are
+§ 1681h(e), whose qualified immunity runs only to CRAs. Briefs 3 and 4 are
 answering one question without knowing it.
 
 **Open, surfaced this session and unruled.** The two marks collide: the
@@ -1341,7 +1341,7 @@ request, carrying a `verification_request_id` that is the auditable evidence of
 initiation.
 
 **Grain may not prompt the crossing from roster knowledge.** Surfacing "this
-employer is connected — is this you?" requires knowing the worker appears on
+employer is connected. Is this you?" requires knowing the worker appears on
 that roster. The worker names the employer unprompted, or from a list shown
 identically to everyone. This is the constraint that makes the boundary hold,
 and it is the one most likely to be removed later as a usability improvement.
@@ -1359,28 +1359,28 @@ mean the opposite of what their names imply.
 ## 033 — Interface amendments 0.2 → 0.3, PROPOSED (2026-08-19)
 
 Two amendments to the ratified contract at `model/attestation-interface.md`.
-**Proposed, not ratified** — ratification is a founder act and has not occurred.
+**Proposed, not ratified.** Ratification is a founder act and has not occurred.
 
-**A-6 — the packet delivers a pairwise pseudonym, not `ledger_person_id`.**
+**A-6: the packet delivers a pairwise pseudonym, not `ledger_person_id`.**
 Decision 028 ruled that partners receive a per-partner pairwise pseudonym and
 that the ledger id never leaves the system, precisely so it cannot become a
 cross-service correlation key. The contract was never updated and still lists
 `ledger_person_id` in the down direction. 028 is later and stronger; the
 contract catches up.
 
-**A-7 — a third `scope` value, `evaluation`.** `scope` currently admits
+**A-7: a third `scope` value, `evaluation`.** `scope` currently admits
 `engagement` and `period`, both of which describe work performed. Two objects
 need a scope that does not exist: a manager's structured reference, and a skills
 assessment result. THESIS §5 already records the assessment gap. Both are
 statements of *judgment about a person* rather than records of work, which makes
-them a scope problem and not a fourth provenance class — the source is already
+them a scope problem and not a fourth provenance class. The source is already
 covered by `party_attested` or `peer_attested`. `evaluation` carries a required
 `evaluation_kind` discriminator (`reference | assessment`) and the same signing,
 supersession and sensitive-data rules as every other attestation.
 
 Rationale for one scope rather than two: the ledger's reason to distinguish them
-is identical — a reader must know that a claim is evaluative before weighing it
-— while the difference between a reference and an assessment is a property of
+is identical, a reader must know that a claim is evaluative before weighing it,
+while the difference between a reference and an assessment is a property of
 the instrument, which the discriminator carries.
 
 ## 034 — Dispatch conventions bind; standardization pass (2026-08-19)
@@ -1394,14 +1394,14 @@ else in this entry is already applied.
 conventions as "offered, not mandated"; `plans/ORDER.md` recorded the protocol
 as "adopted from Dispatch verbatim". Nothing stated which governed, and no
 `CLAUDE.md` or `AGENTS.md` existed to say. **They bind. ORDER.md governs.**
-Divergence from Dispatch remains legitimate — several existing ones are
-improvements — but an unrecorded divergence is drift, and a deliberate one now
+Divergence from Dispatch remains legitimate, several existing ones are
+improvements, but an unrecorded divergence is drift, and a deliberate one now
 requires an entry stating its reason.
 
 **`CLAUDE.md` written, `AGENTS.md` symlinked to it**, matching Dispatch's
 arrangement. It carries the product test, the constraint that outranks
-convenience, the plan gate, the counts rule, and — the thing this repo most
-lacked — **a source-of-truth precedence list**: CLAUDE.md, then
+convenience, the plan gate, the counts rule, and, the thing this repo most
+lacked, **a source-of-truth precedence list**: CLAUDE.md, then
 `decisions/LOG.md`, then `model/`, then `THESIS.md`, then code. An agent
 holding a draft thesis, a draft design system, a `model/` mixing RATIFIED with
 PROPOSED, and a 1,600-line log previously had no rule for which wins.
@@ -1418,7 +1418,7 @@ whoever verified first.
 
 **The grammar binds from today forward.** History conforms on 2 of 25 commits;
 Dispatch runs 95.3% across 193. The 22 non-conforming subjects are **not**
-being rewritten — that means force-pushing a published branch, and evidence
+being rewritten. That means force-pushing a published branch, and evidence
 cites SHAs rather than subjects, so nothing depends on them.
 
 **Applied elsewhere.** Every `research/` memo now carries the evidence-tier
@@ -1427,8 +1427,8 @@ statement; thirteen lacked one and the rest used six different forms.
 `founder-thesis.md` already was. `README.md` was the word "identity" three
 times and is now the repository map. The hand-written count in `mark/README.md`
 said three objects above a five-row table. `foundation/06` gains
-`verbatim-copies.mjs` — in Dispatch the precondition for quoting any constraint
-into a plan file, and its absence is what makes quoting look free — and a new
+`verbatim-copies.mjs`, in Dispatch the precondition for quoting any constraint
+into a plan file, and its absence is what makes quoting look free, and a new
 counts check.
 
 **Six acceptance criteria repaired** (AC-V2, AC-V3, AC-TK3, AC-IS4, AC-PW2,
@@ -1438,12 +1438,12 @@ becomes **AC-F8**, adjudicated, so the lint can no longer be reported as
 discharging the correlation review.
 
 **Open, and each needing a call rather than a fix.** Five criteria cite
-artifacts this repo does not contain — AC-DL4's SLOs, AC-AN4's slope
+artifacts this repo does not contain: AC-DL4's SLOs, AC-AN4's slope
 disclosures, AC-ME4's conformance annex, AC-IS1's dependency on another repo's
 team, and worker-surface's, untouched here because a concurrent session holds
 that layer. `satisfies:` is absent from all 55 plan files, so no task claims
-any acceptance criterion and nothing computes whether a layer is discharged —
-the largest remaining gap. Also open: whether `decisions/LOG.md` splits into
+any acceptance criterion and nothing computes whether a layer is discharged.
+This is the largest remaining gap. Also open: whether `decisions/LOG.md` splits into
 one file per entry as Dispatch does, which is what produced two numbering
 collisions in one day; whether a `model/invariants.md` promotes the fourteen
 unnumbered binding claims stranded in `plans/`; whether `design/` stays a
@@ -1460,7 +1460,7 @@ Several rulings **amend or reverse earlier entries**; those are enumerated in
 
 ### A. New rulings
 
-**Structure.** No tab bar at v1 — the record is the app, and sharing is a
+**Structure.** No tab bar at v1. The record is the app, and sharing is a
 section inside it, not a destination. There is no Activity surface: every event
 already has a home (a read is grant state in Sharing, an attestation blooms the
 chapter and leaves outstanding verification, a dispute marks the chapter).
@@ -1473,7 +1473,7 @@ intra-record navigation and is unaffected by that later addition.
 **Earnings and the money perimeter.** Earnings, when it exists, is a read-only
 view over a vertical's or a licensed partner's payment records. `research/08`
 §5.2 C1 ("no funds, ever, in the ledger entity") is recorded as **current
-posture, not a ruling** — decision 010's entity-level open item stands. Nothing
+posture, not a ruling.** Decision 010's entity-level open item stands. Nothing
 is designed into the slot until it is closed.
 
 **First open.** Identifier (email or phone, verified control of one) → full
@@ -1484,7 +1484,7 @@ Document proofing never appears in signup; it is gated to the first
 value-bearing action. Per `research/11`, neither identifier is a uniqueness key.
 
 **Someone arriving from a shared link runs the same flow and unlocks at account
-creation** — they land on the profile they came for, and the empty canvas is
+creation.** They land on the profile they came for, and the empty canvas is
 what they meet on leaving it.
 
 **Safety is expressed structurally, not in copy.** `DESIGN.md` §12 forbids the
@@ -1494,7 +1494,7 @@ full size in their own script, which `research/11` argues is not cosmetic for a
 population credential systems routinely fail; and the deletion control is linked
 from the consent instrument so the exit is seen once at the start.
 
-**The record page.** Identity and the imprint compose as one hero — name and
+**The record page.** Identity and the imprint compose as one hero, name and
 portrait with the figure, per `DESIGN.md` §8's existing pairing rule. Audience
 lives on the object: a chapter carries a mark **only while a live grant covers
 it**, and shows nothing when nobody can see it.
@@ -1502,11 +1502,11 @@ it**, and shows nothing when nobody can see it.
 **The expanded imprint closes `imprint/README.md` §7.1** (the missing angular
 anchor). Full-screen, interactive: dimension slots light one at a time under
 touch with name and attained level; tapping a ring walks that dimension outward
-across the career. The small figure stays unlabelled — labels earned by
+across the career. The small figure stays unlabelled. Labels earned by
 interaction are not a legend, and the ban in `design/01-banned-patterns.md`
 stands for printed ones.
 
-**Dimension standing** is pushed from chapter detail — one deliberate step past
+**Dimension standing** is pushed from chapter detail, one deliberate step past
 the figure, never a tab, never a landing surface (`design/05` §2).
 
 **The handle.** `hiregrain.com/u/<handle>`; a dedicated identity domain is
@@ -1522,13 +1522,13 @@ immutability is wrong because `research/11` requires name changes be appends
 with prior names never surfacing in employer-visible views, which an immutable
 handle would violate permanently. Collision alternates are non-numeric.
 
-**The public page.** Whole record or no record — no per-chapter curation on any
+**The public page.** Whole record or no record. No per-chapter curation on any
 surface. The only lever is the imprint, full or absent, nothing between.
 **Always indexed**, but crawlers and logged-out visitors receive a reduced page
 (name, verification status, chapter list without detail); **the imprint is
 always behind sign-in** even when published, because an indexable imprint is the
 seven-dimension exposure at its widest. Viewing requires an account. The worker
-sees a recent view count and never viewer identities — naming viewers turns the
+sees a recent view count and never viewer identities. Naming viewers turns the
 page into a social product and creates the coercion hazard `design/05` §3
 records for Dubai and Bengaluru.
 
@@ -1539,12 +1539,12 @@ that plus what each party attested, dimension standing, dispute state and
 superseded versions. Expiry mandatory, revocation one action.
 
 **At grant creation the worker is told plainly that the recipient receives full
-work-history detail and may ask Grain to analyse it** — stated as what the
+work-history detail and may ask Grain to analyse it.** Stated as what the
 recipient gets, not as a warning, and not framed as a hazard.
 
 **Settings** is a header sheet, not a destination: Account (name, phone, email,
 identity tier, handle), Notifications, Language, Your data (export, disclosure
-record, delete everything), About. Deletion runs a grace window — access ends at
+record, delete everything), About. Deletion runs a grace window: access ends at
 the request, data at the end of the window, signing back in cancels.
 
 **Accounts.** One account type for everyone. A basic account is required to
@@ -1554,7 +1554,7 @@ view; document tier remains the worker's own identity-verified status.
 employment, not from identity tier: **coworker · manager · partner employer
 account**, where a manager verifies employment at the party with a work email.
 That verification is the same event as employment-verifying **their own chapter**
-at that party — vouching for someone verifies you, which is the product's
+at that party. Vouching for someone verifies you, which is the product's
 primary growth loop.
 
 **The imprint geometry is unchanged.** Three thread densities stand; the finer
@@ -1574,7 +1574,7 @@ verification already does the only prospective work v1 needs.
    history · sharing · identity, on the reasoning that identity is settled once
    and then irrelevant. Now **identity + imprint (composed) · outstanding
    verification · work history · sharing**. Reason: the returning-user argument
-   was right and the new-user one was not — landing on an abstract figure with
+   was right and the new-user one was not. Landing on an abstract figure with
    your name at the foot of a scroll is the coldest possible opening for someone
    already nervous about recording their information anywhere.
 2. **028's attestation line.** *"Attesting from a registered party's verified
@@ -1582,7 +1582,7 @@ verification already does the only prospective work v1 needs.
    attester holds an account with verified identity. The friction argument
    survives in a different form: friction now scales with the attester ladder in
    §A, not with account-versus-no-account.
-3. **`model/record-schema.md` §5** — `grant.chapters: all | [chapter_id]` is
+3. **`model/record-schema.md` §5**: `grant.chapters: all | [chapter_id]` is
    **deleted**; a grant is `all`. Chapter-scoped grants are claim curation
    wearing a grant's clothes and silently reverse founder decision 7
    (`design/ledger-design-0.1.md` §7.1). With per-chapter hiding also gone from
@@ -1592,21 +1592,21 @@ verification already does the only prospective work v1 needs.
    issuance is logged and visible to the worker") and §8.1 ("the full read
    log"), `model/record-schema.md` §5 (`grant.last_read_at`), and `design/05` §3
    ("the worker sees every grant issued, and whether it was opened") are
-   **superseded**: the worker sees the grant's **state** — issued, active,
-   expired, revoked — and no read events. Public-profile views are counted;
+   **superseded**: the worker sees the grant's **state**: issued, active,
+   expired, revoked, and no read events. Public-profile views are counted;
    full-record reads are not surfaced. Reason: a read stream during a live
    application is an anxiety feed and surveillance of the employer. **GDPR Art.
    15(1)(c) is satisfied by a disclosure record available on request**, which is
    a required consequence of this ruling, not an optional one.
 5. **`plans/worker-surface/LAYER.md` AC-WS1** ("a side-by-side against a raw API
    dump shows nothing hidden") is narrowed by 4 and by the no-dispute-UI ruling.
-6. **`DESIGN.md` gap 11** (identity core versus the no-centre rule) — **closed:
+6. **`DESIGN.md` gap 11** (identity core versus the no-centre rule), **closed:
    the core is dropped.** The empty state is carried by the graticule ground
    clipped to the fixed canvas, which is `DESIGN.md` §9's own primitive. Recorded
    as design, not as a ratified decision, and rendered in the canvas below.
-7. **`DESIGN.md` gap 9** (first-run teaching sequence) — **closed by deletion.**
+7. **`DESIGN.md` gap 9** (first-run teaching sequence), **closed by deletion.**
    There is no tutorial; the first chapter landing is the teaching.
-8. **`DESIGN.md` gap 3** (the display identifier) — **still open, and now
+8. **`DESIGN.md` gap 3** (the display identifier), **still open, and now
    entangled**: the handle exists and nothing here decided whether it becomes the
    human-facing identifier.
 
@@ -1615,7 +1615,7 @@ verification already does the only prospective work v1 needs.
 `research/08` §5.2 (C1, the money perimeter), `research/11` Parts A and B
 (signup identifier, name modelling, the three name layers), `research/12` §1–3
 (deletion and reputation evasion), `research/14` §1 (recordkeeping duties attach
-to the employer as user of a selection procedure, not to the scoring vendor —
+to the employer as user of a selection procedure, not to the scoring vendor,
 the vendor is reached only through the agent theory that carried *Mobley v.
 Workday*), and the shipped worker app in `hiregrain/grain` (`mobile/src/app`,
 `server/src/lib/publicCandidateHandle.ts`) as precedent, not as inheritance.
@@ -1641,7 +1641,7 @@ with a support route.
 
 **Deletion has no in-app control.** It is a support request. Access stops when
 the request is filed; erasure follows a grace period. **Signing in during the
-grace period resets the request** — the worker must file a new one to continue.
+grace period resets the request.** The worker must file a new one to continue.
 Recorded consequence, not a challenge to the ruling: this supersedes 035 §7's
 in-app deletion with grace, and it is the pattern GDPR Art. 12(2) ("the
 controller shall facilitate the exercise of data subject rights") is most often
@@ -1662,17 +1662,17 @@ the grilling; the ruling is broader and puts the worker in front of it earlier.
 Storage is unchanged and already ruled (decision 010, `research/08`): results-only
 vendor integration, no document images ever in the ledger, Sumsub global primary
 with Persona for the US, sanctions screening bought with only a signed pass/fail
-stored, no hit detail. Four internal tiers — recorded, contact, document,
-biometric — of which **only two surface to partners: identity verified, or not**
+stored, no hit detail. Four internal tiers: recorded, contact, document,
+biometric, of which **only two surface to partners: identity verified, or not**
 (decision 028). The worker sees the internal tier, per the settled
 worker-sees-all-raw-facts position.
 
-**Surface shape — designed, not ruled (flagged to the founder as the designer's
+**Surface shape: designed, not ruled (flagged to the founder as the designer's
 call).** Grain's own chrome wraps the vendor's capture step, with the vendor
 named plainly on the screen where the document is taken, so the worker is never
 handed to a stranger mid-flow. **Liveness is a separate step after the document
-passes and is declinable**, so refusing it costs nothing the worker already has —
-which is what decision 028's "biometric stays opt-in for a stated reason" needs
+passes and is declinable**, so refusing it costs nothing the worker already has.
+This is what decision 028's "biometric stays opt-in for a stated reason" needs
 in practice, given BIPA and the EU AI Act.
 
 **Amendments.** 035 §7 (settings inventory and the deletion grace window) is
@@ -1682,19 +1682,19 @@ added for the identity flow.
 ## 037 — Platform target, and four app-shell gates closed (2026-08-19)
 
 Grilling on the gates raised in `design/08-app-inventory.md` §0. The framework
-choice (Q5) is **not** settled here — it is under independent evaluation and
+choice (Q5) is **not** settled here. It is under independent evaluation and
 gets its own entry.
 
 **Native supersedes "PWA before native."** `plans/worker-surface/LAYER.md`
 scoped responsive web first with an installable PWA before native; the target is
 now native iOS and Android, with the PWA remaining first-class from the same
-codebase rather than becoming a fallback — `design/06-worker-app-ia.md` §3 makes
+codebase rather than becoming a fallback. `design/06-worker-app-ia.md` §3 makes
 an arriving link the most common first session, and a link must never require an
 install. **The public web app is built in parallel**, not after.
 
 **Intra-record navigation survives Android by two changes, not one.** Android
-10+ takes a back-swipe from *both* screen edges, and the edge index — the app's
-only navigation, since there is no tab bar — sits on the right one. The app
+10+ takes a back-swipe from *both* screen edges, and the edge index, the app's
+only navigation, since there is no tab bar, sits on the right one. The app
 declares `setSystemGestureExclusionRects` over the index, which Android budgets
 at 200dp per edge against the index's ~248px, so the index is **capped to fit
 that budget**. And the index becomes an *accelerator*: the record is one scroll,
@@ -1703,7 +1703,7 @@ load-bearing on its own, because the PWA cannot call that API at all.
 
 **Dark mode ships at v1, as a second palette rather than a mechanical
 inversion.** This closes `DESIGN.md` gap 6's decision half; the drawing is still
-outstanding. §5's inversion rule — "the ink becomes the ground" — is a sentence
+outstanding. §5's inversion rule, "the ink becomes the ground", is a sentence
 and does not survive arithmetic: `--rule` at 3.35:1 on paper is a different ratio
 inverted, and the imprint's hairlines *bloom* on dark ground where they *fade* on
 light. The dark palette is therefore derived from §12's contrast floors
@@ -1728,7 +1728,7 @@ own layer. The two share design tokens and the generated contract client, never
 the component tree.
 
 **The imprint is computed on-device from the record**, never rendered
-server-side to an image. Law 1 — no mark without a fact — and the figure must
+server-side to an image. Law 1, no mark without a fact, and the figure must
 stay recomputable from the ledger; a server-rendered image is a cache that can go
 stale and an endpoint that leaks figures. The renderer is a framework question
 and waits on Q5.
@@ -1745,7 +1745,7 @@ Five rulings. Two amend entries made earlier the same day.
 Amends decision 036's "no button". Apple App Review Guideline 5.1.1(v) requires
 an app supporting account creation to offer in-app account deletion, so 036's
 support-only route does not ship on iOS. The control **files the support
-request** — it does not perform the deletion. Everything else in 036 stands:
+request.** It does not perform the deletion. Everything else in 036 stands:
 access stops the moment the request is filed, support executes the erasure after
 the grace period, and signing in during that period resets the request and
 requires a new one. This also closes the hole `design/07` found independently:
@@ -1759,7 +1759,7 @@ protecting on a shared phone. It cannot gate the public page, which is public by
 construction.
 
 **Client telemetry ships, on a hard boundary.** Screen views, funnel steps and
-crash traces, on a rotating client id — **never keyed to `ledger_person_id`, and
+crash traces, on a rotating client id: **never keyed to `ledger_person_id`, and
 never carrying record content**. The line: telemetry may know *that* a chapter
 was added, never *what* was added. This is a different category from decisions
 022 and 026, which govern operator analytics *on the record*; it is recorded here
@@ -1769,7 +1769,7 @@ product exists for.
 
 **Attestation is a web surface, not an app surface.** Decision 035 gave every
 attester an account with verified identity, which `design/08-app-inventory.md` §1
-scoped as six screens inside the mobile app — roughly a fifth of the remaining
+scoped as six screens inside the mobile app, roughly a fifth of the remaining
 work. That scoping is **withdrawn**. An invitation link opens the web attestation
 flow; the attester creates their account and attests there; the native app is
 where they later hold their own record, if they choose to. Consequences: section
@@ -1782,7 +1782,7 @@ product being completable on a phone.
 **A worker may grant to a registered party or to an email address, and the two
 are visibly different objects.** A grant to a registered party is addressed to an
 identity Grain can vouch for. A share link sent to an email is a URL, and anyone
-holding it can open it — so a forwarded link is a disclosure the worker never
+holding it can open it, so a forwarded link is a disclosure the worker never
 made, and the creation flow says so. Both remain whole-record (decision 035) with
 mandatory expiry.
 
@@ -1791,15 +1791,15 @@ mandatory expiry.
 **Chapter detail shows all seven measures, including the zeros.** A party choosing
 "not part of this work" is a statement about the job; hiding it turns absence into
 a gap the reader fills in themselves. It is also what the worker-sees-all-raw-facts
-position requires — the worker sees exactly what was sent.
+position requires. The worker sees exactly what was sent.
 
 **Push notifications name the fact, never the content.** "Sunrise Foods signed
 your work record", not what was said. A lock screen is read by whoever is holding
-the phone, which on a shared handset is not always the worker — the same reasoning
+the phone, which on a shared handset is not always the worker, the same reasoning
 that put biometric unlock on the app in decision 038.
 
 **The app icon is the mark.** No separate icon design. Consequence: it inherits
-`DESIGN.md` gap 1's three open items — the lobe count, the break angle, and
+`DESIGN.md` gap 1's three open items: the lobe count, the break angle, and
 silhouette agreement between the largest and smallest tiers. The icon gate
 therefore collapses into the mark gate rather than disappearing, and it is a
 store-submission asset.
@@ -1808,19 +1808,19 @@ store-submission asset.
 device, nothing queued for later write. A queued attestation request firing days
 later against a changed registry is a correctness problem, and this population's
 connectivity makes those days real. Recorded consequence from the platform
-research: on iOS this promise only holds for an **installed** Home Screen web app —
+research: on iOS this promise only holds for an **installed** Home Screen web app.
 WebKit's ITP deletes IndexedDB, LocalStorage, Cache API and the service-worker
 registration after seven days without interaction, and exempts installed web apps
 explicitly. Installation is the storage model, not a distribution preference.
 
-### The employer-normalization gap — raised, not closed
+### The employer-normalization gap: raised, not closed
 
 **Party search at entry is rejected.** Founder ruling: search is not effective at
 global scale. The real problem it was papering over is **normalizing and
 standardizing employer data**, named as a major data-cleanliness issue.
 
 **Nothing in the repo owns this.** `plans/party-registry` (status `ready`) is
-scoped entirely to *registered* parties — lifecycle, keys, vetting, capability
+scoped entirely to *registered* parties: lifecycle, keys, vetting, capability
 grants. `model/record-schema.md` gives `chapter.party_asserted` a rule that a
 worker-typed name is **never** resolved into a `party_ref` automatically, because
 "a name match is not an identity", and stops there. No layer addresses what
@@ -1831,13 +1831,13 @@ of chapters, not the tail.
 **The shape of the answer is already in the repo, for people.** `research/03`
 solves person identity with Fellegi-Sunter scoring: candidate generation by
 blocking, a weighted match across several fields, human review, and never an
-automatic merge. The same discipline applies here — **clustering proposes, it
-never asserts** — which is what the schema rule already requires.
+automatic merge. The same discipline applies here, **clustering proposes, it
+never asserts**, which is what the schema rule already requires.
 
 **What this changes in the app, and it is the opposite of what was proposed.**
 Adding a chapter captures the raw employer string faithfully, plus enough
-disambiguating context for later central resolution — country and city at minimum
-— and never forces a match against a search result. A smaller and more honest
+disambiguating context for later central resolution, country and city at minimum,
+and never forces a match against a search result. A smaller and more honest
 screen than a search box.
 
 **Open, and needing an owner.** Whether employer entity-resolution extends
@@ -1854,7 +1854,7 @@ audit, and four verification agents. Evaluation record: `design/09-app-framework
 
 ### A. The framework
 
-**Expo SDK 57 — React Native 0.86, React 19.2.3 — with CNG and config plugins,
+**Expo SDK 57, React Native 0.86, React 19.2.3, with CNG and config plugins,
 expo-router, and `@shopify/react-native-skia` as the imprint renderer.** One
 codebase for iOS, Android and the installable PWA. Pin SDK 57; take 58
 deliberately. The New Architecture is not a decision: RN 0.82 made it the only
@@ -1868,7 +1868,7 @@ neutralised the gesture-exclusion argument by demoting the edge index to an
 accelerator.
 
 **The decisive evidence is about this repo's execution protocol, not about
-performance.** Kotlin and Compose have published agent benchmarks — JetBrains'
+performance.** Kotlin and Compose have published agent benchmarks: JetBrains'
 105-task Kotlin benchmark, Google's Android Bench where 41% of tasks are Compose,
 verified by instrumentation tests. **Swift and SwiftUI have neither a benchmark
 nor a Linux-hosted verify loop**: there is no Linux→Apple build path, snapshot
@@ -1882,7 +1882,7 @@ not work. Cost estimate: **~10.5 engineer-months against ~22**, with a standing
 rasterizes via `Bitmap.createBitmap` + `new Canvas(bitmap)`, which is never
 hardware-accelerated on Android, and invalidates the whole bitmap on any child
 prop change. Decisively, `RenderableView.setupStrokePaint` returns early when
-`strokeWidth == 0`, so it **cannot express hairline mode at all** — and hairline
+`strokeWidth == 0`, so it **cannot express hairline mode at all**. And hairline
 mode is what `DESIGN.md` gap 10a requires. Skia reaches `SkPaint::setStrokeWidth(0)`,
 documented as "always exactly one pixel wide in device space… thickness does not
 change as the canvas is scaled."
@@ -1892,7 +1892,7 @@ else states it: at 4× zoom the imprint's fixed 760-sample polyline produces
 8.3-device-pixel chords, and the guilloché visibly facets into polygons.** The
 figure must be re-tessellated per zoom level, which a static SVG DOM cannot do.
 This makes the adaptive-sampling change to `imprint/imprint.py` a **correctness
-fix, not an optimisation** — sampling by radius at ~1.5px per segment also cuts
+fix, not an optimisation**. Sampling by radius at ~1.5px per segment also cuts
 total vertices 2–3× invisibly, and Bézier fitting to `r(t)` would cut ~10×.
 
 **Measured, correcting a figure used throughout this session:** the imprint is
@@ -1918,9 +1918,9 @@ category and are TypeScript by this ruling rather than by D2's.
 
 Grounds. D2 was ratified 2026-08-17; native became the target on 2026-08-19
 (decision 037), so **D2 could not have adjudicated a category that did not exist
-when it was ruled** — this is narrowing by construction. D2's own text says "TS
+when it was ruled.** This is narrowing by construction. D2's own text says "TS
 owns worker **web** surface." Its dispositive evidence is entirely about the
-kernel — the npm supply-chain record, FIPS 140-3, the partner wire boundary — and
+kernel: the npm supply-chain record, FIPS 140-3, the partner wire boundary, and
 the ruling itself records that "the TS agent-fluency evidence did not survive
 verification," so TS took the surfaces by elimination and never on affirmative
 evidence. Decision 012's carried-forward switch-triggers are all kernel triggers
@@ -1935,7 +1935,7 @@ regeneration check extended to every target.
 
 **Persona becomes the primary vendor; Sumsub secondary.** Both briefs and two
 verification agents independently established that **neither vendor permits the
-capture step to be hosted inside the host app's own chrome** — Persona's docs:
+capture step to be hosted inside the host app's own chrome.** Persona's docs:
 "If you want to provide your own identity verification UI, you need to use a
 'Transactions-based' integration… contact the customer support engineering team."
 Sumsub offers theming only, in four buckets, and requires modal presentation
@@ -1943,12 +1943,12 @@ because "SDK contains its own navigation stack."
 
 **Decision 036's F3 is therefore relaxed, and this is the ruling it flagged as
 "designed, not ruled."** "Grain's chrome wraps the vendor's capture step" now
-means **our screen hands off, with the vendor named on it** — not our viewfinder
+means **our screen hands off, with the vendor named on it**, not our viewfinder
 around their camera. That is framework-independent and true of native twins too.
 
 **Recorded exposure, for counsel before contracting:** Persona lists 16 US
 subprocessors including **Anthropic, OpenAI and Groq** for "data extraction and
-analysis" — identity documents and selfies reaching three model providers.
+analysis". Identity documents and selfies reaching three model providers.
 Decision 010 forbids document images in the *ledger*; it says nothing about the
 vendor's onward processing. Sumsub's posture is materially stronger (German data
 centres by default, adequacy decisions and SCCs). **India DPDP residency is
@@ -1958,7 +1958,7 @@ unproven for both** and must be answered in writing during procurement.
 
 **A web deletion URL is added to `public-web` scope.** Google Play requires
 **both** an in-app path and "a web link resource where users can request app
-account deletion" — the second is a requirement no in-app change satisfies, and
+account deletion". The second is a requirement no in-app change satisfies, and
 decision 038 only closed the first half.
 
 **Cancelling a deletion becomes an explicit affirmative act**, not a side effect
@@ -1969,7 +1969,7 @@ was buying survives; only the mechanism changes.
 
 ### E. Employer entity-resolution gets its own layer
 
-`plans/employer-resolution/` — the nineteenth layer, depending on
+`plans/employer-resolution/`, the nineteenth layer, depending on
 `party-registry` and `ingestion`. It reuses `research/03`'s Fellegi-Sunter
 discipline: **clustering proposes, it never asserts**, which is what
 `model/record-schema.md`'s "a name match is not an identity" already requires. A
@@ -1981,7 +1981,7 @@ new layer rather than widening `party-registry`, which is already `status: ready
 clears SAP US 10712908 B2 partly on the ground that the patent's independent
 claims require "receiving input activating a portion" while "the figure is
 generated non-interactively." Decision 035 specified an expanded imprint where
-dimension slots light under touch and tapping a ring walks a dimension outward —
+dimension slots light under touch and tapping a ring walks a dimension outward,
 which is input activating a portion. The transpose argument (radius = time, angle
 = dimension) and the ratings-source argument stand independently, so this is not
 fatal, but **counsel was told the non-interactivity limb held and it no longer
@@ -1990,8 +1990,8 @@ does.**
 **`DESIGN.md` §10's premise that reduced motion suppresses haptics is unverified
 on both platforms** and should be restated as product policy rather than platform
 behaviour. Relatedly, the seat's haptic now has names: **`.rigid`
-(`UIImpactFeedbackGenerator.FeedbackStyle`) on iOS** — literally the seat's
-semantics — **and `HapticFeedbackConstants.CONFIRM` on Android**, closing the gap
+(`UIImpactFeedbackGenerator.FeedbackStyle`) on iOS**, literally the seat's
+semantics, **and `HapticFeedbackConstants.CONFIRM` on Android**, closing the gap
 `design/08` §3 recorded.
 
 ## 041 — Employer-resolution layer withdrawn (2026-08-19)
@@ -2001,10 +2001,10 @@ there is deleted. The recommendation behind it was mine and it did not survive
 its own test.
 
 **It is neither `v1` nor `first-product`.** `plans/ORDER.md` defines `v1` as the
-round trip — signup, verification, control, deletion, a party reading a packet
+round trip: signup, verification, control, deletion, a party reading a packet
 under grant and writing an attestation back. Employer clustering appears nowhere
 in it. `first-product` is "a worker signs up, imports a resume, and a partner buys
-a read on their history and trajectory" — a read on **one** worker, where a
+a read on their history and trajectory". A read on **one** worker, where a
 free-text employer name is entirely sufficient. Normalization pays only when
 aggregating *across* workers. The layer was filed at `milestone: v1`, which was
 wrong on its face.
@@ -2012,8 +2012,8 @@ wrong on its face.
 **The urgent part is not a layer.** Context that is not collected at entry cannot
 be backfilled, so `chapter` gains **`party_country` (required when `party_ref` is
 null) and `party_locality`**, `self-asserted-record` populates them in both CRUD
-and résumé import — asking rather than inferring, since an LLM guessing a country
-from an employer name is the silent resolution the schema forbids — and
+and résumé import, asking rather than inferring, since an LLM guessing a country
+from an employer name is the silent resolution the schema forbids, and
 `worker-surface`'s add-a-chapter screen asks for them. Three layers that already
 exist.
 
@@ -2027,7 +2027,7 @@ speculation the plan protocol exists to prevent.
 beside the "a name match is not an identity" rule they belong to: the raw
 `party_asserted` string is **never mutated** and normalization is derived and
 disposable; and when resolution is eventually built, its operating threshold is
-set against the **false-merge rate**, never F1 — a false merge attributes one
+set against the **false-merge rate**, never F1. A false merge attributes one
 worker's employer to another's, and that is the harm the threshold exists to
 price.
 
@@ -2049,22 +2049,22 @@ can run.** The port is `plans/foundation/06` and it gates everything.
 
 **Dispatch tasks join to criteria.** A real task carries `satisfies: [AC-FND-4]`
 and `layer:`; the checker requires both. **All 31 task files here carry
-neither** — a divergence that predates today and that the checks port will fail
+neither.** A divergence that predates today and that the checks port will fail
 on. Recorded rather than fixed: guessing which criteria an existing task
 delivers is authoring, not inference, and belongs with whoever next touches
 each layer. `layer:` was added mechanically, since it is derivable from the
 directory.
 
-**Dispatch has two escape hatches this repo lacks.** `gated_criteria` — criteria
+**Dispatch has two escape hatches this repo lacks.** `gated_criteria`: criteria
 a `ready` layer knowingly cannot reach because the only satisfying task is
 still `draft`, where *"declaring it is the point: the check fails on the
-undeclared case, which is the one that drifts."* And `discharged_at_layer` —
+undeclared case, which is the one that drifts."* And `discharged_at_layer`:
 an adjudicated criterion with no implementation, because a task carrying one
 would be a PR containing nothing. Both are adopted.
 
 Recorded honestly: this entry first claimed `foundation` had declared eight
 criteria and written seven, as a live example of that drift. That was wrong.
-Criterion 8 was written — an *adjudicated* criterion, that a clean-context
+Criterion 8 was written, an *adjudicated* criterion, that a clean-context
 verifier finds no spine column from which a person could be re-identified
 without the payload plane. The acceptance sweep earlier the same day mangled it,
 because the pattern that rewrote criterion definitions matched only
@@ -2082,15 +2082,15 @@ grain, for the reason grain has it: today a second session checked out a branch
 in this checkout while another was mid-edit, and this log ended up with three
 duplicate entry numbers (030, 031, 032) that had to be reconciled by hand
 against a `main` that had renumbered them differently again. **Also adopted:
-grain's divergence check** — fetch, then read the log both ways, and surface a
+grain's divergence check**: fetch, then read the log both ways, and surface a
 divergence rather than pivoting silently.
 
 **`/plan-eng-review` is mandatory before a layer goes `ready`, and again when
 its task files are authored.** Grill-before-ready settles what a layer is for;
 the engineering review settles whether its criteria can be executed and
 verified. `app-shell`, written today without one, carried **six criteria this
-repo's own verifier protocol could not check** — "verified on real hardware",
-"evidenced by a recorded session" — against `plans/ORDER.md`'s rule that
+repo's own verifier protocol could not check**: "verified on real hardware",
+"evidenced by a recorded session", against `plans/ORDER.md`'s rule that
 *"mechanical criteria are re-run, not re-read"*, plus **three scope items with
 no criterion at all** (haptics, push, launch identity). All six were rewritten
 as assertions on the layout tree, the token pairs and the call site; the two
@@ -2108,10 +2108,10 @@ steps with the worktree rule, both review gates, and an explicit list of what
 the executive never does. Adapted from Dispatch's, which is battle-tested.
 
 **Criteria are identified by position, not by code.** Inside a layer, the
-number. Across layers, `<layer>-<n>` — `worker-surface-3`. The `AC-XX<n>`
+number. Across layers, `<layer>-<n>`, `worker-surface-3`. The `AC-XX<n>`
 codes were stripped from all 19 layers and 96 criteria today on the founder's
 instruction, because a reader could not tell what `AC-PI4a` meant. **The
-identifier they carried was load-bearing** — it is the `satisfies` join — and
+identifier they carried was load-bearing**, it is the `satisfies` join, and
 survives in this readable form. Recorded as a divergence from Dispatch with its
 reason, per `CLAUDE.md`'s rule that an unrecorded divergence is drift.
 
@@ -2122,8 +2122,8 @@ are numbered in the body and every one now leads with a plain-English sentence
 saying what it requires.
 
 **Running state does not belong in a plan.** grain keeps a per-plan
-`PROGRESS.md` — PR checklist, decisions taken during execution, blockers,
-worktree path — so plans stay stable while progress churns. Adopted in
+`PROGRESS.md`: PR checklist, decisions taken during execution, blockers,
+worktree path, so plans stay stable while progress churns. Adopted in
 principle; the file appears when a layer goes `ready`, not before.
 
 ### Consequences
@@ -2149,8 +2149,8 @@ cannot go `ready` without owning it.
 **Merge authority is delegated to the executive for the foundation run, and
 only for it.** ORDER.md gate 4 makes merging a human act. For this run the
 founder pre-authorizes the executive to merge a PR once the three prior
-gates are green — CI, clean-context verification recorded, review findings
-resolved — with judgment-call summaries posted per PR for after-the-fact
+gates are green: CI, clean-context verification recorded, review findings
+resolved, with judgment-call summaries posted per PR for after-the-fact
 audit. The delegation is scoped: it covers `foundation/01`–`08` and expires
 when the layer closes. Any PR carrying an unresolved judgment call still
 waits for the founder. Raises park the task and the run continues where
@@ -2167,7 +2167,7 @@ rather than the drawing.
 units, and it passes: the dense reference record's outermost band carries ten
 threads at 1.67 units of pitch against a required 1.54. At the 296 px the
 core screen actually renders, that pitch is **0.82 CSS px** with a 0.35 px
-stroke — adjacent threads less than one pixel apart, which is why the band
+stroke. Adjacent threads less than one pixel apart is why the band
 paints as a dark ring rather than as threads. This is the defect gap 10a
 already found in the *stroke*, one level up, and fixing the stroke alone
 makes it worse: crisper strokes at sub-pixel spacing merge sooner than pale
@@ -2179,7 +2179,7 @@ ones do. Measured across the same record at 296 px, the four bands draw
 corroboration tier. Nobody counts ten hairlines, `imprint/README.md` §7.4
 records that no human has ever been tested on this channel at size, and no
 absolute reading has ever had evidence behind it. Density is therefore read
-*relatively* — a band against its neighbours inside one figure — and
+*relatively*, a band against its neighbours inside one figure, and
 `TIER_FRACTION`'s 1.0 / 0.5 / 0.18 is preserved as a ratio of whatever budget
 the size allows. A thread count is not a claim and never travels between
 figures or between sizes.
@@ -2204,18 +2204,18 @@ as the hardware can carry.** Two candidate floors were rendered through the
 Skia harness. Fixing pitch in *apparent* size (two CSS pixels) makes one record
 identical on every screen, at the cost of leaving most of the available
 resolution unused on the 2x and 3x hardware this population actually holds.
-Fixing it at two *device* pixels — the tightest pitch that can resolve as two
-threads at all — draws 9 / 17 / 27 threads at dpr 1 / 2 / 3 for the same 320 px
+Fixing it at two *device* pixels, the tightest pitch that can resolve as two
+threads at all, draws 9 / 17 / 27 threads at dpr 1 / 2 / 3 for the same 320 px
 on screen, and the rendered figure reads as engraving at 2x and 3x where the
 CSS-floored one reads as contour lines. **The founder call is density: the
-device floor.** Under this entry's own rule that is honest — density is a
+device floor.** Under this entry's own rule that is honest. Density is a
 contrast between bands within one figure, never a count, so it does not have to
 be equal across devices to mean the same thing. Two people comparing phones see
 different richness of the same record, and that is the accepted cost.
 
 **The one-period phase sweep stays, and it is what caps density.** `mark.py`
 sweeps two lobe periods and records that m=2 gives 1.56a of radial spread
-against m=1's 0.87a — nearly twice the threads. Rendered for the imprint, the
+against m=1's 0.87a, nearly twice the threads. Rendered for the imprint, the
 extra period braids threads across the lobe peaks: a lobe stops being a
 readable contour and becomes an envelope wider than the depth it encodes. The
 mark can afford this because it carries no data; **lobe depth is level attained**
@@ -2230,13 +2230,13 @@ visibly faceting into polygons; it called re-tessellation a correctness fix
 rather than an optimisation and estimated Bezier fitting at a further ~10x.
 Both are built. Segment count follows arc length, floored at eight segments per
 lobe because no fit recovers a wave it never sampled, and the tangents are
-analytic — `profile()` now returns `dL/dt` alongside `L`, since a numeric
+analytic. `profile()` now returns `dL/dt` alongside `L`, since a numeric
 tangent spends the accuracy the fit exists to buy.
 
 **Verified, not asserted.** Every emitted curve was compared against the
 analytic thread at 180 combinations of band radius, level profile, phase and
 density: **worst deviation 0.062 device pixels** against a 0.25 budget. The
-per-lobe floor is load-bearing — at four segments per lobe the same test fails
+per-lobe floor is load-bearing. At four segments per lobe the same test fails
 at 0.53 px.
 
 **Measured outcome.** A mature nine-chapter record at 320 px now costs 504 /
@@ -2248,8 +2248,8 @@ therefore cheaper than what the repo measured before this entry, not dearer.
 **The imprint is the same figure everywhere; `Expanded` explains it.** An
 earlier form of this entry made the core screen a portrait and `Expanded` the
 instrument. It is simpler and truer that both draw the real figure at the
-best their budget allows, and that `Expanded`'s work is annotation — the
-angular anchor, the axis controls, what each channel means — not resolution.
+best their budget allows, and that `Expanded`'s work is annotation: the
+angular anchor, the axis controls, what each channel means, not resolution.
 `Expanded` carries more threads only because it is larger. Extends 035.
 
 **§9's person-mark is deleted, not replaced.** §9 requires every human to be
@@ -2257,7 +2257,7 @@ drawn as their own mini-imprint rather than a photo or initials. At the
 20–28 px such a glyph occupies, each band is about two pixels of radius and
 seven lobes cannot separate at any device density; a unique but unreadable
 figure implies a legible identity it cannot deliver. **A person is their name
-and their imprint** — composed as one hero on the core screen, as already
+and their imprint**, composed as one hero on the core screen, as already
 drawn. Attestor and party rows carry the name alone, which decision 007
 independently requires: those parties are frequently organisations, and
 organisations are never subjects, so no imprint exists for them.
@@ -2271,17 +2271,17 @@ every call, though 035 §B6 dropped the identity core and `imprint/README.md`
 **The mark is sound, and §3 described it wrongly.** Taken to the same harness,
 `mark.py` does not carry the imprint's defect: `stroke_for(px)` derives the
 viewbox stroke from the render size, so it lands at 1.00 CSS px at every tier
-and pitch at 2.2–2.8 CSS px — arriving independently at roughly the floor this
+and pitch at 2.2–2.8 CSS px, arriving independently at roughly the floor this
 entry sets. `PITCH_RATIO` being a viewbox number is harmless there because the
 weight it is asserted against is already size-derived. **But `DESIGN.md` §3 was
 stale:** it specified dropping the outer and inner band from 40 to 79 px, where
-`tier_for()` reduces the *weave* and never the band count, on the argument —
-written in source — that dropping a band is what makes the mark unrecognisable.
+`tier_for()` reduces the *weave* and never the band count, on the argument,
+written in source, that dropping a band is what makes the mark unrecognisable.
 The code is right; §3 is rewritten to it. Left open: `tier_contour`'s docstring
 claims 24–149 px where the router gives it 24–95.
 
-**What this entry does not settle.** Every budget above is arithmetic —
-whether two adjacent device-pixel threads *read* as two threads to a person
+**What this entry does not settle.** Every budget above is arithmetic.
+Whether two adjacent device-pixel threads *read* as two threads to a person
 holding a phone is untested, and §7.4 stands. The figures here come from a
 browser render; `design/10-worker-app-screens` is SVG, which 040 disqualified
 from the product precisely because it cannot express hairline mode, so those
@@ -2325,7 +2325,7 @@ oversight. A record that cannot show what it refuses to delete is a weaker
 object, and this entry says so plainly rather than pretending the move is free.
 
 **Not settled here.** What replaces the band. "Traditional app UI components"
-names a direction — a bottom navigation bar — and this repo has never decided
+names a direction, a bottom navigation bar, and this repo has never decided
 whether the worker app has one, what destinations it carries, or how that
 squares with 035's single-scroll record. That is the next decision, and drawing
 a tab bar before it is made would be the failure `CLAUDE.md` describes.
@@ -2345,7 +2345,7 @@ governs, which matters because 2.2 added the target-size and focus-appearance
 criteria this design touches.
 
 **What the existing floors already clear.** 7:1 record text, 4.5:1 secondary,
-3:1 for meaning-bearing lines, and a 44px target against AA 2.5.8's own 24×24 —
+3:1 for meaning-bearing lines, and a 44px target against AA 2.5.8's own 24×24,
 stricter, and it stays stricter.
 
 **What the audit found missing, and it is not nuance.** Text scaling to 200%
@@ -2372,8 +2372,8 @@ content to the gesture-bar edge. Two verification frames now carry the
 measurements on the canvas. Reflowing the screens is not done.
 
 **Left open deliberately: how native the components should be.** Platform
-*mechanics* — safe areas, back, gesture zones, font scaling, screen readers,
-haptics, deep links — are not in question and must be honoured. Platform
+*mechanics*: safe areas, back, gesture zones, font scaling, screen readers,
+haptics, deep links, are not in question and must be honoured. Platform
 *components* collide with this system as ratified: §8 deletes containers and
 forbids boxed fields, §7 forbids elevation, §5 forbids anyone theming states,
 §6 admits one typeface. Adopting Material and HIG components means the record
@@ -2385,7 +2385,7 @@ make.
 ## 047 — Grain-native components on both platforms (2026-08-19)
 
 Closes the question 046 left open. Decided against three drawn variants of the
-same screen — `design/10-worker-app-screens/Handle{Grain,Platform,Split}` — with
+same screen, `design/10-worker-app-screens/Handle{Grain,Platform,Split}`, with
 identical logic and an identical palette, so the comparison isolated component
 form and nothing else.
 
@@ -2428,7 +2428,7 @@ be re-litigated without a superseding entry; they are not screens to build.
 Closes the item 045 left open when the plate footer was removed: what replaces
 the band, and whether the worker app has a bottom navigation bar.
 
-**It does not, in v1.** Not on system grounds — a tab bar is placement and
+**It does not, in v1.** Not on system grounds. A tab bar is placement and
 behaviour rather than an imported component, so 047 permits one drawn in Grain's
 own language, and it would not hit the Android back-gesture conflict that killed
 the section index, which was an edge-anchored control inside the ~24 dp side
@@ -2444,7 +2444,7 @@ of v1. A two-destination tab bar is a segmented control given a permanent band.
 
 **The cost, measured on the binding device.** Android leaves 728 dp of safe box.
 A 56 dp tab bar on top of the 52 dp masthead is **108 dp of app chrome, and
-180 dp of 800 — 22% of the display — before any record shows**. The record's hero
+180 dp of 800, 22% of the display, before any record shows**. The record's hero
 is a 320 dp figure, so figure plus masthead plus tab bar is 428 of 728, leaving
 300 dp for outstanding verification and work history together: the sections the
 product exists for, squeezed to buy navigation between two places. On iPhone 17
@@ -2454,8 +2454,8 @@ the same bar costs 6.7% of remaining content height, on Android 8.3%.
 to look at their record. Sharing is reached when somebody asks them for it, which
 is rare and always prompted from outside the app. Permanent chrome for rare
 traffic is the trade a tab bar is worst at. Adding one would also partially
-reverse 035's deliberate single-scroll record, for no reason that arose tonight —
-sharing leaving the scroll (045) *reduced* what the record holds.
+reverse 035's deliberate single-scroll record, for no reason that arose tonight.
+Sharing leaving the scroll (045) *reduced* what the record holds.
 
 **What was actually wrong is the masthead lying.** Its right-hand control is a
 hamburger, which is the universal glyph for *a menu of places to go*, and it
@@ -2471,14 +2471,14 @@ worked around. Scoped to v1 deliberately.
 ## 049 — Warm ground, cool ink; §9's texture primitives put to work (2026-08-19)
 
 The drawn record read as stale and cold. Diagnosed rather than restyled: roughly
-half of that is the thesis working — no accent, no elevation, square record
+half of that is the thesis working: no accent, no elevation, square record
 surfaces, hairlines and an institutional voice are what make this an instrument
 rather than a social product, and `DESIGN.md`'s own summary calls it a banknote
 engraver's system. Banknotes are cold deliberately. The other half was ours.
 
 **The grounds were cool, and are now warm. The ink does not move.** `paper`
-`#F5F6F3` and `page` `#E6E6E4` both carried a red-minus-blue of +2 — faintly
-green — which put every surface on the cold side of neutral. They become
+`#F5F6F3` and `page` `#E6E6E4` both carried a red-minus-blue of +2, faintly
+green, which put every surface on the cold side of neutral. They become
 `#F8F5EE` and `#E9E5DE`, at +10. **Ink, `secondary`, `rule` and `hairline` are
 untouched**, so warm paper sits under cool ink, which is what printed paper
 actually looks like. No accent is introduced and the state grammar is unchanged.
@@ -2490,9 +2490,9 @@ secondary 5.22 → 5.20, `rule` 3.35 → 3.34, `hairline` still pure separation 
 **§9's texture primitives were specified and never drawn.** §9 defines dividers
 carrying a faint sine modulation at the figure's own frequency, and a graticule
 ground; the record screen used the plate and nothing else, which is most of why
-it read as bare. Both are now generated — the divider is a real sine at seven
+it read as bare. Both are now generated, the divider is a real sine at seven
 lobes, the figure's own frequency, emitted by `gen.py` rather than approximated
-in CSS — and the graticule sits under the figure inside the plate frame at low
+in CSS, and the graticule sits under the figure inside the plate frame at low
 opacity. Nothing new was invented: this is the vocabulary the system already
 had, finally used.
 
@@ -2504,7 +2504,7 @@ figure looking faint here is the encoding telling the truth, and the fix for tha
 is more attestation, not a better demo.
 
 **Not addressed here, and still open.** The record has no moment that
-acknowledges the person — §10's celebration economy fires on the seat and on an
+acknowledges the person. §10's celebration economy fires on the seat and on an
 attestation landing, and the record at rest has none of it. And `design/07`
 counted 73 of 117 register applications at 12px or smaller, which is why the page
 reads as a form rather than a document. Both are live causes of the same
@@ -2519,27 +2519,27 @@ that follows them.
 only the band that moved.** §10's ceremony fires when an attestation lands and
 the record at rest had nothing, which is the live half of "this feels cold". The
 answer is not a greeting: a record that welcomes you is a record performing. It
-is that *the record is alive*, so it says what moved — a chapter signed, a grant
-about to end — and the figure redraws the one band that changed rather than
+is that *the record is alive*, so it says what moved: a chapter signed, a grant
+about to end, and the figure redraws the one band that changed rather than
 re-scribing the whole thing. When nothing changed it says nothing.
 
 **Press physics belong to `Expanded`, not to the record.** The figure yielding
-under the thumb is aliveness in the object, and §7's rigidity rule — verified
-rows do not compress, because rigidity is how permanence is expressed — makes it
+under the thumb is aliveness in the object, and §7's rigidity rule, verified
+rows do not compress, because rigidity is how permanence is expressed, makes it
 meaningful rather than decorative. It is confined to the expanded view, where
 inspecting the figure is the task. On the record the figure is a plate you open,
 and a plate that squirms under the thumb is a worse plate.
 
 **Typography gets a full rebalance, not a floor raise.** `design/07` counted 73
 of 117 register applications at 12px or smaller and §6's two display registers
-are barely used — instrument numerals at 40px have **zero** applications across
+are barely used. Instrument numerals at 40px have **zero** applications across
 ten screens. Raising the floor alone would leave every screen with nothing large
 on it, which is why the product reads as a form rather than a document. Every
 screen gets one thing that is genuinely large, and the display registers §6
 already defines get used.
 
 **Gaps 8 and 13 are drawn.** The employer grant view and the two-tier share
-model — the public page and the expiring full-record link — plus the reduced page
+model, the public page and the expiring full-record link, plus the reduced page
 a crawler or logged-out visitor receives. Until they exist, `Sharing`'s controls
 are inert and `Public` carries two surfaces marked NOT DRAWN, so the destination
 045 created cannot be judged.
@@ -2547,7 +2547,7 @@ are inert and `Public` carries two surfaces marked NOT DRAWN, so the destination
 **The account glyph stays a person pictogram.** Raised against it: §9's
 person-mark was deleted on the ground that a per-person figure implies a
 legibility it cannot deliver, and this product otherwise refuses to draw people.
-The founder ruled it fine, and the distinction holds — the deletion was about
+The founder ruled it fine, and the distinction holds. The deletion was about
 representing a *specific* person, where this is generic chrome pointing at your
 own account, and the pictogram is what makes it readable on sight.
 
@@ -2560,7 +2560,7 @@ Three founder rulings closing the foundation run's open items.
 
 **The strict layer gate governs the frontier.** A task is workable only when
 every layer in its layer's `depends_on` is `done`. `soft_depends_on` remains
-advisory prose — it names work that can be *prepared* early, and it never
+advisory prose. It names work that can be *prepared* early, and it never
 unlocks a task in the computed queue. This resolves the raise recorded on
 foundation/06's PR: the fine-grained reading of ORDER.md's prior-packet
 sentence is rejected because it would let tasks build on neighbors whose
@@ -2568,15 +2568,15 @@ layer has not finished verification. `checks/plan-graph.mjs` as shipped is
 the ruled behaviour.
 
 **Backup retention is 30 days, ratified.** The number in
-`db/deletion-policy.json` and `copy/deletion.md` — written as implementer
-judgment in foundation/08 — is now a decision. Changing it is a config and
+`db/deletion-policy.json` and `copy/deletion.md`, written as implementer
+judgment in foundation/08, is now a decision. Changing it is a config and
 copy edit that `checks/deletion-copy.mjs` keeps consistent, plus a
 superseding entry here.
 
 **Merge-delegation terms are standing, activation is per run.** The
-arrangement decision 043 defined — the executive merges once CI, clean-context
+arrangement decision 043 defined: the executive merges once CI, clean-context
 verification, and resolved review findings are all green; unresolved judgment
-calls wait for the founder; raises park and batch — is approved as the
+calls wait for the founder; raises park and batch, is approved as the
 template for future execution runs. Each run still requires an explicit
 founder go and a delegation entry naming its layer scope; nothing merges
 between runs. Execution is paused after foundation on the founder's ruling;
