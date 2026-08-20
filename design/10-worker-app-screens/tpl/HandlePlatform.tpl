@@ -6,7 +6,7 @@
 <helmet>
   <style>
 @@CSS@@
-    /* Option B — Material 3 component grammar, Android. Palette held at Grain's
+    /* Option B, Material 3 component grammar, Android. Palette held at Grain's
        ink and paper on purpose: vary one thing. What is being judged here is
        component FORM, not colour, and M3's own baseline palette would decide
        the comparison before anyone looked at the components. */
@@ -81,8 +81,8 @@
 </x-dc>
 
 <script data-dc-script data-props='{"$preview":{"width":360,"height":800}}'>
-// Option B — Material 3 grammar on Grain's palette. Identical logic to the
-// shipped Handle; only the components differ.
+// Option B, Material 3 grammar on Grain's palette. Identical logic to the
+// shipped Handle, only the components differ.
 //
 // What this option costs, stated where it is made: the filled field is a
 // CONTAINER (§8 deletes containers and says boxed fields do not exist), the
@@ -90,8 +90,8 @@
 // system face (§6 admits one family), and M3 carries error state in colour,
 // which §5 forbids and which is faked here with weight instead.
 const MAP = {
-  // Devanagari, Bengali, Arabic, Cyrillic, Greek, Han, Kana — enough to show the
-  // mechanism. Production uses ICU; this is the mockup's stand-in.
+  // Devanagari, Bengali, Arabic, Cyrillic, Greek, Han, Kana, enough to show the
+  // mechanism. Production uses ICU, and this is the mockup's stand-in.
   'ল':'l','ি':'i','য':'y','া':'a','জ':'j','ে':'e','ল':'l','ম':'m','ন':'n','্':'','দ':'d','ো':'o','স':'s',
   'л':'l','и':'i','з':'z','е':'e','м':'m','н':'n','д':'d','о':'o','с':'s','а':'a','р':'r','в':'v','к':'k',
   'α':'a','β':'b','γ':'g','δ':'d','ε':'e','λ':'l','μ':'m','ν':'n','ο':'o','σ':'s','τ':'t','ρ':'r','ι':'i'

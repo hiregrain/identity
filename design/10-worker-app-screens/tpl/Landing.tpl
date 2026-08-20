@@ -15,7 +15,7 @@
     .row{display:flex;gap:12px;align-items:flex-start;padding:12px 0;
          border-bottom:1px solid var(--hairline);width:100%}
     .gutter{flex:0 0 26px;padding-top:3px}
-    /* §10 — the attestation landing. One of only two heavy ceremonies.
+    /* §10, the attestation landing. One of only two heavy ceremonies.
        A state change of something already on screen: no overlay, no spawned UI. */
     .before{opacity:1}
     .after path{stroke-dasharray:1;stroke-dashoffset:1}
@@ -30,7 +30,7 @@
     .done .after path{stroke-dashoffset:0}
     @keyframes fadeout{to{opacity:0}}
     @keyframes scribe{to{stroke-dashoffset:0}}
-    /* §7 — the seat. Pending rows sit 2px proud and seat flush on verification. */
+    /* §7, the seat. Pending rows sit 2px proud and seat flush on verification. */
     .seat{transform:translateY(-2px)}
     .run .seat{animation:seat 320ms cubic-bezier(0.2,0,0,1) 320ms forwards}
     .done .seat{transform:translateY(0)}

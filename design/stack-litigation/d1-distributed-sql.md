@@ -16,8 +16,8 @@ effectively unlimited capital conditional on success.
 
 1. **The bloc has already designed a distributed database; it proposes to
    build it out of Postgres parts and operate it by hand.** The
-   data-platform architecture — global spine DB + per-region payload DBs +
-   CDC-only copying + a cross-database deletion saga — is the strongest
+   data-platform architecture, global spine DB + per-region payload DBs +
+   CDC-only copying + a cross-database deletion saga, is the strongest
    Postgres position on the table, and it is a federation of 5+ databases
    whose consistency, failover, and deletion guarantees are stitched
    together in application code. Every attack below is a place where that
@@ -28,40 +28,40 @@ effectively unlimited capital conditional on success.
    seconds loses ~800–4,000 *acknowledged* attestations at a stage-B
    period close, forking per-party chains and corrupting the
    compromise-vs-backdating rule's timestamp authority; (b) the day a
-   residency regime reaches the spine itself — a live possibility the
-   bloc's own author concedes — the "one global Postgres spine" has no
+   residency regime reaches the spine itself, a live possibility the
+   bloc's own author concedes, the "one global Postgres spine" has no
    move except hand-rolled regional projections plus a reconciliation
    protocol, i.e., building distributed SQL in-house under a compliance
    deadline; (c) the deletion saga's T0 spans databases with no shared
    transaction, and regional read replicas serving packet assembly can
-   issue packets from stale grant state after deletion is accepted —
+   issue packets from stale grant state after deletion is accepted,
    violating the one invariant every school agreed is inviolable; (d) at
    5+ payload regions the bloc operates ~7 databases × upgrades × backups
    × CDC pipelines × lockstep migrations forever, and every region
    carve-out is a live dual-write PII migration under legal deadline.
 3. **Honest self-costing:** at stage A, distributed SQL costs roughly
-   $1–3k/month against a few hundred for modest Aurora — a 5–10×
+   $1–3k/month against a few hundred for modest Aurora, a 5–10×
    multiplier on a trivial base. The Spanner emulator is a genuinely
    degraded local-dev experience (in-memory, one concurrent read-write
    transaction, no IAM); AI-agent fluency in Spanner idioms is far below
    the Postgres corpus; CRDB fixes dev experience and wire compatibility
    but its triggers/stored-procedure support arrived only in 2024–25 and
-   its extension ecosystem is thin. One of the bloc's best guardrails —
-   trigger-enforced append-only as a second fence behind revoked grants —
+   its extension ecosystem is thin. One of the bloc's best guardrails,
+   trigger-enforced append-only as a second fence behind revoked grants,
    does not translate to Spanner. These costs are real and are paid by the
    team's scarcest resource.
 4. **The "Google's problems without Google's headcount" jab is inverted.**
    Spanner-the-service exists so that you do not need Google's headcount;
    range rebalancing, quorum, TrueTime, and failover page Google, not the
    founder. The bloc's plan is the one that eventually requires
-   distributed-systems headcount — in-house, at stage B, under fire.
+   distributed-systems headcount, in-house, at stage B, under fire.
    Distributed SQL converts that future engineering project into a present
    vendor invoice.
 5. **Concessions and concede-triggers are stated in full** (§5, §6). The
    bloc is right about throughput, right about the two-plane schema
    (which ports to distributed SQL nearly unchanged), and right that
    Postgres survives 10⁸ *numerically*. Five measurable conditions under
-   which I concede Postgres suffices through 10⁸ are enumerated — chief
+   which I concede Postgres suffices through 10⁸ are enumerated. Chief
    among them: counsel clearing the spine to replicate globally for the
    life of the roadmap, and the founder signing a written product
    position that seconds of acknowledged-attestation loss in a regional
@@ -71,13 +71,13 @@ effectively unlimited capital conditional on success.
 
 ## 1. Steelman: the bloc's strongest position
 
-The Postgres bloc's best case is not the pragmatist's single cluster — it
+The Postgres bloc's best case is not the pragmatist's single cluster. It
 is the data-platform architecture, and it deserves to be stated at full
 strength:
 
 - **A global spine database** holding only IDs, type codes, fixed-width
-  hashes, signatures, timestamps, and pointers — no readable personal
-  data, enforced by a CI schema linter so nothing readable *can* be
+  hashes, signatures, timestamps, and pointers. No readable personal
+  data is stored, enforced by a CI schema linter so nothing readable *can* be
   written there. Small (~1.5 TB at 10⁸), append-only (UPDATE/DELETE
   revoked at the privilege level), replicated read-only to every region.
 - **Per-residency-region payload databases** (US, EU, ROW day one),
@@ -89,15 +89,15 @@ strength:
   mechanically; no copy exists off the copy map.
 - **Deletion as an engineered saga** with per-copy SLOs (72h serving /
   30d analytical / 35d backups), an acknowledgment ledger, and
-  crypto-shred as defense in depth — precisely the failures the EDPB's
+  crypto-shred as defense in depth. This targets precisely the failures the EDPB's
   2026 erasure enforcement report found in the wild, prevented by design.
 
 This is genuinely good architecture. It takes residency seriously from
 row one, it makes erasure provable rather than aspirational, and it fits
 three people because the always-on machinery is managed services and CI
 gates. It also embeds the bloc's honest legal footnote: the spine is
-pseudonymous personal data (EDPB Guidelines 02/2025 — hashes of personal
-data remain personal data), replicated globally under SCCs, minimized so
+pseudonymous personal data (EDPB Guidelines 02/2025 holds that hashes of
+personal data remain personal data), replicated globally under SCCs, minimized so
 that global replication stays defensible.
 
 The steelman's core claim: the spine/payload physical split *already*
@@ -106,9 +106,9 @@ easiest shape in databases to replicate, and therefore distributed SQL
 solves a topology problem the bloc has dissolved by schema design.
 
 That claim is what the next section attacks. The split dissolves the
-*payload* topology problem. It does not dissolve — it multiplies — the
-consistency, failover, and jurisdictional problems of the spine and of
-the seams between the planes.
+*payload* topology problem. It does not dissolve the consistency,
+failover, and jurisdictional problems of the spine and of the seams
+between the planes. It multiplies them instead.
 
 ---
 
@@ -118,7 +118,7 @@ the seams between the planes.
 
 The bloc's spine is a single-writer Postgres with cross-region replicas.
 Within one region, Aurora's shared-storage design makes Multi-AZ failover
-effectively lossless — conceded. The exposure is the event the whole DR
+effectively lossless. This is conceded. The exposure is the event the whole DR
 section exists for: **loss of the writer region**, forcing promotion of a
 cross-region replica. AWS's own documentation is plain: Aurora Global
 Database unplanned failover has "RPO typically measured in seconds,"
@@ -126,38 +126,38 @@ bounded by replication lag at the moment of failure; only *planned*
 switchover is RPO 0
 ([AWS Aurora docs](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-global-database-disaster-recovery.html),
 [AWS DR blog](https://aws.amazon.com/blogs/database/cross-region-disaster-recovery-using-amazon-aurora-global-database-for-amazon-aurora-postgresql/)).
-Regional failures do not schedule themselves as planned switchovers —
+Regional failures do not schedule themselves as planned switchovers.
 us-east-1 alone has produced major unplanned events in 2021, 2023, and
 October 2025.
 
 Now do the arithmetic against the planet-scale perspective's own
 uncontested load model. Stage B period close: ~830 attestations/sec
 sustained burst, ~2,800/sec from a single hot party. Replication lag is
-*worst precisely under bulk write load* — the failure and the burst are
+*worst precisely under bulk write load*, and the failure and the burst are
 correlated, not independent. At 1 second of lag, an unplanned failover
 loses **~830 acknowledged attestations**; at a realistic 5 seconds under
 burst, **~4,000**. Each lost row is not "some data loss":
 
 1. **The ack is a lie.** The party received a receipt and a ledger
    timestamp for an attestation that no longer exists. The planet-scale
-   SLO every school implicitly endorsed — *zero acknowledged-then-lost
-   attestations, ever* — is falsified in one event.
+   SLO every school implicitly endorsed, *zero acknowledged-then-lost
+   attestations, ever*, is falsified in one event.
 2. **Per-party chains fork.** The party's issuance chain head now hashes
    a vanished row. The next attestation the party submits references a
    `prev_hash` the database cannot produce. The convergence map calls
-   chain structure "unretrofittable — a day-one decision"; a fork is a
+   chain structure "unretrofittable, a day-one decision"; a fork is a
    runtime violation of that same structure, and the repair (re-chaining
    from the last surviving head, re-ingesting lost tail entries) is
    exactly the "rewrite history" operation the product exists to make
-   impossible. It can be done as audited repair events — but the ledger
+   impossible. It can be done as audited repair events, but the ledger
    whose sales pitch is "nothing was ever altered" now carries a signed
    confession that history was reconstructed.
 3. **The backdating rule loses its authority.** Design 0.1 §3.3: an
    attestation is valid iff its ledger timestamp predates any compromise
    report for the signing key. Re-submitted lost attestations get *new,
    later* timestamps. If a key-compromise report lands in the failover
-   window — the chaotic window in which compromise reports are most
-   likely — genuinely pre-compromise attestations now timestamp
+   window, the chaotic window in which compromise reports are most
+   likely, genuinely pre-compromise attestations now timestamp
    post-compromise and are flagged suspect. The alternative, manually
    backdating them, makes the ledger itself the backdater. The rule's
    entire value was that the timestamp authority is beyond dispute.
@@ -166,7 +166,7 @@ burst, **~4,000**. Each lost row is not "some data loss":
    the immutable escrow attests to a spine state the database no longer
    contains. The tamper alarm fires on the operator's own DR event, and
    the remediation choices are (a) publish a fork notice, or (b) quietly
-   regenerate checkpoints — and (b) is byte-for-byte indistinguishable
+   regenerate checkpoints, and (b) is byte-for-byte indistinguishable
    from the insider attack the checkpoint system exists to catch.
 
 The class of incident is not hypothetical: GitLab's 2017 database
@@ -188,7 +188,7 @@ spine replicates globally because it is unreadable. Its own author files
 the caveat that decides this scenario: the spine is *pseudonymous
 personal data* under EDPB 02/2025, its global replication rides on
 SCCs/DPF-class transfer mechanisms, and the named worst case is
-"regional spine *projections* with a global reconciliation protocol —
+"regional spine *projections* with a global reconciliation protocol,
 expensive" (data-platform §3.2).
 
 Price the probability honestly rather than as FUD:
@@ -200,7 +200,7 @@ Price the probability honestly rather than as FUD:
   bloc's global spine replication rests on, forcing the supplementary-
   measures argument to carry everything.
 - **India's DPDP Rules (2025)** are permissive-by-default (blacklist
-  model, Rule 15) — but Rule 12 lets the government require Significant
+  model, Rule 15), but Rule 12 lets the government require Significant
   Data Fiduciaries to keep government-specified categories of data
   in-country, with designation criteria at the government's discretion
   ([ITIF analysis](https://itif.org/publications/2025/06/09/india-cross-border-data-transfer-regulation/),
@@ -214,8 +214,8 @@ spine rows be *primaried* in-territory, the two architectures diverge
 totally:
 
 - **Distributed SQL:** the spine is geo-partitioned by
-  `residency_region` like the payloads — Spanner placement / CRDB
-  `REGIONAL BY ROW` — while remaining *one database* with one schema,
+  `residency_region` like the payloads, Spanner placement / CRDB
+  `REGIONAL BY ROW`, while remaining *one database* with one schema,
   one transaction domain, and externally consistent commit timestamps
   spanning all partitions. The jurisdiction question is a placement
   policy value. Crucially, per-party chains still work: a party's
@@ -224,22 +224,22 @@ totally:
 - **The Postgres bloc:** the spine must be split into regional Postgres
   instances. Per-party chains now span *databases*; appending to a chain
   whose previous entry lives in Frankfurt while the current subject lives
-  in Mumbai is a cross-database serialization problem — two-phase commit
-  you wrote yourself, on the integrity-critical path, which is the exact
+  in Mumbai is a cross-database serialization problem. It means writing
+  two-phase commit yourself, on the integrity-critical path, which is the exact
   sentence the planet-scale perspective used for the payload plane and
   the bloc answered by splitting planes. There is no second plane to
   split. The bloc's own costing of this outcome is "expensive," and its
   own §1.2 says the minimization discipline exists "precisely to avoid
   ever needing this." An architecture whose viability depends on never
   needing its own named worst case, in a domain where the trigger is a
-  foreign government's discretion, is not residency-shaped — it is
+  foreign government's discretion, is not residency-shaped. It is
   residency-hopeful.
 
 ### 2.3 Cross-plane consistency: the deletion saga's seams
 
-The bloc's T0 — grants revoked, reads stopped, person marked `deleting`,
-"packet issuance impossible from this instant" — is described as
-synchronous. It spans at least two databases (spine, regional payload)
+At the bloc's T0, grants are revoked, reads are stopped, the person is
+marked `deleting`, and "packet issuance impossible from this instant."
+This transition is described as synchronous. It spans at least two databases (spine, regional payload)
 and, for reads, N spine replicas. There is no transaction that covers it.
 Two concrete holes:
 
@@ -250,21 +250,21 @@ Two concrete holes:
    the Frankfurt replica serves a packet at T0+15s from pre-revocation
    grant state. The AI-native perspective proposes a TLA+ spec whose one
    theorem is "no packet is ever issued containing data from a person
-   whose deletion has been accepted" — that theorem is checkable in a
+   whose deletion has been accepted." That theorem is checkable in a
    one-database model and is *false* in the bloc's deployed topology
    unless every grant check reads the global primary. Routing every
    grant check to the US primary destroys the read-locality story
    (every Manila packet read pays a trans-Pacific round trip) and
    re-couples global read availability to one region's writer. The
-   bloc's own commandment — "standing never served from the stale
-   analytics plane" — ignores that its operational replica mesh is also
+   bloc's own commandment, "standing never served from the stale
+   analytics plane," ignores that its operational replica mesh is also
    a stale plane. In Spanner, the grant check is a strong read (or a
    bounded-staleness read with a fence timestamp) against the same
    database that committed the revocation; the primitive exists and
    costs one line.
 2. **Restore breaks the planes apart.** PITR-restore one payload region
-   to T−15m after an operator error, and the spine — a different
-   database with a different backup timeline — is still at T. Spine rows
+   to T−15m after an operator error, and the spine, a different
+   database with a different backup timeline, is still at T. Spine rows
    now reference payload rows that do not exist (or vice versa), and the
    deletion saga's acknowledgment ledger, which lives in a third place,
    agrees with neither. Reconciling three-plus independently restored
@@ -281,14 +281,14 @@ two-partition transaction the workload contains, and the database's job.
 ### 2.4 Five-plus regions: the operational multiplication
 
 The bloc opens with 5 databases (spine, registry, payload ×3). Apply the
-§2.2 trigger table it wrote itself — PH carve-out, India, one more
-partner-demanded region — and by stage B it operates **7 databases**,
+§2.2 trigger table it wrote itself, PH carve-out, India, one more
+partner-demanded region, and by stage B it operates **7 databases**,
 each with HA topology, so ~20 database instances. What "managed" does
 not remove, per database, forever:
 
 - **Major version upgrades** roughly yearly (Postgres EOL cadence), with
   extension compatibility testing, replica re-provisioning, and writer
-  restarts — ×7, coordinated so CDC connectors and the deletion saga
+  restarts, ×7, coordinated so CDC connectors and the deletion saga
   tolerate mixed versions mid-rollout.
 - **Schema migrations in lockstep ×7.** A migration applied to 5 of 7
   databases is per-region schema drift that the CDC tag registry, the
@@ -301,8 +301,8 @@ not remove, per database, forever:
 - **Deletion saga fan-out** of 13 copy-map entries × N regions, each an
   independently failing acknowledgment.
 - **The carve-out itself, repeated per jurisdiction:** data-platform's
-  own playbook — "copy rows where `residency_region='PH'`, flip routing,
-  delete from ROW" — is a live dual-write migration of PII under a legal
+  own playbook, "copy rows where `residency_region='PH'`, flip routing,
+  delete from ROW," is a live dual-write migration of PII under a legal
   deadline, executed each time a regulator asks, each execution a chance
   to violate the copy map it exists to serve.
 
@@ -332,7 +332,7 @@ usable free Basic tier below that
 ([CRDB cost docs](https://www.cockroachlabs.com/docs/cockroachcloud/costs),
 [pricing analysis](https://airbyte.com/data-engineering-resources/cockroachdb-pricing)).
 Against a modest Aurora cluster at a few hundred dollars a month, the
-premium is **5–10× on a trivial base** — irrelevant under the stated
+premium is **5–10× on a trivial base**, irrelevant under the stated
 capital posture, but it is real money spent on load that rounds to zero.
 
 **Local development and CI.** This is Spanner's worst surface. The
@@ -344,7 +344,7 @@ PGAdapter gives partial Postgres wire compatibility with real dialect
 gaps ([PGAdapter](https://github.com/GoogleCloudPlatform/pgadapter),
 [PG interface docs](https://docs.cloud.google.com/spanner/docs/postgresql-interface)).
 The AI-native perspective's whole leverage model runs on fast, faithful
-local loops — `docker run postgres` and ephemeral per-PR databases. The
+local loops, such as `docker run postgres` and ephemeral per-PR databases. The
 emulator is a degraded facsimile of production; concurrency behavior, the
 thing this system most needs to test, is exactly what it cannot exercise.
 CRDB largely cures this (single binary, `cockroach demo`, faithful local
@@ -354,14 +354,14 @@ recommendation.
 **AI-agent fluency.** The Postgres corpus dwarfs everything. Agents will
 emit Postgres idioms; on Spanner these break on interleaved-table design,
 mutation-per-commit limits, sequence idioms, and the GoogleSQL/PG-dialect
-split. On CRDB most idioms run — but triggers, stored procedures, and
+split. On CRDB most idioms run, but triggers, stored procedures, and
 UDFs arrived only in 2024–25 and remain less battle-tested, and the
 extension ecosystem is thin
 ([CRDB compatibility, v26.x](https://www.cockroachlabs.com/docs/stable/postgresql-compatibility),
 [Bytebase comparison](https://www.bytebase.com/blog/cockroachdb-vs-postgres/)).
-Materially: the bloc's belt-and-suspenders guardrail — revoked
+Materially: the bloc's belt-and-suspenders guardrail, revoked
 UPDATE/DELETE grants *plus* an unconditional BEFORE-UPDATE trigger fence
-on spine tables — only half-translates. The privilege fence exists on
+on spine tables, only half-translates. The privilege fence exists on
 both Spanner (fine-grained access control) and CRDB; the trigger fence is
 unavailable on Spanner and young on CRDB. In an agent-written codebase,
 losing a structural fence is a real cost and I book it as one.
@@ -369,13 +369,13 @@ losing a structural fence is a real cost and I book it as one.
 **Vendor exposure.** Spanner is single-vendor gravity in its strongest
 form: the dialect, placement model, and TrueTime semantics do not port
 out cheaply; the exit is a real migration. CRDB carries business-model
-risk — the 2024 licensing retreat from free self-hosted Core is a signal
+risk. The 2024 licensing retreat from free self-hosted Core is a signal
 about company economics that a system-of-record bet must price. The bloc's
 Postgres has neither exposure.
 
 **Ops burden, stated fairly in both directions.** Spanner removes vacuum,
 connection-pool pathology, version upgrades (it is versionless), failover
-drills, and replica topology management — at stage A its marginal ops
+drills, and replica topology management. At stage A its marginal ops
 load genuinely approaches zero, which is the strongest honest claim on my
 side. What it adds: a new performance mental model (hot ranges, split
 points, interleaving) that the team must learn and the AI corpus teaches
@@ -390,9 +390,9 @@ CRDB sits between: Postgres-shaped tools, but a real tuning surface
 The jab deserves a direct answer, because it is the bloc's most quotable
 line and its least examined.
 
-Google's problems — TrueTime fleet management, Paxos quorums, range
+Google's problems, TrueTime fleet management, Paxos quorums, range
 rebalancing, split management, versionless rolling upgrades, five-nines
-multi-region failover — are precisely the layer that Spanner-as-a-service
+multi-region failover, are precisely the layer that Spanner-as-a-service
 sells *the absorption of*. The 3 a.m. page for a range-rebalance stall
 goes to Google SRE. That is not buying Google's problems; it is renting
 Google's headcount for the one layer where three people plus AI agents
@@ -403,7 +403,7 @@ is: N regional Postgres databases, a hand-rolled cross-database deletion
 saga, cross-database chain-consistency logic if residency ever touches
 the spine, a CDC mesh, lockstep migrations, and region carve-out
 migrations under legal deadlines. Every one of those is
-distributed-systems engineering — the discipline the AI-native
+distributed-systems engineering, the discipline the AI-native
 perspective's own evidence says agents are *worst* at ("agents
 interleave-blind") and that the team has no capacity to review. The bloc
 does not avoid distributed-systems headcount; it defers the requirement
@@ -430,7 +430,7 @@ certainty is the strongest form of the bloc's case.
    two-plane split, `residency_region` on every payload row, opaque
    never-reissued IDs, column-level PII/erasure tags, CDC-only copying,
    and the copy-map discipline are correct and port to Spanner/CRDB
-   nearly unchanged. The fight is substrate, not schema — and the bloc
+   nearly unchanged. The fight is substrate, not schema, and the bloc
    designed the schema.
 3. **Single-region RPO is effectively zero on Aurora.** Kill-shot 2.1
    fires only on writer-region loss or cross-region topology. Regional
@@ -438,8 +438,8 @@ certainty is the strongest form of the bloc's case.
    maximum-severity event, and honest actuaries can disagree on it.
 4. **The dev-experience and agent-fluency costs are real and land on the
    scarcest resource.** If agent defect rates or iteration speed degrade
-   measurably on the distributed dialect, the AI-native axis — which I
-   accept as the correct primary axis for this team — cuts against me.
+   measurably on the distributed dialect, the AI-native axis, which I
+   accept as the correct primary axis for this team, cuts against me.
    CRDB mitigates but does not eliminate this, and adds vendor risk.
 5. **The trigger fence is lost on Spanner.** One of the two structural
    append-only guarantees survives (privilege revocation); the second
@@ -453,7 +453,7 @@ certainty is the strongest form of the bloc's case.
    a simple thing later" logic is sound.
 7. **The bloc's deletion saga is better engineering than most of the
    industry ships.** My attack in §2.3 is that its guarantees are weaker
-   than advertised at the seams — not that the subsystem is wrong. Most
+   than advertised at the seams, not that the subsystem is wrong. Most
    of it (copy map, tags, SLOs, acknowledgment ledger) is required under
    my substrate too.
 
@@ -470,14 +470,14 @@ not vibes:
    data, and (b) global spine replication under SCCs + the unreadability
    supplementary measure survives the current DPF litigation posture. If
    the spine is legally free to live in one country for the life of the
-   roadmap, §2.2 — my strongest attack — is moot.
+   roadmap, §2.2, my strongest attack, is moot.
 2. **A signed acknowledged-loss policy.** The founder adopts, in the
    party-facing contract and the internal SLO doc, an explicit position:
    unplanned regional failover may lose up to N seconds of acknowledged
    attestations; chain repair is a defined, audited, party-notified
    procedure; the checkpoint-fork disclosure protocol is written. If the
    business is willing to *paper* RPO > 0 rather than promise RPO = 0,
-   §2.1 becomes a priced risk instead of a falsified promise — and
+   §2.1 becomes a priced risk instead of a falsified promise, and
    Postgres is adequate for a system that promises less.
 3. **Measured global read latency.** At ≥10M identities, packet-read p99
    from three demand geographies (SE Asia, LATAM, Africa/EU-adjacent)
@@ -493,7 +493,7 @@ not vibes:
 5. **Deletion-seam verification survives adversarial testing.** Quarterly
    game days demonstrate, under induced replica lag and mid-saga
    failures, zero post-T0 packet issuance and clean cross-plane recovery
-   from a single-database PITR restore — with the evidence artifacts the
+   from a single-database PITR restore, with the evidence artifacts the
    AI-native school would demand. If the seams hold under attack, my
    §2.3 is answered operationally rather than architecturally.
 
@@ -504,7 +504,7 @@ of core paths; or CRDB (if chosen) shows further licensing/business
 distress. And the minimum-viable form of my own position should be on
 the record: **start Spanner regional (cheap, ~$100–650/mo) with the
 schema and idioms written distributed-first, and flip to a multi-region
-configuration at the first external party** — the topology option is what
+configuration at the first external party**. The topology option is what
 must exist from row one; the five-nines bill can wait a quarter.
 
 ---
@@ -517,7 +517,7 @@ must exist from row one; the five-nines bill can wait a quarter.
 - [Google Cloud Spanner cost breakdown 2026](https://www.gammateksolutions.com/post/google-cloud-spanner-cost-breakdown-2026-storage-compute-instance-pricing-explained)
 - [Finout: Google Cloud pricing models 2026](https://www.finout.io/blog/google-cloud-pricing)
 - [Cloud Spanner emulator (limitations)](https://github.com/GoogleCloudPlatform/cloud-spanner-emulator)
-- [PGAdapter — PostgreSQL wire proxy for Spanner](https://github.com/GoogleCloudPlatform/pgadapter)
+- [PGAdapter, PostgreSQL wire proxy for Spanner](https://github.com/GoogleCloudPlatform/pgadapter)
 - [Spanner PostgreSQL interface documentation](https://docs.cloud.google.com/spanner/docs/postgresql-interface)
 - [CockroachDB Cloud cost documentation](https://www.cockroachlabs.com/docs/cockroachcloud/costs)
 - [Airbyte: CockroachDB pricing explained (2026)](https://airbyte.com/data-engineering-resources/cockroachdb-pricing)
@@ -525,4 +525,4 @@ must exist from row one; the five-nines bill can wait a quarter.
 - [Bytebase: CockroachDB vs. Postgres (2025)](https://www.bytebase.com/blog/cockroachdb-vs-postgres/)
 - [ITIF: India's cross-border data transfer regulation (2025)](https://itif.org/publications/2025/06/09/india-cross-border-data-transfer-regulation/)
 - [India Briefing: DPDP Rules 2025 notified](https://www.india-briefing.com/news/dpdp-rules-2025-india-data-protection-law-compliance-40769.html/)
-- [DPDPA.com: Rule 15 — transfers outside India](https://www.dpdpa.com/dpdparules/rule15.html)
+- [DPDPA.com: Rule 15, transfers outside India](https://www.dpdpa.com/dpdparules/rule15.html)

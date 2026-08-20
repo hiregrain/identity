@@ -90,7 +90,7 @@
 
 <script data-dc-script data-props='{"$preview":{"width":360,"height":800}}'>
 // Gap 13, half one: the expiring full-record link. Decision 035 made this the
-// sensitive tier — the whole record including the imprint — against the public
+// sensitive tier, the whole record including the imprint, against the public
 // page's reduced view. Drawn but inert: what "create" issues is undecided.
 class Component extends DCLogic {
   constructor(p){ super(p); this.state = {span:1}; }

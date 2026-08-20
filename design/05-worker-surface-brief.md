@@ -1,4 +1,4 @@
-# Worker surface — design intent
+# Worker surface design intent
 
 Written 2026-08-18, before the core screen and grant flow are designed. This is
 the intent to build against, not a spec. Everything here traces to a decision or
@@ -11,8 +11,8 @@ Order of work (decision 028): **core screen, then the grant flow.**
 
 ## 1. The one idea worth building the screen around
 
-**The bloom.** A chapter enters the record as a plain ring — dotted when
-self-asserted, solid when employment is verified. When a party attests, it
+**The bloom.** A chapter enters the record as a plain ring, dotted when
+self-asserted and solid when employment is verified. When a party attests, it
 *blooms*: it grows lobes and a weave. Nothing else in the system states the
 product's thesis as economically. A worker's record visibly becomes more real.
 
@@ -20,7 +20,7 @@ Consequences:
 
 - It is the **motivator**. The verification checklist is not a chore list; it is
   the set of rings that have not bloomed yet. Show them as such.
-- It is one of the two heavy ceremonies in `DESIGN.md` §10 — an attestation
+- It is one of the two heavy ceremonies in `DESIGN.md` §10, an attestation
   landing. Spend the animation budget here and almost nowhere else.
 - It means **the empty and unverified states are not failures to be hidden**. A
   résumé import produces a set of bare rings. That is the honest picture and it
@@ -49,7 +49,7 @@ because it is settled once and then irrelevant.
   Dimension standing belongs on a second screen: it is the most interpretive
   object in the product and must not be the first thing a worker learns about
   themselves.
-- **Work history is rows, not cards** — the ledger grammar of §8: left text,
+- **Work history is rows, not cards**, per the ledger grammar of §8: left text,
   right tabular figures.
 
 ## 3. The grant flow
@@ -58,7 +58,7 @@ because it is settled once and then irrelevant.
 the answer to the strongest criticism the research produced.
 
 Four workers, in four countries, independently identified the same structural
-risk — that "the employer confirms what you did" means the employer holds the pen:
+risk, that "the employer confirms what you did" means the employer holds the pen:
 
 > Dubai: the sponsor holds the visa, so disputing unpaid overtime may mark you difficult.
 > Bengaluru: relieving letters are already withheld to block exits.
@@ -67,14 +67,14 @@ risk — that "the employer confirms what you did" means the employer holds the 
 
 The grant flow has to *demonstrate* control, not assert it:
 
-- **Show what the requester would actually see, before consent** — the real
+- **Show what the requester would actually see, before consent.** Show the real
   payload, not a description of it.
 - **Legible under pressure.** Someone deciding in thirty seconds whether to let a
   prospective employer read their record.
 - **Expiry is mandatory.** A grant with no end is a permanent disclosure the
   worker forgets making.
-- **The worker sees every grant issued, and its state** — issued, active,
-  expired, revoked. *Amended by decision 035 §B4: read events are not surfaced.*
+- **The worker sees every grant issued, and its state**, which is one of
+  issued, active, expired, or revoked. *Amended by decision 035 §B4: read events are not surfaced.*
   A read stream during a live application is an anxiety feed and surveillance of
   the employer; GDPR Art. 15(1)(c) is satisfied by a disclosure record available
   on request.
@@ -84,7 +84,7 @@ The grant flow has to *demonstrate* control, not assert it:
 
 Partners write freely with no countersign (decision 028, founder ruling). GDPR
 Art. 16 gives a right of rectification regardless, so the correction moves from a
-countersign gate to a post-hoc dispute — and that path must be **reachable from
+countersign gate to a post-hoc dispute, and that path must be **reachable from
 any attested chapter**, not buried in settings.
 
 A disputed claim stays **visible and marked**, with the worker's statement
@@ -120,8 +120,8 @@ Shenzhen, Warsaw and Osaka:
 
 1. **The record schema field list** exists at `model/record-schema.md` 0.1 but is
    proposed, not ratified. Five open items in its §8.
-2. **`work_kind` vocabulary conflict** — decision 028 says ESCO, ratified decision
+2. **`work_kind` vocabulary conflict.** Decision 028 says ESCO. Ratified decision
    006 says ledger-authored with crosswalks. The ratified position looks correct.
-3. **The identity core versus the no-centre rule** — the core is inked at signup
+3. **The identity core versus the no-centre rule.** The core is inked at signup
    and carries the empty state (`imprint/README.md` §7). Unresolved.
 4. **A companion typeface** for non-Latin scripts.

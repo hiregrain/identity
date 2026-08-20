@@ -1,6 +1,6 @@
-# foundation/03 — clean-context verification
+# foundation/03: clean-context verification
 
-- **Task:** `foundation/03` — Roles and append-only enforcement
+- **Task:** `foundation/03`: Roles and append-only enforcement
 - **PR:** #3, branch `task/foundation-03`
 - **Head SHA verified:** `20b7d9cb25ffbf30587e9afc35cfd5cbd38d8a27`
 - **Verifier:** clean-context session, 2026-08-19. Inputs: the task file, the
@@ -14,26 +14,26 @@
   stages).
 - **Verdict: PASS.**
 
-## Criterion 1 (task; layer criterion foundation-1) — append-only enforced by the database
+## Criterion 1 (task; layer criterion foundation-1): append-only enforced by the database
 
 The application role cannot UPDATE or DELETE any table outside the enumerated
 exemption list; a later table inherits the restriction with no manual step;
 the exemption list is asserted explicitly.
 
-- `node test/append-only.test.mjs` — 18 assertions passed on both planes
+- `node test/append-only.test.mjs`: 18 assertions passed on both planes
   (grant set equals the empty EXEMPTIONS list; no column-level UPDATE grants;
   role boxed in; raw mutations denied; SELECT/INSERT work; inheritance in the
   existing schema and under a second owner in a second schema; SECURITY
   DEFINER scan; incompatible-pair sweep). Exit 0.
 - Raw `UPDATE public.schema_migrations SET name = name` and
   `DELETE FROM public.schema_migrations` as `identity_app` via psql:
-  `ERROR: permission denied for table schema_migrations`, exit 1 — on spine
+  `ERROR: permission denied for table schema_migrations`, exit 1, on spine
   and repeated on payload.
 - Verifier's own scratch "later migration": as owner, created
   `public.v_public_rows` on **both** planes with no grant step. As
   `identity_app`: INSERT and SELECT succeeded; UPDATE, DELETE, and TRUNCATE
   each failed `permission denied`. `COPY ... FROM STDIN` as the app role
-  succeeded, which is correct — COPY FROM requires only INSERT and is an
+  succeeded, which is correct. COPY FROM requires only INSERT and is an
   append path.
 - Verifier's own second schema under a second owner (`v_schema` /
   `v_owner NOLOGIN`), set up per the once-per-schema pattern in migration
@@ -67,13 +67,13 @@ the exemption list is asserted explicitly.
   failed with the file and line named, exit 1; removed, green.
 - Database-side half re-run: `identity_app` holds no escalation attribute, no
   role membership, and `SET ROLE identity` is denied.
-- Honesty judgment: for a pre-server repo the definition is honest — it is
+- Honesty judgment: for a pre-server repo the definition is honest. It is
   the only mechanical form the criterion can currently take, and the check's
   own comments say it is shaped to catch the first violator rather than
   claiming completeness. It is gameable in principle (string-assembled or
   env-injected credentials evade a static grep); the database-side boundary
   and human review cover that residue today, and a deployment-level control
-  should join it when a real serving process exists — the migration header
+  should join it when a real serving process exists. The migration header
   already points real credentials at the managed-Postgres founder gate.
 
 ## Incompatible schema pairs
@@ -108,26 +108,26 @@ untouched by the diff (the fence held).
 
 ## Judgment calls, assessed
 
-- **Named exemptions deferred to their own migration sites, list empty** —
-  matches the spec's own words ("each licensed ... at its own migration
+- **Named exemptions deferred to their own migration sites, list empty.**
+  Matches the spec's own words ("each licensed ... at its own migration
   site"); the mechanism (documented license + enumerated EXEMPTIONS) ships
   here and was proven to gate. Sound.
-- **Superusers excluded from the pair-join sweep** — a superuser bypasses the
+- **Superusers excluded from the pair-join sweep.** A superuser bypasses the
   ACL layer, so "fails at the permission layer" is not a statement Postgres
   can make about one; the compose owner is a superuser. The exclusion is
   disclosed and complemented by the credentials boundary. Sound.
 - **Once-per-schema default-privileges pattern rather than an event
-  trigger** — Dispatch's pattern adopted verbatim in structure as the spec
+  trigger.** Dispatch's pattern adopted verbatim in structure as the spec
   directs; "no manual step" is the per-table claim and that is what the test
   proves, including under a second owner and schema. A future migration that
   forgets the pattern fails closed (the app role gets nothing, not too much).
   Sound.
 - **`test/append-only.test.mjs` versus the spec's literal
-  `test/append-only.test`** — the repo's dependency-free Node `.mjs`
+  `test/append-only.test`.** The repo's dependency-free Node `.mjs`
   convention appended to the spec's name; lint globs updated to cover it.
   Acceptable.
 - **`identity_app` naming, throwaway local password, sequence USAGE/SELECT,
-  plane-agnostic 0002, per-file lint granularity, red-path placement** — each
+  plane-agnostic 0002, per-file lint granularity, red-path placement.** Each
   derived from an existing name or landed precedent, disclosed in the PR
   body, and within the spec. Sound.
 
@@ -143,20 +143,20 @@ Delta re-verified by the same clean-context verifier, 2026-08-19, from a
 fresh clone at `eef3d59`.
 
 - **Diff `20b7d9c..eef3d59` is exactly the review fixes, nothing else.**
-  Three files: `test/append-only.test.mjs` — the grant sweep now includes
+  Three files: `test/append-only.test.mjs`, the grant sweep now includes
   sequences (relkind `'S'` with the sequence-kind default ACL in the
   `acldefault` comparison), owner-implicit entries filtered so an owner's
-  legitimate sequence UPDATE never trips it; `Makefile` — red path db 2b, a
+  legitimate sequence UPDATE never trips it; `Makefile`, red path db 2b, a
   planted `GRANT UPDATE ON SEQUENCE ... TO identity_app` must fail the test
-  until dropped; `checks/serving-credentials.mjs` — doc comment softened to
+  until dropped; `checks/serving-credentials.mjs`, doc comment softened to
   claim only literal-shape (lexical) detection, naming the database-side
   role restriction as the enforcement layer. The PR body's criterion-4
   paragraph carries the matching correction ("lexical lint ... early alarm
   and not the boundary"). No scope creep.
 - **CI:** run 32303639592 at `eef3d59`, `success`, every job green.
 - **Re-run:** `make check` green from the fresh clone (includes the standing
-  proof, 18 assertions on both planes). `make check-red` — red paths 1–6
-  all fail as required. `make check-red-db` — planted drift, planted table
+  proof, 18 assertions on both planes). `make check-red`, red paths 1–6
+  all fail as required. `make check-red-db`: planted drift, planted table
   grant, **planted sequence grant (red path 2b, spine)**, and planted
   mutating SECURITY DEFINER function each fail the check; databases left as
   found.
@@ -165,7 +165,7 @@ fresh clone at `eef3d59`.
   v_seq TO identity_app` on **payload** made the test exit 1 ("mutation
   grants do not equal the exemption list"); dropped, green. An
   owner-created sequence with its implicit UPDATE, exercised with a real
-  `setval`, did **not** trip the sweep — 18 assertions, exit 0.
+  `setval`, did **not** trip the sweep, 18 assertions, exit 0.
 
-**Delta verdict: PASS at `eef3d59cad502bb8c9a9a4b5e06e5edbb42d7530` —
+**Delta verdict: PASS at `eef3d59cad502bb8c9a9a4b5e06e5edbb42d7530`,
 the merged SHA is the verified SHA.**

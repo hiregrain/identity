@@ -1,4 +1,4 @@
-# Grain Identity — Agent Guide
+# Grain identity: agent guide
 
 Durable operating context for agents and developers in this repo. Keep this
 file short, stable, and useful.
@@ -20,13 +20,13 @@ Default product test:
   it? A title with nothing under it must read as a title with nothing under it.
 - Does it survive being held by a company that also operates verticals on the
   record? Neutrality is maintained by contract, published rules and audit
-  rather than by corporate separation — entry 024 — which is a weaker
+  rather than by corporate separation, entry 024, which is a weaker
   guarantee than a bureau's and is described as what it is.
 
 ## The constraint that outranks convenience
 
 **Grain says what is known and how well it is known. The partner decides what
-it means and bears the decision.** The marks are deterministic — the rule for
+it means and bears the decision.** The marks are deterministic. The rule for
 each is publishable in one sentence, and two records with identical evidence
 always produce identical marks. That is what lets the ledger compute them
 without becoming a scorer.
@@ -43,14 +43,14 @@ executors never appear at all.
 ## Repo state
 
 **There is no code yet, and that is deliberate.** Code is written only against
-a plan layer with `status: ready`. Nothing outside one may be written — no
+a plan layer with `status: ready`. Nothing outside one may be written: no
 schema, no migrations, no server, no client, no CI ahead of the layer that
 calls for it. Proposing a design is useful; implementing ahead of the plan is
 the specific failure this file exists to prevent.
 
 **One exemption: `checks/`.** Programs that verify this repository against
 itself operate on the repo rather than the product, so they are not plan-gated.
-They do not exist yet — the port from Dispatch is
+They do not exist yet. The port from Dispatch is
 [`plans/foundation/06-checks-port.md`](plans/foundation/06-checks-port.md).
 Until it lands, every rule in this file is enforced by reading, which is why
 the rules are written with their reasons attached.
@@ -67,10 +67,10 @@ from Dispatch are legitimate but must be recorded with their reason as a
 decisions entry; an unrecorded divergence is drift.
 
 **No hand-written counts of checkable things.** "All six layers", "seventeen
-layers", "three objects" — every such count in this repo drifted or was wrong
+layers", "three objects", every such count in this repo drifted or was wrong
 within days of being written. Say "every layer", point at the table, or let a
-check count. Counts inside closed records — decisions entries, a discharged
-spike — are frozen facts and stay.
+check count. Counts inside closed records, decisions entries, a discharged
+spike, are frozen facts and stay.
 
 If a task seems to require a decision that `decisions/LOG.md` has not made,
 that is the signal to stop and raise it, not to choose quietly and note it in
@@ -79,13 +79,13 @@ a comment. `plans/ORDER.md` carries the open decision gates.
 ## Source of truth
 
 1. This file
-2. [`decisions/LOG.md`](decisions/LOG.md) — settled calls; beats the thesis on
+2. [`decisions/LOG.md`](decisions/LOG.md): settled calls; beats the thesis on
    specifics. Append-only and numbered; a reversal is a new entry, never an
    edit
-3. [`model/`](model/) — binding structure; beats prose on shapes. A document
+3. [`model/`](model/): binding structure; beats prose on shapes. A document
    marked RATIFIED binds; one marked PROPOSED does not, and the last ratified
    version stays in force until a founder ratifies its successor
-4. [`THESIS.md`](THESIS.md) — draft, and its `[GAP]` markers are the work queue
+4. [`THESIS.md`](THESIS.md): draft, and its `[GAP]` markers are the work queue
 5. Code, once there is any
 
 A decision in `decisions/LOG.md` is not reopened by inference. Propose a
@@ -96,12 +96,12 @@ referenced by number and the number is stable.
 constrains an implementation. A figure there describes what some other company
 did or what a regulator said in one matter; it is not a target, a spec, or a
 decision. [`counsel/`](counsel/) holds questions put to outside counsel, not
-answers received — a brief is not advice.
+answers received. A brief is not advice.
 
 ## Working here
 
-**Plans.** Acceptance criteria are either *mechanical* — resolving to a command
-that exits 0 or 1 — or *adjudicated* — resolving to an independent verifier
+**Plans.** Acceptance criteria are either *mechanical*, resolving to a command
+that exits 0 or 1, or *adjudicated*, resolving to an independent verifier
 with a clean context, given only the criterion and the diff. If a criterion is
 neither, it is not a criterion. "Works correctly", "handles errors", "degrades
 gracefully" and "derives correctly" are rejected. A criterion that cites an
@@ -120,8 +120,8 @@ separate context, criteria only.
 Nothing else. Objective, scope, constraints, and criteria are authored by a
 human or an agent and read by tools, never rewritten by them.
 
-**Binding prose goes straight to `main`** — decisions, model changes, plan
-authoring — as `docs(<directory>):` commits, one per directory, never on a
+**Binding prose goes straight to `main`**: decisions, model changes, plan
+authoring, as `docs(<directory>):` commits, one per directory, never on a
 branch and never inside an implementation diff. Branch and PR grammar in
 `plans/ORDER.md` applies to task work only. Names are derived, never invented.
 
@@ -162,13 +162,13 @@ verification recorded → code review resolved → human merge.
 
 ## Criteria are numbered, not coded
 
-Inside a layer a criterion is its number. Across layers it is `<layer>-<n>` —
+Inside a layer a criterion is its number. Across layers it is `<layer>-<n>`,
 `worker-surface-3`. A task declares `satisfies: [3, 5]` for criteria in its own
 layer. The `AC-XX<n>` codes inherited from Dispatch were removed on 2026-08-19
 because a reader could not tell what one meant; the identifier they carried is
 load-bearing and survives in this readable form (decision 042). Do not
 reintroduce opaque codes, and do not invent a replacement vocabulary for them
-either — a bare count in frontmatter is worse than the codes were.
+either. A bare count in frontmatter is worse than the codes were.
 
 ## Prose standard
 
@@ -187,7 +187,7 @@ code is a review defect, not a nitpick (decision 052).
 
 ### Issue tracker
 
-GitHub Issues on `hiregrain/identity`, as an intake surface only — the work
+GitHub Issues on `hiregrain/identity`, as an intake surface only. The work
 queue stays `plans/` and decisions stay `decisions/LOG.md`. See
 `docs/agents/issue-tracker.md`.
 
@@ -198,6 +198,6 @@ The five defaults, label string equal to role name. See
 
 ### Domain docs
 
-Mapped to this repo's own structure — `THESIS.md` and `CLAUDE.md` as context,
+Mapped to this repo's own structure: `THESIS.md` and `CLAUDE.md` as context,
 `decisions/LOG.md` as the ADR log; no `CONTEXT.md`, no `docs/adr/`. See
 `docs/agents/domain.md`.

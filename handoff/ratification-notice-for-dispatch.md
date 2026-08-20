@@ -1,4 +1,4 @@
-# Ratification Notice — for the Dispatch repo (2026-08-17)
+# Ratification notice for the Dispatch repo (2026-08-17)
 
 To be carried to the Dispatch repo / its agents. Authored here; this file
 is the notice, not the standard.
@@ -20,15 +20,15 @@ is the notice, not the standard.
 2. **Two Dispatch positions need updating** (see the ledger's
    `design/dispatch-diff-0.1.md`):
    - Position 3 ("evidence record survives everything"): superseded in part
-     by founder ruling R2 — a worker may delete their entire profile at any
-     time. Routing priors must not assume ledger history is permanent.
-   - Position 8 (commodity-work filter): narrowed by founder decision —
-     it governs where the company builds verticals, not who may hold an
+     by founder ruling R2, which lets a worker delete their entire profile at
+     any time. Routing priors must not assume ledger history is permanent.
+   - Position 8 (commodity-work filter): narrowed by founder decision. It
+     governs where the company builds verticals, not who may hold an
      identity. Identity issuance is universal.
 
 3. **The one contested question is ruled** (ledger decision 007): customers
-   and organizations are never ledger subjects. An org needing to attest —
-   including Dispatch customers with approval authority — registers as an
+   and organizations are never ledger subjects. An org needing to attest,
+   including Dispatch customers with approval authority, registers as an
    attesting party (issuer identity). Dispatch's customers-as-identities
    lean is declined; approval-authority needs are met by party-registry
    entries or Dispatch-local records.

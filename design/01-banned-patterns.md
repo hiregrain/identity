@@ -1,4 +1,4 @@
-# Banned Patterns — Grain's Negative Space
+# Banned Patterns, Grain's Negative Space
 
 Written before any generative design work. Every future proposal is
 checked against this document. The point is not to avoid one aesthetic
@@ -7,12 +7,12 @@ toward two attractor clusters, and when criticized for one it swings to
 the other. Both are banned. Differentiation lives in the balance between
 them, argued from the product.
 
-## Cluster A — the default SaaS attractor
+## Cluster A, the default SaaS attractor
 
 The look produced when no one decides anything:
 
 - Purple-to-blue gradients; "glassmorphism" blur cards; glow effects.
-- Pill-shaped everything — buttons, tags, nav, inputs.
+- Pill-shaped everything, such as buttons, tags, nav, inputs.
 - Thick left border bars on cards/callouts as the only hierarchy device.
 - Emoji as iconography or section markers.
 - Oversized border radii applied uniformly (the 16px-everything look).
@@ -24,7 +24,7 @@ The look produced when no one decides anything:
 - Dashboard-as-identity: cards of stats with no argument about what
   matters.
 
-## Cluster B — the overcorrection
+## Cluster B, the overcorrection
 
 The look produced when Cluster A is criticized. Equally convergent, now
 equally recognizable as AI output:
@@ -32,13 +32,13 @@ equally recognizable as AI output:
 - Line-only "brutalist" UI: 1px borders on everything, no fills, no
   depth anywhere.
 - Terminal/mono cosplay: monospace body text, ALL-CAPS labels
-  everywhere, fake scanlines, cursor blinks — irony as identity.
+  everywhere, fake scanlines, cursor blinks, irony as identity.
 - Harsh black-on-white with a single acid accent (electric lime,
   signal orange) used indiscriminately.
 - Sharp 0px corners applied as dogmatically as Cluster A's 16px.
 - Dense data-table aesthetics on surfaces that carry no data.
-- "Swiss" invoked as a costume — big Helvetica, red, grid lines shown
-  for their own sake — without the actual discipline of the grid.
+- "Swiss" invoked as a costume, meaning big Helvetica, red, grid lines
+  shown for their own sake, without the actual discipline of the grid.
 - Deliberate ugliness or hostility presented as authenticity.
 
 ## Cross-cutting bans (either cluster)
@@ -50,7 +50,7 @@ equally recognizable as AI output:
   meaning.
 - Textural skeuomorphism as decoration: wood photographs, paper-grain
   overlays, leather, faux emboss. (Structural borrowing from physical
-  trust artifacts remains open — see 00-design-brief.)
+  trust artifacts remains open. See 00-design-brief.)
 - Dark mode as default because it "looks premium," rather than as a
   decision.
 - Motion that decorates instead of informs; celebration spent on
@@ -65,9 +65,9 @@ Learned by rendering five full directions and having all five rejected:
   furniture). Physical-artifact mechanisms must be absorbed
   structurally into real app UI, never imitated as pages.
 - **Literal stamps**: rotated ink-look stamp objects on screen read as
-  fake and decorative — every time. The verification *moment* stays;
+  fake and decorative, every time. The verification *moment* stays;
   the rubber-stamp rendering is dead.
-- **Arrow glyphs (→) and em-dash cadence inside UI text** — slop tells.
+- **Arrow glyphs (→) and em-dash cadence inside UI text**, slop tells.
 - **Warm serif + ruled lines on mobile** pattern-matches to vibe-coded
   note apps, not authority.
 - **Identity motifs that need a legend** (unlabeled tally fields). If
@@ -86,12 +86,12 @@ Learned by rendering five full directions and having all five rejected:
 
 For any proposed element, three questions:
 
-1. **Provenance** — can we say why this exists in terms of the product
+1. **Provenance.** Can we say why this exists in terms of the product
    (ledger, permanence, provenance, one grain one fact), not in terms
    of other software?
-2. **Cluster distance** — if this screen were posted with the logo
+2. **Cluster distance.** If this screen were posted with the logo
    cropped out, could it be mistaken for either cluster?
-3. **Variation** — does the system vary this treatment by meaning, or
+3. **Variation.** Does the system vary this treatment by meaning, or
    is it applied uniformly?
 
 Failing any one is a redesign, not a tweak.

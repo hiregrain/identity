@@ -1,7 +1,7 @@
 # D5 Advocate Brief: One Hyperscaler as the Primary Platform (AWS)
 
-Advocate for concentrating Grain's primary platform — payload databases, global
-spine, compute, KMS, and the compliance-mode WORM account — on a single
+Advocate for concentrating Grain's primary platform, namely payload databases,
+global spine, compute, KMS, and the compliance-mode WORM account, on a single
 hyperscaler, and for that hyperscaler being AWS. The opposing brief
 (`d5-composed-stack.md`) is engaged at its strongest form: that concentrating a
 neutrality-claiming ledger on one US hyperscaler is a governance failure, not
@@ -12,19 +12,19 @@ on 2026-08-19 to full candidate coverage. This brief therefore argues the
 general form (single primary platform) before arguing the specific (AWS).
 
 Operating facts: founder + 2 engineers, AI-build-heavy. Ratified constraints
-this brief may not relitigate — D1 managed Postgres, D2 Go core, D3 day-one
+this brief may not relitigate are D1 managed Postgres, D2 Go core, D3 day-one
 WORM-anchored checkpoints with a second-cloud mirror, D4 party-held registry
-keys with hosted worker/peer keys, decision 011's physical spine/payload split
-and real-KMS-in-production rule.
+keys with hosted worker/peer keys, and decision 011's physical spine/payload
+split and real-KMS-in-production rule.
 
 ---
 
-## TLDR — the verdict argued for
+## The verdict argued for, in brief
 
 **Adopt AWS as the primary platform, and adopt the opposing brief's decomposition
 while rejecting its conclusion.** The composed-stack brief is right that this
-decision is four decisions — primary database, WORM anchor, mirror, key custody —
-and right that they are separable. It is wrong that separating them is free. The
+decision is four decisions, namely primary database, WORM anchor, mirror, and
+key custody, and right that they are separable. It is wrong that separating them is free. The
 separation has a price paid in exactly the currency this team has least of:
 operator attention across vendor boundaries, at a company with three engineers
 and a launch-blocking durability obligation.
@@ -38,7 +38,7 @@ Four arguments carry it:
    writes on the primary when all secondaries fall behind. No other managed
    Postgres offers a commit-gating cross-region durability knob. AlloyDB's
    cross-region replication is asynchronous, with RPO-0 guaranteed only on
-   *planned switchover* — the case that is not the failure case. Azure Flexible
+   *planned switchover*, which is not the failure case. Azure Flexible
    Server documents an expected RPO of up to five minutes, and "close to the
    replication lag" under severe regional failure.
 2. **Compliance-mode WORM that survives the operator is a two-vendor market at
@@ -61,9 +61,9 @@ Four arguments carry it:
    transfer without a localization rule, and India's DPDP framework uses a
    negative-list regime under Section 16 rather than a residency mandate. The EU
    is the one structurally binding case, and AWS closed it on 15 January 2026
-   with the general availability of the European Sovereign Cloud in Brandenburg —
-   an EU-operated, EU-staffed, logically separate cloud, expanding to sovereign
-   Local Zones in Belgium, the Netherlands and Portugal.
+   with the general availability of the European Sovereign Cloud in Brandenburg.
+   This is an EU-operated, EU-staffed, logically separate cloud, expanding to
+   sovereign Local Zones in Belgium, the Netherlands and Portugal.
 
 ---
 
@@ -95,7 +95,7 @@ decision 005 is "zero loss of acknowledged attestations."
 The honest form of the market position is this, and the opposing brief will
 press it, so it is stated first: **no managed Postgres product delivers
 cross-region RPO-zero automatically.** `rds.global_db_rpo` accepts values from
-20 seconds upward — it cannot be set to zero. The real watermark is and always
+20 seconds upward. It cannot be set to zero. The real watermark is and always
 was application-level, exactly as D1's own text says ("as the backstop,
 tightened"). A reader who stops there concludes the primitive is not
 discriminating.
@@ -106,7 +106,7 @@ three-engineer shop, on the path that produces the contractual promise. Its
 failure mode is a logic bug that acknowledges early and is invisible until an
 outage. Aurora's parameter is a database-enforced commit block: when the
 watermark code is wrong, the engine still refuses the commit. On AlloyDB or
-Azure Flexible Server there is no second line — asynchronous replication will
+Azure Flexible Server there is no second line, because asynchronous replication will
 acknowledge locally whatever the application asks it to, and the only thing
 standing between a watermark bug and a broken contractual promise is the
 watermark code that has the bug. For a launch-blocking obligation carrying a
@@ -131,16 +131,16 @@ The market sorts sharply against that test:
 
 | Candidate | Compliance-grade WORM | Survives the operator? |
 |---|---|---|
-| AWS S3 Object Lock, compliance mode | yes | yes — not deletable by root; documented escape is deleting the account |
-| Azure Blob locked time-based retention | yes — Cohasset-validated vs SEC 17a-4(f) | yes — policy cannot be deleted once locked; interval extendable up to five times, never shortenable |
-| OCI Object Storage locked retention rules | yes | yes — Oracle's docs state neither a tenancy administrator nor Oracle Support can delete a locked rule; 14-day mandatory delay before lock takes effect |
-| GCS Bucket Lock / Object Retention Lock | yes in substance | partial — policy is irreversible and a project lien blocks project deletion, but the root/org-admin case is not stated as flatly as AWS states it |
-| Backblaze B2 Object Lock, compliance mode | yes | yes — Backblaze support documented as unable to unlock, explicitly as an anti-social-engineering control |
-| Wasabi object lock | yes — asserted against SEC 17a-4(f) | asserted, vendor-sourced |
-| Cloudflare R2 bucket locks | no | **no — modifiable by administrators.** Fails D3 outright |
+| AWS S3 Object Lock, compliance mode | yes | yes, not deletable by root; documented escape is deleting the account |
+| Azure Blob locked time-based retention | yes, Cohasset-validated vs SEC 17a-4(f) | yes, policy cannot be deleted once locked; interval extendable up to five times, never shortenable |
+| OCI Object Storage locked retention rules | yes | yes, Oracle's docs state neither a tenancy administrator nor Oracle Support can delete a locked rule; 14-day mandatory delay before lock takes effect |
+| GCS Bucket Lock / Object Retention Lock | yes in substance | partial, policy is irreversible and a project lien blocks project deletion, but the root/org-admin case is not stated as flatly as AWS states it |
+| Backblaze B2 Object Lock, compliance mode | yes | yes, Backblaze support documented as unable to unlock, explicitly as an anti-social-engineering control |
+| Wasabi object lock | yes, asserted against SEC 17a-4(f) | asserted, vendor-sourced |
+| Cloudflare R2 bucket locks | no | **no, modifiable by administrators.** Fails D3 outright |
 
 Two consequences. First, R2 is eliminated for the anchor, whatever its other
-merits. Second — and this is the concession that matters — **the anchor does not
+merits. Second, and this is the concession that matters, **the anchor does not
 have to live with the primary.** That is the opposing brief's best structural
 point and it is conceded in §4.
 
@@ -150,8 +150,8 @@ The composed-stack brief is granted three things outright:
 
 - **The mirror is already multi-vendor and should be maximally independent.**
   D3 requires a second-cloud mirror. Putting it on Backblaze B2 in compliance
-  mode — a vendor with no commercial relationship to the primary, whose support
-  organization is documented as unable to unlock compliance-mode objects — is
+  mode, a vendor with no commercial relationship to the primary, whose support
+  organization is documented as unable to unlock compliance-mode objects, is
   strictly better than mirroring AWS to GCP, and materially cheaper. This brief
   adopts it.
 - **The anchor account should be a separate legal and billing boundary**, not
@@ -166,7 +166,7 @@ risk is not vendor concentration; it is a three-person team owing a
 zero-acknowledged-loss contractual promise, a deterministic mark system, and a
 deletion path that must reach CDC, indexes, lakehouse and backups. Every vendor
 boundary added to the primary plane is a boundary across which the deletion saga
-and the durability watermark must both be reasoned about and drilled — on
+and the durability watermark must both be reasoned about and drilled, on
 ephemeral environments, because decision 011 refused a standing staging
 environment. The composed stack pays its independence premium in exactly the
 scarce resource, and buys independence for the *database*, which is not the
@@ -177,40 +177,40 @@ Put plainly: **decentralize the proof, concentrate the plumbing.**
 
 ## 5. Candidates eliminated, with the reason
 
-- **Cloudflare R2** — fails D3. Administrator-modifiable locks.
-- **Hetzner, OVH bare metal, Fly.io, Railway, Render** — fail D1 (managed
+- **Cloudflare R2** fails D3 because its locks are administrator-modifiable.
+- **Hetzner, OVH bare metal, Fly.io, Railway, Render** fail D1 (managed
   Postgres with a durability primitive) and the real-KMS rule in decision 011.
   Cost advantage is real and irrelevant to a launch-blocking durability
   obligation.
-- **Neon, Supabase, Timescale** — fail the ack-watermark obligation: no
+- **Neon, Supabase, Timescale** fail the ack-watermark obligation: no
   commit-gating cross-region durability control, and the deletion path crosses
   a vendor boundary the operator does not control. Neon's SOC 2 and HIPAA
   posture is not the constraint that binds here.
-- **Crunchy Bridge** — Postgres-specialist quality is real, but it was acquired
+- **Crunchy Bridge** has real Postgres-specialist quality, but it was acquired
   by Snowflake in 2025. A record layer that must survive commercial events
   should not put its system of record inside a recently-acquired product whose
   roadmap now serves a data-warehouse strategy.
-- **EDB (BigAnimal / Postgres AI Cloud)** — the most serious specialist
-  candidate: runs in the customer's own AWS or Azure account, so it does not add
-  a data-custody boundary. Rejected on the same primitive test — it inherits the
-  underlying cloud's replication, not a commit-gating RPO control — and on
-  agent-fluency grounds identical to D2's reasoning: the training corpus for
-  Aurora operations is an order of magnitude larger.
-- **IBM Cloud** — no argument survives contact with the region roadmap.
-- **Alibaba** — non-starter for US employment-adjacent personal data.
-- **OCI** — see §6. Not eliminated. The genuine surprise of this docket.
-- **Azure** — see §6. The strongest runner-up.
+- **EDB (BigAnimal / Postgres AI Cloud)** is the most serious specialist
+  candidate: it runs in the customer's own AWS or Azure account, so it does not
+  add a data-custody boundary. Rejected on the same primitive test, since it
+  inherits the underlying cloud's replication rather than a commit-gating RPO
+  control, and on agent-fluency grounds identical to D2's reasoning: the
+  training corpus for Aurora operations is an order of magnitude larger.
+- **IBM Cloud** has no argument that survives contact with the region roadmap.
+- **Alibaba** is a non-starter for US employment-adjacent personal data.
+- **OCI** is not eliminated. See §6, the genuine surprise of this docket.
+- **Azure** is the strongest runner-up. See §6.
 
 ## 6. The two candidates that are not eliminated, and why AWS still wins
 
 **Azure** clears every hard gate: locked immutable blob storage with a Cohasset
 assessment against SEC 17a-4(f), a Managed HSM at FIPS 140-2 Level 3, and
-Flexible Server as managed Postgres. It loses on one thing — the ack watermark.
+Flexible Server as managed Postgres. It loses on one thing, the ack watermark.
 An expected RPO of up to five minutes, degrading to replication lag under severe
 regional failure, is not a backstop for a zero-acknowledged-loss promise; it is
 the thing the promise is defending against.
 
-**OCI** has the strongest WORM text of any candidate — Oracle documents that
+**OCI** has the strongest WORM text of any candidate. Oracle documents that
 neither a tenancy administrator nor Oracle Support can delete a locked retention
 rule, which is a stronger statement than Google's and as strong as Amazon's, with
 a 14-day pre-lock testing window that is genuinely well-designed for a
@@ -221,7 +221,7 @@ agent fluency is a first-class cost at this team size.
 
 **AWS wins on the conjunction**, not on any single axis: the only commit-gating
 durability backstop, the strongest stated root-proof WORM, the only current FIPS
-140-3 Level 3 managed KMS, and — since 15 January 2026 — an EU-sovereign answer
+140-3 Level 3 managed KMS, and, since 15 January 2026, an EU-sovereign answer
 that does not require adopting a second vendor to serve the one jurisdiction
 that structurally binds.
 
@@ -233,12 +233,12 @@ D5 should be re-litigated, without further argument, on any of:
    control (kills §2).
 2. A durability game-day demonstrates the application ack watermark is
    sufficient standalone, twice, on ephemeral environments (kills §2 the other
-   way — and would re-open the whole field, including EDB and Azure).
+   way, and would re-open the whole field, including EDB and Azure).
 3. AWS's KMS FIPS 140-3 certificate (#4884) is not renewed past its
    **11/17/2026 sunset date** and no successor validation is issued (kills §3;
    this is a dated fact and must be re-checked before ratification, not after).
-4. Counsel's residency opinion returns a *localization* finding — not a transfer
-   finding — for India or the Philippines (re-opens §4 and forces a regional
+4. Counsel's residency opinion returns a *localization* finding, not a transfer
+   finding, for India or the Philippines (re-opens §4 and forces a regional
    vendor question this brief has ruled out).
 5. AWS European Sovereign Cloud fails to ship a managed Postgres with the
    Aurora global primitive, or its Local Zone expansion slips past the first EU

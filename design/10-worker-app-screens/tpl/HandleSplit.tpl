@@ -6,9 +6,9 @@
 <helmet>
   <style>
 @@CSS@@
-    /* Option C — platform chrome, Grain content. The app bar, the back
+    /* Option C, platform chrome, Grain content. The app bar, the back
        affordance and the commit button follow the platform so navigation feels
-       ordinary; everything that carries the record keeps §8's ruled input,
+       ordinary. Everything that carries the record keeps §8's ruled input,
        Archivo, and error in ink rather than colour. */
     .m-appbar{height:64px;display:flex;align-items:center;gap:16px;padding:0 16px;
               border-bottom:1px solid var(--hairline)}
@@ -69,11 +69,11 @@
 </x-dc>
 
 <script data-dc-script data-props='{"$preview":{"width":360,"height":800}}'>
-// Option C — the seam. Chrome is the platform's; the record's own surfaces are
+// Option C, the seam. Chrome is the platform's, and the record's own surfaces are
 // Grain's. Identical logic to the shipped Handle.
 const MAP = {
-  // Devanagari, Bengali, Arabic, Cyrillic, Greek, Han, Kana — enough to show the
-  // mechanism. Production uses ICU; this is the mockup's stand-in.
+  // Devanagari, Bengali, Arabic, Cyrillic, Greek, Han, Kana, enough to show the
+  // mechanism. Production uses ICU, and this is the mockup's stand-in.
   'ল':'l','ি':'i','য':'y','া':'a','জ':'j','ে':'e','ল':'l','ম':'m','ন':'n','্':'','দ':'d','ো':'o','স':'s',
   'л':'l','и':'i','з':'z','е':'e','м':'m','н':'n','д':'d','о':'o','с':'s','а':'a','р':'r','в':'v','к':'k',
   'α':'a','β':'b','γ':'g','δ':'d','ε':'e','λ':'l','μ':'m','ν':'n','ο':'o','σ':'s','τ':'t','ρ':'r','ι':'i'

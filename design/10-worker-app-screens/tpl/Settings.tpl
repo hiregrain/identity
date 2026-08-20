@@ -34,7 +34,7 @@
     <!-- Append-only status, relocated here by decision 045 when the plate footer
          left the record. It is the only surface that makes "nothing can be
          deleted" checkable rather than a claim, and it is set in the instrument
-         register — §6 defines instrument numerals and nothing used them. -->
+         register, and §6 defines instrument numerals and nothing used them. -->
     <div style="padding:26px 0 20px;border-bottom:1px solid var(--ink)">
       <div class="reading">
         <span class="t-inst">{{ entries }}</span>
@@ -94,8 +94,8 @@
 
 <script data-dc-script data-props='{"$preview":{"width":360,"height":800}}'>
 // A sheet from the Record header, not a destination. Read-only: every account
-// change is a support request (decision 030). Deletion has no in-app control —
-// it is named here and routed, because consent promises the right at signup.
+// change is a support request (decision 030). Deletion has no in-app control.
+// It is named here and routed, because consent promises the right at signup.
 class Component extends DCLogic {
   constructor(p){ super(p); this.state = {confirming:false}; }
   renderVals(){

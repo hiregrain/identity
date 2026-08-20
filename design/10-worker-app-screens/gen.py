@@ -63,7 +63,7 @@ for (dur, live), width in zip(segs, widths):
     r += width
 json.dump(hit, open(os.path.join(OUT,"hit.json"), "w"))
 
-# The expanded view's lobe highlight is one path per chapter and measure, so the
+# The expanded view's lobe highlight, one path per chapter and measure, so the
 # figure can light the lobe a reader is reading about. No spokes, no sector
 # lines, no notches: they read as damage across the drawing. It used to be
 # computed in the artboard's own JavaScript, which meant a second copy of
@@ -111,7 +111,7 @@ open(os.path.join(OUT,"ceremony-before.svgfrag"),"w").write(G % imprint._strand(
 after = imprint._strand(r_cur[0], r_cur[1], CUR_WOVEN, PPU, DPR).replace("<path d=","<path pathLength='1' d=")
 open(os.path.join(OUT,"ceremony-after.svgfrag"),"w").write(G % after)
 
-# gutter swatches are the same construction unrolled over one lobe period, at a
+# gutter swatches, the same construction unrolled over one lobe period, at a
 # larger box and lower counts so 3-vs-5 is countable at 1x (design/07 §3).
 W, MID = 34.0, 8.0
 def unrolled(n, amp=5.6):
@@ -148,7 +148,7 @@ def sine_rule(w=320.0, amp=1.15, h=6.0):
             "<path d='M%s'/></svg>") % (w, h, h, " L".join(pts))
 open(os.path.join(OUT,"sine-rule.svgfrag"),"w").write(sine_rule())
 
-# The lockup is the mark plus the GRAIN wordmark (§4a). tier_for() inside lockup()
+# The lockup, mark plus the GRAIN wordmark (§4a). tier_for() inside lockup()
 # swaps the mark to its correct drawn reduction, so this is never a scaled master.
 LOCKUP_MARK_PX = 26
 open(os.path.join(OUT,"lockup.svgfrag"),"w").write(mark.lockup(LOCKUP_MARK_PX))

@@ -1,4 +1,4 @@
-# Interface Verdict 0.1 — on `attestation-interface.md` (0.1-proposed)
+# Interface Verdict 0.1, on `attestation-interface.md` (0.1-proposed)
 
 Verdict of the ledger's independent design session on Dispatch's proposed
 interface contract. Standalone readable; full reasoning in
@@ -31,7 +31,7 @@ Dispatch's copy becomes conforming.
 - **`ledger_person_id` held by verticals as a reference, never a primary
   key.** Correct. Ledger-side addition (no contract change): the ID is an
   opaque surrogate, never reissued, and resolves through a permanent alias
-  table after merges — a vertical holding a since-absorbed ID keeps
+  table after merges. A vertical holding a since-absorbed ID keeps
   resolving to the right person.
 - **Append-only up; correction = superseding attestation via `supersedes`.**
   Correct. Ledger-side rule (N-1 below) constrains who may supersede.
@@ -47,7 +47,7 @@ Dispatch's copy becomes conforming.
   seven-axis set is a founder hypothesis without validated prior art
   (research `05`); level definitions will be versioned and recalibrated
   after two verticals of real attestations. This is a versioning note, not
-  an amendment — the contract already carries `schema_version`.
+  an amendment. The contract already carries `schema_version`.
 - **What never crosses** (routing internals, behavioral traces, per-unit
   rows, derived estimates, AI executors). Correct, all five. "Derived
   estimates never sync up as fact" also shapes the ledger's own outputs:
@@ -57,17 +57,17 @@ Dispatch's copy becomes conforming.
   makes worker profile deletion (founder ruling R2) honest: the ledger can
   truly erase because it never held the work.
 
-### R-1. `work_kind` taxonomy — who authors, at what grain (open item 1)
+### R-1. `work_kind` taxonomy, who authors, at what grain (open item 1)
 
 **Resolved: the ledger authors it.** A small proprietary vocabulary (order
-30–150 terms) at detailed-work-activity grain — not occupations, not
-mega-buckets — governed by a taxonomy council (ledger editor with final
+30–150 terms) at detailed-work-activity grain, not occupations, not
+mega-buckets, governed by a taxonomy council (ledger editor with final
 authority; one delegate per attached attesting party of vertical scale,
 internal and external seated identically). Versioned with a public
 changelog; historical bindings immutable; reclassification only via
 versioned crosswalk tables; published crosswalks to O*NET-SOC and
 ISCO-08/ESCO. Nothing existing was adoptable (O*NET US-only/stale, ESCO
-EU-only, ISCO too coarse — research `05`).
+EU-only, ISCO too coarse, research `05`).
 
 ### R-2. `score_summary` anchoring (open item 2)
 
@@ -75,7 +75,7 @@ EU-only, ISCO too coarse — research `05`).
 lightweight anchor.** Each per-basis entry must carry the vertical-local
 identifier of the quality bar it was scored against (`bar_ref`, e.g. a
 rubric version ID). This makes cross-period comparison *possible* without
-the ledger normalizing scores onto a shared scale — a ledger-normalized
+the ledger normalizing scores onto a shared scale. A ledger-normalized
 scale is explicitly rejected: it would be the composite score that the
 Goodhart and bias evidence (research `06`/`07`: the Nature RCT on score
 granularity) and the Art. 22 exposure analysis both warn against.
@@ -97,7 +97,7 @@ flag, never an edit.
 ### R-4. Worker consent and portability scope (open item 4)
 
 **Resolved.** Attestations cross verticals only inside a prior packet
-issued under an **active worker grant** to the receiving party — grants are
+issued under an **active worker grant** to the receiving party. Grants are
 party-level (founder decision 7), revocable, logged, and worker-visible;
 packets are generated at read time so revocation and deletion bind
 immediately. Consent is captured at onboarding (attestation writing,
@@ -146,8 +146,8 @@ lifetime of what crossed; R2 makes that silence untenable.
 
 ## Binding interpretations (no text change)
 
-**N-1. Supersession authority.** Only the original issuing party — or the
-ledger itself, via a signed invalidation record upon proven fraud — may
+**N-1. Supersession authority.** Only the original issuing party, or the
+ledger itself via a signed invalidation record upon proven fraud, may
 supersede an attestation. Party A cannot correct party B; it can only add
 its own attestation.
 
@@ -157,7 +157,7 @@ all verticals" is interpreted as: derived by the ledger from
 coarse rule, with supporting attestation references included per entry.
 Attestations assert what was exercised; only the ledger asserts standing.
 [FOUNDER-CALL] Alternative: pure pass-through of last-attested values,
-leaving aggregation to each vertical — maximally conservative, but leaves
+leaving aggregation to each vertical. Maximally conservative, but it leaves
 the contract's own phrase undefined when attestations disagree.
 
 **N-3. Internal/external symmetry is schema-invisible.** The attestation

@@ -1,6 +1,6 @@
-# Regulatory Perimeter: Global Worker Identity + Work Ledger
+# Regulatory perimeter: global worker identity + work ledger
 
-**Evidence tier — binds nothing.** Research informs decisions and constrains
+**Evidence tier: binds nothing.** Research informs decisions and constrains
 no implementation. A figure here describes what someone else did or what a
 regulator said in one matter; it is not a target, a spec, or a decision.
 
@@ -16,7 +16,7 @@ constraints that follow.
 ## TLDR
 
 **1. In the United States, this product is a consumer reporting agency. Not
-"at risk of being one" — is one, on the facts as described.** The company will,
+"at risk of being one." It is one, on the facts as described.** The company will,
 for money, regularly assemble and evaluate information on workers bearing on
 their character, general reputation and personal characteristics, and furnish
 it to third parties who use it to decide hiring, promotion, retention and task
@@ -27,13 +27,13 @@ allocation. That is the entire statutory definition (15 U.S.C. § 1681a(f), (d),
 survive contact with § 1681a(o), and the existing Grain memo overstates how
 much that exclusion can carry.** The memo correctly recites the five (o)
 conditions but does not draw out that (o)(1) limits the exclusion to
-communications that would be **investigative** consumer reports — i.e.
+communications that would be **investigative** consumer reports, meaning
 character information "obtained through personal interviews." Signed employer
 attestations delivered by API, assessment scores, verified training records and
 task-outcome data are not obtained through personal interviews, so (o) never
 reaches them at all. Worse, (o)(4) requires that the communication "is not used
 by any person for any purpose other than" procuring that employee for that
-employer — which forecloses the core product thesis of a durable, reusable,
+employer, which forecloses the core product thesis of a durable, reusable,
 multi-reader record. And (o)(2) requires the recipient be a *prospective*
 employer, which excludes every partner company reading the prior packet about a
 worker it already employs. Confidence: high on the statutory reading; the Grain
@@ -43,7 +43,7 @@ transferable to this ledger.
 **3. Contested, and the most important thing to internalize: the
 worker-consented, worker-visible, worker-permissioned design does not weaken the
 CRA case. It strengthens it.** The FCRA has no consent exemption. "Written
-instructions of the consumer" is a *permissible purpose* under § 1681b(a)(2) —
+instructions of the consumer" is a *permissible purpose* under § 1681b(a)(2),
 a provision that presupposes you are already a CRA. Full worker visibility into
 the raw record is § 1681g file disclosure. Party-level grant/revoke is
 § 1681e(a) permissible-purpose control. The design is voluntary pre-compliance
@@ -66,7 +66,7 @@ non-credit adverse employment items, which is less litigated.
 
 **5. California is worse than federal and cannot be designed around the same
 way.** ICRAA (Civ. Code § 1786 et seq.) covers character and reputation
-information obtained "through any means," not only personal interviews — so the
+information obtained "through any means," not only personal interviews, so the
 one carve-out that gives § 1681a(o) any purchase federally does not exist in
 California. *Connor v. First Student*, 5 Cal.5th 1026 (2018), confirms employers
 and agencies must satisfy ICRAA even where FCRA/CCRAA overlap. Statutory damages
@@ -76,17 +76,17 @@ run $10,000 per violation (§ 1786.50). Confidence: high.
 architecture: personal data off-ledger and erasable, with the immutable chain
 holding only commitments/hashes.** This is now the EDPB's explicit
 recommendation in Guidelines 02/2025 on blockchain (v2.0 adopted 7 July 2026),
-which also states that encrypted and hashed data remain personal data — so
+which also states that encrypted and hashed data remain personal data, so
 crypto-shredding alone is *not* a blessed substitute for erasure, though it is
 widely used and is strong risk mitigation. GDPR Art. 16's "supplementary
-statement" language is genuine textual support for the annotation model — but
+statement" language is genuine textual support for the annotation model, but
 only for *completing incomplete* data; Art. 16's first sentence still requires
 actual rectification of inaccurate data. Confidence: high on the EDPB guidance;
 medium on how aggressively DPAs will police crypto-shredding, which is unsettled.
 
 **7. The GDPR sleeper is Article 22, not Article 17.** Under *SCHUFA*
 (C-634/21, 7 Dec 2023), if you produce a score or grade and employers draw
-strongly on it, **you** — not the employer — are performing the automated
+strongly on it, **you**, not the employer, are performing the automated
 individual decision. That flips a pile of obligations onto the ledger operator:
 an Art. 22(2) exception plus Art. 22(3) safeguards (human intervention, right to
 contest, right to express a point of view). This is the exact mirror of the US
@@ -97,8 +97,8 @@ least. Confidence: high.
 **8. Erasure risk under GDPR is real but narrower than usually assumed, and the
 right lawful basis is legitimate interests, not consent.** Consent is unreliable
 in an employment-adjacent power imbalance (Art. 29 WP Opinion 2/2017). On
-Art. 6(1)(f), the live exposure is the Art. 21(1) objection — you may refuse only
-on "compelling legitimate grounds" — feeding Art. 17(1)(c). Art. 17(3)(e)
+Art. 6(1)(f), the live exposure is the Art. 21(1) objection. You may refuse only
+on "compelling legitimate grounds," which feeds Art. 17(1)(c). Art. 17(3)(e)
 (establishment/exercise/defence of legal claims) is the most defensible retention
 hook for dispute-relevant records, and it is narrower than "we might need this
 someday." Confidence: high.
@@ -109,7 +109,7 @@ the basis is consent or contract. Self-asserted claims: portable. Employer
 attestations authored by third parties and any derived score: not portable (WP29
 excludes inferred/derived data). Art. 20(4) also protects the attesting
 employer's and peer referee's rights. If you build worker-controlled export
-anyway — and you should, it is the product — treat it as a product commitment,
+anyway, and you should because it is the product, treat it as a product commitment,
 not a compliance one. Confidence: high.
 
 **10. Philippines: the DPA reaches you from the first Philippine worker; its
@@ -117,14 +117,14 @@ erasure right looks narrower than GDPR's in the statute but the IRR makes it
 broader in the one way that matters; and criminal liability runs to officers
 personally.** IRR Sec. 4 makes "relates to personal data about a Philippine
 citizen or resident" a stand-alone jurisdictional hook. IRR Sec. 34(e)(e) adds an
-erasure trigger with no GDPR equivalent — "private information that is
-**prejudicial to the data subject**" — which describes an adverse employer
+erasure trigger with no GDPR equivalent: "private information that is
+**prejudicial to the data subject**", which describes an adverse employer
 attestation almost exactly. Offenses under Secs. 25–32 carry imprisonment, Sec. 34
 reaches responsible officers, aliens are deported after serving sentence, and
 Sec. 35 auto-escalates to maximum penalties above 100 affected persons. Two
 findings cut *for* the design: Sec. 16(d) **requires** that corrected and
-retracted versions both stay accessible and be delivered together to recipients —
-statutory endorsement of versioned correction — and there is **no adequacy regime
+retracted versions both stay accessible and be delivered together to recipients,
+which is statutory endorsement of versioned correction, and there is **no adequacy regime
 or transfer permit**, so US hosting is lawful on contractual accountability alone.
 The controlling constraint is that education records, government IDs, date of
 birth and criminal-proceeding data are all **sensitive personal information**
@@ -145,12 +145,12 @@ Privacy Framework (Decision 2023/1795), which survived *Latombe* at the General
 Court on 3 Sept 2025 but is on appeal to the CJEU (C-703/25 P, pending). Nobody
 should build a schema whose legality depends on an adequacy decision under
 active appeal. The Philippines has no EU adequacy decision, so EU personal data
-reaching Philippine ops staff needs SCCs plus a transfer impact assessment —
+reaching Philippine ops staff needs SCCs plus a transfer impact assessment,
 and *read access by a PH-based operator is itself a transfer*. Confidence: high.
 
 **12. Net: the regulation does not kill the product. It kills three specific
-design commitments — never-delete, freeze-on-verification, and one global
-table — and it forces a dispute/reinvestigation engine to be a first-class
+design commitments (never-delete, freeze-on-verification, and one global
+table), and it forces a dispute/reinvestigation engine to be a first-class
 subsystem rather than a feature.** The single highest-leverage architectural
 decision is separating the *immutable evidence of an event* from the *reportable
 personal-data payload of that event*, so the first can be permanent and the
@@ -172,14 +172,14 @@ reports."
 
 Every element is satisfied by the described design:
 
-- *Monetary fees* — the revenue comes from partner companies and internal
+- *Monetary fees*: the revenue comes from partner companies and internal
   verticals. Fees need not come from the worker; the worker being free is
   irrelevant.
-- *Regularly engages, in whole or in part* — "in part" defeats the argument
+- *Regularly engages, in whole or in part*: "in part" defeats the argument
   that reporting is incidental to a recruiting business.
-- *Assembling or evaluating... other information on consumers* — the ledger
+- *Assembling or evaluating... other information on consumers*: the ledger
   assembles; provenance grading and any score evaluates.
-- *For the purpose of furnishing consumer reports to third parties* — the
+- *For the purpose of furnishing consumer reports to third parties*: the
   "prior packet" read by partner companies is the report; the partners are the
   third parties.
 
@@ -189,7 +189,7 @@ characteristics, or mode of living which is used or expected to be used or
 collected in whole or in part for the purpose of serving as a factor in
 establishing the consumer's eligibility for... employment purposes."
 "Employment purposes" is defined at § 1681a(h) as evaluating a consumer "for
-employment, promotion, reassignment or retention as an employee" — so partner
+employment, promotion, reassignment or retention as an employee", so partner
 reads about existing workers are squarely inside, not outside.
 
 **Self-labeling does not help.** The FTC's position, stated in its 2013 business
@@ -208,9 +208,9 @@ satisfied by this product *by design and by pitch deck*. Do not read *Kidd* as a
 defense; it is the articulation of the standard you affirmatively meet.
 
 **Withdrawn but analytically intact:** CFPB Circular 2024-06 (89 Fed. Reg.
-88,875, Nov. 12, 2024) addressed precisely this fact pattern — "background
+88,875, Nov. 12, 2024) addressed precisely this fact pattern, "background
 dossiers and algorithmic scores for hiring, promotion, and other employment
-decisions" — and stated that an entity "could 'assemble' or 'evaluate' consumer
+decisions", and stated that an entity "could 'assemble' or 'evaluate' consumer
 information within the meaning of 'consumer reporting agency' if the entity
 collects consumer data in order to train an algorithm that produces scores or
 other assessments about workers for employers," and that the first-party
@@ -226,7 +226,7 @@ published specifically on the continued vitality of the withdrawn documents.
 Treat the withdrawal as a change in *enforcement probability*, not in *legal
 exposure*. Confidence: high.
 
-### 1.2 The two exclusions that actually do work — and their limits
+### 1.2 The two exclusions that actually do work and their limits
 
 **§ 1681a(d)(2)(A)(i): first-party transactions and experiences.** A report
 "containing information solely as to transactions or experiences between the
@@ -246,7 +246,7 @@ statutory path that external partner companies do not.** It is also a reason to
 think hard about whether "internal verticals" and "external partners" should
 share one data plane at all. Confidence: high.
 
-### 1.3 § 1681a(o) — the employment-agency exclusion, and why it cannot carry this product
+### 1.3 § 1681a(o): the employment-agency exclusion, and why it cannot carry this product
 
 The statute, verbatim on the load-bearing points. A communication is excluded if
 it is a communication:
@@ -267,9 +267,9 @@ Four independent failure modes, in descending order of severity:
 
 **(a) (o)(4) forecloses the product thesis.** The exclusion is conditioned on
 the communication not being used by *any person* for *any purpose* other than
-procuring that employee for that employer. A persistent, reusable record — read
+procuring that employee for that employer. A persistent, reusable record, read
 by many parties over years, informing promotion and task allocation, feeding
-scoring and matching — is by construction used for other purposes. This is not a
+scoring and matching, is by construction used for other purposes. This is not a
 drafting problem you can consent your way around; it is a per-communication,
 absolute limitation. The more the ledger succeeds as a ledger, the less (o) can
 possibly apply. Confidence: high. This is the strongest single argument and the
@@ -293,13 +293,13 @@ ledger fully FCRA-covered.** Confidence: high on the statutory reading.
 **(c) (o)(2) excludes every incumbent-employer read.** "Prospective employer" is
 the recipient the exclusion contemplates. Partner companies reading the prior
 packet about workers they already employ, for promotion, retention, reassignment
-or task allocation, are not prospective employers — and § 1681a(h) puts exactly
+or task allocation, are not prospective employers, and § 1681a(h) puts exactly
 those decisions inside "employment purposes." Confidence: high.
 
 **(d) (o) is an exclusion from "consumer report," not from "CRA."** § 1681a(f)
 requires only that you regularly furnish consumer reports "in whole or in part."
-If any material slice of what you furnish is a consumer report — and per (b) it
-is — you are a CRA, and CRA duties attach to your operation, including to the
+If any material slice of what you furnish is a consumer report, and per (b) it
+is, you are a CRA, and CRA duties attach to your operation, including to the
 file that contains the (o)-excluded material.
 
 Note what (o)(5)(C) requires: written disclosure of "the nature and substance of
@@ -309,8 +309,8 @@ exclusion, not evidence you qualify for it.
 
 **Epistemic caveat, stated plainly: § 1681a(o) is essentially untested in
 court.** I found no reported decision construing it. The available authority is
-the statutory text plus four 1998 FTC advisory opinions. That cuts both ways —
-nobody can tell you the exclusion definitively fails — but it is a bad risk
+the statutory text plus four 1998 FTC advisory opinions. That cuts both ways.
+Nobody can tell you the exclusion definitively fails, but it is a bad risk
 trade for this product specifically, because (i) the § 1681a(o)(4) and (o)(1)
 problems are textual rather than fact-dependent, and (ii) an untested exclusion
 relied on in writing is precisely the posture that converts a negligent
@@ -324,7 +324,7 @@ checks on candidates the client already had, because it was not procuring
 employees or opportunities. *Islinger* (06-09-98) confirmed criminal-record,
 education and licensing information furnished by a CRA are consumer reports;
 *Lewis* and *Goeke* (June 1998) are companion opinions. These support the memo's
-sourcing-vs-screening distinction, which is real — but the distinction only ever
+sourcing-vs-screening distinction, which is real, but the distinction only ever
 addresses (o)(2) and (o)(3), which are the conditions this product is most
 likely to satisfy anyway.
 
@@ -348,7 +348,7 @@ the wrong way.
   procedures to limit furnishing to permissible purposes and to verify the
   identity and intended use of each user. Access control is that duty.
 - **The CFPB's 2024 rulemaking direction was to *tighten*, not loosen,
-  consumer-permissioned sharing** — proposing heightened disclosure and separate
+  consumer-permissioned sharing**, proposing heightened disclosure and separate
   written authorization for reliance on § 1681b(a)(2). Even the pro-permissioning
   regulatory trend treats permissioning as a permissible purpose within FCRA, not
   as an exit from it.
@@ -367,13 +367,13 @@ The ones that shape schema, in order of architectural impact:
 |---|---|---|
 | Reasonable procedures for **maximum possible accuracy** | § 1681e(b) | Provenance grading is a partial answer; furnishing unverified self-assertions to employers is the core accuracy exposure |
 | **Reinvestigation** within 30 days (+15); "promptly delete... or modify" inaccurate, incomplete or unverifiable items | § 1681i(a)(1)(A), (a)(5)(A) | **Deletion/modification is mandatory. Annotation-only is non-compliant.** |
-| **Consumer statement of dispute** (100 words) noted in subsequent reports | § 1681i(b), (c) | This *is* the annotation model — but only post-reinvestigation |
+| **Consumer statement of dispute** (100 words) noted in subsequent reports | § 1681i(b), (c) | This *is* the annotation model, but only post-reinvestigation |
 | **Notify prior recipients** of deletion/dispute (employers, 2 years) | § 1681i(d) | Requires a durable log of who read what, and a push-notification path |
 | **Obsolescence:** no adverse item older than 7 years (except jobs ≥$75k) | § 1681c(a)(5), (b)(3) | Reportability must be time-scoped independent of storage |
 
 **Note on § 1681c(a)(5), because I want to be precise about my confidence.** The
-text — "any other adverse item of information, other than records of convictions
-of crimes which antedates the report by more than seven years" — is broad on its
+text, "any other adverse item of information, other than records of convictions
+of crimes which antedates the report by more than seven years", is broad on its
 face and, read literally, reaches an adverse employer attestation about work
 outcomes. Industry practice and virtually all the commentary apply it to
 *records* (arrests and other non-convictions, civil judgments, liens,
@@ -381,7 +381,7 @@ collections), and I found no caselaw testing it against non-record adverse
 employment information such as a performance attestation. The 1998 amendment
 removed criminal convictions from the limit entirely, so convictions are
 reportable without time limit federally. The § 1681c(b)(3) carve-out is
-position-specific: it applies where the job's annual salary is reasonably
+position-specific, since it applies where the job's annual salary is reasonably
 expected to be $75,000 or more. **My read: assume (a)(5) reaches adverse
 attestations and build the time-scoping, because the cost of building it is low
 and the cost of being wrong is a class action. Confidence in the underlying legal
@@ -389,8 +389,8 @@ question: medium-high, not high.**
 | **Permissible purpose** verification, user identity, user certification of intended use | § 1681e(a), § 1681b(b)(1) | Partner onboarding must capture certifications, not just API keys |
 | **File disclosure** + recipient list + summary of rights | §§ 1681g, 1681h, 1681g(c) | Largely already designed |
 | **Public record** information for employment: notify consumer contemporaneously or maintain strict accuracy procedures | § 1681k | Constrains any court/criminal/licensing data ingestion |
-| **Adverse action** — pre-adverse notice with report copy + rights summary, then adverse action notice | §§ 1681b(b)(3), 1681m | User duty, but you must supply the artifacts and should enforce it contractually |
-| **Furnisher duties** on partner companies and verticals writing attestations | § 1681s-2 | Attesters may not report information known to be inaccurate and must investigate disputes referred by the CRA — **forces a dispute-routing callback API back to every attester** |
+| **Adverse action**: pre-adverse notice with report copy + rights summary, then adverse action notice | §§ 1681b(b)(3), 1681m | User duty, but you must supply the artifacts and should enforce it contractually |
+| **Furnisher duties** on partner companies and verticals writing attestations | § 1681s-2 | Attesters may not report information known to be inaccurate and must investigate disputes referred by the CRA, which **forces a dispute-routing callback API back to every attester** |
 | **Reseller** obligations if repackaging another CRA's report | §§ 1681a(u), 1681e(e) | Relevant if you ingest third-party background data |
 | Liability | §§ 1681n, 1681o | Willful: actual damages or $100–$1,000 statutory, punitive damages, fees. Negligent: actual + fees. Class exposure is the real number |
 
@@ -399,7 +399,7 @@ question: medium-high, not high.**
 **California ICRAA**, Civ. Code § 1786 et seq., is the binding constraint, not
 the FCRA. ICRAA reaches "investigative consumer reports" on character, general
 reputation, personal characteristics or mode of living **obtained through any
-means** — the personal-interview limitation that narrows § 1681a(e) federally
+means**. The personal-interview limitation that narrows § 1681a(e) federally
 does not exist. *Connor v. First Student, Inc.*, 5 Cal.5th 1026 (2018), held that
 overlap with the CCRAA does not excuse ICRAA compliance and that employers must
 satisfy the stricter statute. Statutory damages: $10,000 per violation
@@ -424,12 +424,12 @@ operational requirements (real job orders, referral records, purpose limitation)
 to preserve the exclusion.
 
 **Where it is right, and it is right about a lot.**
-- The core insight — consent is a *precondition* of (o)(5), not an alternative
-  to FCRA compliance — is correct and is the opposite of the usual founder
+- The core insight, that consent is a *precondition* of (o)(5), not an alternative
+  to FCRA compliance, is correct and is the opposite of the usual founder
   intuition. Removing consent gates would increase exposure.
 - The *Basting* sourcing-vs-screening line is accurately drawn.
 - The "what stays outside the exclusion regardless" list is sound.
-- Its epistemic hygiene is good: it flags the Texas HB 3167 licensing claim as
+- Its epistemic hygiene is good. It flags the Texas HB 3167 licensing claim as
   unverified and labels itself a working position.
 
 **Where it is incomplete or wrong, in order of importance.**
@@ -481,7 +481,7 @@ to preserve the exclusion.
 **Net judgment.** The Grain memo is a competent working position for a
 placement recruiter and should be kept for that purpose, with items 2, 3, 4 and
 5 added. It is not a foundation for the ledger, and reusing it here would be the
-most expensive available mistake — because it would produce a CRA that has
+most expensive available mistake, because it would produce a CRA that has
 documented, in writing, that it considered FCRA and concluded it was exempt.
 Under § 1681n that is willfulness evidence.
 
@@ -505,7 +505,7 @@ a strong legitimate interest; open-ended reputation scoring is much weaker in
 the balancing.
 
 **Contract (Art. 6(1)(b))** supports only what is objectively necessary to
-deliver the service the worker asked for — enough for the worker's own profile,
+deliver the service the worker asked for, enough for the worker's own profile,
 not for retaining adverse attestations against their objection.
 
 **Art. 9 special categories** should be schema-excluded by design (health, union
@@ -533,7 +533,7 @@ Two things follow that are commonly gotten wrong:
   Legitimate interests get you *in* under Art. 6; they do not get you out of
   Art. 17. Where a worker objects under Art. 21(1), you must demonstrate
   "compelling legitimate grounds which override the interests, rights and
-  freedoms of the data subject" — a higher bar than the original Art. 6(1)(f)
+  freedoms of the data subject", which is a higher bar than the original Art. 6(1)(f)
   balancing.
 - **Art. 17(3)(e) is the workhorse but is narrower than "audit."** Retention for
   possible future audit does not qualify absent a specific statutory retention
@@ -564,21 +564,21 @@ unrecoverable and is accepted in practice by many DPAs as satisfying erasure. Bu
 the EDPB's stated position that encrypted data is personal data means
 crypto-shredding is best treated as a strong technical safeguard and a
 defensible *component* of an erasure workflow, not as a standalone legal answer.
-Confidence: medium — this is genuinely unsettled and practice is ahead of
+Confidence: medium, since this is genuinely unsettled and practice is ahead of
 guidance.
 
 **Pseudonymization has become more useful.** *EDPS v. SRB* (C-413/23 P, 4 Sept
 2025) endorsed a contextual, recipient-relative test: pseudonymized data may be
 non-personal *for a recipient* who cannot reasonably re-identify. That supports
 designing partner-facing reads so most recipients hold data that is not personal
-data in their hands — a real architectural lever for the analytics and matching
+data in their hands, a real architectural lever for the analytics and matching
 layers, though not for the identified prior packet itself.
 
 **Rectification, and the annotation model.** Art. 16 gives "the right to obtain
 from the controller without undue delay the rectification of inaccurate personal
 data" and, in its second sentence, "the right to have incomplete personal data
 completed, including by means of providing a supplementary statement." The
-supplementary statement is genuine textual support for dispute-by-annotation —
+supplementary statement is genuine textual support for dispute-by-annotation,
 **but only for incompleteness**. Demonstrably inaccurate data must actually be
 rectified. Art. 5(1)(d) reinforces this: inaccurate data must be "erased or
 rectified without delay." The design's "frozen once verified" rule is therefore
@@ -589,7 +589,7 @@ record: personal data must be kept no longer than necessary for the purposes.
 "Forever, because a work ledger is more valuable the longer it runs" is a
 business rationale, not a necessity argument.
 
-### 2.3 Article 22 — the one most likely to be underestimated
+### 2.3 Article 22: the one most likely to be underestimated
 
 *SCHUFA Holding (Scoring)*, C-634/21 (CJEU, 7 Dec 2023): producing a score is
 itself an automated individual decision under Art. 22 where a third party "draws
@@ -599,7 +599,7 @@ falls on the *scoring entity*, not only on the entity making the final call.
 Applied here: if provenance grades, trust scores, or match rankings are furnished
 to employers who rely on them heavily, the ledger operator is doing Art. 22
 processing. That requires an Art. 22(2) gateway (contract necessity, Union or
-Member State law, or explicit consent — the last being weak in employment) plus
+Member State law, or explicit consent, with the last being weak in employment) plus
 Art. 22(3) safeguards: human intervention on the controller's side, the right to
 express a point of view, and the right to contest the decision. It also engages
 Arts. 13(2)(f)/14(2)(g)/15(1)(h) transparency about the logic involved.
@@ -618,8 +618,8 @@ Art. 20 applies only where processing is (i) based on consent or contract and
 (ii) carried out by automated means, and covers only personal data "which he or
 she has provided to" the controller. WP29's portability guidelines read
 "provided" to include actively supplied data and *observed* data from use of the
-service, but expressly **exclude inferred and derived data — credit scores and
-assessment outcomes are the canonical examples**.
+service, but expressly **exclude inferred and derived data, with credit scores and
+assessment outcomes as the canonical examples**.
 
 Mapping to the schema:
 
@@ -633,7 +633,7 @@ Mapping to the schema:
   apply at all.**
 
 Art. 20(4) adds that portability "shall not adversely affect the rights and
-freedoms of others" — relevant because exporting a peer reference exports the
+freedoms of others", which is relevant because exporting a peer reference exports the
 referee's personal data too.
 
 Practical read: the obligation is thin, but worker-controlled export is the
@@ -643,7 +643,7 @@ minimums.
 
 ---
 
-## 3. Philippines — Data Privacy Act of 2012 (RA 10173)
+## 3. Philippines: Data Privacy Act of 2012 (RA 10173)
 
 **Retrieval caveat:** privacy.gov.ph returns HTTP 403 to automated fetching. The
 Act and its IRR were read verbatim from LawPhil and the Supreme Court E-Library.
@@ -654,7 +654,7 @@ confirmed against a primary source.
 
 ### 3.1 You are in scope, from the first Philippine worker
 
-Sec. 6 (extraterritorial application) is drafted ambiguously — it strings "and"
+Sec. 6 (extraterritorial application) is drafted ambiguously. It strings "and"
 between the (a)/(b)/(c) limbs, which on a strict conjunctive reading would
 require all three links. **The IRR resolves it disjunctively and is the operative
 text.** IRR Sec. 4 applies the Act where any of the following holds, joined by
@@ -690,7 +690,7 @@ not occasional. A ledger holding government IDs and education records for
 Philippine workers crosses the SPI threshold almost immediately and independently
 satisfies the risk limb. **Assume mandatory registration.** Registration content
 must include "proposed transfers of personal data outside the Philippines" and
-the categories of recipients — so the offshore transfer is *disclosed*, not
+the categories of recipients, so the offshore transfer is *disclosed*, not
 *approved*. **[unverified]** whether a foreign entity with no Philippine office
 can register under 2022-04, and whether the DPO must be Philippine-resident.
 
@@ -707,7 +707,7 @@ employer acts on engages this.
 removal or destruction" of personal information **"upon discovery and substantial
 proof"** that it is "incomplete, outdated, false, unlawfully obtained, used for
 unauthorized purposes or are no longer necessary for the purposes for which they
-were collected." On its face this is narrower than GDPR Art. 17 — no free-standing
+were collected." On its face this is narrower than GDPR Art. 17: no free-standing
 consent-withdrawal trigger, no objection trigger, and a proof burden on the
 worker.
 
@@ -716,18 +716,18 @@ and they are the ones that matter:**
 
 - **34(e)(d):** "The data subject **withdraws consent or objects** to the
   processing, and there is no other legal ground or overriding legitimate interest
-  for the processing" — this imports the GDPR-style consequence. Build on consent
+  for the processing", which imports the GDPR-style consequence. Build on consent
   alone and withdrawal reaches back into stored records.
 - **34(e)(e):** "The personal data concerns **private information that is
   prejudicial to the data subject**, unless justified by freedom of speech, of
-  expression, or of the press or otherwise authorized" — **broader than anything
+  expression, or of the press or otherwise authorized", which is **broader than anything
   in GDPR Art. 17, and it describes a negative employer attestation almost
   exactly.** A worker with an adverse attestation has a facially colorable
   erasure claim, and the only carve-outs are free expression or "otherwise
   authorized."
 
 **This is the finding that kills unconditional append-only under Philippine law.**
-Note the statute lists **blocking** as an alternative to removal and destruction —
+Note the statute lists **blocking** as an alternative to removal and destruction,
 so suppressing an entry from all reads is a textually supported remedy short of
 physical deletion. Whether the NPC would accept hash-retention with the payload
 destroyed as satisfying "destruction" is untested; blocking is the safer hook.
@@ -737,9 +737,9 @@ the establishment, exercise or defense of legal claims, or for legitimate busine
 purposes." A permanent ledger has no statutory anchor and invites the 34(e)(c)
 "no longer necessary" trigger. **[unverified]** the three-year employment-records
 baseline (Omnibus Rules Implementing the Labor Code, Rule X, Sec. 12, tracking the
-three-year prescriptive period for money claims) — secondary sources only.
+three-year prescriptive period for money claims), based on secondary sources only.
 
-### 3.3 Access and rectification — Sec. 16(d) is the best provision for this design
+### 3.3 Access and rectification: Sec. 16(d) is the best provision for this design
 
 **Sec. 16(c) access** entitles the worker to contents processed, **sources from
 which obtained**, **names and addresses of recipients**, manner of processing,
@@ -761,7 +761,7 @@ regimes for the annotation model, and it is worth quoting:
 > processed personal information **shall be informed of its inaccuracy and its
 > rectification upon reasonable request of the data subject."
 
-Philippine law does not merely tolerate versioned correction — it **requires**
+Philippine law does not merely tolerate versioned correction. It **requires**
 that both the corrected and the retracted version stay accessible and be
 delivered together to recipients. An append-only ledger is *closer* to Sec. 16(d)
 than a mutable database is. That is a real design win.
@@ -769,13 +769,13 @@ than a mutable database is. That is a real design win.
 **Two limits, both important:**
 
 1. Sec. 16(d) addresses **inaccuracy or error**. It does not reach the worker who
-   says "this is accurate but harmful" — that routes to IRR 34(e)(e) erasure,
+   says "this is accurate but harmful", which routes to IRR 34(e)(e) erasure,
    where annotation does **not** discharge the obligation.
 2. "Correct it **immediately**" plus the retraction-delivery duty means a
    *disputed flag is not a correction*. Leaving a substantiated-wrong attestation
    standing under a "disputed" badge while continuing to serve it is arguably
    non-compliance, not compliance. You need an adjudication path that can mark an
-   entry **retracted**, and a **push** to prior grantees — not merely a state
+   entry **retracted**, and a **push** to prior grantees, not merely a state
    change on your side.
 
 **NPC Advisory 2021-01** requires a documented rights-exercise procedure, no fee
@@ -789,7 +789,7 @@ Art. 9.** Answering the specific questions:
 - **Education → SPI** (Sec. 3(l)(2)). Degrees, transcripts, and most likely formal
   training records. Assume yes for design purposes.
 - **Government IDs → SPI** (Sec. 3(l)(3)): anything "issued by government agencies
-  peculiar to an individual" — SSS/GSIS, TIN, PRC licenses, PhilSys, plus
+  peculiar to an individual", including SSS/GSIS, TIN, PRC licenses, PhilSys, plus
   "licenses or its denials, suspension or revocation." This is a category test,
   not a closed list.
 - **Health → SPI**; **criminal proceedings, including *alleged* offenses and their
@@ -800,12 +800,12 @@ Art. 9.** Answering the specific questions:
   often inferable as political or philosophical affiliation, which is SPI.
 
 **Sec. 12** bases for ordinary PI include consent (a), contract with the data
-subject (b), legal obligation (c), and **legitimate interests (f) — expressly
+subject (b), legal obligation (c), and **legitimate interests (f), expressly
 extending to the interests of "a third party or parties to whom the data is
 disclosed."** That last clause is unusually well-suited to a reference-checking
 product: the *recipient employer's* legitimate interest counts. **NPC Circular
-2023-07** (effective 14 Jan 2024) imposes a documented three-part test — purpose,
-necessity, balancing — retained as a **Legitimate Interest Assessment** for NPC
+2023-07** (effective 14 Jan 2024) imposes a documented three-part test (purpose,
+necessity, balancing), retained as a **Legitimate Interest Assessment** for NPC
 review, and critically requires the controller to **verify the third party's
 legitimate interest before disclosing to them**, via its own assessment or the
 third party's documented LIA. That is a per-employer LIA gate on the access-grant
@@ -815,11 +815,11 @@ flow, not just worker consent.
 legitimate-interest basis for SPI** (confirmed by Circular 2023-07). Sec. 13(f)
 (legal claims) cannot cover routine business purposes (**NPC Advisory 2024-02**).
 Sec. 13(d) (public-organization objectives) requires that SPI **not be transferred
-to third parties** — fatal for a ledger.
+to third parties**, which is fatal for a ledger.
 
 **Consequence, and it is the sharpest design instruction in this whole memo:**
 for education records, government IDs, date of birth and criminal-proceeding data,
-**Sec. 13(a) specific prior consent is effectively the only available basis** — and
+**Sec. 13(a) specific prior consent is effectively the only available basis**, and
 consent is unilaterally revocable with retroactive reach under IRR 34(e)(d).
 **Segregate SPI into a separate, consent-gated, individually revocable store, and
 keep employer attestation payloads SPI-free** so they can rest on Sec. 12(b)/(f).
@@ -832,7 +832,7 @@ decision.**
 
 Sec. 3(b): consent must be "freely given, specific, informed" and **"evidenced by
 written, electronic or recorded means."** Electronic is sufficient, but must be
-*evidenced* — a durable, per-purpose, timestamped record versioned against the
+*evidenced*, a durable, per-purpose, timestamped record versioned against the
 notice text shown. A single click-through TOS will not carry Sec. 13(a)'s
 "specific to the purpose, prior to the processing."
 
@@ -840,7 +840,7 @@ The Act has no express withdrawal right; the IRR supplies it via the right to
 object (IRR Sec. 34(b)), which lists an exception for processing "necessary or
 desirable in the context of an **employer-employee relationship between the
 collector and the data subject**." **That exception does not help a third-party
-ledger** — you are not the worker's employer. Withdrawal then triggers IRR
+ledger**, because you are not the worker's employer. Withdrawal then triggers IRR
 34(e)(d) erasure or blocking unless a documented fallback basis exists.
 
 ### 3.6 Cross-border: accountability, not adequacy
@@ -881,33 +881,33 @@ evidentiary:
 **The controller-vs-processor characterization is the most consequential
 structuring decision.** IRR Sec. 44's delete-or-return clause gives a Philippine
 employer, as controller, a contractual right to demand deletion of all copies at
-contract end — fatal to an immutable ledger. Positioning as an independent
+contract end, which is fatal to an immutable ledger. Positioning as an independent
 controller (the worker is your data subject; employers are attestation sources)
 avoids that but takes on full controller liability. Decide deliberately, not by
 default.
 
-### 3.7 Criminal penalties — this is the real risk driver
+### 3.7 Criminal penalties, the real risk driver
 
 Every offense in Secs. 25–32 carries **imprisonment plus fine**, **Sec. 34** applies
 them to "responsible officers… who participated in, or by their gross negligence,
 allowed the commission of the crime," and provides that an **alien offender is
 deported after serving the penalty**. **Sec. 35** escalates to the maximum penalty
-where the data of **at least 100 persons** is involved — automatic at any real
+where the data of **at least 100 persons** is involved, which is automatic at any real
 scale. **Sec. 33** turns a combination or series of offenses into a 3–6 year,
 ₱1M–5M offense, which is what a systemic design flaw produces.
 
 The four that should drive engineering priorities:
 
-- **Sec. 25 unauthorized processing** — 3–6 years and ₱500k–4M for SPI. Holding
+- **Sec. 25 unauthorized processing**: 3–6 years and ₱500k–4M for SPI. Holding
   government IDs or education records without a valid Sec. 13 basis is literally
   this offense.
-- **Sec. 28 processing for unauthorized purposes** — 2–7 years for SPI, the longest
+- **Sec. 28 processing for unauthorized purposes**: 2–7 years for SPI, the longest
   sentence in the Act. Scope creep is the failure mode: attestations collected for
   verification later used for scoring, sold, or used as training data.
-- **Sec. 32 unauthorized disclosure** — disclosure to a third party without
+- **Sec. 32 unauthorized disclosure**: disclosure to a third party without
   consent. Your core function is disclosure to third parties; a revocation bug that
   leaves an employer's access live is this offense.
-- **Sec. 31 malicious disclosure** — disclosing "unwarranted or false information"
+- **Sec. 31 malicious disclosure**: disclosing "unwarranted or false information"
   with malice or bad faith. Requires scienter, but knowingly continuing to serve an
   attestation after a substantiated dispute is where a prosecutor looks. **This is
   what makes the dispute SLA a criminal-law matter rather than a UX matter.**
@@ -916,7 +916,7 @@ Administrative fines sit on top: **NPC Circular 2022-01** sets grave infractions
 (rights or general-principle violations affecting >1,000 data subjects, or repeat
 infractions) at **0.5%–3% of annual gross income**, major at 0.25%–2%, capped at
 ₱5M per act or omission. **[unverified]** whether the NPC computes that base on
-global or Philippine gross income for a foreign controller — worth counsel's time.
+global or Philippine gross income for a foreign controller, and it is worth counsel's time.
 
 ### 3.8 No FCRA analogue, and no safe harbor
 
@@ -931,7 +931,7 @@ credit-facility data. A work ledger is not a credit facility, its subjects are n
 borrowers, and its attesters are not submitting entities.
 
 **The corollary matters strategically.** DPA Sec. 4(e)-(f) and IRR Sec. 5 carve
-CISA processing *out* of the DPA — so the fact that you are not doing CISA
+CISA processing *out* of the DPA, so the fact that you are not doing CISA
 processing means you get **no exemption** and remain fully DPA-governed, with no
 accredited-bureau status to opt into.
 
@@ -942,12 +942,12 @@ employment reputation data. Your position rests entirely on consent quality and
 legitimate-interest documentation. That asymmetry should inform where the product
 launches first.
 
-### 3.9 Employment references and blacklisting — weakest section, flagged
+### 3.9 Employment references and blacklisting: weakest section, flagged
 
 - **[unverified]** No Philippine statute specifically prohibits private-sector
   employment blacklisting was found. The formal blacklisting mechanism under
-  RA 8042 / RA 10022 and DMW rules governs *overseas* employment — foreign
-  employers and recruitment agencies — and is a poor analogy. Do not lean on it.
+  RA 8042 / RA 10022 and DMW rules governs *overseas* employment (foreign
+  employers and recruitment agencies), and is a poor analogy. Do not lean on it.
 - **DOLE Labor Advisory No. 06-20** requires a Certificate of Employment within
   three days of request, with minimum contents of date of engagement, date of
   termination, and type of work. **Reason for separation is not a required field.**
@@ -955,7 +955,7 @@ launches first.
   deliberately thin and factual. A ledger reproducing dates and role is aligned
   with local practice; one carrying performance ratings or reason-for-separation
   goes materially beyond what the law contemplates a reference containing.
-  **[unverified — secondary sources only.]**
+  **[unverified: secondary sources only.]**
 - **[unverified]** Philippine practitioner commentary asserts cross-company
   "do not hire" lists are generally unlawful under the DPA for want of lawful
   basis, notice and proportionality. Directionally consistent with the statute's
@@ -1003,13 +1003,13 @@ assessment per *Schrems II* and EDPB Recommendations 01/2020 should be executed
 as the fallback layer regardless.
 
 Note also that DPF certification for **HR data** received from the EU carries
-additional commitments — directly relevant, since worker data *is* HR data
+additional commitments, directly relevant, since worker data *is* HR data
 ("personal data about employees, past or present, collected in the context of
 the employment relationship"). An organization wishing its DPF commitments to
 cover HR data must, annually, declare its commitment to cooperate with EU DPAs
 and to **comply with the advice given by those authorities**, submitting to an
 informal DPA panel that can issue binding recommendations. That is a materially
-heavier commitment than ordinary DPF certification: it imports EU regulator
+heavier commitment than ordinary DPF certification, since it imports EU regulator
 authority directly over the ledger's dispute and correction handling.
 
 **EU → Philippines.** The Philippines has no EU adequacy decision. Any EU-origin
@@ -1020,12 +1020,12 @@ by data replication. Confidence: high.
 
 **Onward transfers.** Every external partner company reading the prior packet is
 a recipient, and where they are outside the EEA the transfer chain must be
-papered — SCCs Module 1 (controller-to-controller) for independent-controller
+papered: SCCs Module 1 (controller-to-controller) for independent-controller
 partners, Module 2 for processors. With N partners across M jurisdictions this is
 a contracting problem that scales linearly and must be automated at onboarding,
 not handled bespoke.
 
-**Philippines outbound — the easy direction.** RA 10173 has **no adequacy regime,
+**Philippines outbound: the easy direction.** RA 10173 has **no adequacy regime,
 no transfer permit and no mandatory clause set** (NPC Advisories 2021-02 and
 2024-01 both confirm voluntary use of ASEAN MCCs and EU SCCs, with no NPC review
 or filing). Sec. 21 / IRR Sec. 50 accountability applies instead: the controller
@@ -1118,7 +1118,7 @@ Stated as forced (F) or foreclosed (X). Confidence noted where below high.
     intended use and § 1681e(a) identity/use verification must be captured as
     structured data, not PDF contracts.
 11a. **(F) Segregate sensitive personal information into a separate,
-    consent-gated, individually revocable store — and keep attestation payloads
+    consent-gated, individually revocable store, and keep attestation payloads
     SPI-free.** Under PH Sec. 3(l), education records, government IDs, date of
     birth, health and criminal-proceeding data are all SPI; legitimate interest is
     unavailable for SPI and Sec. 13(d) forbids third-party transfer, leaving
@@ -1130,8 +1130,8 @@ Stated as forced (F) or foreclosed (X). Confidence noted where below high.
     grant.** NPC Circular 2023-07 requires the controller to verify the *third
     party's* legitimate interest before disclosing, via its own assessment or the
     recipient's documented LIA. Combined with FCRA § 1681b(b)(1) certification,
-    this means partner onboarding produces a structured, auditable purpose record —
-    the same artifact satisfies both regimes.
+    this means partner onboarding produces a structured, auditable purpose record.
+    The same artifact satisfies both regimes.
 12. **(F) Hard separation between commonly-owned internal verticals and external
     partners in the data plane.** § 1681a(d)(2)(A)(ii)-(iii) gives affiliates a
     real statutory lane that partners do not have. Collapsing them into one
@@ -1153,7 +1153,7 @@ Stated as forced (F) or foreclosed (X). Confidence noted where below high.
 15. **(X) A single global ledger table is foreclosed.** Regional data planes,
     per-region key custody, and a minimal global identity-resolution layer.
 16. **(F) Jurisdiction must be a first-class property of the *worker*, the
-    *attester*, and the *reader* — three independent axes.** A US employer
+    *attester*, and the *reader*: three independent axes.** A US employer
     reading about a Philippine worker whose attestation came from an EU entity
     engages all three regimes simultaneously, and the applicable rule is the
     union, not the intersection.
@@ -1172,7 +1172,7 @@ Stated as forced (F) or foreclosed (X). Confidence noted where below high.
 18b. **(F) Registration and DPO in the Philippines, plus NPC notification for
     automated decisions** (IRR Secs. 26, 46–48; Circular 2022-04). IRR Sec. 48
     prohibits decisions with legal effects made solely on automated processing
-    without the data subject's consent — the third regime, alongside GDPR Art. 22
+    without the data subject's consent, the third regime, alongside GDPR Art. 22
     and the FCRA algorithmic-score problem, converging on the same requirement.
 
 **Positioning**
@@ -1194,7 +1194,7 @@ Stated as forced (F) or foreclosed (X). Confidence noted where below high.
 
 ## Sources
 
-**FCRA — statute**
+**FCRA: statute**
 - [15 U.S.C. § 1681a — Definitions (Cornell LII)](https://www.law.cornell.edu/uscode/text/15/1681a)
 - [15 U.S.C. § 1681a — full text incl. subsection (o) (US House OLRC)](https://uscode.house.gov/view.xhtml?req=granuleid:USC-prelim-title15-section1681a&num=0&edition=prelim)
 - [15 U.S.C. § 1681c — Requirements relating to information contained in consumer reports](https://www.law.cornell.edu/uscode/text/15/1681c)
@@ -1204,7 +1204,7 @@ Stated as forced (F) or foreclosed (X). Confidence noted where below high.
 
 - [FTC, Fair Credit Reporting Act, 15 U.S.C. § 1681 — consolidated text, revised March 2026 (PDF)](https://www.ftc.gov/system/files/ftc_gov/pdf/fcra-march-2026.pdf)
 
-**FCRA — agency guidance and enforcement**
+**FCRA: agency guidance and enforcement**
 - [CFPB Circular 2024-06: Background Dossiers and Algorithmic Scores for Hiring, Promotion, and Other Employment Decisions](https://www.consumerfinance.gov/compliance/circulars/consumer-financial-protection-circular-2024-06-background-dossiers-and-algorithmic-scores-for-hiring-promotion-and-other-employment-decisions/)
 - [Circular 2024-06 as published, 89 Fed. Reg. 88,875 (Nov. 12, 2024)](https://www.federalregister.gov/documents/2024/11/12/2024-26099/consumer-financial-protection-circular-2024-06-background-dossiers-and-algorithmic-scores-for-hiring)
 - [CFPB, Interpretive Rules, Policy Statements, and Advisory Opinions; Withdrawal (May 12, 2025)](https://www.federalregister.gov/documents/2025/05/12/2025-08286/interpretive-rules-policy-statements-and-advisory-opinions-withdrawal)
@@ -1223,14 +1223,14 @@ Stated as forced (F) or foreclosed (X). Confidence noted where below high.
 - [CFPB Fact Sheet: Proposed Rule on Data Brokers (Dec. 2024)](https://files.consumerfinance.gov/f/documents/cfpb_fcra-nprm-fact-sheet_2024-12.pdf)
 - [CFPB, Fair Credit Reporting; Background Screening advisory opinion (Jan. 2024) (PDF)](https://files.consumerfinance.gov/f/documents/cfpb_fair-credi-reporting-background-screening_2024-01.pdf)
 
-**FCRA — case law**
+**FCRA: case law**
 - [Kidd v. Thomson Reuters Corp., 925 F.3d 99 (2d Cir. 2019) (Justia)](https://law.justia.com/cases/federal/appellate-courts/ca2/17-3550/17-3550-2019-05-30.html)
 - [Kidd v. Thomson Reuters (FindLaw full text)](https://caselaw.findlaw.com/court/us-2nd-circuit/2000805.html)
 - [Paul, Weiss — Second Circuit Defines "Consumer Reporting Agency" Under the FCRA](https://www.paulweiss.com/insights/client-memos/second-circuit-review-court-defines-consumer-reporting-agency-under-the-fcra)
 - [Connor v. First Student, Inc., 5 Cal.5th 1026 (2018) (FindLaw)](https://caselaw.findlaw.com/court/ca-supreme-court/1948536.html)
 - [Farella Braun + Martel — California Supreme Court Clarifies Background Check Laws](https://www.fbm.com/publications/california-supreme-court-clarifies-background-check-laws-in-california/)
 
-**FCRA — staffing-agency practice**
+**FCRA: staffing-agency practice**
 - [myHRcounsel — Can Staffing Agencies Share Background Checks or Drug Tests with Clients?](https://myhrcounsel.com/2018-7-26-can-staffing-agencies-share-background-checks-or-drug-tests-with-clients/)
 - [myHRcounsel — What Should Staffing Agencies Do When a Client Requests to See Applicant Background Check Reports?](https://myhrcounsel.com/2019-2-4-what-should-staffing-agencies-do-when-a-client-requests-to-see-applicant-background-check-reports/)
 
@@ -1249,14 +1249,14 @@ Stated as forced (F) or foreclosed (X). Confidence noted where below high.
 - [Goodwin — Personal Data or Not? CJEU Weighs In on Pseudonymisation in EDPS v. SRB](https://www.goodwinlaw.com/en/insights/publications/2025/09/alerts-technology-dpc-personal-data-or-not)
 - [ICO — Right to erasure](https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/individual-rights/individual-rights/right-to-erasure/)
 
-**Philippines — primary (read verbatim)**
+**Philippines: primary (read verbatim)**
 - [RA 10173, Data Privacy Act of 2012 (LawPhil)](https://lawphil.net/statutes/repacts/ra2012/ra_10173_2012.html)
 - [RA 10173 (Official Gazette)](https://www.officialgazette.gov.ph/2012/08/15/republic-act-no-10173/)
 - [Implementing Rules and Regulations of RA 10173 (Supreme Court E-Library)](https://elibrary.judiciary.gov.ph/thebookshelf/showdocs/2/70735)
 - [IRR of RA 10173 (Official Gazette)](https://www.officialgazette.gov.ph/2016/08/25/implementing-rules-and-regulations-of-republic-act-no-10173/)
 - [RA 9510, Credit Information System Act (LawPhil)](https://lawphil.net/statutes/repacts/ra2008/ra_9510_2008.html)
 
-**Philippines — NPC issuances (primary URLs; privacy.gov.ph blocks automated fetch, retrieve manually)**
+**Philippines: NPC issuances (primary URLs; privacy.gov.ph blocks automated fetch, retrieve manually)**
 - [NPC Circular 2022-04 — Registration of DPS and DPO](https://privacy.gov.ph/wp-content/uploads/2023/05/Circular-2022-04-1.pdf)
 - [NPC Circular 2023-07 — Guidelines on Legitimate Interest](https://privacy.gov.ph/wp-content/uploads/2024/01/NPC-Circular-No.-2023-07_Guidelines-on-Legitimate-Interest_13-December-2023.pdf)
 - [NPC Advisory 2024-02 — Processing based on Sec. 13(f)](https://privacy.gov.ph/wp-content/uploads/2024/08/NPC-Advisory-No.-2024-02-Personal-Data-Processing-Based-on-Section-13-f.pdf)
@@ -1270,7 +1270,7 @@ Stated as forced (F) or foreclosed (X). Confidence noted where below high.
 - [NPC — Cease and Desist Order against Tools for Humanity (Oct. 2025)](https://privacy.gov.ph/npc-issues-cease-and-desist-order-against-tools-for-humanity/)
 - [Tools for Humanity CDO, CID-CDO-25-001 (23 Sept. 2025) (PDF)](https://privacy.gov.ph/wp-content/uploads/2025/10/FINAL-2025.09.23-Cease-and-Desist-Order-CID-CDO-25-001-Application-for-Issuance-of-Cease-and-Desist-Order-for-In-the-Matter-of-World-App-Processing-of-Personal-Information_SGD.pdf)
 
-**Philippines — secondary (used to verify NPC issuances)**
+**Philippines: secondary (used to verify NPC issuances)**
 - [Baker McKenzie / GCN — NPC Circular 2023-07 on legitimate interest](https://www.globalcompliancenews.com/2024/01/22/https-insightplus-bakermckenzie-com-bm-data-technology-philippines-national-privacy-commission-issues-guidelines-on-the-processing-of-personal-information-based-on-legitimate-interest_01092024/)
 - [Baker McKenzie / GCN — NPC Advisory 2024-02 on Sec. 13(f)](https://www.globalcompliancenews.com/2024/09/17/https-insightplus-bakermckenzie-com-bm-investigations-compliance-ethics-philippines-npc-issues-new-guidelines-on-the-processing-of-sensitive-personal-information-for-legal-claims_09042024/)
 - [Baker McKenzie / GCN — Administrative fines under Circular 2022-01](https://www.globalcompliancenews.com/2022/08/23/philippines-administrative-fines-for-data-privacy-infractions-to-be-imposed-starting-27-august-2022-160822/)

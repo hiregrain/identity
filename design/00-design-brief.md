@@ -1,4 +1,4 @@
-# Grain Design Brief — Founder Input
+# Grain Design Brief, Founder Input
 
 Recorded 2026-08-17, from the founder, in the design-identity session.
 These are settled inputs for design research and the perspectives
@@ -16,11 +16,11 @@ document. Open items are marked open.
 
 ## The grain readings (all five carry)
 
-1. The indivisible unit — one grain, one fact.
-2. Wood grain — accumulated history made visible; time as texture.
-3. Against the grain — contrarian, anti-credential.
-4. Photographic/film grain — texture, authenticity, analog warmth.
-5. Granularity — precision.
+1. The indivisible unit, one grain, one fact.
+2. Wood grain, accumulated history made visible; time as texture.
+3. Against the grain, contrarian, anti-credential.
+4. Photographic/film grain, texture, authenticity, analog warmth.
+5. Granularity, precision.
 
 ## Emotional register
 
@@ -29,14 +29,14 @@ document. Open items are marked open.
   and proud.
 - Employer/partner reading a ledger: **confidence.** The consumer side
   leads; the employer surface inherits what is settled for candidates.
-- Celebration is **reserved and intentional** — spent only on genuinely
+- Celebration is **reserved and intentional**, spent only on genuinely
   important moments, but those moments should feel joyful and special.
 
 ## Moment hierarchy (celebration economy)
 
-Heavy (full light-up treatment — visual + haptic):
+Heavy (full light-up treatment, visual + haptic):
 - Getting hired.
-- Work history verified — by peers or by verified parties.
+- Work history verified, by peers or by verified parties.
 - A verified record/attestation landing on the ledger.
 - Capability milestones between jobs.
 
@@ -56,9 +56,9 @@ Audio: not required. Do not force it.
 
 - Lean toward **"people screenshot it because they've never seen
   software look like this."** Shareable; something workers are proud
-  of — the Flighty passport is the stated benchmark for that pride.
+  of. The Flighty passport is the stated benchmark for that pride.
 
-## Open — to be settled by looking at rendered options, not by naming
+## Open, to be settled by looking at rendered options, not by naming
 
 - **Color** (restraint vs. a color; which accent; what is dead on
   arrival). Founder is genuinely unsure; wants options.
@@ -73,12 +73,12 @@ Audio: not required. Do not force it.
 
 The founder's stated hard problem: AI swings to extremes when
 criticized. The extremes on both sides are hated. The work is finding
-strong balance in between — that is what differentiation means here.
+strong balance in between. That is what differentiation means here.
 See [01-banned-patterns.md](01-banned-patterns.md).
 
 ## Process rulings
 
-- Visual research must be done by *seeing* — screenshots and images —
+- Visual research must be done by *seeing*, meaning screenshots and images,
   never by reading online descriptions of design.
 - Option boards (color, type) are reviewed outside this repo and only
   committed once one is settled.

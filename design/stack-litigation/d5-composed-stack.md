@@ -2,9 +2,9 @@
 
 Advocate against concentrating Grain's platform on a single hyperscaler, and for
 ruling D5 as four separate placements rather than one. The opposing brief
-(`d5-single-hyperscaler.md`) is engaged at its strongest form — §2's
-defense-in-depth argument for `rds.global_db_rpo`, and §4's "decentralize the
-proof, concentrate the plumbing" — not at the lock-in strawman it correctly
+(`d5-single-hyperscaler.md`) is engaged at its strongest form, meaning §2's
+defense-in-depth argument for `rds.global_db_rpo` and §4's "decentralize the
+proof, concentrate the plumbing," not the lock-in strawman it correctly
 refuses to argue against.
 
 Scope note: as with the opposing brief, this argues the widened gate the founder
@@ -12,19 +12,19 @@ opened on 2026-08-19, not decision 011's AWS-vs-GCP framing.
 
 ---
 
-## TLDR — the verdict argued for
+## TLDR, the verdict argued for
 
 **Rule D5 as four placements against four different failure models, and refuse
 to answer "which cloud" as a single question.** The four are:
 
-1. **Primary plane** (payload databases, global spine, compute) — optimize for
+1. **Primary plane** (payload databases, global spine, compute). Optimize for
    operator attention and durability primitives. AWS is defensible here and this
    brief does not contest it.
-2. **Anchor** (compliance-mode WORM checkpoint account) — optimize for
+2. **Anchor** (compliance-mode WORM checkpoint account). Optimize for
    *surviving the operator*. Must not be the primary vendor.
-3. **Mirror** (D3's second cloud) — optimize for *commercial and jurisdictional
+3. **Mirror** (D3's second cloud). Optimize for *commercial and jurisdictional
    independence* from both the primary and the anchor.
-4. **Root key custody** (D4 registry-grade keys) — optimize for the founder-sole-
+4. **Root key custody** (D4 registry-grade keys). Optimize for the founder-sole-
    keyholder ceremony ruled in decision 011 remaining true in fact, not just on
    paper.
 
@@ -32,7 +32,7 @@ The opposing brief concedes 2, 3 and 4 in its §4 and then rules as though it ha
 not. If the concessions bind, the ruling is *this* brief's ruling with a
 different title. The remaining disagreement is narrow and worth naming
 precisely: **whether "AWS primary" is ratified as a platform commitment or as a
-placement of one plane.** The difference is not rhetorical — it decides what a
+placement of one plane.** The difference is not rhetorical. It decides what a
 future session is allowed to do without re-litigating.
 
 ---
@@ -47,7 +47,7 @@ Level 3 managed-KMS validation.
 What does not follow is the framing. A ruling that reads "Grain runs on AWS"
 will be read by the next agent, and by the next engineer, as authorization to
 place the anchor in an AWS account, the mirror in an AWS region, and the KMS
-root in the same organization — because each of those is the path of least
+root in the same organization, because each of those is the path of least
 resistance and each will look consistent with the ruling. The repo has a name
 for this: an unrecorded divergence is drift. A platform-shaped ruling *invites*
 the drift; a placement-shaped ruling forecloses it.
@@ -62,9 +62,9 @@ early is to delete the AWS account.**
 That is the whole argument. The control protects against a compromised or
 coerced *principal*. It does not protect against the loss of the *account*, and
 the account is exactly what a single-vendor posture makes common between the
-ledger and the proof of the ledger. Every scenario that ends Grain's primary
-plane — billing failure, enforcement action, sanctions, a support decision made
-by a stranger — ends the anchor with it if they share a vendor.
+ledger and the proof of the ledger. Billing failure, enforcement action,
+sanctions, or a support decision made by a stranger can each end Grain's
+primary plane. Any one of them ends the anchor with it if they share a vendor.
 
 Grain's own product test asks whether every claim resolves to the evidence
 beneath it. If the evidence and the claim can be destroyed by one commercial
@@ -81,14 +81,14 @@ control. OCI's mandatory 14-day pre-lock delay is a material operational
 advantage for a team that will misconfigure retention on the first attempt and
 would otherwise be permanently stuck with the mistake.
 
-## 3. The mirror is not a backup — it is a second jurisdiction
+## 3. The mirror is not a backup, but a second jurisdiction
 
 D3's second-cloud mirror exists so that a checkpoint's existence can be
 demonstrated without the operator's cooperation. If the mirror shares the
 primary's vendor, its country of incorporation, and its legal process exposure,
 it demonstrates nothing that the primary does not already demonstrate.
 
-The opposing brief adopts Backblaze for the mirror. Good — but if Backblaze is
+The opposing brief adopts Backblaze for the mirror. Good, but if Backblaze is
 the mirror and OCI is the anchor, the composed stack has already been ruled and
 the "single hyperscaler" title is describing one of four placements.
 
@@ -96,7 +96,7 @@ There is a further point the opposing brief does not reach. **The witnessed tile
 log (D3, registry-deadline-gated) is the real answer to this whole brief**, and
 it is post-launch. Until it exists, vendor diversity on the anchor path is the
 only thing standing in for it. The single-vendor ruling spends the interim
-capital that the witnessed log will eventually make unnecessary — but "eventually"
+capital that the witnessed log will eventually make unnecessary. But "eventually"
 is the registry-enforced first-external-party-or-1M deadline, and decision 005
 already recorded that the first external party is *not* expected within ~2
 quarters. The interim is long.
@@ -111,7 +111,7 @@ negative list under Section 16 rather than a residency rule.
 The opposing brief treats this as removing a constraint. It also removes the
 *argument for concentration.* If PH and India are transfer questions rather than
 placement questions, then the payload plane's placement is driven by latency and
-by counsel's transfer analysis — not by which vendor has the widest region map.
+by counsel's transfer analysis, not by which vendor has the widest region map.
 The widest-region-map advantage was AWS's strongest structural claim to the
 whole footprint, and this finding retires it.
 
@@ -121,8 +121,8 @@ availability on 15 January 2026 with a *first* region in Brandenburg, expanding
 through sovereign Local Zones in Belgium, the Netherlands and Portugal. A cloud
 that is seven months old is not a de-risked dependency for a launch-blocking
 plane. Its Postgres and KMS surface must be verified feature-by-feature, and
-specifically it must be confirmed that the Aurora global primitive — the entire
-basis of the opposing brief's §2 — exists there at all. **If it does not, the EU
+specifically it must be confirmed that the Aurora global primitive, the entire
+basis of the opposing brief's §2, exists there at all. **If it does not, the EU
 plane cannot inherit the AWS ruling's central justification, and the composed
 stack is not a preference but a fact.**
 
@@ -134,15 +134,15 @@ registry-grade keys with the party and hosts worker/peer keys.
 
 A hosted KMS root inside the primary's organization means the sole-keyholder
 ruling is true about *authorization* and false about *custody*: the vendor holds
-the module. That is acceptable — it is what "hosted keys" in D4 means — but it
+the module. That is acceptable. It is what "hosted keys" in D4 means. But it
 should be ruled explicitly rather than inherited from a platform choice, and it
 should be recorded that the operator-signing key and the anchor live under
 different vendors. Otherwise a single vendor holds the signing capability, the
 record, and the proof of the record.
 
 FIPS 140-3 Level 3 is the right tiebreak for where the module sits, and it points
-at AWS KMS today. **It points at a certificate with a sunset date of 11/17/2026** —
-inside this build's horizon. Ratifying a platform on a certificate that expires
+at AWS KMS today. **It points at a certificate with a sunset date of 11/17/2026,
+which falls inside this build's horizon.** Ratifying a platform on a certificate that expires
 in under three months without confirming the successor validation is the kind of
 dated fact that decision 042 exists to stop.
 
@@ -163,8 +163,8 @@ dated fact that decision 042 exists to stop.
 2. AWS European Sovereign Cloud is verified to offer Aurora global databases
    with `rds.global_db_rpo` and a FIPS-validated KMS (removes §4's EU-split
    argument).
-3. Any single-vendor account event — suspension, billing termination, legal
-   process — reaching either the primary or the anchor (proves §2; forces
+3. Any single-vendor account event, such as suspension, billing termination, or
+   legal process, reaching either the primary or the anchor (proves §2; forces
    immediate separation if not already ruled).
 4. A compliance-mode WORM incident at Backblaze or OCI in which the vendor
    *does* unlock data (kills the chosen anchor and forces re-placement).

@@ -1,6 +1,6 @@
-# Deletion vs. Reputation Evasion: Can Anything Survive an Erasure Request?
+# Deletion vs. reputation evasion: can anything survive an erasure request?
 
-**Evidence tier — binds nothing.** Research informs decisions and constrains
+**Evidence tier: binds nothing.** Research informs decisions and constrains
 no implementation. A figure here describes what someone else did or what a
 regulator said in one matter; it is not a target, a spec, or a decision.
 
@@ -12,47 +12,48 @@ regulator guidance, published platform practice, journalism, and my own
 inference are labeled separately throughout.
 
 **Relationship to a standing decision.** Decision `009` already ruled: *"No
-salted document-hash survives profile deletion — R2's spirit controls; the
+salted document-hash survives profile deletion. R2's spirit controls; the
 Uber-style retain-and-flag alternative is rejected. Revisit trigger: fresh-start
 fraud materializing at measurable rates."* This memo was commissioned to test
 the reasoning behind that ruling, not to assume it. **The research substantially
 vindicates 009 for the general case and identifies one narrow category where it
-is probably wrong** — see §4. Treat this as a revisit input, not a settled
+is probably wrong.** See §4. Treat this as a revisit input, not a settled
 restatement.
 
 **Scope:** GDPR/UK GDPR, EU Platform Work Directive, CCPA/CPRA, Philippine DPA,
 India DPDP. Platform practice across rideshare, delivery, marketplace, and
 freelance verticals. The specific question is narrow: **may a platform retain a
 one-way hash of an identifier (phone, government-document number, device),
-after honoring an erasure request, solely to flag re-registration — and does the
+after honoring an erasure request, solely to flag re-registration, and does the
 answer turn on why the account ended?**
 
 ---
 
-## TLDR — all conclusions
+## TLDR: all conclusions
 
 **1. Deletion is not absolute anywhere, but the fraud carve-out is not in the
-exemption list — and that changes everything about how you have to argue it.**
+exemption list, and that changes everything about how you have to argue it.**
 The instinct is to look for a fraud-prevention exemption in GDPR Art. 17(3).
 There isn't one. Art. 17(3) is a closed list of five: freedom of expression,
 legal obligation/public task, public health, archiving-research-statistics, and
 establishment/exercise/defence of legal claims. Recital 65 mirrors it exactly
-and omits fraud. Recital 47's fraud sentence — *"The processing of personal data
-strictly necessary for the purposes of preventing fraud also constitutes a
-legitimate interest of the data controller concerned"* — is a **legal-basis**
-statement about Art. 6(1)(f), not an erasure exemption. The consequence is
+and omits fraud. Recital 47's fraud sentence states: *"The processing of
+personal data strictly necessary for the purposes of preventing fraud also
+constitutes a legitimate interest of the data controller concerned"*. That is a
+**legal-basis** statement about Art. 6(1)(f), not an erasure exemption. The
+consequence is
 procedural and severe: fraud-prevention retention has to defeat the erasure
 right at **Art. 17(1)**, by showing the data are still *necessary* under
 17(1)(a) and that there are *overriding legitimate grounds* under 17(1)(c) →
 Art. 21(1). That is a case-by-case balancing test the controller bears the
-burden on, not a checkbox. Confidence: high — this is the plain structure of the
+burden on, not a checkbox. Confidence: high, given the plain structure of the
 text.
 
 **2. A retained one-way hash is personal data in your hands, and the 2025 CJEU
 pseudonymisation ruling does not save you.** The hash's entire function is to
 single out one human on re-registration; Recital 26's identifiability test is
 satisfied by singling-out alone. *EDPS v SRB* (C-413/23 P, 4 Sept 2025) did
-establish a relative, recipient-dependent test for pseudonymised data — but it
+establish a relative, recipient-dependent test for pseudonymised data, but it
 helps a recipient who *cannot* re-identify. You are the party who deliberately
 retains the matching capability. The EDPB's 2025 coordinated enforcement report
 says the quiet part out loud: some controllers *"only apply basic
@@ -69,9 +70,9 @@ ensure security and integrity," and §1798.140(ac) defines that term as the
 ability to "resist malicious, deceptive, fraudulent, or illegal actions and to
 help prosecute those responsible" and to "ensure the physical safety of natural
 persons." Fraud is named. Physical safety is named. **Performance is nowhere in
-the statute**, and the only plausible alternative hook — §1798.105(d)(7),
-"solely internal uses reasonably aligned with the expectations of the consumer"
-— fails precisely because a worker who deletes their profile has the opposite
+the statute**, and the only plausible alternative hook, §1798.105(d)(7)'s
+"solely internal uses reasonably aligned with the expectations of the consumer",
+fails precisely because a worker who deletes their profile has the opposite
 expectation. GDPR reaches the same place by a different route: the Art. 21(1)
 balancing that fraud can win (Recital 47 pre-weights it) is one that "we want to
 keep telling employers you were slow" loses, because there is no recognised
@@ -84,7 +85,7 @@ right or claim and to offences and contraventions of law. Every regime surveyed
 has somewhere for fraud and safety to attach, and none has anywhere for
 performance to attach. The Philippines even supplies a near-exact precedent for
 this product: NPC Advisory Opinion 2023-026 (2023) blessed an IT-BPO company
-building a **shared employee fraud database** — and reached it through the legal
+building a **shared employee fraud database**, and reached it through the legal
 claims route, "processing for the purpose of establishing, exercising or
 defending a legal claim involving a fraudulent act," with a mandatory retention
 policy attached. Fraud, framed as a legal claim. Not performance. Confidence:
@@ -93,11 +94,11 @@ the GDPR balancing prediction (no adjudication on these exact facts anywhere).
 
 **4. Voluntary exit gets no retention at all. That is the cleanest line in the
 whole analysis.** Where nothing went wrong, there is no interest to balance
-against the erasure right, so 17(1)(a) is made out on its face — the data are no
-longer necessary for any purpose. Any retention here is indefensible in every
+against the erasure right, so 17(1)(a) is made out on its face because the data
+are no longer necessary for any purpose. Any retention here is indefensible in every
 regime surveyed. Confidence: high.
 
-**5. Industry converged on a narrow, severity-gated, intermediated answer — and
+**5. Industry converged on a narrow, severity-gated, intermediated answer, and
 it is a better model than the one this design was reaching for.** The single
 most on-point precedent is the Uber/Lyft **Industry Sharing Safety Program**
 (2021, later HopSkipDrive). It is exactly a cross-platform negative-signal
@@ -111,7 +112,7 @@ strictly needed for cross-platform matching"* and *"does not have access to the
 complaints or report details."* The industry did not build a general reputation-
 portability layer with a fraud exception bolted on. It built a matching index
 for a handful of catastrophic categories and routed it through a regulated
-intermediary that carries the dispute duty. Confidence: high — published by all
+intermediary that carries the dispute duty. Confidence: high, published by all
 parties.
 
 **5b. Uber has already drafted the model clause, and it gates on exactly the line
@@ -125,15 +126,15 @@ there is an issue with your account related to trust, safety, or fraud." Etsy
 tells users plainly that "closing your account may not free up your email
 address, username, or shop name … for reuse." The remaining six platforms
 enforce re-registration bans while disclosing only a generic fraud-prevention
-retention basis — Airbnb being the sharpest anti-pattern, contractually
+retention basis, with Airbnb being the sharpest anti-pattern, contractually
 prohibiting re-registration (Terms §12.5) with **no** matching carve-out in its
 privacy policy. Also notable: **no platform names device or IP as the
 re-registration key.** The convergence is on identity documents and face
-biometrics. Confidence: high — all quoted from live policy text.
+biometrics. Confidence: high, all quoted from live policy text.
 
 **6. The suppression-list pattern is genuinely regulator-blessed, and it is
 being misread. The ICO blesses it because it serves the data subject's own
-request — which is exactly the property a re-registration blocklist lacks.** The
+request, which is exactly the property a re-registration blocklist lacks.** The
 ICO is unusually direct: *"keeping a suppression list isn't for direct marketing
 purposes. You are keeping this list so that you can comply with your statutory
 obligations (ie to comply with their objection),"* and therefore *"there is no
@@ -143,7 +144,7 @@ CCPA §1798.105(c)(2) contains the same structure: a business may keep a
 for legal compliance, or "for other purposes, solely to the extent permissible
 under this title." Both instruments authorise a minimal residue **whose function
 is to honour what the person asked for**. A ban-evasion blocklist inverts the
-polarity — it is a residue that operates *against* the person who asked. Citing
+polarity, since it is a residue that operates *against* the person who asked. Citing
 suppression-list precedent for it is a category error, and I expect a regulator
 to say so. Confidence: high on the guidance text; medium-high on how a regulator
 would treat the analogy, since none has ruled on it.
@@ -157,14 +158,14 @@ contractual relationship, inasmuch as it does not end with the expiry of the
 contract but continues for a different purpose; and it **requires another legal
 basis to legitimise it**." The aggravating fact the AEPD singled out: "the
 information retained **does not refer with certainty to a fraud committed by the
-claimant**." The AEPD expressly did *not* condemn exclusion lists as such — it
-contrasted them with statutorily grounded credit-information systems having
-objective published entry criteria and prior notice. That is the checklist. And
-CNIL's exclusion référentiel (2021-130) authorises a single-controller exclusion
-register with a five-year cap and 48-hour deletion on cure, while **expressly
-excluding mutualised sharing with third parties from its scope** — a direct
-warning for a cross-vertical design. Confidence: high on the decisions; my
-inference on the read-across to a worker ledger.
+claimant**." The AEPD expressly did *not* condemn exclusion lists as such.
+Instead, it contrasted them with statutorily grounded credit-information systems
+having objective published entry criteria and prior notice. That is the
+checklist. And CNIL's exclusion référentiel (2021-130) authorises a
+single-controller exclusion register with a five-year cap and 48-hour deletion on
+cure, while **expressly excluding mutualised sharing with third parties from its
+scope**, which is a direct warning for a cross-vertical design. Confidence: high
+on the decisions; my inference on the read-across to a worker ledger.
 
 **7. The most dangerous precedent in this file is not a privacy case. It is the
 UK construction blacklist.** The Consulting Association held cross-employer
@@ -172,21 +173,22 @@ negative records on 3,213 construction workers, sold to 40+ firms; the ICO
 raided it in 2009, its operator was prosecuted, Parliament passed the
 Employment Relations Act 1999 (Blacklists) Regulations 2010 to prohibit
 compiling, using, selling, or supplying such lists, and the participating firms
-settled for roughly £75 million. The Regulations are formally narrow — they bite
-on trade-union grounds — but the political and regulatory reflex they encode is
+settled for roughly £75 million. The Regulations are formally narrow, biting on
+trade-union grounds, but the political and regulatory reflex they encode is
 not narrow at all. A durable cross-employer negative-performance record on
 workers is, in the UK and EU, the most disfavoured category of database that
 exists. This should weigh on the product, not just on the deletion policy.
 Confidence: high on facts; my inference on the read-across, flagged as such.
 
 **8. Recommendation: hold decision 009 as the default, and carve exactly one
-exception — a severity-gated safety/fraud flag, intermediated, time-boxed, and
+exception: a severity-gated safety/fraud flag, intermediated, time-boxed, and
 disclosed pre-collection.** Voluntary exit and performance-based exit: full
 erasure, no residue, no exceptions. Termination for **verified fraud against the
 ledger's own integrity** (forged documents, identity substitution, attestation
 collusion) or for **a serious safety finding** in a defined, published taxonomy:
-retain a salted hash of the government-document number only — not phone, not
-device, not name — for a fixed period, holding *no* payload about what happened,
+retain, for a fixed period, a salted hash of the government-document number
+only, excluding phone, device, and name, holding *no* payload about what
+happened,
 producing only a "manual review required" signal on re-registration rather than
 an automatic block, disclosed at collection time rather than at deletion time,
 with a human-reviewable appeal. **Note this is narrower than Uber's published
@@ -197,12 +199,12 @@ fraud/performance line I am relying on is clean in law and filthy in operations,
 because the platform's own classification of an exit is unreviewed, self-serving,
 and exactly the thing an employer with a retaliation motive will manipulate.
 
-**9. The framing in the prompt — that ledger deletion only removes
-cross-vertical portability, not the original employer's own knowledge — is
-correct, and it is the single strongest argument for permissive deletion.**
+**9. The framing in the prompt, that ledger deletion only removes cross-vertical
+portability and not the original employer's own knowledge, is correct, and it
+is the single strongest argument for permissive deletion.**
 Deleting from the ledger destroys no evidence. The employer who fired the worker
 still knows, still holds their own records, and is still free to answer a
-reference call. What deletion removes is only the *amplification* — the ability
+reference call. What deletion removes is only the *amplification*, the ability
 to broadcast a negative signal to parties who have no relationship with the
 worker. That is precisely the interest that regulators protect most and platforms
 justify least. It also means the marginal safety cost of permissive deletion is
@@ -213,12 +215,12 @@ point.
 
 ## 1. The legal position
 
-### 1.1 Erasure is not absolute — but the exemption you want is not in the exemption list
+### 1.1 Erasure is not absolute, but the exemption you want is not in the exemption list
 
 Article 17 has a two-layer structure that most commentary blurs, and the
 distinction is decisive here.
 
-**Layer one, Art. 17(1)** — the right is *triggered* only where one of six
+**Layer one, Art. 17(1)**: the right is *triggered* only where one of six
 grounds applies. Verbatim, the two that matter:
 
 > "(a) the personal data are no longer necessary in relation to the purposes for
@@ -228,7 +230,7 @@ grounds applies. Verbatim, the two that matter:
 > there are no overriding legitimate grounds for the processing, or the data
 > subject objects to the processing pursuant to Article 21(2);"
 
-**Layer two, Art. 17(3)** — where the right *is* triggered, it is disapplied "to
+**Layer two, Art. 17(3)**: where the right *is* triggered, it is disapplied "to
 the extent that processing is necessary" for one of five things: exercising
 freedom of expression and information; compliance with a legal obligation or
 performance of a public-interest task; public-health reasons; archiving in the
@@ -236,7 +238,7 @@ public interest, scientific/historical research, or statistics; and
 "establishment, exercise or defence of legal claims."
 
 **Fraud prevention appears in neither list.** Recital 65 confirms this is
-deliberate rather than an oversight — it recites the permitted grounds for
+deliberate rather than an oversight. It recites the permitted grounds for
 "further retention" in the same five categories and does not mention fraud.
 
 The fraud language people reach for is Recital 47, and it is doing a different
@@ -246,7 +248,7 @@ job:
 > preventing fraud also constitutes a legitimate interest of the data controller
 > concerned."
 
-Recital 47 is about **Art. 6(1)(f)** — whether you had a lawful basis to process
+Recital 47 is about **Art. 6(1)(f)**, whether you had a lawful basis to process
 in the first place. It says nothing about whether an erasure right, once
 triggered, can be resisted.
 
@@ -256,8 +258,8 @@ one of two arguments:
 
 - **17(1)(a):** the data are *still necessary* for a live purpose (fraud
   prevention), so the trigger never fires. This is the strongest available
-  route, and it is a necessity test — genuinely contestable, and it collapses
-  the moment the retention outlives the fraud risk it was justified by.
+  route, and it is a necessity test that is genuinely contestable, and it
+  collapses the moment the retention outlives the fraud risk it was justified by.
 - **17(1)(c) → Art. 21(1):** the subject objects, and you must show *overriding
   legitimate grounds*. Recital 47 pre-weights fraud favourably in this balance,
   which is its real utility. But the burden is on the controller, and it is
@@ -265,9 +267,9 @@ one of two arguments:
 
 There is a third, underused route: **Art. 17(3)(e)**, "establishment, exercise
 or defence of legal claims." Where the worker's exit was for conduct that
-generates foreseeable litigation exposure — a safety incident, a fraud loss —
-this is a real hook and it is a genuine *exemption* rather than a balancing
-test. It is narrower than it looks (it does not cover speculative future claims
+generates foreseeable litigation exposure, such as a safety incident or a fraud
+loss, this is a real hook and it is a genuine *exemption* rather than a
+balancing test. It is narrower than it looks (it does not cover speculative future claims
 against unrelated parties) but where it applies it is the cleanest ground in
 Art. 17. Confidence: medium-high; it is the ground I would expect counsel to
 lead with for the safety category.
@@ -290,7 +292,7 @@ and, precisely on point:
 > without proper assessment or documentation of the balancing test."
 
 The report also establishes the compliance posture required *when a refusal is
-lawful* — which is the design-relevant part:
+lawful*, which is the design-relevant part:
 
 > "In cases where erasure requests are lawfully denied under Article 17(3) GDPR,
 > some controllers do not consistently implement measures to ensure continued
@@ -325,7 +327,7 @@ that it can recompute the hash from a document presented later and match* has,
 by construction, retained the means of identification.
 
 The tempting counter is *EDPS v SRB*, Case C-413/23 P, decided 4 September 2025.
-The CJEU did hold — a significant departure from long-standing DPA orthodoxy —
+The CJEU did hold, in a significant departure from long-standing DPA orthodoxy,
 at para 86 that "**pseudonymised data must not be regarded as constituting, in
 all cases and for every person, personal data**." But read paras 76 and 77, and
 the ruling closes on exactly the party that wants to rely on it. Para 76:
@@ -359,7 +361,7 @@ recipient's position.
 
 Confidence: high that SRB does not assist the retaining controller; medium on
 whether it assists a *downstream vertical* receiving a match signal without the
-salt or the candidate list — that second reading is architecturally interesting
+salt or the candidate list. That second reading is architecturally interesting
 and worth counsel time, because it is roughly what the HireRight structure
 achieves.
 
@@ -389,7 +391,7 @@ treating hashing as *anonymisation* at high entropy, single-use salts, "zero
 links with identifiers, pseudoidentifiers and other information," and
 organisational removal of any re-identifying information. A re-registration
 index cannot meet that standard, because a single-use salt would make matching
-impossible — the salt must be stable for the mechanism to work at all. **That
+impossible, since the salt must be stable for the mechanism to work at all. **That
 tension is fundamental, not an implementation detail: the property that makes
 the hash useful is the property that keeps it personal data.**
 
@@ -401,18 +403,18 @@ that treats "but it's only a hash" as the justification is wrong.
 
 This is the core question, and the hypothesis holds. Three cases:
 
-**(a) Voluntary exit — no retention is defensible.** Where nothing went wrong,
+**(a) Voluntary exit: no retention is defensible.** Where nothing went wrong,
 there is no live purpose the data serves and no interest to weigh against the
-subject's. Art. 17(1)(a) is satisfied on its face: the data are no longer
+subject's. Art. 17(1)(a) is satisfied on its face, since the data are no longer
 necessary for the purpose for which they were collected. No Art. 17(3) exemption
 is in play. Under CCPA no §1798.105(d) exemption is in play either. This is the
 one case where every regime surveyed gives the same unambiguous answer.
 Confidence: high.
 
-**(b) Termination for fraud or a serious safety finding — retention is
+**(b) Termination for fraud or a serious safety finding: retention is
 defensible, on conditions.** GDPR: Recital 47 pre-weights fraud in the Art. 21(1)
 balance; Art. 17(3)(e) is available where litigation exposure is real. CCPA:
-§1798.105(d)(2) plus the §1798.140(ac) definition names both limbs expressly —
+§1798.105(d)(2) plus the §1798.140(ac) definition names both limbs expressly:
 "resist malicious, deceptive, fraudulent, or illegal actions" and "ensure the
 physical safety of natural persons." The conditions are the EDPB's Article 5
 package from §1.1: minimised, time-boxed, segregated, documented. Confidence:
@@ -420,7 +422,7 @@ high that the basis exists; medium on how far it stretches, because "fraud"
 here must mean fraud against the system's integrity, not "we think this worker
 is bad."
 
-**The EDPB has set the bar for fraud-based processing, and it is high — but it
+**The EDPB has set the bar for fraud-based processing, and it is high, but it
 is a bar a severity-gated design clears and a catch-all design does not.**
 Guidelines 1/2024 on Art. 6(1)(f) (adopted 8 October 2024; still a consultation
 version) para 100:
@@ -444,26 +446,27 @@ design in §4.2 rather than against a residue as such. A narrow, named, serious
 category is what the EDPB is asking for; "fraud and abuse" as a catch-all is
 what it is refusing.
 
-**(c) Termination for poor performance — retention is not defensible.** The
+**(c) Termination for poor performance: retention is not defensible.** The
 hypothesis is correct, and California is the clearest evidence because the
 statute is a closed list:
 
-- §1798.105(d)(2) "security and integrity" — fails. The §1798.140(ac) definition
-  covers security incidents, malicious/deceptive/fraudulent/illegal actions, and
-  physical safety. Slow, unreliable, or unskilled is none of these.
-- §1798.105(d)(1) "perform a contract" — fails. The contract with the worker
-  ended.
-- §1798.105(d)(7) "solely internal uses that are reasonably aligned with the
+- §1798.105(d)(2)'s "security and integrity" ground fails. The §1798.140(ac)
+  definition covers security incidents, malicious/deceptive/fraudulent/illegal
+  actions, and physical safety. Slow, unreliable, or unskilled is none of these.
+- §1798.105(d)(1)'s "perform a contract" ground fails. The contract with the
+  worker ended.
+- §1798.105(d)(7)'s "solely internal uses that are reasonably aligned with the
   expectations of the consumer based on the consumer's relationship with the
-  business" — fails, and fails for an instructive reason. A worker who deleted
-  their profile has demonstrated the *opposite* expectation, and the retention is
-  not an internal use: its purpose is to shape what third-party verticals see.
-- §1798.105(d)(8) "comply with a legal obligation" — fails absent a specific
-  retention mandate (see §1.5 for where one actually exists).
+  business" ground fails, and fails for an instructive reason. A worker who
+  deleted their profile has demonstrated the *opposite* expectation, and the
+  retention is not an internal use, since its purpose is to shape what third-party
+  verticals see.
+- §1798.105(d)(8)'s "comply with a legal obligation" ground fails absent a
+  specific retention mandate (see §1.5 for where one actually exists).
 
 Under GDPR the same result arrives via the Art. 21(1) balance. Recital 47's
-weighting is unavailable. The countervailing interest — a hiring party's
-interest in knowing about past performance — is real but not weighty in the
+weighting is unavailable. The countervailing interest, a hiring party's
+interest in knowing about past performance, is real but not weighty in the
 Art. 21 sense, while the detriment to the data subject is not a side effect of
 the retention but its designed function. A controller arguing that "continued
 ability to disadvantage this person in the labour market" overrides their
@@ -474,7 +477,7 @@ regulator has ruled on these facts.
 
 **A caution about the boundary.** In operations these three categories are not
 crisply separable, and the classification is made by the party with an interest
-in the outcome. See §4.3 — this is the strongest objection to my own
+in the outcome. See §4.3, which raises the strongest objection to my own
 recommendation.
 
 ### 1.4 UK: the ICO position
@@ -484,7 +487,7 @@ guidance are load-bearing.
 
 **Scope of the right.** *"The right only applies to data held at the time the
 request is received. It does not apply to data that may be created in the
-future."* This is more useful than it looks — it means a hash *created at the
+future."* This is more useful than it looks, since it means a hash *created at the
 moment of deletion* is squarely within scope of the request that triggered it,
 and cannot be characterised as new data outside the right.
 
@@ -515,7 +518,7 @@ The statutory text is quoted in §1.3. Two further points.
 > submitted a deletion request from being sold, for compliance with laws or for
 > other purposes, solely to the extent permissible under this title."
 
-Note the double limitation — "solely for the purpose of" and "solely to the
+Note the double limitation: "solely for the purpose of" and "solely to the
 extent permissible under this title." This authorises the honour-the-request
 residue. It does not independently authorise a ban-evasion index; that has to
 find its own home in §1798.105(d).
@@ -531,13 +534,13 @@ divided Ninth Circuit panel rejected their appeal of a denied preliminary
 injunction on 4 March 2026.
 
 This cuts *against* deletion, and cleanly, for the termination-for-cause
-category — it is a §1798.105(d)(8) "comply with a legal obligation" hook, and in
+category, since it is a §1798.105(d)(8) "comply with a legal obligation" hook, and in
 the EU an Art. 17(3)(b) analogue would arise from any equivalent Member State
 transposition. It is worth noting the direction of travel: the legal pressure to
 keep deactivation records is coming from **worker-protective** legislation, and
 its purpose is to let the worker contest the deactivation. That is a very
 different retention than a blocklist, and it should be built as a different
-thing — the worker's evidence, not the platform's weapon. Confidence: high on
+thing, the worker's evidence, not the platform's weapon. Confidence: high on
 the ordinance; medium on how many jurisdictions follow, though California,
 Washington State, and several others have live proposals.
 
@@ -547,27 +550,27 @@ These two turned out to be the most informative jurisdictions in the file, and
 in opposite directions. **Correcting a prior assumption:** `07-synthesis.md`
 treated the Philippines as the most hostile jurisdiction to any residue. On
 primary reading that is wrong. The Philippines is the *most permissive* of the
-four — it is the only one with an express, enumerated list of grounds on which a
+four, since it is the only one with an express, enumerated list of grounds on which a
 controller may refuse erasure, and the only one with a published regulator
 opinion blessing a shared cross-employer fraud database. India is the opposite:
 structurally hostile, but with a binary exemption that is stronger than anything
 in GDPR when it applies.
 
-#### Philippines (RA 10173) — permissive, but with mandatory machinery
+#### Philippines (RA 10173): permissive, but with mandatory machinery
 
 **The erasure right is proof-gated, not at-will.** Sec. 16(e) grants the right
 to "[s]uspend, withdraw or order the blocking, removal or destruction" of
-personal information — but only "**upon discovery and substantial proof**" that
+personal information, but only "**upon discovery and substantial proof**" that
 the data are incomplete, outdated, false, unlawfully obtained, used for
 unauthorized purposes, or no longer necessary. IRR Rule VIII Sec. 34(e) expands
-the grounds to seven, adding the withdrawal/objection ground — but builds the
+the grounds to seven, adding the withdrawal/objection ground, but builds the
 override into the text: erasure follows withdrawal or objection only where
 "**there is no other legal ground or overriding legitimate interest for the
 processing**." There is no free-standing "delete my account" entitlement in
 Philippine law at all.
 
 **NPC Advisory No. 2021-01 (Data Subject Rights), 29 January 2021, §10(B)(2)
-answers this memo's question directly** — an express list of grounds for
+answers this memo's question directly**, with an express list of grounds for
 refusing erasure:
 
 > "**A request for erasure or blocking may be denied, wholly or partly, when
@@ -579,7 +582,7 @@ refusing erasure:
 > industry standard for personal data retention; […]"
 
 Two features matter for design. First, **"wholly or partly"** expressly
-contemplates the exact shape proposed here — delete everything except a defined
+contemplates the exact shape proposed here: delete everything except a defined
 minimum. Second, ground (d), "legitimate business purposes … consistent with the
 applicable industry standard," is materially broader than anything in GDPR
 Art. 17(3), and an industry standard is precisely what the ISSP precedent in
@@ -587,7 +590,7 @@ Art. 17(3), and an industry standard is precisely what the ISSP precedent in
 
 **And there is a direct precedent for this product.** NPC Advisory Opinion
 No. 2023-026 (29 December 2023) addressed the creation of a **shared employee
-fraud database** by an IT-BPO company with CIBI — a cross-employer negative
+fraud database** by an IT-BPO company with CIBI, a cross-employer negative
 worker database, in a core market for this design. The NPC's conclusion:
 
 > "the proposed sharing of data by an IT-BPO Company with CIBI can be considered
@@ -601,7 +604,7 @@ with the retention condition stated as an obligation:
 > required by other laws. This means that there must be a retention policy
 > regarding the personal data stored in the database."
 
-Note the framing: **fraud**, characterised through the *legal claims* route — the
+Note the framing: **fraud**, characterised through the *legal claims* route, the
 same Art. 17(3)(e) analogue identified in §1.1. Not performance.
 
 **Fraud prevention is settled as a legitimate interest** under Sec. 12(f). NPC
@@ -630,7 +633,7 @@ collection**, not at deletion.
   denying or limiting the exercise of data subject rights shall be liberally
   interpreted in a manner that would uphold the rights and interests of the data
   subject." And the NPC enforces §10(B)(2) as an exhaustive checklist with the
-  burden on the controller — *JBA v. FNT and NNT*, NPC 20-026 (22 Sept 2022):
+  burden on the controller, per *JBA v. FNT and NNT*, NPC 20-026 (22 Sept 2022):
   "none of the circumstances that would warrant a denial … are present. Thus,
   there is no reason for FNT to deny the request for erasure."
 - **Do not rely on the investigation exemption.** Sec. 19 / IRR §37 disapply the
@@ -643,30 +646,30 @@ collection**, not at deletion.
 **One genuine advantage: the Philippines has a de-identification pathway the
 other regimes lack.** Sec. 3(g)/IRR §2 define personal information by reference
 to identity being "reasonably and directly ascertained **by the entity holding
-the information**" — a controller-relative test narrower than the GDPR/India
+the information**", a controller-relative test narrower than the GDPR/India
 "identifiable" standard. And IRR §19 states that "[p]ersonal data which is
 aggregated or kept in a form which does not permit identification of data
 subjects may be kept longer than necessary." NPC Advisory No. 2025-02 sets a
-demanding bar for anonymisation — "irreversibly altered … either by the PIC alone
-or in collaboration with any other party" — which a hash of a national ID number
-does not meet if anyone can recompute it. But the pathway exists on paper, which
+demanding bar for anonymisation, requiring data "irreversibly altered … either by
+the PIC alone or in collaboration with any other party", which a hash of a
+national ID number does not meet if anyone can recompute it. But the pathway exists on paper, which
 is more than GDPR or DPDP offer.
 
 Confidence: high on the statutory and IRR text; high on the advisory quotes,
-with one process caveat — NPC PDFs were retrieved through a text-extraction
+with one process caveat: NPC PDFs were retrieved through a text-extraction
 proxy because privacy.gov.ph blocks direct fetches, so spot-check in a browser
 before relying on any of these quotes in a filing. **Important status point:
 per NPC Circular 18-01, advisory opinions are expressly non-binding and not
-precedent** — they show the regulator's thinking, not the rule.
+precedent**, showing the regulator's thinking, not the rule.
 
-#### India (DPDP 2023 + Rules 2025) — no balancing, but a binary exemption
+#### India (DPDP 2023 + Rules 2025): no balancing, but a binary exemption
 
 **There is no legitimate-interest basis to argue from.** Sec. 7 is a closed
 enumerated list of "certain legitimate uses," and fraud prevention does not
-appear in it. The nearest analogue, Sec. 7(i) — processing "for the purposes of
+appear in it. The nearest analogue, Sec. 7(i), processing "for the purposes of
 employment or those related to safeguarding the employer from loss or liability,
 such as prevention of corporate espionage, maintenance of confidentiality of
-trade secrets…" — is textually confined to the employment relationship with
+trade secrets…", is textually confined to the employment relationship with
 employer-side examples. It will not carry a platform's anti-fraud processing
 against its users. **The entire GDPR/PH-style balancing argument is structurally
 unavailable in India.** This is the sharpest jurisdictional difference in the
@@ -675,7 +678,7 @@ memo.
 **The erasure right.** Sec. 12(3): the fiduciary "shall erase her personal data
 **unless retention of the same is necessary for the specified purpose or for
 compliance with any law for the time being in force**." Sec. 8(7) imposes a
-parallel erasure duty on withdrawal of consent, with a *narrower* exception —
+parallel erasure duty on withdrawal of consent, with a *narrower* exception:
 only "compliance with any law," not "necessary for the specified purpose." Note
 also Sec. 12(1): the right attaches only to data processed on consent (including
 Sec. 7(a) deemed consent), so data processed under a Sec. 17 exemption is outside
@@ -692,7 +695,7 @@ not apply" where, among others:
 > investigation or prosecution of any offence or contravention of any law for
 > the time being in force in India;"
 
-Chapter III is sections 11–15 — **which contains Sec. 12**. So where 17(1)(a) or
+Chapter III is sections 11–15, **which contains Sec. 12**. So where 17(1)(a) or
 17(1)(c) applies, the erasure right does not yield to a balancing test; **it does
 not apply at all.** That is more binary than anything in GDPR, and unlike the
 Philippine equivalent it carries no express minimisation proviso. Two limits:
@@ -713,7 +716,7 @@ account.**" Scope it correctly, though: the Seventh Schedule lists **State**
 purposes (sovereignty, integrity, security, State statutory functions), and the
 floor exists to preserve data for Central Government information-calling powers
 under Rule 23. It is a State-access preservation duty, not a general
-business-records rule — but it is a hard floor, and it means "we erased
+business-records rule, but it is a hard floor, and it means "we erased
 everything immediately" is not a lawful posture in India.
 
 Rule 8(1) plus the Third Schedule impose an *inactivity* erasure clock (three
@@ -723,27 +726,27 @@ years) on large e-commerce, online gaming, and social media intermediaries, with
 Rule 4 (consent managers) around 13 November 2026. Rule 8 is not yet live.
 
 **No de-identification safe harbour.** Sec. 2(t) defines personal data as data
-"about an individual who is identifiable by or in relation to such data" — broad
+"about an individual who is identifiable by or in relation to such data", broad
 and not controller-relative. Full-text search of both the Act and the Rules
 returns **zero** occurrences of "pseudonym," "anonymis/anonymiz," or "hash."
-The Rules treat these techniques as *security measures*, not scope exits —
+The Rules treat these techniques as *security measures*, not scope exits.
 Rule 6(1)(a) requires "encryption, obfuscation, masking or the use of virtual
 tokens **mapped to** that personal data." A token that maps back is still in
 scope. A one-way hash of a phone number or ID number, trivially reversible by
 dictionary attack over a small domain, will almost certainly remain personal
 data in India.
 
-Confidence: high — all quotes verified verbatim against the MeitY gazette PDFs
+Confidence: high, all quotes verified verbatim against the MeitY gazette PDFs
 for both the Act and the Rules.
 
 #### What the two jurisdictions imply together
 
 The asymmetry is worth designing around. **India gives a stronger, more binary
-exemption but no legitimate-interest basis and no de-identification safe harbour
-— so anything retained must sit squarely inside Sec. 17(1)(a)/(c), and "it's
+exemption but no legitimate-interest basis and no de-identification safe harbour,
+so anything retained must sit squarely inside Sec. 17(1)(a)/(c), and "it's
 only a hash" is worth nothing.** **The Philippines gives an express denial ground
 including a broad "legitimate business purposes … consistent with industry
-standard" limb, plus a real de-identification pathway — but attaches mandatory
+standard" limb, plus a real de-identification pathway, but attaches mandatory
 access/rectification machinery to any blacklist, forbids indefinite retention,
 requires the refusal to be explained, and resolves doubt against the
 controller.**
@@ -765,8 +768,8 @@ failing to register as a data controller and fined £5,000 plus costs;
 participating firms reportedly settled from 2014 for a total in the region of
 £75 million. (Figures are as reported in the House of Commons Library briefing
 and contemporaneous coverage; I could not retrieve the briefing PDF directly, so
-treat the precise numbers as approximate — the shape of the episode is not in
-doubt.) The Regulations prohibit
+treat the precise numbers as approximate, though the shape of the episode is not
+in doubt.) The Regulations prohibit
 compiling, using, selling, or supplying blacklists, and create employment
 tribunal rights for refusal of employment or employment-agency services on
 blacklist grounds.
@@ -782,9 +785,9 @@ facts; my own read on the implication.
 
 **EU Platform Work Directive (EU) 2024/2831**, transposition deadline 2 December
 2026. It restricts what platforms may process about people performing platform
-work via automated systems — including data on emotional or psychological state,
+work via automated systems, including data on emotional or psychological state,
 private conversations, data collected while the person is not working or seeking
-work, and inference of protected characteristics — and requires human oversight
+work, and inference of protected characteristics, and requires human oversight
 plus **reasons given for restricting access to an account**. That last
 requirement bears directly on any automatic re-registration block: an automated
 "you are flagged, application denied" is close to the paradigm case the Directive
@@ -799,8 +802,8 @@ Verify article numbers and exact wording before citing.
 ### 2.1 The best precedent: the Industry Sharing Safety Program
 
 Launched March 2021 by Lyft and Uber, later joined by HopSkipDrive. It is the
-closest existing thing to what this ledger proposes — a cross-platform negative
-signal about deactivated workers — and every design choice in it is a
+closest existing thing to what this ledger proposes, a cross-platform negative
+signal about deactivated workers, and every design choice in it is a
 concession worth copying.
 
 **Scope is severity-gated and tiny.** The founding companies share deactivation
@@ -810,8 +813,8 @@ Taxonomy, along with physical assault fatalities." Uber characterises these
 incidents as "comprising less than one-thousandth of one percent of all trips."
 There is no performance tier, no service-quality tier, no low-rating tier.
 
-**It is intermediated by a regulated third party.** HireRight — an FCRA consumer
-reporting agency — "collect[s] and manage[s] the data from individual companies,
+**It is intermediated by a regulated third party.** HireRight, an FCRA consumer
+reporting agency, "collect[s] and manage[s] the data from individual companies,
 match[es] and share[s] information between the companies, and ensures that each
 company is abiding by best practices and industry standards." The platforms do
 not hold each other's data.
@@ -836,20 +839,20 @@ only the match key, and put a party with dispute obligations in the middle."
 
 Uber states it "has built technology to stop people who've been banned from Uber
 from creating new accounts by detecting signups that use information, documents,
-and photos connected to a deactivated account." Note the breadth — documents and
+and photos connected to a deactivated account." Note the breadth: documents and
 photos, not just a document hash. Uber has separately been reported to
 fingerprint devices to detect fraud patterns including sign-up-bonus gaming, on
 the logic that a device previously associated with fraud should raise a flag on
 new sign-up.
 
-eBay and Amazon both operate "related account" enforcement — suspending a second
-account linked to an already-suspended one — and both permit multiple accounts
+eBay and Amazon both operate "related account" enforcement, suspending a second
+account linked to an already-suspended one, and both permit multiple accounts
 for legitimate purposes while prohibiting them for circumventing restrictions.
 The prohibition is on *evasion*, not on multiplicity. **Confidence on mechanism:
 low, and deliberately so.** The detailed linking-signal lists circulating for
 both platforms (hardware IDs, MAC addresses, browser fingerprints, cookies, bank
 details) come almost exclusively from suspension-appeal law firms and seller
-consultancies marketing their own services — a genre with a direct commercial
+consultancies marketing their own services, a genre with a direct commercial
 incentive to overstate platform surveillance. Neither company's own policy text
 confirms them. Do not build a threat model on those numbers.
 
@@ -880,7 +883,7 @@ with the scope stated:
 and a default: "We generally delete data within 90 days of an account deletion
 request, except where retention is necessary for the above reasons." **This is
 the only policy in the set that distinguishes voluntary from for-cause exit by
-name — and note it gates on "serious fraudulent or unsafe behavior," not on
+name, and note it gates on "serious fraudulent or unsafe behavior," not on
 performance.** That is the §1.3 hypothesis, drafted into a shipped policy.
 
 **Uber also documents the mechanism, and it is not device.** Driver notice
@@ -891,7 +894,7 @@ checks that a licence "is valid, unaltered, and **not associated with any other
 account**." Device data appears in Uber's collection lists but is never named as
 the re-registration key.
 
-**Lyft refuses the deletion outright rather than retaining a residue** — a
+**Lyft refuses the deletion outright rather than retaining a residue**, a
 different and arguably more honest architecture: "**we will be unable to delete
 your account, such as if there is an issue with your account related to trust,
 safety, or fraud.**… When we retain such data, we do so in ways designed to
@@ -901,9 +904,9 @@ performance. No mechanism disclosed.
 **Etsy discloses the tombstone to the user in plain language:** "**Please note
 that closing your account may not free up your email address, username, or shop
 name (if any) for reuse on a new account.**" Etsy also makes an unusual
-disclosure about cross-marketplace signal sharing — fraud information "is
+disclosure about cross-marketplace signal sharing: fraud information "is
 collected by us and/or our fraud vendors **who may also share fraud insights
-with other companies, including other online marketplaces**" — and names
+with other companies, including other online marketplaces**", and names
 Mastercard's Ekata as a vendor. Etsy's retention keys off "account closure"
 generically, with customer-support records retained six years post-closure.
 
@@ -914,13 +917,13 @@ other images or videos**" and performing "ongoing identity-verification and
 fraud-prevention screenings," with deletion "within two years, whichever is
 sooner." The 1:N re-registration search happens at Persona, not at DoorDash, and
 carries a hard ceiling. DoorDash's own deactivation policy names the match keys
-in the conduct rules — "creating multiple accounts for the same individual, or
+in the conduct rules: "creating multiple accounts for the same individual, or
 **using the same personal information, such as a phone number**, as an account
-already in use" — and states that screening is re-run "whether at the time of
+already in use", and states that screening is re-run "whether at the time of
 account creation or any time thereafter."
 
 **The rest reserve a fraud hook without stating the purpose.** Fiverr is the
-only one to name closed accounts as a retention category: it retains "personal
+only one to name closed accounts as a retention category, retaining "personal
 information from closed accounts **to comply with applicable laws, prevent
 fraud**, collect any fees owed, resolve disputes… and **enforce our Site
 terms**." Upwork names "**ongoing fraud prevention**" as a standing retention
@@ -942,7 +945,7 @@ that a suspended or terminated user "**may not register a new account**," and
 and no voluntary/for-cause distinction at all. Enforcing §12.5 necessarily
 requires retaining something after termination. **A contractual ban on
 re-registration with no matching disclosure in the privacy notice is precisely
-the transparency gap that generates complaints** — and, per EDPB Guidelines
+the transparency gap that generates complaints**, and, per EDPB Guidelines
 1/2024 para 106 and the NPC's reasonable-expectations limb (§1.6), it is the gap
 that defeats the legal basis.
 
@@ -956,7 +959,7 @@ that defeats the legal basis.
    biometrics, not device or IP.** Uber says so; DoorDash routes it through
    Persona; Etsy and Airbnb both collect facial geometry from ID and selfie.
    Device fingerprints and IPs appear in collection lists but are never named as
-   the re-registration key — consistent with them being cheap to evade and
+   the re-registration key, consistent with them being cheap to evade and
    legally exposed (device fingerprinting falls within Art. 5(3) ePrivacy per
    EDPB Guidelines 2/2023). **This vindicates the document-hash-only
    recommendation in §4.2 as industry-aligned, not merely conservative.**
@@ -983,12 +986,12 @@ finding in the memo.
 **Legal footing.** Cifas is a "specified anti-fraud organisation" under s.68 of
 the Serious Crime Act 2007, which unlocks DPA 2018 Sch. 1 Pt. 2 para 14
 ("Preventing fraud") as the condition for the criminal-offence data a fraud
-marker constitutes — note DPA 2018 s.11(2) extends Art. 10 to "the **alleged**
-commission of offences," so a marker is Art. 10 data. Erasure is switched off,
-where it is, by DPA 2018 Sch. 2 Pt. 1 para 2, whose "listed GDPR provisions"
-expressly include **Art. 17(1) and (2)** — but only "**to the extent that** the
-application of those provisions would be likely to prejudice" crime prevention
-or detection. Prejudice-tested and purpose-limited, not blanket.
+marker constitutes. Note that DPA 2018 s.11(2) extends Art. 10 to "the
+**alleged** commission of offences," so a marker is Art. 10 data. Erasure is
+switched off, where it is, by DPA 2018 Sch. 2 Pt. 1 para 2, whose "listed GDPR
+provisions" expressly include **Art. 17(1) and (2)**, but only "**to the extent
+that** the application of those provisions would be likely to prejudice" crime
+prevention or detection. Prejudice-tested and purpose-limited, not blanket.
 
 **Retention is a fixed clock, not a discretion.** Fraud markers: up to six years.
 Victim-of-impersonation markers: 13 months. Protective Registration: two years.
@@ -997,7 +1000,7 @@ Intelligence Service: 18 months.
 **The evidential standard is the part worth copying.** NFD Principle 4
 (Lawfulness / Standard of Proof) requires "reasonable grounds to believe that a
 Fraud or Financial Crime has been committed or attempted"; that "the evidence
-must be **clear, relevant and rigorous**"; and — critically — that the member
+must be **clear, relevant and rigorous**"; and, critically, that the member
 "must have **rejected, withdrawn or terminated a Product on the basis of
 Fraud**." The internal handbook formulation, surfaced through Financial
 Ombudsman decisions, is that the evidence must be such that "the member could
@@ -1009,7 +1012,7 @@ identifies as load-bearing.
 never pleads an Art. 17(3) exemption for the NFD. Instead: *Kunle Abayomi v
 CIFAS* [2024] EWHC 3060 (KB) records at para 154 that "CIFAS… is the **joint
 controller with the filing member** in relation to each marker that is filed,"
-and Cifas routes challenges to the filing member — "First you must contact the
+and Cifas routes challenges to the filing member: "First you must contact the
 organisation/s that registered the warning… **If they uphold your complaint,
 they can remove your details from our system.**" Cifas's own review "confirm[s]
 whether it followed the right procedures." **Erasure is converted into an
@@ -1019,12 +1022,13 @@ discretionary deletion right is substituted with a guaranteed expiry clock.**
 *Abayomi* also accepted at para 155 that, given Recital 47 and the Handbook rules
 that "seek to balance the members' legitimate interests with the rights of data
 subjects," the marker "constituted a **lawful processing of his data**." Weight
-that carefully: it was a strike-out of a poorly pleaded litigant-in-person claim
+that carefully, since it was a strike-out of a poorly pleaded litigant-in-person claim
 in which the Art. 6(1)(f) point was effectively unopposed, and the court
 addressed neither Art. 10, nor the Schedule 1 conditions, nor Art. 17. **No
 reported case squarely decides an Art. 17 claim against Cifas on the merits.**
 An ICO FOI response (IC-377734-V6S1, 9 May 2025) records three ICO cases
-involving Cifas, all resolved by "informal action taken" — no formal enforcement.
+involving Cifas, all resolved by "informal action taken", with no formal
+enforcement.
 
 **Read-across:** joint controllership with the attesting party, challenge routed
 to that party, a fixed expiry clock instead of a deletion discretion, and a
@@ -1070,7 +1074,7 @@ Read the ICO's reasoning carefully and the load-bearing element is not
 minimisation and not hashing. It is **whose interest the residue serves**. The
 suppression list survives the erasure right because its function is to *carry out
 what the data subject asked for*. It is the mechanism of compliance, not an
-exception to it. That is why there is no right to delete from it — deleting from
+exception to it. That is why there is no right to delete from it. Deleting from
 it would defeat the subject's own instruction.
 
 A re-registration blocklist has the opposite polarity. Its function is to
@@ -1078,14 +1082,14 @@ frustrate what the data subject wants, on behalf of the controller and third
 parties. It is minimal in the same way and hashed in the same way, and neither of
 those similarities touches the ICO's actual reasoning.
 
-CCPA §1798.105(c)(2) has the identical structure — the confidential record of
+CCPA §1798.105(c)(2) has the identical structure. The confidential record of
 deletion requests is authorised "solely for the purpose of preventing the
 personal information … from being sold," i.e. to honour the request.
 
 **Conclusion, stated at high confidence on the guidance and medium-high on the
 prediction:** suppression-list precedent does not carry over to ban evasion, and
 a design memo that leans on it will be leaning on nothing. The ban-evasion case
-has to be argued on its own merits — necessity under Art. 17(1)(a), overriding
+has to be argued on its own merits: necessity under Art. 17(1)(a), overriding
 grounds under Art. 21(1), the Art. 17(3)(e) legal-claims hook, and the
 §1798.105(d)(2) security-and-integrity exemption. Those arguments are available.
 The suppression analogy is not one of them.
@@ -1096,7 +1100,7 @@ Synthesising the EDPB Article 5 package (§1.1), the ICO "beyond use" test
 (§1.4), and the HireRight structure (§2.1):
 
 - **Stored:** a salted one-way hash of a single identifier. Not a set of
-  identifiers — every additional identifier converts a check into an identity
+  identifiers. Every additional identifier converts a check into an identity
   graph and makes the "beyond use" argument harder.
 - **Not stored:** any payload. No reason code, no narrative, no employer, no
   date beyond what the retention clock needs. The HireRight design is the proof
@@ -1104,11 +1108,11 @@ Synthesising the EDPB Article 5 package (§1.1), the ICO "beyond use" test
 - **Duration:** fixed, short, and justified against the specific risk. Indefinite
   retention fails storage limitation outright, and the EDPB called this out.
 - **Segregation:** its own store with its own access control, not a flag on a
-  tombstoned record — the EDPB names segregation as an expected measure.
+  tombstoned record, as the EDPB names segregation as an expected measure.
 - **Access:** write-on-termination and read-on-registration only. No query
   interface, no export, no analytics, no vertical-facing read.
 - **Purpose isolation, enforced structurally.** This is the single invariant
-  across every instrument surveyed in §3.4 — CPPA §7101(c)–(d), Colorado Rule
+  across every instrument surveyed in §3.4: CPPA §7101(c)–(d), Colorado Rule
   6.11(F), CAN-SPAM, TCPA, CNIL, ICO all protect the residue *only* while it is
   used for nothing else. The store must not be joinable to production data. This
   is a stronger constraint than hashing and it is the one most likely to erode
@@ -1116,14 +1120,14 @@ Synthesising the EDPB Article 5 package (§1.1), the ICO "beyond use" test
 - **Output:** a review signal, not an automatic denial. This is what keeps the
   Platform Work Directive's human-review requirement satisfiable and gives the
   worker something to appeal.
-- **Disclosure:** at collection, in the privacy notice, in terms — not disclosed
+- **Disclosure:** at collection, in the privacy notice, in terms, not disclosed
   for the first time in the deletion confirmation. The Art. 13 duty runs at
   collection, and a residue the user learns about only when they try to leave is
   the fact pattern that generates complaints.
 - **Documentation:** a written balancing assessment per the EDPB recommendation,
   produced at the time and retained.
 
-### 3.4 The suppression pattern is legally distinct from an exclusion list — and regulators have said so with money
+### 3.4 The suppression pattern is legally distinct from an exclusion list, and regulators have said so with money
 
 Two clusters of authority exist, and they are not the same object.
 
@@ -1142,26 +1146,26 @@ immunise them.
   any other purpose**." Rule 6.11(F) then immunises it: such data "**shall not be
   subject to Data Rights requests.**"
 - **CPPA regulations** split the duties: §7101(a) makes a 24-month request log
-  *mandatory*; §7022(e) makes suppression use *permissive* — "may retain a record
+  *mandatory*; §7022(e) makes suppression use *permissive*: "may retain a record
   of the request for the purpose of ensuring that the consumer's personal
-  information remains deleted from its records" — and imposes a duty to **tell
+  information remains deleted from its records", and imposes a duty to **tell
   the consumer** you are keeping it. §7101(c)–(d) protect the record only "where
   that information is not used for any other purpose."
 - **CNIL** endorses a hash-only implementation: keep "**que les empreintes de
   l'adresse ou du numéro**" rather than a nominative list, with a **three-year
-  minimum** — a floor, not a cap. And it states the obvious corollary: "**ces
+  minimum**, a floor, not a cap. And it states the obvious corollary: "**ces
   données hachées restent des données personnelles.**"
 - **Germany's DSK** supplies the most articulate legal theory anywhere: a
   *Werbesperrdatei* is permissible under "**Art. 21(3), Art. 6(1)(f) in
-  conjunction with Art. 17(3)(b)**" — the Art. 17(3)(b) legal-obligation limb,
-  because honouring the objection *is* the legal obligation. Note the DSK
+  conjunction with Art. 17(3)(b)**", meaning the Art. 17(3)(b) legal-obligation
+  limb, because honouring the objection *is* the legal obligation. Note the DSK
   narrowed this between its 2018 and 2022 editions from "are permissible" to
   "can be permissible."
 
 **Cluster B: exclusion and fraud blacklists (adverse). Here regulators impose
 hard caps, mandatory DPIAs, sectoral confinement, and fines.**
 
-**The on-point enforcement action is Spanish.** AEPD, PS/00215/2024 — €100,000
+**The on-point enforcement action is Spanish.** AEPD, PS/00215/2024: €100,000
 reduced to €80,000, Art. 6(1) infringement, against Goldcar for refusing a car
 rental in 2021 on the basis of an internal alert flag from a 2018 contract:
 
@@ -1178,8 +1182,9 @@ and, decisively for the §1.3 hypothesis:
 > not refer with certainty to a fraud committed by the claimant**, and of the
 > harm or discriminatory effects the processing causes him."
 
-The AEPD did **not** hold exclusion lists unlawful per se — it contrasted
-Goldcar's with statutorily grounded credit-information systems, "whose regulation
+The AEPD did **not** hold exclusion lists unlawful per se. Instead, it
+contrasted Goldcar's with statutorily grounded credit-information systems, "whose
+regulation
 expressly establishes the objective factual circumstances that determine the
 entry… as well as the need to inform in advance about the possibility of
 recording the data." **Read that as the checklist: objective published entry
@@ -1189,7 +1194,7 @@ fined.
 
 **CNIL's exclusion référentiel (délibération 2021-130, unpaid commercial debts)**
 authorises "**l'identification des personnes en situation d'impayé aux fins
-d'exclusion pour toute transaction à venir**" — but caps retention at **five
+d'exclusion pour toute transaction à venir**", but caps retention at **five
 years**, requires deletion "**dans les 48 heures**" once the debt is settled,
 requires a contract basis if the exclusion is fully automated (Art. 22(2)(a)),
 and **expressly excludes from its scope "le partage ponctuel et/ou la
@@ -1198,11 +1203,11 @@ single-controller exclusion register and specifically declined to authorise a
 mutualised one. That is a direct warning for a cross-vertical design. CNIL's
 older banking anti-fraud instrument, AU-054, set 12 months to qualify an alert
 and **five years** from entry on a confirmed-fraudster list (status post-2018
-unverified — do not cite as currently binding).
+unverified, so do not cite as currently binding).
 
 **Denmark's Datatilsynet** (Coolshop.dk, J.No. 2020-31-3060) held that a retailer
 "**cannot omit to delete** the complainant's customer account based on Article
-17(3)(b)" — only the statutorily mandated bookkeeping records could remain, and
+17(3)(b)". Only the statutorily mandated bookkeeping records could remain, and
 the account had to be genuinely destroyed. That cuts against convenience-based
 tombstoning.
 
@@ -1211,7 +1216,7 @@ lists as different legal objects: the first pro-subject, minimum-floor,
 hashing-encouraged; the second adverse, hard-capped, DPIA-mandatory,
 sectorally confined, requiring prior notice and objective entry criteria. **A
 ledger retaining a record to enforce a ban will be assessed as the second.**
-Confidence: high — this is the consistent shape across AEPD, CNIL, DSK, and the
+Confidence: high, given the consistent shape across AEPD, CNIL, DSK, and the
 Danish decision.
 
 **And the single invariant across every instrument in both clusters is purpose
@@ -1224,13 +1229,13 @@ store that is joinable to production data loses its protection under all of them
 simultaneously.** That is the hardest architectural constraint in this memo, and
 it is stricter than "hash it."
 
-**Verified negatives.** The EDPB has never addressed suppression lists — a
+**Verified negatives.** The EDPB has never addressed suppression lists. A
 full-text search of Guidelines 1/2024 and 01/2025 for *suppress*, *do not
 contact*, *opt-out list*, and *blacklist* returns zero hits, and the February
 2026 erasure report has no substantive hits for *suppress*, *re-registration*,
 *blacklist*, *ban*, or *hash*. The Irish DPC's published erasure case-study index
 contains nothing on re-registration blocking. No decision was found anywhere
-squarely adjudicating a post-erasure *re-registration* blocklist specifically —
+squarely adjudicating a post-erasure *re-registration* blocklist specifically.
 Goldcar is the closest, and it is about refusing service, not about resisting an
 erasure request. **Coverage caveat:** GDPRhub was inaccessible throughout
 (proof-of-work bot wall), so DPA case-law coverage is materially incomplete and
@@ -1249,7 +1254,7 @@ original employer's own knowledge.
 
 This means deletion destroys no evidence. The employer who terminated the worker
 still knows, still holds their records, and can still answer a reference call.
-What deletion removes is *amplification* — the broadcast of a negative signal to
+What deletion removes is *amplification*, the broadcast of a negative signal to
 parties who have no relationship with the worker and no ability to assess it in
 context.
 
@@ -1258,7 +1263,7 @@ interest regulators protect most fiercely and controllers justify least well;
 Art. 21 balancing goes badly for a controller whose asserted interest is
 "continued ability to disadvantage this person with strangers." **Practically**,
 it means the marginal safety cost of permissive deletion is far lower than
-intuition suggests — the worker who deletes and re-registers has not escaped
+intuition suggests. The worker who deletes and re-registers has not escaped
 their history with the employer who holds it, only with employers who never knew
 it.
 
@@ -1266,7 +1271,7 @@ it.
 
 **Hold decision 009 as the default. Carve exactly one exception.**
 
-**Full erasure, no residue, no exceptions — voluntary exit and
+**Full erasure, no residue, no exceptions: voluntary exit and
 performance-based exit.** This covers the overwhelming majority of deletions. It
 is the right answer in every regime surveyed, it is the answer the worker-owned
 positioning (ruling R1) commits to, and it is the answer the amplification
@@ -1274,15 +1279,15 @@ analysis supports. Do not build a "poor performance" retention path; there is no
 legal basis for it in California's closed list, it loses the Art. 21 balance, and
 it is the fact pattern the Blacklists Regulations were written about.
 
-**A narrow, gated residue — verified fraud against the ledger's integrity, or a
+**A narrow, gated residue: verified fraud against the ledger's integrity, or a
 serious safety finding.** Specifically:
 
 - **Trigger taxonomy is published and closed.** Forged documents, identity
   substitution, attestation collusion; and a defined serious-safety category.
   Follow the ISSP precedent and borrow an external taxonomy rather than writing
-  your own — an external taxonomy is a defence, a self-written one is an
+  your own. An external taxonomy is a defence, a self-written one is an
   admission of discretion.
-- **One identifier only** — a salted hash of the government-document number.
+- **One identifier only**: a salted hash of the government-document number.
   Not phone (changes, shared, reassigned), not device (over-broad, catches
   households and shared equipment, and is the mechanism most likely to be
   characterised as covert tracking).
@@ -1296,7 +1301,7 @@ Note this is **narrower than Uber's published practice**, which matches on
 "information, documents, and photos" and retains "account information, identity
 verification information, transaction data, and user content and communications
 data." But it is *aligned* with the industry's actual match key: no platform in
-§2.3 names device or IP as the re-registration signal — the convergence is on
+§2.3 names device or IP as the re-registration signal. The convergence is on
 identity documents and face biometrics. Excluding device is therefore
 conservative on paper and conventional in practice, and it avoids the Art. 5(3)
 ePrivacy exposure that device fingerprinting attracts under EDPB Guidelines
@@ -1311,7 +1316,7 @@ asymmetry of restraint.
 that knows the facts carries the accuracy duty. (ii) **Route challenges to that
 party**, converting an erasure fight into an accuracy fight the ledger is not
 positioned to win or lose. (iii) **A fixed expiry clock instead of a deletion
-discretion** — Cifas's six years for fraud markers, thirteen months for
+discretion**: Cifas's six years for fraud markers, thirteen months for
 impersonation. A guaranteed expiry is worth more to a worker than a contestable
 right, and it satisfies storage limitation by construction. (iv) **An evidential
 floor stated as a rule**: Cifas requires "clear, relevant and rigorous" evidence
@@ -1326,9 +1331,10 @@ collection; and certainty that the triggering conduct occurred. The AEPD fined
 Goldcar in significant part because the retained flag "does not refer with
 certainty to a fraud committed by the claimant."
 
-**Strongly consider the intermediated variant.** The ISSP structure — a third
-party holds the match key, the platforms hold the narrative, and the third party
-cannot explain what it matched — solves several problems at once: it keeps the
+**Strongly consider the intermediated variant.** The ISSP structure, in which a
+third party holds the match key, the platforms hold the narrative, and the third
+party cannot explain what it matched, solves several problems at once: it keeps
+the
 ledger out of the position of holding a covert negative index, it makes the
 *EDPS v SRB* relative-identifiability argument available to the verticals
 receiving the signal, and it puts dispute obligations somewhere they can be
@@ -1340,7 +1346,7 @@ memo.
 drafting point with real consequences. "Establishment, exercise or defence of
 legal claims" is a genuine *exemption* in GDPR Art. 17(3)(e), an enumerated
 denial ground in NPC Advisory 2021-01 §10(B)(2)(c), and a wholesale
-Chapter III disapplication in India's DPDP Sec. 17(1)(a) — and it is the route
+Chapter III disapplication in India's DPDP Sec. 17(1)(a), and it is the route
 the Philippine regulator itself chose when blessing a shared employee fraud
 database (AO 2023-026). "Fraud prevention," by contrast, is a *legal basis*
 statement (GDPR Recital 47, PH Sec. 12(f)) that still has to win a balancing
@@ -1350,7 +1356,7 @@ markets. Confidence: high on the statutory mapping; this is exactly the point
 to put to counsel first.
 
 **Three things to build regardless of where the line lands.** First,
-deactivation records for the worker's benefit — the Seattle ordinance requires
+deactivation records for the worker's benefit. The Seattle ordinance requires
 three-year retention with worker access and a challenge window, and that trend
 is running toward you, not against you. Build it as the worker's evidence.
 Second, an honest distinction in the UI and the policy between "delete my
@@ -1369,8 +1375,8 @@ means gone" invariant.
 relying on it to do work it may not be able to do.**
 
 The recommendation turns entirely on classifying why an account ended. But that
-classification is made by the platform or the vertical — the party with an
-interest in the outcome — and is not independently reviewed. Three failure modes
+classification is made by the platform or the vertical, the party with an
+interest in the outcome, and is not independently reviewed. Three failure modes
 follow, and they compound:
 
 **Relabelling.** If "fraud" retains and "performance" does not, every
@@ -1390,7 +1396,7 @@ carving out is the case where a wrongly-terminated worker most needs deletion.**
 A fraud or safety label is the most damaging thing that can attach to a worker,
 the hardest to disprove, and the most likely to be applied in retaliation. By
 scoping the residue to precisely those labels, I have built a mechanism that is
-least escapable exactly where escape is most often justified — and I have done it
+least escapable exactly where escape is most often justified, and I have done it
 in a system whose stated premise (ruling R1) is that the worker owns the record.
 
 The disciplined response is that this is an argument for **procedural
@@ -1399,7 +1405,7 @@ taxonomy should be closed and external, a fraud or safety designation should
 require corroboration rather than a single vertical's assertion, the flag should
 produce review rather than denial, and the worker should be able to see and
 contest it. But I should be straight that those constraints are load-bearing
-rather than decorative — **if they cannot be built and enforced, the correct
+rather than decorative. **If they cannot be built and enforced, the correct
 answer is decision 009 unamended: no residue at all, ever, and accept the
 fresh-start losses.** Given that the amplification analysis in §4.1 shows those
 losses are smaller than they feel, that fallback is more defensible than it
@@ -1436,7 +1442,7 @@ first appears, and I would not fight hard against a founder who chose it.
 - NPC (PH) Advisory Opinion No. 2023-026 (shared employee fraud database, IT-BPO/CIBI) — via privacy.gov.ph advisory opinions index
 - NPC (PH) Advisory No. 2025-02, *Privacy Engineering in Systems Life Cycle Processes* — https://privacy.gov.ph/wp-content/uploads/2025/12/NPC_Advisory2025-02.pdf
 - NPC (PH) decision, *JBA v. FNT and NNT*, NPC 20-026, 22 Sept 2022
-- *Status note:* per NPC Circular 18-01, NPC advisory opinions are expressly non-binding and are not precedent. privacy.gov.ph blocks automated fetches; the NPC PDFs above were read through a text-extraction proxy — verbatim, but worth a manual browser spot-check before any load-bearing use.
+- *Status note:* per NPC Circular 18-01, NPC advisory opinions are expressly non-binding and are not precedent. privacy.gov.ph blocks automated fetches; the NPC PDFs above were read through a text-extraction proxy, verbatim but worth a manual browser spot-check before any load-bearing use.
 
 - EDPB Guidelines 1/2024 on Art. 6(1)(f) legitimate interest (consultation version, adopted 8 Oct 2024; no final published) — https://www.edpb.europa.eu/system/files/2024-10/edpb_guidelines_202401_legitimateinterest_en.pdf
 - EDPB Guidelines 01/2025 on Pseudonymisation (consultation version, adopted 16 Jan 2025; predates and is in tension with C-413/23 P) — https://www.edpb.europa.eu/system/files/2025-01/edpb_guidelines_202501_pseudonymisation_en.pdf
@@ -1513,12 +1519,12 @@ Stated plainly so the next reader knows what this memo does not cover.
   §1.7's article numbering and wording are from secondary sources that disagree
   with each other. Verify before citing.
 - **privacy.gov.ph blocks automated fetches.** All NPC quotes in §1.6 came
-  through a text-extraction proxy reading the official PDFs — verbatim, but
+  through a text-extraction proxy reading the official PDFs, verbatim but
   machine-extracted. Spot-check in a browser before any load-bearing use. Note
   also that NPC advisory opinions are expressly non-binding (Circular 18-01).
 - **Cloudflare-gated and unread:** Etsy's Persona identity-verification help
   article (reported to state 1-year biometric and 6-year ID retention with an
-  explicit multiple-account-blocking rationale — **unverified**), Amazon Seller
+  explicit multiple-account-blocking rationale, **unverified**), Amazon Seller
   Central's related-accounts policy, and the Upwork/Fiverr suspension help pages.
 - **Not researched:** the Amsterdam Court of Appeal 2023 rulings against Uber on
   automated deactivation (Art. 22), which are the most likely place to find a

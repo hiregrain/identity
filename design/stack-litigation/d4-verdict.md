@@ -1,7 +1,7 @@
 # D4 Verdict: Party-Held Custody by Default for Registry-Grade Party Keys
 
 Ruling on docket item D4 (`convergence-map.md`): default custody for party
-signing keys — ledger-hosted KMS vs. party-held. Briefs:
+signing keys, ledger-hosted KMS vs. party-held. Briefs:
 `d4-hosted-keys.md` (hosted default + BYOK), `d4-party-held.md`
 (party-held default + bootstrap tier). Adjudicated against
 `ledger-design-0.1.md` §3, `research/04`, `research/06`,
@@ -9,7 +9,7 @@ signing keys — ledger-hosted KMS vs. party-held. Briefs:
 load-bearing citations (August 2026). D3 is taken as resolved to, at
 minimum: a day-one real Merkle tree with externally-anchored, KMS-signed
 checkpoints to WORM across two clouds, and a witnessed log by
-first-external-party-or-1M — the hosted brief's own stated precondition is
+first-external-party-or-1M. The hosted brief's own stated precondition is
 therefore satisfied, and this verdict rules against it on the merits, not
 on its D3 conditionality.
 
@@ -28,7 +28,7 @@ on its D3 conditionality.
      integration kit.** Terraform/Pulumi module + signing SDK that
      creates a non-extractable Ed25519 key in the partner's own cloud
      KMS, registers the public key, and signs via the partner's KMS API.
-     The SDK carries the ledger's golden-vectored canonicalization — one
+     The SDK carries the ledger's golden-vectored canonicalization, one
      implementation, written and maintained by the ledger, running in the
      partner's environment. Registry: `custody_model: party_kms`.
    - **Tier 2 (bootstrap): ledger-provisioned, partner-owned.** For
@@ -44,7 +44,7 @@ on its D3 conditionality.
 3. **Short-lived key validity, mandatory.** Registry validity windows of
    30–90 days with automated ACME-style renewal through the SDK (current
    key signs a registry challenge to activate its successor, generated in
-   the partner's KMS). Renewal failure halts that party's ingestion —
+   the partner's KMS). Renewal failure halts that party's ingestion,
    loud and recoverable, never silent forgery.
 4. **Worker/peer account keys: ledger-hosted.** Both briefs converge here
    and the convergence is ratified. Person-account keys are a different
@@ -64,8 +64,8 @@ on its D3 conditionality.
    - Periodic party countersignature over its own issuance checkpoint
      (the hosted brief's C4): monthly, or at each registry event, the
      party signs the Merkle root covering its issuance history. Under
-     party-held custody this is nearly free — the party already holds
-     signing keys — and it converts "the party never noticed" into a
+     party-held custody this is nearly free, the party already holds
+     signing keys, and it converts "the party never noticed" into a
      recurring, attributable attestation of the record's completeness.
      Required from the first external party onward.
    - Per-party volume caps and anomaly scoring enforced at ingestion
@@ -94,7 +94,7 @@ time; offline verification is deferred; the interface contract lists the
 signature mechanism as open. At launch, no external party verifies
 signatures independently. **But this establishes timing, not category.**
 The question is not who verifies signatures in month one; it is what the
-signature must be able to prove in the product's success scenario — which
+signature must be able to prove in the product's success scenario, which
 the founder has fixed: the platform must survive litigated disputes and
 partner/regulator scrutiny, and its one-sentence story is "the party said
 this, the ledger recorded it." The design's own dispute machinery
@@ -102,17 +102,17 @@ this, the ledger recorded it." The design's own dispute machinery
 privilege, research `06` §5) presuppose contested proceedings in which
 "who could have produced this signature?" is the first discovery
 question. Under hosted custody the truthful answer is "the party, or the
-operator" — and the operator is simultaneously the record-keeper, the
+operator," and the operator is simultaneously the record-keeper, the
 fraud adjudicator (`ledger_invalidated`), and a commercially interested
-platform. Aerotek, Inc. v. Boyd (Tex. 2021) — verified — shows why
+platform. Aerotek, Inc. v. Boyd (Tex. 2021), verified, shows why
 audit-trail burden-shifting will not rescue that posture: the audit-trail
 doctrine works because the platform is a disinterested third party to the
 dispute. This operator never is, in any dispute about its own record's
 integrity.
 
-The hosted brief's sharpest rebuttal — registry-manipulation forgery
+The hosted brief's sharpest rebuttal, registry-manipulation forgery
 exists under both models, so "party-held = math, hosted = trust" is a
-false dichotomy — is correct as far as it goes, and it does not go far
+false dichotomy, is correct as far as it goes, and it does not go far
 enough. The two forgery paths are not equivalent under the D3-resolved
 log:
 
@@ -136,7 +136,7 @@ depends on that difference; the verdict preserves it.
 
 **The precedent record is uniform and was verified.** eIDAS permits
 server-held qualified signing only under EN 419241-2 sole-control
-Level 2 — a certified Signature Activation Module driven by signer-held
+Level 2, a certified Signature Activation Module driven by signer-held
 activation data, such that the operator provably cannot sign alone.
 Mozilla Root Store Policy §5.2 prohibits CAs generating subscriber TLS
 key pairs; the CA/Browser Forum Code Signing BRs require subscriber keys
@@ -144,15 +144,15 @@ in subscriber-controlled hardware. CT logs and Rekor never hold signer
 keys. And the hosted brief's own flagship precedent inverts on
 inspection: **Sigstore's keyless model is not hosted signing.** The
 signing key is ephemeral and client-generated; Fulcio binds it to an OIDC
-identity but never holds or invokes it. Fulcio can mis-issue — the
-registry-manipulation analog, visible in the CT log — but cannot produce
+identity but never holds or invokes it. Fulcio can mis-issue, the
+registry-manipulation analog, visible in the CT log, but cannot produce
 a signature. The migration Sigstore represents is "long-lived signer-held
 keys → short-lived signer-held keys + transparency," which is exactly
 this verdict's Tier 1 + short-validity design, not operator custody. No
 surveyed regime accepts "the host could sign, but the host's logs would
 show it" for third-party-relied-upon signatures.
 
-### II(b). The compensating controls restore detectability, not impossibility — and detectability is insufficient here
+### II(b). The compensating controls restore detectability, not impossibility, and detectability is insufficient here
 
 Ruling on the specific question posed: C1–C4 do **not** restore "the
 operator provably cannot sign alone." They restore "operator forgery is
@@ -163,15 +163,15 @@ detectable, and then provable, after the fact, if checked":
   a fabricated caller identity. Witnessing makes the entry permanent; it
   does not make it true. The log proves existence-at-time, never
   authorship.
-- The **KMS audit trail** is the strongest leg — provider-controlled,
-  outside the application's blast radius — but it is evidence the
+- The **KMS audit trail** is the strongest leg, provider-controlled,
+  outside the application's blast radius, but it is evidence the
   operator must produce, retain, and interpret in its own defense: the
   platform vouching for itself with records of its own custody.
 - **C3** (party-visible feed) depends on the party's vigilance; the
   hosted brief itself frames the residual as a window between issuance
   and the next review.
 - **C4** (party countersignature) is the one control that genuinely
-  binds the party cryptographically — and it is a party-held key by
+  binds the party cryptographically, and it is a party-held key by
   another name. Its presence in the hosted brief is a concession that
   custody matters; this verdict adopts it on the architecture where it is
   cheapest and most coherent.
@@ -180,8 +180,8 @@ The hosted brief concedes (its §5.1) that court-grade "could not have
 forged" is genuinely lost. For a product whose entire margin over "a
 database with an `issuer_id` column" is that the operator's honesty is
 not assumed, detectable-after-the-fact is the wrong default. It is
-adopted here as defense-in-depth — every one of these controls improves
-the party-held architecture too — but it cannot carry the default.
+adopted here as defense-in-depth, every one of these controls improves
+the party-held architecture too, but it cannot carry the default.
 
 The blast-radius table (party-held brief §3.2) is also sustained on its
 central row: hosted signing does not eliminate the partner-side leakable
@@ -190,7 +190,7 @@ credential forges through the hosted API exactly as a thief with the
 partner's cloud IAM credential forges through partner-side KMS. Under
 Tier 1 no key file exists in either architecture; the leakable artifact
 is an authentication credential in both. On the hosted brief's own chosen
-threat, the architectures are near-equivalent — what differs is that
+threat, the architectures are near-equivalent. What differs is that
 hosted custody adds a second, permanent forger (the operator) for every
 default-tier party. The GitGuardian/DBIR base rates the hosted brief
 cites are real but price the *key-file* scenario, which Tier 1 abolishes
@@ -205,15 +205,15 @@ anyone passes through ingestion, where the ledger already authenticates
 the submitter, verifies the signature, checks registry state and
 probation caps, timestamps, rate-limits, and anomaly-scores (design §4).
 The only events signing-time telemetry adds are signatures requested but
-never submitted — empty for a rational attacker, noise for an honest
+never submitted, empty for a rational attacker, noise for an honest
 party. Enforcement latency is equivalent: freezing a party is one
-registry state change consumed by ingestion, as fast as an IAM change and
-— unlike the IAM change — visible in the public registry history.
+registry state change consumed by ingestion, as fast as an IAM change
+and, unlike the IAM change, visible in the public registry history.
 Research `06`'s prescribed countermeasure for party fraud is
 network-structure anomaly detection on the party×subject graph plus
 volume caps, both custody-independent. Partner-side KMS additionally
 yields a per-signature audit log in the partner's cloud for post-incident
-forensics — the one genuinely useful hosted artifact, recovered without
+forensics, the one genuinely useful hosted artifact, recovered without
 custody. The "fraud detection for free" claim is dismissed.
 
 ### II(d). The hybrids as onboarding funnels
@@ -226,13 +226,13 @@ custody. The "fraud detection for free" claim is dismissed.
   concedes the first security questionnaire asks "who can sign as you"
   (security-infra §2.1); under hosted default the honest answer is a
   finding.
-- **Partner #30:** hosted is genuinely faster and cheaper — conceded and
+- **Partner #30:** hosted is genuinely faster and cheaper, conceded and
   priced (~one engineer-month/year, activation in days rather than
   hours, low-single-digit expired-key incidents annually). Two of the
   hosted brief's operational arguments are, however, neutralized by the
   adopted structure: canonicalization drift ("thirty independent
   implementations of the most fragile step") is answered by the
-  ledger-authored SDK — one golden-vectored implementation, distributed,
+  ledger-authored SDK, one golden-vectored implementation, distributed,
   not reimplemented; and "custody review per partner is unstaffable" is
   answered by the integration kit making custody a provisioned artifact
   rather than a reviewed essay. What remains is a real but bounded
@@ -242,7 +242,7 @@ custody. The "fraud detection for free" claim is dismissed.
   while the BYOK tier's existence concedes custody matters. Because
   founder decision 2 forbids the schema from distinguishing custody,
   relying parties would have to learn that "party signature" usually
-  means "operator-mediated signature" — the trust story dies in its own
+  means "operator-mediated signature," the trust story dies in its own
   fine print. Party-held-default has the coherent story at every scale:
   every registry-grade signature, in every tier, is one the operator
   could not have produced.
@@ -256,13 +256,13 @@ The expected-loss comparison, weighed explicitly:
   death, provable from the log (exactly which attestations postdate
   last-known-good), and reparable inside the system's own machinery
   (`ledger_invalidated`, registry suspension, public registry history).
-  The public story — "a partner was compromised; the design detected,
-  bounded, and provably remediated it" — *demonstrates* the integrity
+  The public story, "a partner was compromised; the design detected,
+  bounded, and provably remediated it," *demonstrates* the integrity
   machinery. CT survived CA compromises on this exact pattern; the
   incidents validated the log.
-- **Hosted failure mode:** a single operator-forgery allegation — or
+- **Hosted failure mode:** a single operator-forgery allegation, or
   merely the establishment, in discovery, diligence, or the press, that
-  the operator can sign as any party — is not an incident but a fact
+  the operator can sign as any party, is not an incident but a fact
   about the architecture, true since launch, retroactively recoloring
   every attestation ever issued. It has no repair function: the fix is a
   custody migration plus a permanent asterisk over the pre-migration
@@ -272,8 +272,8 @@ The expected-loss comparison, weighed explicitly:
 
 A recoverable, probable, small loss is preferred over an unrecoverable,
 less probable, existential one, in a product whose founder has ruled that
-surviving scrutiny is constitutive. The asymmetry in repair functions —
-not the probability ranking, which the hosted brief wins — decides D4.
+surviving scrutiny is constitutive. The asymmetry in repair functions,
+not the probability ranking, which the hosted brief wins, decides D4.
 
 ---
 
@@ -295,7 +295,7 @@ Recorded so the verdict is not read as a rout:
    adopted; its warning about the BYOK-tier atrophy problem is inherited
    (see residual risk 4).
 4. Its argument that registry manipulation keeps the operator in the
-   trust path under both models is accepted as true — and is precisely
+   trust path under both models is accepted as true, and is precisely
    why the D3-resolved witnessed log is a non-negotiable dependency of
    this verdict.
 
@@ -331,24 +331,24 @@ Recorded so the verdict is not read as a rout:
 
 Adopted from the party-held brief §7, with T2 tightened:
 
-- **T1 — Leak rate exceeds the model:** ≥3 distinct partner-compromise
+- **T1. Leak rate exceeds the model:** ≥3 distinct partner-compromise
   forgery incidents in any 18-month window despite Tier 1 controls, or
   any single incident evading the probation/anomaly bounds by an order
   of magnitude → revisit custody per party class (toward a sole-control
   hosted tier, not toward plain hosted).
-- **T2 — Funnel failure:** >25% of signed partner prospects abandoning
+- **T2. Funnel failure:** >25% of signed partner prospects abandoning
   at key provisioning over two consecutive quarters, with Tier 2
   concierge already offered → build the hosted tier for that party
   class, sole-control-shaped if T4 tooling exists, plainly disclosed in
   the registry if not.
-- **T3 — Counsel concludes the category argument is legally inert** in
+- **T3. Counsel concludes the category argument is legally inert** in
   the governing jurisdictions → argues for a hosted *tier*, not a hosted
   default; the partner-diligence and narrative exposures survive T3.
-- **T4 — Sole-control hosted signing becomes commodity** (an
+- **T4. Sole-control hosted signing becomes commodity** (an
   operator-cannot-sign-alone managed service operable at integration-kit
   cost) → the principled objection to a hosted tier dissolves by
   construction; re-open D4 for the default.
-- **T5 — Product re-scope:** the founder decides the ledger is openly a
+- **T5. Product re-scope:** the founder decides the ledger is openly a
   first-party system of record rather than a neutral recorder of party
   speech → signatures are ceremony; host them.
 
@@ -359,12 +359,12 @@ Adopted from the party-held brief §7, with T2 tightened:
    speculative work; building it late risks the first small partner
    stalling. Default in this verdict: runbook written (a document, not a
    system) at launch; first executed transfer rehearsed before the first
-   Tier 2 party activates. The alternative — defer entirely — saves days
+   Tier 2 party activates. The alternative, defer entirely, saves days
    now at the cost of an unrehearsed ceremony later.
 2. **C4 countersignature cadence and enforcement.** Monthly
    countersignatures from every party is the strong posture; parties
-   will lapse. Options: (a) advisory — lapses feed the party reliability
-   signal only; (b) mandatory — sustained lapse suspends the party.
+   will lapse. Options: (a) advisory, lapses feed the party reliability
+   signal only; (b) mandatory, sustained lapse suspends the party.
    Default here: advisory through the first external party, mandatory
    thereafter. The stricter option strengthens the §II(b) evidence story
    at real partner-relations cost.
@@ -376,22 +376,22 @@ Adopted from the party-held brief §7, with T2 tightened:
 Citations independently verified for this verdict (August 2026):
 
 - Mozilla Root Store Policy §5.2 prohibition on CA generation of
-  subscriber TLS key pairs — confirmed ([Mozilla policy](https://www.mozilla.org/en-US/about/governance/policies/security-group/certs/policy/);
+  subscriber TLS key pairs, confirmed ([Mozilla policy](https://www.mozilla.org/en-US/about/governance/policies/security-group/certs/policy/);
   [cabforum/servercert #186](https://github.com/cabforum/servercert/issues/186)).
-- Aerotek, Inc. v. Boyd, Tex. 2021 — confirmed; disputed e-signature
+- Aerotek, Inc. v. Boyd, Tex. 2021, confirmed; disputed e-signature
   enforced on system/audit-trail evidence; the neutrality-of-platform
   reasoning applied in §II(a) ([Justia](https://law.justia.com/cases/texas/supreme-court/2021/20-0290.html);
   [DLA Piper](https://www.dlapiper.com/en-us/insights/publications/2021/06/enforcing-a-disputed-electronic-signature)).
-- EN 419241-2:2019 sole-control Level 2 / Signature Activation Module —
+- EN 419241-2:2019 sole-control Level 2 / Signature Activation Module,
   confirmed: SAM authorizes each activation against signer-held
   activation data; the TSP cannot sign alone
   ([iTeh](https://standards.iteh.ai/catalog/standards/cen/6161a882-7bd0-4450-a2ca-bf20251d6382/en-419241-2-2019);
   [Cryptomathic](https://www.cryptomathic.com/news-events/blog/eidas-qualified-remote-signing-exploring-en-419-241-2-certified-qualified-signature-creation-devices)).
-- Sigstore keyless architecture — client-generated ephemeral keys;
+- Sigstore keyless architecture, client-generated ephemeral keys;
   Fulcio issues certificates and never invokes signing keys; the hosted
   brief's use of this precedent is found inverted (§II(a))
   ([Sigstore overview](https://docs.sigstore.dev/about/overview/)).
-- DBIR 2025 / GitGuardian secrets-sprawl figures — accepted as
+- DBIR 2025 / GitGuardian secrets-sprawl figures, accepted as
   directionally accurate per both briefs' shared characterization; both
   briefs concede the base rates and the concession is mutual, so no
   independent re-verification was dispositive.

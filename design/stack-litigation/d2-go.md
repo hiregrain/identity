@@ -1,8 +1,8 @@
 # D2 Advocate Brief: Go for the Ledger Core
 
 Litigation position on convergence-map D2 (TypeScript vs. Go). This brief
-argues **Go for the ledger core** — kernel, ingestion, registry, read path,
-deletion — against TypeScript-everywhere. Written against
+argues **Go for the ledger core**, meaning the kernel, ingestion, registry,
+read path, and deletion, against TypeScript-everywhere. Written against
 `design/ledger-design-0.1.md`, all six perspectives in
 `design/stack-perspectives/`, and 2025–2026 web evidence cited inline.
 Operating facts honored: founder + 2 engineers, AI agents write most code,
@@ -16,23 +16,24 @@ kernel, decade horizon, planet-scale ambition.
 1. **The docket's "4-ish vs 1" tally overstates the TS consensus.** Of the
    six perspectives, security-infra *mandates* "a Go or Rust trust kernel,
    TypeScript permitted at the API/product layer" (security-infra §9);
-   planet-scale picks Go for the entire core; and log-centric — nominally in
-   the TS bloc — pre-authorizes rewriting the crypto core out of TS "if
+   planet-scale picks Go for the entire core; and log-centric, nominally in
+   the TS bloc, pre-authorizes rewriting the crypto core out of TS "if
    profiling demands it" (log-centric §8), i.e., concedes the kernel-language
    question. The genuine disagreement is narrower than the map records:
    whether the *core*, not the web surface, is TS. On that question the
-   honest count is closer to even, and the security perspective — the one
-   whose axis is the product itself — is on this side.
+   honest count is closer to even, and the security perspective, the one
+   whose axis is the product itself, is on this side.
 
 2. **TS's flagship advantage, discriminated unions, is mostly annulled by
    this system's own architecture.** TS types are erased at runtime; every
-   boundary that matters in this ledger — DB rows, partner JWS envelopes,
-   KMS calls, queue messages — is a process boundary where the compiler
+   boundary that matters in this ledger, such as DB rows, partner JWS
+   envelopes, KMS calls, and queue messages, is a process boundary where
+   the compiler
    enforces nothing and runtime validators plus database constraints do all
    the work. The convergence map itself settles (item 5) that append-only is
-   enforced *in the database* precisely because application-layer guarantees
-   — including type-level ones — cannot be trusted against agent-written
-   code. The sum-type advantage that survives is in-process exhaustiveness
+   enforced *in the database* precisely because application-layer
+   guarantees, including type-level ones, cannot be trusted against
+   agent-written code. The sum-type advantage that survives is in-process exhaustiveness
    checking over small, closed state sets (3 claim classes, 4 party states,
    ~25 event types); Go reaches ~90% of it with sealed interfaces, proto
    `oneof`, and CI-enforced exhaustiveness linters, at a bounded boilerplate
@@ -43,9 +44,9 @@ kernel, decade horizon, planet-scale ambition.
    agent benchmark (SWE-bench Pro: Python/Go/TS/JS; SWE-bench-Live
    MultiLang includes Go), and frontier models complete Go backend tasks at
    rates comparable to TS. More importantly, the ai-native perspective's own
-   deepest argument — "one idiom so every file looks like every other file;
+   deepest argument, "one idiom so every file looks like every other file;
    agents follow written idiom nearly perfectly and unwritten idiom nearly
-   randomly" — is an argument *for Go*: Go's uniformity is enforced by the
+   randomly", is an argument *for Go*: Go's uniformity is enforced by the
    toolchain (gofmt, go vet, one idiom by design), whereas TS's must be
    simulated with a bespoke ~50-rule lint regime plus an `IDIOM.md` that is
    itself a maintained artifact. Go was designed for large codebases written
@@ -59,7 +60,7 @@ kernel, decade horizon, planet-scale ambition.
    Sept 2025 chalk/debug compromise (18 packages, 2.6B weekly downloads) and
    the self-replicating Shai-Hulud worm (500+ packages); Nov 2025
    Shai-Hulud 2.0 (~500–800 packages including Zapier, PostHog, AsyncAPI,
-   Postman; 20,000+ poisoned repos) — propagating through npm install-time
+   Postman; 20,000+ poisoned repos), propagating through npm install-time
    lifecycle scripts and deep transitive graphs. Go structurally lacks
    install-time code execution, verifies modules against a public
    CT-style checksum transparency log (the same log architecture this
@@ -73,11 +74,11 @@ kernel, decade horizon, planet-scale ambition.
    interfaces + linters + DB transition tables; ~10–20% more code on kernel
    fold paths); the worker web surface stays TS (argued below as a feature:
    the language boundary coincides with the trust boundary and forces the
-   contract to be an explicit, language-neutral artifact — which
+   contract to be an explicit, language-neutral artifact, which
    planet-scale and security-infra independently require anyway for partner
    test vectors); fold/projection ergonomics are genuinely worse than TS
-   unions (conceded; the differential reference model and property suite —
-   language-neutral machinery — carry the semantic burden either way).
+   unions (conceded; the differential reference model and property suite,
+   language-neutral machinery, carry the semantic burden either way).
 
 6. **Position: the hybrid, affirmatively.** Go for the ledger core and
    every service that touches signatures, chains, or deletion; TypeScript
@@ -92,14 +93,14 @@ kernel, decade horizon, planet-scale ambition.
 
 Stated at full strength, because the rebuttal must survive it:
 
-**S1 — Agent fluency.** TS is, with Python, the densest training corpus a
+**S1. Agent fluency.** TS is, with Python, the densest training corpus a
 frontier model has. Fluency is not cosmetic: it is fewer subtle API misuses
 per thousand lines, the dominant defect source in agent code. With three
 humans reviewing, agent defect rate is the scarcest-resource multiplier;
 choosing a lower-fluency language is choosing more defects where there is
 least review capacity (ai-native §2; boring-pragmatist §2).
 
-**S2 — Illegal states unrepresentable.** The ledger is a system of state
+**S2. Illegal states unrepresentable.** The ledger is a system of state
 machines: claim classes as distinct object types, party lifecycle
 `pending → active → suspended → revoked`, supersession status, merge/alias
 state, deletion state. TS discriminated unions plus exhaustive `switch`
@@ -109,7 +110,7 @@ convention is what agents silently violate" (ai-native §2). For an
 invariant-driven design, the type system carrying semantics is the whole
 verification strategy's substrate.
 
-**S3 — One language, one artifact.** Zod schemas are simultaneously the
+**S3. One language, one artifact.** Zod schemas are simultaneously the
 runtime validator, the static types, the published JSON Schema contract,
 and the source the DDL is diffed against: one artifact, so agents cannot
 let copies drift. TS end-to-end means the same branded `LedgerPersonId`
@@ -138,7 +139,7 @@ boundaries:
 - packets leave as JSON to a reader the ledger does not control.
 
 At every one of these, `type PartyState = "pending" | "active" | ...`
-enforces nothing. Enforcement comes from runtime validators (Zod — a
+enforces nothing. Enforcement comes from runtime validators (Zod, a
 library discipline agents must remember to apply at every edge), CHECK
 constraints, transition-table foreign keys, and revoked UPDATE/DELETE
 grants. The convergence map records this as *settled* (item 5): append-only
@@ -149,10 +150,10 @@ too: CHECK constraints and transition-table foreign keys, mirroring the TS
 unions. The DB is the last line of defense" (ai-native §3.1). If the DB
 must hold the invariant against agent code *anyway*, the compile-time
 union is a developer-experience convenience layered on top of the actual
-enforcement — valuable, but not load-bearing, and not worth deciding a
+enforcement, valuable, but not load-bearing, and not worth deciding a
 language war over.
 
-What genuinely survives: **in-process exhaustiveness checking** — the
+What genuinely survives: **in-process exhaustiveness checking**, the
 compiler telling an agent it forgot the `suspended` arm of a fold. That is
 real value. Its scope is bounded: the closed sets here are small and
 stable (3 claim classes, 4 party lifecycle states, ~25 event types in
@@ -163,17 +164,17 @@ closes most of the gap at that cardinality:
   claim-class hierarchies closed types that external code cannot extend.
 - **`exhaustive` and sum-type linters** (golangci-lint's `exhaustive` for
   enums; `go-check-sumtype` for sealed interfaces) turn a missing switch
-  arm into a CI failure — which, for an agent workflow that merges on
+  arm into a CI failure, which, for an agent workflow that merges on
   green, is *operationally identical* to a compile error. The agent never
   ships the omission either way.
 - **Proto `oneof`** gives the wire contract a machine-checked closed
-  variant set that both Go and TS consume — sum types at the boundary,
+  variant set that both Go and TS consume, sum types at the boundary,
   where erasure makes TS's own unions weakest.
 
 One more asymmetry the TS case never prices: **TS's strictness is
 configuration, not property.** `any`, `as` assertions,
 `@ts-expect-error`, and tsconfig flags are all reachable by an agent
-trying to make a red build green — exactly the documented agent failure
+trying to make a red build green, exactly the documented agent failure
 mode security-infra names ("silently weakened validation to make tests
 pass," §6). The ai-native design needs lint-fatal `any` bans and an
 audited `unsafe/` directory to simulate what Go gives unconditionally:
@@ -198,9 +199,9 @@ defects than backend TS." The evidence does not support it:
   as a mainstream supported language
   ([swe-bench-live.github.io](https://swe-bench-live.github.io/)). Go is
   the lingua franca of the infrastructure this system imitates (Docker,
-  Kubernetes, Terraform, CockroachDB, Tessera itself) — that corpus is
+  Kubernetes, Terraform, CockroachDB, Tessera itself). That corpus is
   exactly backend-and-crypto-shaped, the register this codebase is
-  written in. The TS corpus's depth is in web surfaces — which the hybrid
+  written in. The TS corpus's depth is in web surfaces, which the hybrid
   keeps in TS.
 - **The uniformity argument inverts.** Ai-native's most insightful claim
   is that agents need "one idiom so that every file looks like every
@@ -212,7 +213,7 @@ defects than backend TS." The evidence does not support it:
   operator overloading, decorators, three ways to declare a function)
   that create idiom dispersion; error handling has one visible shape. TS
   achieves uniformity only through the ai-native design's own ~50-rule
-  bespoke lint regime plus a maintained `IDIOM.md` — human-authored
+  bespoke lint regime plus a maintained `IDIOM.md`, human-authored
   guardrails simulating what Go's designers built in. Go was explicitly
   designed at Google for large codebases maintained by many
   interchangeable, low-context programmers. Swap "junior Google engineer"
@@ -220,7 +221,7 @@ defects than backend TS." The evidence does not support it:
   team. Anecdotally but consistently, practitioners report agent-written
   Go is *more* reviewable per line than agent-written TS for exactly this
   reason; the claim here is the modest one that the fluency delta, if it
-  exists at all for backend code in 2026, is small — and §6 proposes
+  exists at all for backend code in 2026, is small, and §6 proposes
   measuring it rather than asserting it.
 - **The feedback loop favors Go.** Agent throughput is proportional to
   feedback-loop speed (ai-native §2, correctly). Go compiles a service in
@@ -238,18 +239,18 @@ Inventory what the worker web surface and the trust kernel would actually
 share in a TS-everywhere monorepo: the packet response types, the ID
 branded types, some enum labels. Not the fold logic (the UI renders
 packets; it never derives them), not signature verification, not chain
-computation, not deletion. The shared artifact is **a schema** — and the
+computation, not deletion. The shared artifact is **a schema**, and the
 system is contractually obligated to make that schema language-neutral
 regardless of the internal language choice, because:
 
 - external partners integrate "against bytes; bytes are forever"
-  (planet-scale §7), in whatever languages their stacks use — the contract
+  (planet-scale §7), in whatever languages their stacks use. The contract
   must be publishable as JSON Schema/proto with **cross-language
   canonicalization test vectors**, which the convergence map already
   adopts as settled ("signing canonicalization test vectors in the
-  versioned contract — planet-scale + security convergence");
+  versioned contract, agreed by planet-scale and security convergence");
 - a contract whose source of truth is a Zod definition is a contract that
-  can only be natively validated from inside TS — for everyone else it is
+  can only be natively validated from inside TS. For everyone else it is
   documentation. The signing canonicalization must be verified from
   *outside* the implementation language to count as a contract at all.
 
@@ -258,16 +259,16 @@ wrong about the artifact: the single source of truth should be the
 language-neutral schema, with Zod types *and* Go types generated from it
 (buf/protovalidate on the proto side; quicktype/go-jsonschema on the JSON
 Schema side). Once the schema is the artifact, drift cannot occur between
-generated copies — and the "serialization seam" ai-native fears is
+generated copies, and the "serialization seam" ai-native fears is
 revealed as unavoidable in every design: TS-everywhere still serializes
 at the browser, at the partner API, at the DB, and at KMS. One language
 does not remove the seam; it hides the seam inside an ecosystem where the
-compiler pretends it is not there. Making the seam explicit — a versioned
-contract with test vectors on both sides — is the correct treatment for a
+compiler pretends it is not there. Making the seam explicit, a versioned
+contract with test vectors on both sides, is the correct treatment for a
 system whose product is what crossed the seam and when.
 
-The residual cost of two languages — two toolchains, agents context-
-switching — is real but small for agents specifically: an agent does not
+The residual cost of two languages, such as two toolchains and agents
+context-switching, is real but small for agents specifically: an agent does not
 pay a human's cognitive-switching tax; it pays for *within-codebase idiom
 ambiguity*, which is minimized on each side of a clean boundary (uniform
 Go core, conventional React/TS surface) and maximized in a single
@@ -285,16 +286,16 @@ dependency compromise in the signing/verification path *is* the poisoned
 pipeline. Weigh the two ecosystems on the 2025–2026 record:
 
 **npm.** September 8, 2025: a phishing compromise of a single maintainer
-cascaded into 18 poisoned packages — chalk, debug, ansi-styles,
-strip-ansi — with **2.6 billion combined weekly downloads**
+cascaded into 18 poisoned packages, chalk, debug, ansi-styles,
+strip-ansi, with **2.6 billion combined weekly downloads**
 ([Upwind](https://www.upwind.io/feed/npm-supply-chain-attack-massive-compromise-of-debug-chalk-and-16-other-packages)).
 September 15, 2025: the **Shai-Hulud worm**, the first self-replicating
-npm attack — harvesting npm/GitHub/AWS/GCP credentials with TruffleHog
+npm attack, harvesting npm/GitHub/AWS/GCP credentials with TruffleHog
 and republishing itself into victims' own packages; 500+ packages removed;
 serious enough for a CISA alert
 ([Unit 42](https://unit42.paloaltonetworks.com/npm-supply-chain-attack/),
 [CISA, Sept 23 2025](https://www.cisa.gov/news-events/alerts/2025/09/23/widespread-supply-chain-compromise-impacting-npm-ecosystem)).
-November 24, 2025: **Shai-Hulud 2.0** — ~500–800 compromised packages
+November 24, 2025: **Shai-Hulud 2.0**, ~500–800 compromised packages
 (~132M monthly downloads) including Zapier, ENS, AsyncAPI, PostHog,
 Browserbase, and Postman, with 20,000+ poisoned GitHub repos
 ([Socket](https://socket.dev/blog/shai-hulud-strikes-again-v2),
@@ -303,17 +304,17 @@ The propagation mechanics are structural, not incidental: npm executes
 lifecycle scripts at install time, and a typical Node service resolves
 hundreds to thousands of transitive packages maintained by strangers.
 Security-infra's mitigations (dependency allowlist, provenance,
-lockfiles) are real but are *fighting the ecosystem's grain* — and its
+lockfiles) are real but are *fighting the ecosystem's grain*, and its
 own requirement that "the kernel's dependency set is near-zero by
 construction (stdlib crypto + Tessera client)" (§6.3) is **impossible in
 TS**: Node has no stdlib Ed25519/JWS story production teams use; the
-kernel would stand on `jose` or libsodium bindings plus their trees —
+kernel would stand on `jose` or libsodium bindings plus their trees,
 third-party code at the exact center of the product.
 
 **Go.** Three structural properties, not policies:
 
 1. **No install-time code execution.** `go get` fetches source; nothing
-   runs. The entire Shai-Hulud propagation class — the worm mechanism —
+   runs. The entire Shai-Hulud propagation class, the worm mechanism,
    does not exist in the ecosystem.
 2. **The checksum database.** Every module fetch is verified against
    sum.golang.org, a public, append-only, CT-style transparency log. A
@@ -325,14 +326,14 @@ third-party code at the exact center of the product.
 3. **Audited first-party crypto.** `crypto/ed25519`, `crypto/x509`,
    SHA-2/HKDF/HMAC live in the standard library, maintained by Google's
    Go security team (Filippo Valsorda lineage), audited by **Trail of
-   Bits in 2025 with a single low-severity finding** — in the legacy
-   BoringCrypto integration, not the native module — and shipped as a
+   Bits in 2025 with a single low-severity finding**, in the legacy
+   BoringCrypto integration, not the native module, and shipped as a
    natively validated **FIPS 140-3 module in Go 1.24**, pure Go, no cgo
    ([Go blog: audit](https://go.dev/blog/tob-crypto-audit),
    [Go blog: FIPS 140-3](https://go.dev/blog/fips140)). When a partner's
    security questionnaire asks what verifies signatures, "the
    Trail-of-Bits-audited Go standard library, zero third-party crypto
-   dependencies" is the one-line answer that closes deals — the same
+   dependencies" is the one-line answer that closes deals, the same
    argument security-infra makes for KMS custody (§2.1) applied to code.
 
 For most products this comparison is a tiebreaker. For a product whose
@@ -358,12 +359,12 @@ subverted, it is close to dispositive on its own.
   and successive framework generations; every churn event is agent-
   retraining surface and migration work. A trust kernel that must be
   *frozen and rarely touched* (security-infra §6.1) wants a substrate
-  whose ground does not move. Boring-pragmatist's own criterion —
-  "managed services with a runbook the industry has already written" —
+  whose ground does not move. Boring-pragmatist's own criterion,
+  "managed services with a runbook the industry has already written,"
   describes the Go runtime better than the Node runtime.
 - **sqlc + pgx.** The convergence architecture puts the real invariants
   in Postgres. Go's sqlc compiles hand-written SQL into typed Go code at
-  build time — queries become compile-checked artifacts against the
+  build time. Queries become compile-checked artifacts against the
   actual schema, which is exactly the right shape for a system whose
   database *is* the enforcement layer; pgx is a mature, first-class
   Postgres driver. This is not decisive alone, but it means the
@@ -389,7 +390,7 @@ ships with. §6 proposes the measurement.
 
 ## 4. Go's real weaknesses, confronted and priced
 
-### 4.1 No sum types — the state-machine cost
+### 4.1 No sum types and the state-machine cost
 
 This is the strongest TS point and it deserves a real price tag, not a
 wave.
@@ -407,42 +408,42 @@ wave.
 - *Wire boundary:* proto `oneof` carries the closed variant sets across
   the contract, machine-checked on both sides.
 - *Last line:* the CHECK constraints and transition-table FKs the
-  ai-native design already mandates — identical in either language.
+  ai-native design already mandates, identical in either language.
 
 **The honest cost:** ~10–20% more code on kernel fold/projection paths
 (variant structs and accessor boilerplate TS unions get for free);
 exhaustiveness via linter rather than compiler (equivalent under
 merge-on-green, but a linter must be configured and can theoretically be
-disabled — put it in the frozen CI config under the same CODEOWNERS gate
-as the kernel); and pattern-matching ergonomics that are simply worse —
-no destructuring over variants, more ceremony per case. On a kernel
+disabled, put it in the frozen CI config under the same CODEOWNERS gate
+as the kernel); and pattern-matching ergonomics that are simply worse,
+with no destructuring over variants and more ceremony per case. On a kernel
 targeted at <3,000 lines (security-infra §6.1) with ~25 event types, this
 is days of one-time boilerplate and a permanent mild verbosity tax. What
 it is *not* is a semantic gap: every illegal-state property TS encodes is
 either reproduced (sealed types + linters), enforced deeper (DB), or
-covered by the machinery both sides agree on — the differential reference
+covered by the machinery both sides agree on, the differential reference
 model, property suite, and mutation testing, all language-neutral. Note
 also that a Go kernel plus a TS (or Python) *reference model* makes the
 differential test stronger, not weaker: implementation and model can no
 longer share a subtle language-level bug or an idiom an agent copied
 between them.
 
-### 4.2 The web-surface split — polyglot, actually good here
+### 4.2 The web-surface split, polyglot but actually good here
 
 Conceded outright: the worker view and steward console front-ends are TS.
 The question is whether the resulting two-language repo is a cost. The
-boundary is not arbitrary — it coincides with the trust boundary. On one
-side: code that computes what is true (signs, chains, derives, deletes) —
-small, frozen, audited, Go. On the other: code that renders what is true
-— large, fast-moving, agent-churned, TS. Different change velocities,
+boundary is not arbitrary. It coincides with the trust boundary. On one
+side: code that computes what is true (signs, chains, derives, deletes) is
+small, frozen, audited Go. On the other: code that renders what is true
+is large, fast-moving, agent-churned TS. Different change velocities,
 different review regimes (security-infra already splits them: two-human
 kernel review vs. machine-gated product code), different blast radii.
 Giving them different languages makes the boundary *visible in the
 toolchain*: an agent cannot accidentally import chain computation into a
 React component, and a `node_modules` compromise in the web build cannot
 reach the signing path even in principle, because the signing path has no
-`node_modules`. The ai-native objection — "every language boundary is an
-invariant-restatement boundary" — is answered in §2.3: the restatement is
+`node_modules`. The ai-native objection, "every language boundary is an
+invariant-restatement boundary", is answered in §2.3: the restatement is
 a generated artifact from one schema source, and the boundary exists in
 every design anyway. What TS-everywhere actually buys is one hiring
 profile and one build system; what it spends is the §3.1 supply-chain
@@ -454,11 +455,11 @@ The folds (current-truth derivation, alias closure, standing derivation,
 packet assembly) are where TS is genuinely nicer to write: mapped types,
 union narrowing, higher-order combinators. Go's version is type switches,
 explicit loops, and generics (mature since 1.18) for the collection
-plumbing — more lines, less elegance. Two mitigations, one reframe.
+plumbing, more lines, less elegance. Two mitigations, one reframe.
 Mitigations: the folds are the most property-tested, differential-tested
 code in the system, so verbosity is backstopped by machinery; and Go's
 "dumb" folds have no async coloring, no closure-capture subtleties, and
-no hidden laziness — each fold is a boring function over explicit state.
+no hidden laziness. Each fold is a boring function over explicit state.
 The reframe: for the specific audience of a human auditor reading the
 trust kernel line-by-line (mandatory under security-infra §6.1),
 transparency-over-elegance is the correct trade. Auditability is a
@@ -471,16 +472,16 @@ expression is, for auditors, a feature with a long pedigree.
   Go's `rapid`/gopter; adequate but thinner. Antithesis-style
   whole-system DST is language-neutral (containerized monolith +
   Postgres) and unaffected.
-- IaC: if Pulumi-in-TS is chosen for infra, that is a third context —
+- IaC: if Pulumi-in-TS is chosen for infra, that is a third context,
   or use Pulumi's Go SDK / Terraform and accept the docket's planet-scale
   position (Terraform, §8).
 - Hiring: the TS pool is larger. The Go pool is where infrastructure
-  engineers already are, which is the profile hires #3–5 should have —
+  engineers already are, which is the profile hires #3–5 should have,
   but the constraint is real in some markets.
 
 ## 5. Hybrid position
 
-**Proposed, affirmatively — not as a compromise:**
+**Proposed, affirmatively, not as a compromise:**
 
 - **Go:** `kernel/` (canonicalization, signing envelope, verification,
   chain/Merkle, commitment computation, deletion executor), `ingest/`,
@@ -503,7 +504,7 @@ supply chain) and §2 (its advantages don't survive scrutiny at the core);
 Go-everywhere (including the web surface via templ/htmx or WASM) is
 rejected because the worker surface is a first-class product with real UX
 velocity needs, the browser runs JS regardless, and frontend agent
-fluency genuinely is TS-dominant — the fluency argument is correct
+fluency genuinely is TS-dominant. The fluency argument is correct
 *there*.
 
 ## 6. Concessions and switch-triggers
@@ -525,30 +526,30 @@ fluency genuinely is TS-dominant — the fluency argument is correct
    first.
 4. The supply-chain argument weakens (does not vanish) if the kernel's
    npm footprint could truly be held to `jose` + libsodium with vendored,
-   hash-pinned, install-scripts-disabled installs — the mitigations are
+   hash-pinned, install-scripts-disabled installs. The mitigations are
    real; the claim is that structural absence beats policied presence.
 
 **Measurable switch-triggers** (each pre-commits a revisit, per the
 execution protocol's verifiable-goal discipline):
 
-- **T1 — fluency spike, before the first line of production code:** run
+- **T1, fluency spike, before the first line of production code:** run
   the same 10 kernel-representative tasks (fold + invariant + boundary
   validation) through the team's actual agent setup in Go and TS;
   measure property-suite failures, mutation-score shortfall, and human
   review minutes per accepted PR. If Go's agent defect rate exceeds TS's
   by >50% sustained across the spike, D2 reopens with this brief's
   fluency claim struck.
-- **T2 — exhaustiveness escapes:** count state-machine bugs reaching
+- **T2, exhaustiveness escapes:** count state-machine bugs reaching
   staging that a TS discriminated union would have caught at compile
   time and the Go linter stack missed. More than 2 in the first 6 months
   → adopt stricter codegen (variant structs generated from the schema)
   or reopen.
-- **T3 — hiring reality:** if a Go-competent hire cannot be closed
+- **T3, hiring reality:** if a Go-competent hire cannot be closed
   within one quarter of opening engineer #3, weight shifts.
-- **T4 — contract-tooling friction:** if the proto/JSON-Schema codegen
+- **T4, contract-tooling friction:** if the proto/JSON-Schema codegen
   chain produces >1 contract-drift incident per quarter (the failure it
   exists to prevent), the one-language Zod argument regains force.
-- **T5 — holding trigger (symmetric honesty):** a supply-chain
+- **T5, holding trigger (symmetric honesty):** a supply-chain
   compromise in any package that would have been in the TS kernel's
   dependency tree is recorded as confirmation; a compromise of the Go
   module ecosystem's checksum infrastructure would symmetrically count
@@ -558,13 +559,13 @@ execution protocol's verifiable-goal discipline):
 
 ### Sources
 
-- [Upwind — npm compromise of debug/chalk + 16 packages, Sept 2025](https://www.upwind.io/feed/npm-supply-chain-attack-massive-compromise-of-debug-chalk-and-16-other-packages)
-- [Unit 42 — "Shai-Hulud" worm compromises npm ecosystem](https://unit42.paloaltonetworks.com/npm-supply-chain-attack/)
-- [CISA alert, Sept 23 2025 — widespread npm supply-chain compromise](https://www.cisa.gov/news-events/alerts/2025/09/23/widespread-supply-chain-compromise-impacting-npm-ecosystem)
-- [Socket — Shai-Hulud 2.0, Nov 2025 (Zapier, ENS, PostHog, Postman)](https://socket.dev/blog/shai-hulud-strikes-again-v2)
-- [eSentire — second wave of Shai-Hulud advisory](https://www.esentire.com/security-advisories/new-npm-supply-chain-attack-identified-second-wave-of-shai-hulud)
-- [Go blog — Trail of Bits audit of Go cryptography (2025)](https://go.dev/blog/tob-crypto-audit)
-- [Go blog — the FIPS 140-3 Go Cryptographic Module (Go 1.24)](https://go.dev/blog/fips140)
-- [Filippo Valsorda — 2025 Go Cryptography State of the Union](https://words.filippo.io/2025-state/)
+- [Upwind, npm compromise of debug/chalk + 16 packages, Sept 2025](https://www.upwind.io/feed/npm-supply-chain-attack-massive-compromise-of-debug-chalk-and-16-other-packages)
+- [Unit 42, "Shai-Hulud" worm compromises npm ecosystem](https://unit42.paloaltonetworks.com/npm-supply-chain-attack/)
+- [CISA alert, Sept 23 2025, widespread npm supply-chain compromise](https://www.cisa.gov/news-events/alerts/2025/09/23/widespread-supply-chain-compromise-impacting-npm-ecosystem)
+- [Socket, Shai-Hulud 2.0, Nov 2025 (Zapier, ENS, PostHog, Postman)](https://socket.dev/blog/shai-hulud-strikes-again-v2)
+- [eSentire, second wave of Shai-Hulud advisory](https://www.esentire.com/security-advisories/new-npm-supply-chain-attack-identified-second-wave-of-shai-hulud)
+- [Go blog, Trail of Bits audit of Go cryptography (2025)](https://go.dev/blog/tob-crypto-audit)
+- [Go blog, the FIPS 140-3 Go Cryptographic Module (Go 1.24)](https://go.dev/blog/fips140)
+- [Filippo Valsorda, 2025 Go Cryptography State of the Union](https://words.filippo.io/2025-state/)
 - [SWE-bench Pro leaderboard (Python/Go/TS/JS tasks)](https://www.morphllm.com/swe-bench-pro)
 - [SWE-bench-Live / MultiLang (Go among supported languages)](https://swe-bench-live.github.io/)

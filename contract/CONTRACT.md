@@ -1,4 +1,4 @@
-# Contract — Canonicalization, Signing, Chain, and Merkle Rules (seed)
+# Contract: canonicalization, signing, chain, and Merkle rules (seed)
 
 Preserved from the T1 spike harness (decision 012). These are the
 normative resolutions of every ambiguity the spike surfaced; ten
@@ -7,7 +7,7 @@ vectors built on exactly these rules. `trust-kernel/01` regenerates the
 vector files against this document; future implementations in any
 language must match it byte-for-byte.
 
-1. **Canonicalization is RFC 8785 (JCS).** Unicode normalization: NONE —
+1. **Canonicalization is RFC 8785 (JCS).** Unicode normalization: NONE,
    NFC and NFD are distinct strings and distinct object keys.
 2. **Number formatting is ECMAScript `Number::toString`** exactly:
    `-0` → `0`; `1e21` → `1e+21` (explicit sign); the `1e-7` vs
@@ -16,13 +16,13 @@ language must match it byte-for-byte.
    placement rules over shortest-round-trip digits; measured cost in Go
    ~60–90 lines, done correctly by every T1 Go cell.)
    Object keys sort by UTF-16 code units (JS default string order), NOT
-   UTF-8 byte order — they diverge on supplementary-plane characters.
+   UTF-8 byte order, they diverge on supplementary-plane characters.
 3. **JWS envelope**: compact serialization; the protected header is the
    exact 15 bytes `{"alg":"EdDSA"}`; verification compares header bytes
    and does not re-canonicalize the payload; a false verdict is exactly
    `{"valid":false}` with no extra fields.
 4. **Key encodings**: Ed25519 private = 32-byte seed hex; public =
-   32-byte raw hex (RFC 8032 conventions) — not PEM/JWK.
+   32-byte raw hex (RFC 8032 conventions), not PEM/JWK.
 5. **Hash chain**: SHA-256; genesis prev = 32 zero bytes; records are
    JCS-canonicalized before hashing; domain tag `0x02` on chain links;
    length-mismatch verification reports `firstBadIndex = min(len)`;
