@@ -3514,3 +3514,48 @@ get a draft task so the gated criterion follows ORDER.md's convention;
 and analytics/02 lands the named-recipient grant subset before
 consent-and-deletion builds the party-level machinery, noted in both
 layers.
+
+## 068 — Ingestion grilled: one confirmation, patterns at the door, A-6 and A-7 ratified (2026-08-20)
+
+Founder rulings from the ingestion grilling. Tasks are authored in the
+same session.
+
+**Interface amendments A-6 and A-7 are ratified**, the schema-0.2
+subset precedent applied to the interface: pairwise pseudonyms and the
+evaluation scope bind, so ingestion builds against the shapes decision
+028 already required rather than building 0.2's ledger-id shape and
+migrating. The responsibility-dimensions section stays open under the
+decision 054 gate, which is the only part full 0.3 ratification still
+waits on.
+
+**The queue is Postgres in the outbox pattern.** No Kafka-as-truth per
+the stack litigation; the ingest queue is a database-backed queue in
+the shape of foundation's cross-plane outbox, partitioned by subject,
+riding the trust-kernel/08 transport. A dedicated queue system is a
+later scaling decision with its own entry.
+
+**The acknowledgment promise is defined for one region.** "Got it" is
+sent to a party only after the attestation is saved to the primary and
+its standby replica; the mechanical test kills the primary mid-run and
+proves nothing acknowledged is missing. The definition tightens with
+the cloud provisioning gate; the promise and the test do not change.
+
+**One external confirmation; the two phases are internal.** A
+submission is rejected on the spot or confirmed once, and the single
+confirmation is the durability promise above. Everything that can
+reject happens before it; after it, completion is Grain's problem,
+retried until recorded, with internal received/recorded states for
+monitoring. A party never sees a received-then-rejected sequence.
+
+**The banned-information scanner is fixed published patterns, never a
+model.** The A-4 list, including the 008/010 extensions, is enforced
+in every field including free text by a published pattern set with
+red-path fixtures. The trust layer's front door is predictable and
+auditable; a model-assisted warning can exist sender-side before
+submission, never as the gate.
+
+**Ingestion owns the pairwise-pseudonym mapping.** It is the first
+consumer (A-6 resolution happens at ingestion), the mapping is
+write-path infrastructure, and prior-packet reads the same table in
+v1. Derivation is keyed per partner and stable across merges through
+the alias closure.
