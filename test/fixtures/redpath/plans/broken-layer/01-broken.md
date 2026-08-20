@@ -11,4 +11,4 @@ evidence: []
 Red-path fixture: `status: shipped` is outside the ORDER.md vocabulary and
 the task fields `layer`, `satisfies`, and `verified_by` are missing.
 `make check-red` points `checks/frontmatter.mjs` at this tree and asserts
-it fails — before any database exists in the environment.
+it fails, before any database exists in the environment.

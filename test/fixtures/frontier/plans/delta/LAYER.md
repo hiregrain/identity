@@ -9,5 +9,5 @@ verified_by: null
 
 # delta (frontier fixture)
 
-Ready layer gated on alpha, which is only ready — the layer-level gate
+Ready layer gated on alpha, which is only ready. The layer-level gate
 blocks every delta task.

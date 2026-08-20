@@ -1,4 +1,4 @@
-// test/two-plane-split.test.mjs — the physical-split proof
+// test/two-plane-split.test.mjs proves the split is physical
 // (foundation/04, decision 011).
 //
 // Two schemas behind two connection strings would satisfy a naive
@@ -8,7 +8,7 @@
 //
 //   1. The planes are distinct clusters: pg_control_system() reports a
 //      different system identifier on each, and neither cluster's
-//      pg_database contains the other plane's database — stronger than
+//      pg_database contains the other plane's database, which is stronger than
 //      "separate databases", which one cluster could fake.
 //   2. A transaction cannot span the planes: inside an open transaction
 //      on the spine, a qualified reference to the payload database is an
@@ -42,8 +42,8 @@ assert(
   identifiers[0] !== identifiers[1],
   `the planes are distinct clusters (system identifiers ${identifiers[0]} ` +
     `vs ${identifiers[1]})`,
-  `both planes report system identifier ${identifiers[0]} — one cluster, ` +
-    `not a physical split`,
+  `both planes report system identifier ${identifiers[0]}, meaning one ` +
+    `cluster, not a physical split`,
 );
 
 for (const [i, plane] of PLANES.entries()) {
@@ -52,8 +52,8 @@ for (const [i, plane] of PLANES.entries()) {
   assert(
     databases.includes(plane) && !databases.includes(other),
     `${plane}'s cluster contains "${plane}" and no "${other}" database`,
-    `${plane}'s cluster databases [${databases.join(", ")}] — the other ` +
-      `plane is reachable from this cluster`,
+    `${plane}'s cluster databases [${databases.join(", ")}] show the ` +
+      `other plane is reachable from this cluster`,
   );
 }
 
@@ -95,8 +95,8 @@ for (const [i, plane] of PLANES.entries()) {
     failed && output.includes("cross-database references are not implemented"),
     `a transaction on ${plane} cannot reference ${other} (aborted: ` +
       `cross-database references are not implemented)`,
-    `a transaction on ${plane} reached ${other} — the planes share a ` +
-      `transaction boundary`,
+    `a transaction on ${plane} reached ${other}, meaning the planes share ` +
+      `a transaction boundary`,
   );
 }
 
@@ -115,10 +115,10 @@ try {
   )[0];
   assert(
     onSpine === "1" && onPayload === "0",
-    `a role created on spine does not exist on payload — one role catalog ` +
-      `per plane`,
-    `probe role visible on spine=${onSpine} payload=${onPayload} — the ` +
-      `planes share a role catalog`,
+    `a role created on spine does not exist on payload, proving one role ` +
+      `catalog per plane`,
+    `probe role visible on spine=${onSpine} payload=${onPayload}, meaning ` +
+      `the planes share a role catalog`,
   );
 } finally {
   psql("spine", `DROP ROLE ${PROBE_ROLE}`);

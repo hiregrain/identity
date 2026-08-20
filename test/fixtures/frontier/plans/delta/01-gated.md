@@ -9,4 +9,4 @@ evidence: []
 verified_by: null
 ---
 
-# delta/01 (ready, no task deps, but the layer gate is closed — BLOCKED)
+# delta/01 is ready with no task deps, but the layer gate is closed, so it is BLOCKED

@@ -14,5 +14,5 @@ A deliberate splice, marked:
 > The worker keeps custody of the record. […] Every claim
 > carries its provenance and resolves to the evidence beneath it.
 
-`make check-red` asserts checks/verbatim-copies.mjs passes this file —
-the port must be proven to match, not only to fail.
+`make check-red` asserts checks/verbatim-copies.mjs passes this file.
+The port must be proven to match, not only to fail.

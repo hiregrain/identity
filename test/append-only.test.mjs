@@ -1,4 +1,4 @@
-// test/append-only.test.mjs — the standing proof (foundation/03).
+// test/append-only.test.mjs is the standing proof (foundation/03).
 //
 // The database, not discipline, guarantees append-only. This test proves
 // it against both live planes, and it is the enumerated home of every
@@ -7,16 +7,16 @@
 // to the standing proof, never something the proof quietly tolerates.
 //
 // What is proven, per plane (spine and payload):
-//   1. The set of UPDATE/DELETE/TRUNCATE grants to non-owner roles —
+//   1. The set of UPDATE/DELETE/TRUNCATE grants to non-owner roles,
 //      table-level, column-level, and on sequences (sequence UPDATE is
-//      setval/nextval, which rewrites sequence state) — equals
+//      setval/nextval, which rewrites sequence state), equals
 //      EXEMPTIONS exactly.
 //   2. The application role cannot UPDATE or DELETE (raw statements fail
 //      with permission denied); SELECT and INSERT work, so the denial is
 //      a boundary and not a broken role.
 //   3. A table created by a later migration (simulated here: created by
 //      the owner after the grants migration ran) inherits SELECT/INSERT-
-//      only with no manual step — in the existing schema under the
+//      only with no manual step, in the existing schema under the
 //      existing owner, AND in a second schema under a second owner role,
 //      because Postgres default privileges are per granting role and per
 //      schema, so the single-schema single-owner case proves far less
@@ -28,8 +28,8 @@
 //      or TRUNCATE. Zero such functions may exist; the scan still runs
 //      and is shaped to catch the first one that violates.
 //   6. For every declared incompatible schema pair
-//      (db/incompatible-schema-pairs.json) no role can read both members
-//      — the cross-schema join is attempted as every defined
+//      (db/incompatible-schema-pairs.json) no role can read both members.
+//      The cross-schema join is attempted as every defined
 //      non-superuser role and must fail at the permission layer. While
 //      the declared list is empty the same assertion runs against a
 //      planted probe pair, so the enforcement pattern is exercised, not
@@ -61,7 +61,7 @@ const APP = "identity_app"; // the serving role (migration 0002)
 //   { plane, schema, table, grantee, privilege, decision }
 // and must cite the licensing decision. Granted only per table, by name,
 // to a named role, in the migration that creates or licenses the table
-// (migration 0002's header). Ruled but not yet landed — they arrive with
+// (migration 0002's header). Ruled but not yet landed. They arrive with
 // their own migration sites and get entries here in the same PR:
 //   * party_users erasure (decision 016, party-registry)
 //   * stream_heads rebuildable projection (trust-kernel/03, decision 019)
@@ -69,7 +69,7 @@ const EXEMPTIONS = [
   // The payload purge role (foundation/08, decision 017): the ONLY role
   // holding DELETE on any payload table, licensed per table by name in
   // 0022-purge-role-and-restore-gate, which also narrows the grant with
-  // row security to shredded 'created' rows — dead wrapped-DEK
+  // row security to shredded 'created' rows, dead wrapped-DEK
   // ciphertext whose person already holds a 'destroyed' row. Every
   // purge run writes its purge_audit row in the same transaction as its
   // deletes (core/deletion).
@@ -376,7 +376,7 @@ function assertIncompatiblePairsUnreadable(plane) {
   }
 
   // While the declared list is empty (first real pair: party-registry/04)
-  // the enforcement pattern is exercised against a planted probe pair —
+  // the enforcement pattern is exercised against a planted probe pair,
   // two schemas with disjoint owners and disjoint readers, the shape a
   // pair-declaring migration must produce.
   psql(

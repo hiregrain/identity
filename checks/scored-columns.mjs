@@ -1,8 +1,8 @@
-// checks/scored-columns.mjs — no fact-table column stores a judgment
+// checks/scored-columns.mjs asserts no fact-table column stores a judgment
 // about a person (foundation/06, the Dispatch schema-grep pattern).
 // Grain says what is known and how well it is known; the partner decides
 // what it means. No column may therefore store a capability score, tier,
-// or trajectory — nor any derived reliability, trust, or weighting score
+// or trajectory, nor any derived reliability, trust, or weighting score
 // about a person. Decision 025 withdrew the one mechanism (attester
 // trust) that would have needed such a column, so this check now catches
 // an unlicensed reintroduction rather than a bounded exception.
@@ -11,7 +11,7 @@
 // tokenized on underscores and matched against the judgment vocabulary
 // below. A hit is a failure naming the rule; there is no exemption list,
 // and adding one would be the decision this check exists to force into
-// decisions/LOG.md first. The check is lexical over names — a judgment
+// decisions/LOG.md first. The check is lexical over names. A judgment
 // column laundered under an innocent name passes it, which is what
 // code review and criterion adjudication are for; this catches the
 // ordinary reintroduction loudly and early.
@@ -75,7 +75,7 @@ for (const plane of ["spine", "payload"]) {
     if (hit !== undefined) {
       failures.push(
         `${plane} column ${schema}.${table}.${column} carries judgment ` +
-          `token "${hit}" — no fact-table column stores a capability ` +
+          `token "${hit}". No fact-table column stores a capability ` +
           `score, tier, trajectory, or any derived reliability, trust, or ` +
           `weighting score about a person (CLAUDE.md; decision 025 ` +
           `withdrew the last licensed use). Storing one requires a ` +
