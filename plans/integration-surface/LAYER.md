@@ -51,8 +51,8 @@ Acceptance:
 4. **The sandbox exercises every endpoint before a partner does.** the sandbox's synthetic workers exercise every endpoint
    including disputes and revocation; the conformance suite passes/fails a
    deliberately broken sample integration correctly.
-5. **A second consumer proves the interface is not shaped around the first.** (mechanical) a second consumer, grain, or a synthetic second
-   vertical, completes the round trip against a ledger build whose diff, from
+5. **A second consumer proves the interface is not shaped around the first.** (mechanical) a second consumer (grain, or a synthetic second
+   vertical) completes the round trip against a ledger build whose diff, from
    the commit where the first consumer's integration was verified, touches no
    file outside `docs/`, the party registry's data rows, and the consumer's own
    SDK package. Any other changed path fails the criterion.
