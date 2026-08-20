@@ -3401,3 +3401,67 @@ suite covers the renderer, closing the reviewed-scope-without-
 criterion gap the review flagged.
 
 **trust-kernel/08 is promoted to ready by this entry.**
+
+## 066 — Analytics grilled: the fork is split, the pseudonym is per-run, the instrument is deterministic first (2026-08-20)
+
+Founder rulings from the analytics grilling, discharging the four items
+decision 026 left open and settling the layer's delivery and consent
+shape. Tasks are authored in the same session per the grill-before-ready
+rule.
+
+**The run record splits across the planes.** The spine half holds
+requesting party, timestamp, instrument and model versions, and a
+per-run pseudonym; it survives deletion and identifies nobody. The
+payload half holds subject linkage and input references under the
+subject's DEK and dies at profile deletion. Art. 19's retention duty is
+satisfied by the surviving half, which records our processing; the
+GDPR's erasure right is satisfied by the dying half, which recorded the
+person. Retention of the spine half is six months, the Art. 19 floor,
+stated as that number per 026.
+
+**The pseudonym is per-run random, never reused.** A stable per-subject
+pseudonym is the ledger_person_id problem one hop removed, a retained
+means of singling out. Per-run randomness means correlating two runs on
+one subject requires the payload half, which deletion kills; after a
+worker deletes, Grain cannot count how many runs touched them, and that
+inability is the compliance property, accepted as such.
+
+**The confidence threshold is ruled in form, calibrated in number.**
+Evidence-class-based and deterministic: a stated minimum of distinct
+sources and provenance classes, below which the product returns
+insufficient data, expressible in one published sentence. The rule is
+published, and the number once set; not publishing would collapse
+insufficient-data into an unexplained no. The numeric parameters are
+set against golden fixtures and ruled by the founder when the fixtures
+exist; layer criterion 3 is gated until then, declared in frontmatter.
+
+**The instrument is deterministic and algorithmic first, and only
+that.** Provenance-weighted evidence assembly, tenure and
+responsibility meta-signals, fixed published weights, versioned. No LLM
+produces or influences any number or any prose in v0; the deterministic
+instrument is made as good as it can be before any model touches it.
+LLM enhancement is a later instrument version requiring its own
+decisions entry.
+
+**Workers share; the share link is the first-product consent
+instrument.** A partner read runs under a worker-initiated share-link
+grant (schema §5: no grantee ref, mandatory expiry), created, enforced,
+and revocable in this layer. Party-level standing grants stay in
+consent-and-deletion. This closes the gap nobody had scoped: reads
+without a consent instrument, in a milestone where the grant layer does
+not exist.
+
+**Delivery is an API whose shape lives here.** This layer defines the
+analytics API shape and the presentation shape of a read; no partner
+accounts, no dashboards. Admin and employer-dashboard interfaces
+consume this API in later layers. integration-surface stays v1
+untouched.
+
+**The slope disclosure text is a task deliverable.** Drafted in the
+trajectory task under an adjudicated criterion, checked against
+decision 022's three failure modes on the rendered output, ratified by
+the founder at that task's review.
+
+ORDER.md's three analytics decision-gate rows resolve accordingly: the
+threshold gate narrows to the numeric ruling at calibration; the
+pseudonym and fork gates are discharged here.
