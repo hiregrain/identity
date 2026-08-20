@@ -79,7 +79,7 @@ nowhere yet.
 A person's proof of competence is currently trapped inside whoever observed
 it. Leave the job and it does not travel; the employer has no reason to
 maintain it and no obligation to attest to it. What travels instead are
-portable proxies: degrees, brand-name employers, titles, which is precisely
+portable proxies (degrees, brand-name employers, titles), which is precisely
 why credential systems advantage the credentialed over the competent.
 
 Grain is the record that travels. Concretely, and per
@@ -282,8 +282,8 @@ deletion, which decision 014 had already ruled against, and which AEPD
 PS-00176-2024 fined a controller for doing. Serious falsification routes to
 014's severity-gated safety marker. Below that bar the evidence is deletable
 by either party, and that is a cost taken deliberately rather than a hole.
-What actually addresses reference farming is the Sybil apparatus: reciprocity
-caps, velocity limits, device clustering, anchored weighting, which never
+What actually addresses reference farming is the Sybil apparatus (reciprocity
+caps, velocity limits, device clustering, anchored weighting), which never
 depended on any of this.
 
 ## 5. Grading, and what it stands on
@@ -309,8 +309,8 @@ defined and should be published rather than tuned quietly.
 reading lies: good routing keeps raw grades flat while ability rises; frozen
 difficulty priors make promotions read as decline; and graders drift in the
 same direction as the trend being measured. None of these are solved by more
-history. They are solved by a fixed instrument: ledger-authored items, never
-revised, never retired, administered regardless of what routing chose, which
+history. They are solved by a fixed instrument (ledger-authored items, never
+revised, never retired, administered regardless of what routing chose), which
 does not exist. Until it does, **slope claims ship with those three limits
 disclosed on the face of the output**, the same way §5's mapping fidelity is
 disclosed. This is a rewrite of an earlier position that treated the
@@ -321,7 +321,7 @@ assessment is a likely second product and could become a vertical or a
 service. It is not the moat, and identity does not depend on it.
 
 **Assessment data reaches the ledger by the same path as everything else.**
-As an attestation from a registered party, in the same signed envelope,
+It arrives as an attestation from a registered party, in the same signed envelope,
 distinguished by scope rather than by object type. **[GAP]** A third scope
 value alongside `engagement` and `period` is required and does not exist.
 
@@ -353,8 +353,8 @@ Nobody credibly rebuilds the instrument per customer, and nobody publishes a
 numeric equivalence table.
 
 For Grain: the seven dimensions and their level definitions are the invariant,
-ledger-authored, versioned spine. A customer's job architecture, Radford P4,
-IPE class 54, an internal "Senior II", is a **customer-authored view**, a
+ledger-authored, versioned spine. A customer's job architecture (Radford P4,
+IPE class 54, an internal "Senior II") is a **customer-authored view**, a
 named and versioned artifact mapping their level to a predicate over Grain
 dimension levels. Two customers with identical Grain evidence get identical
 Grain output; only their views differ. That invariance is the entire basis of
@@ -472,8 +472,8 @@ brief that has never been scoped.
 **The vendor is not shielded by the customer owning the decision.** In *Mobley
 v. Workday* (N.D. Cal.) the court held that an AI screening service provider
 can be directly liable for employment discrimination under an agent theory,
-and conditionally certified an ADEA collective. The credit-industry split:
-vendor scores, lender decides, lender bears liability, does not reliably hold
+and conditionally certified an ADEA collective. The credit-industry split
+(vendor scores, lender decides, lender bears liability) does not reliably hold
 in employment. Any Grain output that reads as "we told the employer whom to
 reject" is materially worse than "we published a measurement the employer
 interpreted". Related: *Baker v. CVS Health*, ACLU complaints against HireVue
