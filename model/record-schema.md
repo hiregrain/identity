@@ -109,7 +109,7 @@ drawn in the imprint** (`imprint/README.md` §2).
 | ~~`chapters`~~ | none | **Deleted, decision 035 §B3.** A grant is always the whole record. A chapter-scoped grant is claim curation wearing a grant's clothes and silently reverses founder decision 7 (`design/ledger-design-0.1.md` §7.1). |
 | `granted_at` · `expires_at` | | **expiry is mandatory**; a grant with no end is a permanent disclosure the worker forgets making |
 | `revoked_at` | nullable | |
-| `last_read_at` | nullable | **Not surfaced to the worker, decision 035 §B4.** The worker sees the grant's *state*: issued, active, expired, revoked, and no read events. The field is retained for the disclosure record that satisfies GDPR Art. 15(1)(c) on request. |
+| `last_read_at` | nullable | **Not surfaced to the worker, decision 035 §B4.** The worker sees the grant's *state* (issued, active, expired, revoked) and no read events. The field is retained for the disclosure record that satisfies GDPR Art. 15(1)(c) on request. |
 
 **Share links** are grants with no `grantee_party_ref`, a 30-day default expiry,
 and a statement at creation of what the recipient receives: full work-history
