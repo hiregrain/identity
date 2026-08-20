@@ -24,9 +24,14 @@ worker-owned, cryptographically verifiable record of what a person has
 actually done, attested by the parties that observed it, visible to whoever
 the worker permits.
 
-**Identity is the platform.** It records an immense amount of information
-about a working life and codifies it in a highly legible way, which is what
-makes the data collectible and analysable at scale. Endpoints let partners and
+**Identity is the platform.** The résumé is a summary statistic. It transmits
+employer, title and dates, and it abstracts away the particulars that
+determine the specific decision a reader is making: what the conditions were,
+what this person's surface actually was, how much of the work was theirs, how
+it ended. Grain's function is that those particulars survive transmission,
+recorded by the party that observed them, at the time they observed them.
+Legibility follows from that, and where the two conflict the particular wins.
+Endpoints let partners and
 internal verticals read and write against it. An internal training program
 should be able to see where someone starts and write back how they performed.
 Everything else is secondary to that core.
@@ -74,7 +79,7 @@ nowhere yet.
 A person's proof of competence is currently trapped inside whoever observed
 it. Leave the job and it does not travel; the employer has no reason to
 maintain it and no obligation to attest to it. What travels instead are
-portable proxies: degrees, brand-name employers, titles, which is precisely
+portable proxies (degrees, brand-name employers, titles), which is precisely
 why credential systems advantage the credentialed over the competent.
 
 Grain is the record that travels. Concretely, and per
@@ -92,12 +97,52 @@ that the proxy is displaced as attested facts accumulate. A title with nothing
 beneath it reads as a title with nothing beneath it. That is the whole claim,
 and it is a smaller claim than "we replaced proxies with truth."
 
+**On what cannot be attested, and the frontier that follows.** Part of what
+makes a worker valuable is knowledge of people, of local conditions and of
+particular circumstances, and some of that can never be stated by anyone,
+including the person who holds it. Nothing moves that: it is not a
+data-collection problem.
+
+**But the knowledge does not have to be transmitted for its magnitude to be
+estimated.** Unstatable expertise leaves a footprint in outcomes across
+repeated instances, which is why volume, cadence and outcome facts carry more
+of this than any description ever will. Nobody can write down what the
+arbitrageur knows. Everybody can observe that he is right more often than the
+market. Grain measures the footprint, not the content, and does not pretend
+the two are the same thing.
+
+**This is also why the residue is the asset rather than a limitation.** Hayek
+separates scientific knowledge, which a body of suitably chosen experts can
+command, from knowledge of the particular circumstances of time and place,
+which only the person on the spot holds. AI is the first credible completion
+of the first category. It leaves the second untouched, and Hayek's whole
+argument is that the second is the larger problem. A worker's edge over a
+general intelligence layer is precisely the category Hayek said could never be
+centralised, and estimating that edge against a standard the employer
+supplies, whether that standard is AI or a bar of their own, is what makes the
+reading worth paying for. **[GAP]** That use is a capability projection about
+a person and belongs in counsel brief 4 as a named use rather than as a
+general statement about analytics (§7). An AI-relative baseline is also
+non-stationary, which is a fourth way trajectory lies alongside §5's three,
+and it is disclosed nowhere.
+
 **Visibility is the worker's** (decision 024). The record is private by
 default and the
 worker controls who sees it: they consent to sharing with a specific party,
 they can publish a public record, and they can use it to apply for work.
 "Universally accessible" describes the right to hold a record, not default
 readability of its contents.
+
+**The worker controls who sees the record and never what it says.**
+Attestations are append-only and immutable once written
+(`model/record-schema.md` §1), grants are revocable, and the exit is deletion
+of the whole profile rather than removal of a line. The one exception is
+accuracy. A worker who believes a fact is wrong raises a `dispute`, which is
+resolved with the attesting party and renders on the chapter until it is. A
+correction is a new record and never a mutation of the old one, so the trail
+of what was asserted, disputed and settled survives the correction. A record
+that could be edited into shape would be a résumé with a signature on it, and
+a record that could not be corrected would be worse than one.
 
 Two entity types exist and only two: persons, who are subjects, and attesting
 parties, who are issuers. Organisations are never subjects (decision 007). AI
@@ -134,6 +179,14 @@ publishable in one sentence, and two records with identical evidence always
 produce identical marks. That is what allows the ledger to compute them
 without becoming a scorer.
 
+**Each level must be worth holding on its own.** A chapter with one
+attestation must be worth keeping before the second arrives, and a record with
+one chapter must be worth showing before the second. A design whose value
+appears only at graph density asks partners to fund the density first, which
+is the condition §8 names as the write incentive and §9 names as a way this
+dies. The test is not whether a level can be sold once, it is whether the same
+buyer comes back to it.
+
 **The analytics layer.** Built on top of the record, sold to partners and used
 by internal verticals. Computed on a partner's request, delivered, and **not
 retained as a fact about the person**; a run record is retained separately
@@ -152,6 +205,32 @@ depends on neither.
 decides what it means and bears the decision. Restated for partners in one
 line: *the mark tells you how well-established the record is; it never tells
 you whether to hire.*
+
+### Why the seam is not a choice
+
+Hayek, "The Use of Knowledge in Society" (1945), §VII: the value of a factor of
+production does not follow from the valuation of what it produces, because it
+depends also on the conditions of supply and on the ends of the party
+deciding. Implication is a relation between propositions present to one and
+the same mind, and no such mind holds all three terms.
+
+That is the argument under the seam. Two of the three terms live inside the
+hiring party and move with their situation. Grain holds the third. A number
+claiming to state what a person is worth is therefore not merely presumptuous,
+it is not determined by the inputs any ledger can hold.
+
+What follows is not that Grain declines to compute. Grain computes, and the
+quality of what it computes is the commercial edge. What follows is that every
+reading is stated against an end the partner supplies. **No absolute
+person-level score is ever emitted.** A reading answers: against this role,
+under these conditions, here is what this record establishes and how well. The
+same record reads differently for different partners, and that is correct
+rather than an inconsistency to be normalised away.
+
+This is also the strongest available form of the answer to §7's social-scoring
+question, since a reading that cannot exist independently of a stated purpose
+is not a general-purpose score of a person. It is an argument, not counsel's
+opinion, and it goes in brief 4.
 
 ## 4. How the record becomes comparable
 
@@ -203,8 +282,8 @@ deletion, which decision 014 had already ruled against, and which AEPD
 PS-00176-2024 fined a controller for doing. Serious falsification routes to
 014's severity-gated safety marker. Below that bar the evidence is deletable
 by either party, and that is a cost taken deliberately rather than a hole.
-What actually addresses reference farming is the Sybil apparatus: reciprocity
-caps, velocity limits, device clustering, anchored weighting, which never
+What actually addresses reference farming is the Sybil apparatus (reciprocity
+caps, velocity limits, device clustering, anchored weighting), which never
 depended on any of this.
 
 ## 5. Grading, and what it stands on
@@ -230,8 +309,8 @@ defined and should be published rather than tuned quietly.
 reading lies: good routing keeps raw grades flat while ability rises; frozen
 difficulty priors make promotions read as decline; and graders drift in the
 same direction as the trend being measured. None of these are solved by more
-history. They are solved by a fixed instrument: ledger-authored items, never
-revised, never retired, administered regardless of what routing chose, which
+history. They are solved by a fixed instrument (ledger-authored items, never
+revised, never retired, administered regardless of what routing chose), which
 does not exist. Until it does, **slope claims ship with those three limits
 disclosed on the face of the output**, the same way §5's mapping fidelity is
 disclosed. This is a rewrite of an earlier position that treated the
@@ -242,7 +321,7 @@ assessment is a likely second product and could become a vertical or a
 service. It is not the moat, and identity does not depend on it.
 
 **Assessment data reaches the ledger by the same path as everything else.**
-As an attestation from a registered party, in the same signed envelope,
+It arrives as an attestation from a registered party, in the same signed envelope,
 distinguished by scope rather than by object type. **[GAP]** A third scope
 value alongside `engagement` and `period` is required and does not exist.
 
@@ -274,8 +353,8 @@ Nobody credibly rebuilds the instrument per customer, and nobody publishes a
 numeric equivalence table.
 
 For Grain: the seven dimensions and their level definitions are the invariant,
-ledger-authored, versioned spine. A customer's job architecture, Radford P4,
-IPE class 54, an internal "Senior II", is a **customer-authored view**, a
+ledger-authored, versioned spine. A customer's job architecture (Radford P4,
+IPE class 54, an internal "Senior II") is a **customer-authored view**, a
 named and versioned artifact mapping their level to a predicate over Grain
 dimension levels. Two customers with identical Grain evidence get identical
 Grain output; only their views differ. That invariance is the entire basis of
@@ -321,9 +400,13 @@ In order of durability: the **attestation graph**, which compounds and which
 no single participant can replicate; **identity resolution** across a working
 life, which is cumulative and genuinely hard; **cryptographic integrity**,
 which makes claims falsifiable rather than merely asserted, so trust
-strengthens under scrutiny; the **legibility of the record**, codified
-tightly enough that it can be analysed at scale, which is what the analytics
-product actually sells; and the **mark**, which travels into other products
+strengthens under scrutiny; the **decomposition of the hiring decision into
+independently checkable parts**, which is what the analytics product actually
+sells, because a reader who can confirm one dimension at a time, each carrying
+its own provenance and corroboration, runs a far cheaper search than one
+weighing a whole candidate at once, the saving grows with the number of parts
+checked, and a single composite score would destroy the thing being sold; and
+the **mark**, which travels into other products
 carrying invariant meaning.
 
 The strategic position is the network and the standard rather than the
@@ -389,8 +472,8 @@ brief that has never been scoped.
 **The vendor is not shielded by the customer owning the decision.** In *Mobley
 v. Workday* (N.D. Cal.) the court held that an AI screening service provider
 can be directly liable for employment discrimination under an agent theory,
-and conditionally certified an ADEA collective. The credit-industry split:
-vendor scores, lender decides, lender bears liability, does not reliably hold
+and conditionally certified an ADEA collective. The credit-industry split
+(vendor scores, lender decides, lender bears liability) does not reliably hold
 in employment. Any Grain output that reads as "we told the employer whom to
 reject" is materially worse than "we published a measurement the employer
 interpreted". Related: *Baker v. CVS Health*, ACLU complaints against HireVue
@@ -438,6 +521,14 @@ duties and what it costs. **[GAP]** Unruled, and it inverts the reasoning that
 put worker-side ranking on the safe side of §2. Employer-side matching also
 remains unruled.
 
+**Charging for analytics over a free record layer.** The objection that Grain
+profits from knowledge others could have gathered themselves is the objection
+historically levelled at the arbitrageur and the estate agent, and Hayek
+answers it directly: making dispersed knowledge reach the decision is the
+service, and it is as socially useful as producing the thing being decided
+about. Whether the price is right is a commercial question; whether the
+activity is legitimate is not an open one.
+
 **Placement.** If Grain ever places trained specialists, it competes with the
 partners who hire from the same network and whose attestations fill the graph.
 A company-level decision, noted here for its neutrality cost.
@@ -466,10 +557,25 @@ performance register is a labour-market information exchange under the January
 shape of the network itself rather than to any feature of it, and nothing in
 this document or the plan tree has been designed against it. **[GAP]** Unscoped.
 
+**And one that lives in the schema rather than in the market.** A `chapter`
+binds one subject to one party (`model/record-schema.md` §2), so every fact
+must hang off exactly one party relationship. Work spanning several parties
+has no home, and work attached to none has no home either: open-source
+contribution, a consortium, a founder before incorporation, cross-functional
+work that never produced a title change. That is the population whose résumé
+carries the least signal, which is where the record's advantage over one
+should be largest. The exclusion is made by omission rather than by decision,
+and it does not announce itself in any output, because nothing in a record
+shows what the format could not hold. **[GAP]** Either `chapter` gains a
+multi-party or no-party form, or that population is out of scope in writing.
+
 ## 10. Gaps: the work queue
 
-Ordered by what gates the first sale. Milestone `first-product` in
-`plans/ORDER.md` is the corresponding build path.
+Ordered by what gates the first sale, with one correction: **items 11 and 12
+belong immediately after item 2 and are not renumbered**, because
+`counsel/brief-6` and other documents cite these numbers and a renumbering
+would break them. Milestone `first-product` in `plans/ORDER.md` is the
+corresponding build path.
 
 1. **The record's own schema.** No field list exists for a work-history row, a
    skill, or a credential anywhere in the repo. Nothing ships without it, and
@@ -500,7 +606,11 @@ Ordered by what gates the first sale. Milestone `first-product` in
     never attaches. Counsel, long lead.
 11. **Responsibility dimension level definitions.** Seven dimensions, no level
     definitions, so `dimensions_exercised` cannot be populated by an attesting
-    party. Improves the score; does not gate it. Closest published prior art is
+    party. **Gates the first sale.** `chapter_standing` is the only object that
+    makes an attested chapter different in kind from a résumé line, and it
+    cannot be populated without these definitions, so a chapter with one
+    attestation today carries provenance and corroboration and nothing else.
+    Closest published prior art is
     SFIA, whose seven levels are defined per-dimension in behavioural prose
     across autonomy, influence, complexity and knowledge; the verbatim
     definitions were retrieved 2026-08-18 and are the drafting template.
@@ -531,6 +641,11 @@ Ordered by what gates the first sale. Milestone `first-product` in
     triple, and the customer-authored threshold artifact are specified in §5
     and built nowhere.
 24. **Matching and fintech scope.** Both raised, neither ruled.
+25. **The shape of a chapter.** One subject, one party, so work spanning
+    parties and work attached to no party are unrepresentable (§9). That is
+    the population the record should beat the résumé by the widest margin,
+    and it is currently excluded by omission. Either the object gains a
+    multi-party or no-party form, or the population is ruled out in writing.
 
 ## 11. Naming
 

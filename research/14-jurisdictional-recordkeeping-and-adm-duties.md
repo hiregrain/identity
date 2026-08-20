@@ -1,13 +1,13 @@
-# Jurisdictional Recordkeeping and Automated-Decision Duties
+# Jurisdictional recordkeeping and automated-decision duties
 
-**Evidence tier — binds nothing.** Research informs decisions and constrains
+**Evidence tier: binds nothing.** Research informs decisions and constrains
 no implementation. A figure here describes what someone else did or what a
 regulator said in one matter; it is not a target, a spec, or a decision.
 
-**Companion to `research/13`.** Where 13 answers two questions in depth — may an
-AI Act logging duty defeat the erasure right, and is there any lawful basis to
-retain a link across deletion to stop reset gaming — this file records the
-jurisdictional sweep that ran alongside it: who actually bears a recordkeeping
+**Companion to `research/13`.** Where 13 answers two questions in depth, namely
+whether an AI Act logging duty may defeat the erasure right and whether there
+is any lawful basis to retain a link across deletion to stop reset gaming,
+this file records the jurisdictional sweep that ran alongside it: who actually bears a recordkeeping
 duty, what regulators have and have not said, and which of the repo's premises
 turned out to be stale.
 
@@ -25,12 +25,12 @@ been reasoned about as though the obligations of an employment selection
 procedure attach to whoever built it. Across six US regimes, they do not.
 
 **EEOC, 29 C.F.R. §1602.14.** The preservation duty runs to "an employer" and,
-in the litigation-hold sentence, to "the respondent employer" — repeatedly and
+in the litigation-hold sentence, to "the respondent employer", repeatedly and
 exclusively. §1602.12 confirms the Commission "has not adopted any requirement,
 generally applicable to employers, that records be made or kept"; §1602.14 is a
 preservation rule, not a creation rule. A vendor is reached only derivatively,
-through the statutory "any agent of such a person" in 42 U.S.C. §2000e(b) — the
-same agent theory that carried *Mobley v. Workday* — or by being named a
+through the statutory "any agent of such a person" in 42 U.S.C. §2000e(b), which is the
+same agent theory that carried *Mobley v. Workday*, or by being named a
 respondent itself.
 
 **UGESP, 29 C.F.R. Part 1607.** The recordkeeping duties in §§1607.4 and 1607.15
@@ -40,7 +40,7 @@ selection procedure as a basis for any employment decision." The list is closed
 and the operative verb is *uses*. A vendor that scores and sells the score does
 not make the employment decision. The confirmatory textual signal is
 §1607.15A(3)(b), which treats "consultant reports of validity" as something the
-*user* maintains — the vendor is a source of documentation, not a duty-holder.
+*user* maintains, so the vendor is a source of documentation, not a duty-holder.
 Note also §1607.16(S): UGESP say "should", not "shall"; they are interpretive
 guidelines, which makes them a weak foundation for any argument that leans on
 them as a mandatory obligation in either direction.
@@ -56,7 +56,7 @@ rather than conservatively.
 and rule reads "an employer or employment agency." DCWP's own FAQ is explicit:
 "The vendor that created the AEDT is not responsible for a bias audit of the
 tool." The only retention-shaped duty is §5-303(c), which requires the *audit
-summary* to stay posted for six months after last use — a posting duration over
+summary* to stay posted for six months after last use. A posting duration over
 aggregate data, not a record-retention duty and not person-level. §5-300's
 independent-auditor definition disqualifies anyone with an employment
 relationship with the vendor, so Grain cannot audit its own tool even
@@ -65,7 +65,7 @@ voluntarily. (There is no §5-305; the rule runs 5-300 to 5-304.)
 **Illinois, 775 ILCS 5/2-102(L).** A prohibition and a notice duty, both
 addressed to "an employer". No vendor duty and no retention duty. The general
 IHRA preservation rule at 56 Ill. Adm. Code §2520.110 binds employers, labor
-organizations, employment agencies, and — once served — respondents. IDHR
+organizations, employment agencies, and, once served, respondents. IDHR
 rulemaking on AI is **unverified**: law-firm secondary sources report a proposed
 "Subpart J" published 15 May 2026 and postponed 2 June 2026, but no AI subpart
 appears in the adopted code and IDHR's own site was unreachable.
@@ -81,16 +81,16 @@ the books with its enforcement authority removed.
 
 ### 1.1 The exception, and it is the one that matters
 
-**Colorado is the single US regime that binds Grain directly — and the statute
+**Colorado is the single US regime that binds Grain directly, and the statute
 the repo would have been reasoning about no longer exists.** SB 24-205 was
 delayed from 1 February 2026 to 30 June 2026 by SB 25B-004, then **repealed and
 reenacted by SB 26-189, "Automated Decision-Making Technology", signed 14 May
 2026**. Per the enrolled act's SECTION 5, it takes effect **1 January 2027** and
 applies to consequential decisions made on or after that date.
 
-Grain is a *developer* under §6-1-1701(8)(a) — a person that "develops, offers,
+Grain is a *developer* under §6-1-1701(8)(a), meaning a person that "develops, offers,
 sells, leases, licenses, or otherwise makes commercially available a covered
-ADMT" — because §6-1-1701(2)(a) defines ADMT to include technology generating
+ADMT", because §6-1-1701(2)(a) defines ADMT to include technology generating
 "predictions, recommendations, classifications, rankings, **scores**" used to
 guide a decision about an individual, and §6-1-1701(6)(b) makes employment a
 covered domain.
@@ -105,15 +105,15 @@ DEPLOYERS."
 changelogs, deployer notices. Artifacts about the *system*. Nothing in
 §6-1-1702 requires a developer to retain any record about a scored person. The
 deployer duty at §6-1-1703 runs three years from *the date of a consequential
-decision* — person-linked — while the developer clock runs from *creation of the
-record* — system-linked. That asymmetry is deliberate and it is the whole
+decision*, which is person-linked, while the developer clock runs from *creation of the
+record*, which is system-linked. That asymmetry is deliberate and it is the whole
 finding: **the one jurisdiction that imposes a retention duty on Grain imposes
 it over system artifacts, not over people.**
 
 California converges. 11 CCR §7101 requires 24 months of records of *consumer
 requests and responses*, and §7101(e) says expressly that a business "is not
 required to retain personal information solely for the purpose of fulfilling a
-consumer request." §7155(c) requires risk assessments for five years — again
+consumer request." §7155(c) requires risk assessments for five years, again
 about the processing. Article 11's ADMT compliance date is also 1 January 2027
 (§7200(b)). Whether Grain is a CCPA "business" or a "service provider" is
 fact- and contract-dependent and no primary text resolves it: processing on an
@@ -131,7 +131,7 @@ an employer*."**
 
 The second limb is a precise description of a worker-facing job-suggestion
 surface. Surfacing opportunities to a worker was reasoned about in this repo as
-the neutrality-preserving direction — Grain ranks roles for a person, never
+the neutrality-preserving direction. Grain ranks roles for a person, never
 people for an employer. In US law it is the opposite: it is the limb that makes
 Grain a covered entity in its own right, a "user" under UGESP, and a duty-holder
 under §1602.14 rather than a vendor supplying documentation to one.
@@ -166,8 +166,8 @@ inactivity-erasure regime, but only on large e-commerce, online-gaming, and
 social-media intermediaries. A work-history scoring vendor falls outside the
 Third Schedule and inside Rules 8(3) and 6(1)(e).
 
-Commencement: Rules 3 and 5–16 come into force eighteen months after publication
-— approximately **14 May 2027**.
+Commencement: Rules 3 and 5–16 come into force eighteen months after publication,
+approximately **14 May 2027**.
 
 **A drafting ambiguity worth flagging to counsel.** Rule 8(3)'s operative words
 impose the duty on "a Data Fiduciary" generally, and its illustrations apply it
@@ -190,7 +190,7 @@ reliable, verify before counsel.
 
 ## 3. Philippines and UK
 
-**Philippines — no fixed retention floor, but the broadest erasure-refusal
+**Philippines: no fixed retention floor, but the broadest erasure-refusal
 grounds of any jurisdiction surveyed.** NPC Circular 16-01 is repealed; NPC
 Circular 2023-06 §29 governs log retention and sets no period, requiring only
 that it be "as long as deemed necessary and appropriate based on best practices
@@ -199,7 +199,7 @@ DPA 2012 IRR contains no access-log retention duty for private controllers.
 
 Erasure refusal runs through **NPC Advisory 2021-01 §10(B)(2)**, whose grounds
 include "(b) Compliance with a legal obligation which requires personal data
-processing" and — notably wider than anything in the EU — "(d) Legitimate
+processing" and, notably wider than anything in the EU, "(d) Legitimate
 business purposes of the PIC, consistent with the applicable industry standard
 for personal data retention."
 
@@ -207,13 +207,13 @@ for personal data retention."
 §2(B)(a) requires mechanisms for meaningful human intervention and for data
 subjects to question and contest automated decisions where the effect poses a
 significant risk. §3 requires effective mechanisms to give effect to the rights
-to object, rectify, and erase, and — directly relevant — states that where a
+to object, rectify, and erase, and, directly relevant, states that where a
 request is not feasible the controller must say so and its reasons, and must
 still carry out the intended effect of the right as far as possible. No separate
 NPC AI circular exists. **NPC Circular 2022-04** carries a notification duty for
 automated decision-making and profiling that a PH deployment would need to check.
 
-**UK — Article 22 has been replaced, and it is already in force.** DUAA 2025
+**UK: Article 22 has been replaced, and it is already in force.** DUAA 2025
 s.80 substituted new UK GDPR **Articles 22A–22D**, commenced **5 February 2026**
 by SI 2026/82, applying only to decisions taken on or after that date. Art. 22A
 defines a "significant decision" and makes meaningful human involvement the test
@@ -223,15 +223,15 @@ provision**: where a significant decision is based solely on automated
 processing, the controller must provide information about the decision, enable
 representations, enable human intervention, and enable contest.
 
-DUAA adds **no new retention or logging duty**, and leaves Article 30 unamended
-— the DPDI Bill's lighter records-of-processing regime was dropped. ICO's final
+DUAA adds **no new retention or logging duty**, and leaves Article 30
+unamended; the DPDI Bill's lighter records-of-processing regime was dropped. ICO's final
 ADM guidance is **not yet published**; a consultation ran 31 March to 29 May 2026
 and the live guidance still describes the pre-DUAA regime.
 
 **Consequence for the repo:** `THESIS.md` §10 lists an Article 22 brief as never
 scoped. In the UK the article it would have been about no longer exists in that
 form, and the successor imposes an inform-and-contest duty that sits awkwardly
-beside the ruling that workers never see when analytics are run on them —
+beside the ruling that workers never see when analytics are run on them,
 though the duty falls on whoever takes the decision, which is the employer.
 That allocation is exactly what the brief should establish.
 
@@ -247,17 +247,17 @@ German DSK, Hamburg, and the ICO, there is **one**: a footnote.
 example, logging obligations and other statutory requirements may stand in the
 way of erasure requests." It names no statute, cites Art. 17(2) and (3)
 generically rather than 17(3)(b), and says nothing about the AI Act. The same
-document sets a demanding bar on what erasure means — "technically a complete
+document sets a demanding bar on what erasure means: "technically a complete
 erasure", covering inputs and outputs and the model itself where it contains the
-information — and says training and log data "are to be treated like
+information, and says training and log data "are to be treated like
 conventional data."
 
 **CNIL's framing cuts against the easy version of the argument, in two ways.**
 Its AI Act Q&A enumerates the points where the AI Act "extends and takes over
 from the GDPR", and the list is only real-time biometric ID and special-category
 data for bias detection. Logging is not on it. And its guidance on AI and data
-subject rights routes statutory exclusions through **Article 23 GDPR** — a
-legislative-restriction channel with its own conditions — not through Art.
+subject rights routes statutory exclusions through **Article 23 GDPR**, a
+legislative-restriction channel with its own conditions, not through Art.
 17(3)(b).
 
 CNIL is nonetheless the most operationally useful source found. **Délibération
@@ -265,8 +265,8 @@ CNIL is nonetheless the most operationally useful source found. **Délibération
 retention, expressly recognises "a legal obligation to retain traces for a
 precise duration laid down by law" as justifying a longer period (§20–21),
 recommends that data-subject rights over logs be exercised against the
-controller of the *main* processing (§13), and — closest to the technique Grain
-needs — §22 recommends that where source data has a shorter life, "the log may
+controller of the *main* processing (§13), and, closest to the technique Grain
+needs, §22 recommends that where source data has a shorter life, "the log may
 retain only pseudonymous identifiers, or identifiers for which re-identification
 is particularly difficult", **"while preserving the integrity of the logs"**.
 That proviso is the constraint an unresolvable-pointer design has to answer.
@@ -288,10 +288,10 @@ conditions are independently met, judged against means reasonably likely to be
 used "by the controller **or by another person**", including sources outside the
 controller's control. Deleting the referent does not anonymise a retained
 pointer. The Guidelines do flag Arts. 11(2) and 12(2) GDPR as the one route by
-which pseudonymisation lawfully limits Chapter III rights — worth pursuing.
+which pseudonymisation lawfully limits Chapter III rights, which is worth pursuing.
 
 **CEN-CENELEC JTC 21 draft standards on logging and traceability are
-unretrievable** — member-restricted, and sold rather than published once final.
+unretrievable**, member-restricted, and sold rather than published once final.
 Everything available is third-party commentary.
 
 ---
