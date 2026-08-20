@@ -13,6 +13,9 @@
 # db-migrate's.
 name: ci
 
+permissions:
+  contents: read
+
 on:
   push:
     branches: [main]
