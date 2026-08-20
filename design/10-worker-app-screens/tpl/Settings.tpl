@@ -105,7 +105,7 @@
 
 <script data-dc-script data-props='{"$preview":{"width":360,"height":800}}'>
 // A sheet from the Record header, not a destination. Read-only: every account
-// change is a support request (decision 030). Deletion has no in-app control.
+// change is a support request (decision 036). Deletion has no in-app control.
 // It is named here and routed, because consent promises the right at signup.
 class Component extends DCLogic {
   constructor(p){ super(p); this.state = {confirming:false}; }

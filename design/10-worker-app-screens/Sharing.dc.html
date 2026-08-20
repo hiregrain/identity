@@ -194,6 +194,15 @@
         <span class="t-data col-r">{{ pubState }}</span>
       </button>
 
+      <div class="srow">
+        <span style="flex:1;min-width:0">
+          <span class="t-body" style="display:block">Times your page was opened</span>
+          <span class="t-meta" style="display:block;color:var(--secondary);padding-top:2px;text-wrap:pretty">
+            Counted while the page is on. Never who, and never for a record you sent.</span>
+        </span>
+        <span class="t-data col-r">{{ pubViews }}</span>
+      </div>
+
       <div style="padding-top:14px">
         <span class="t-micro" style="display:block;color:var(--secondary);padding-bottom:6px">
           What the page always shows, and never shows</span>
@@ -226,9 +235,12 @@
           </span>
         </button>
       </sc-for>
+      <!-- The rationale clause that used to close this paragraph ("this screen
+           says so rather than implying otherwise") was addressed to a reviewer,
+           not to the worker. The two sentences before it already do the work. -->
       <p class="t-meta" style="margin:12px 0 0;color:var(--secondary);text-wrap:pretty">
         Ending a grant stops future reads. It cannot pull back what a business
-        already read and kept. This screen says so rather than implying otherwise.</p>
+        already read and kept.</p>
     </div>
 
     <div class="grp">
@@ -241,16 +253,13 @@
       <button class="btn-secondary press" style="width:100%">Send your record</button>
     </div>
 
-    <div class="grp">
-      <div class="sechead"><h2 class="t-sec" style="margin:0">Who has read it</h2></div>
-      <div class="sinerule"><svg viewBox='0 0 320 6' width='100%' height='6' preserveAspectRatio='none' fill='none' stroke='#D3D7D6' stroke-width='1' vector-effect='non-scaling-stroke'><path d='M0.0 3.00 L2.0 3.31 L4.0 3.60 L6.0 3.84 L8.0 4.02 L10.0 4.13 L12.0 4.15 L14.0 4.08 L16.0 3.93 L18.0 3.71 L20.0 3.44 L22.0 3.14 L24.0 2.82 L26.0 2.52 L28.0 2.25 L30.0 2.04 L32.0 1.91 L34.0 1.85 L36.0 1.88 L38.0 2.00 L40.0 2.19 L42.0 2.44 L44.0 2.73 L46.0 3.05 L48.0 3.36 L50.0 3.64 L52.0 3.87 L54.0 4.04 L56.0 4.14 L58.0 4.14 L60.0 4.06 L62.0 3.90 L64.0 3.68 L66.0 3.40 L68.0 3.09 L70.0 2.78 L72.0 2.48 L74.0 2.22 L76.0 2.02 L78.0 1.89 L80.0 1.85 L82.0 1.89 L84.0 2.02 L86.0 2.22 L88.0 2.48 L90.0 2.78 L92.0 3.09 L94.0 3.40 L96.0 3.68 L98.0 3.90 L100.0 4.06 L102.0 4.14 L104.0 4.14 L106.0 4.04 L108.0 3.87 L110.0 3.64 L112.0 3.36 L114.0 3.05 L116.0 2.73 L118.0 2.44 L120.0 2.19 L122.0 2.00 L124.0 1.88 L126.0 1.85 L128.0 1.91 L130.0 2.04 L132.0 2.25 L134.0 2.52 L136.0 2.82 L138.0 3.14 L140.0 3.44 L142.0 3.71 L144.0 3.93 L146.0 4.08 L148.0 4.15 L150.0 4.13 L152.0 4.02 L154.0 3.84 L156.0 3.60 L158.0 3.31 L160.0 3.00 L162.0 2.69 L164.0 2.40 L166.0 2.16 L168.0 1.98 L170.0 1.87 L172.0 1.85 L174.0 1.92 L176.0 2.07 L178.0 2.29 L180.0 2.56 L182.0 2.86 L184.0 3.18 L186.0 3.48 L188.0 3.75 L190.0 3.96 L192.0 4.09 L194.0 4.15 L196.0 4.12 L198.0 4.00 L200.0 3.81 L202.0 3.56 L204.0 3.27 L206.0 2.95 L208.0 2.64 L210.0 2.36 L212.0 2.13 L214.0 1.96 L216.0 1.86 L218.0 1.86 L220.0 1.94 L222.0 2.10 L224.0 2.32 L226.0 2.60 L228.0 2.91 L230.0 3.22 L232.0 3.52 L234.0 3.78 L236.0 3.98 L238.0 4.11 L240.0 4.15 L242.0 4.11 L244.0 3.98 L246.0 3.78 L248.0 3.52 L250.0 3.22 L252.0 2.91 L254.0 2.60 L256.0 2.32 L258.0 2.10 L260.0 1.94 L262.0 1.86 L264.0 1.86 L266.0 1.96 L268.0 2.13 L270.0 2.36 L272.0 2.64 L274.0 2.95 L276.0 3.27 L278.0 3.56 L280.0 3.81 L282.0 4.00 L284.0 4.12 L286.0 4.15 L288.0 4.09 L290.0 3.96 L292.0 3.75 L294.0 3.48 L296.0 3.18 L298.0 2.86 L300.0 2.56 L302.0 2.29 L304.0 2.07 L306.0 1.92 L308.0 1.85 L310.0 1.87 L312.0 1.98 L314.0 2.16 L316.0 2.40 L318.0 2.69 L320.0 3.00'/></svg></div>
-      <sc-for list="{{ reads }}" as="r" hint-placeholder-count="3">
-        <div class="srow">
-          <span style="flex:1;min-width:0" class="t-rec">{{ r.party }}</span>
-          <span class="t-data col-r" style="color:var(--secondary)">{{ r.when }}</span>
-        </div>
-      </sc-for>
-    </div>
+    <!-- No read log. Decision 035 B4: the worker sees the grant's state and no
+         read events, because a read stream during a live application is an
+         anxiety feed and surveillance of the employer. 057 made a read
+         attributable in the ledger, which is not the same as surfacing it, and
+         057 did not supersede this. Public-profile views are counted, which is
+         the one thing 035 B4 permits, and it sits with the page it counts. -->
+
 
   </main>
 </div>
@@ -273,7 +282,7 @@ class Component extends DCLogic {
     return {
       noop,
       exposure: 'Your public page is off. Two parties hold a grant to your record.',
-      pubState: 'Off', pubOn: 'false',
+      pubState: 'Off', pubOn: 'false', pubViews: 'None while off',
       grantCount: '2',
       // The measures row is gone rather than reworded. Nothing derived from them
       // renders (054) and what consent and the packet say about collecting them
@@ -296,10 +305,6 @@ class Component extends DCLogic {
          since:'Granted 4 Aug 2026', state:'Ends', until:'2 Sep', go:noop},
         {party:'Teleperformance Philippines', what:'Your whole record',
          since:'Granted 19 Jul 2026', state:'Ends', until:'17 Aug', go:noop}
-      ],
-      reads: [
-        {party:'Alorica Philippines', when:'12 Aug'},
-        {party:'Teleperformance Philippines', when:'9 Aug'}
       ]
     };
   }

@@ -94,7 +94,7 @@
 
 <script data-dc-script data-props='{"$preview":{"width":360,"height":800}}'>
 // The public page, signed-in view. Whole record or no record, no per-chapter
-// curation anywhere (029). Registry state is carried on every party (06 §9), and
+// curation anywhere (035). Registry state is carried on every party (06 §9), and
 // a worker-typed title is never printed as if a business confirmed it.
 class Component extends DCLogic {
   renderVals(){

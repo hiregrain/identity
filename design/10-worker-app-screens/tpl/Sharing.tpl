@@ -79,6 +79,15 @@
         <span class="t-data col-r">{{ pubState }}</span>
       </button>
 
+      <div class="srow">
+        <span style="flex:1;min-width:0">
+          <span class="t-body" style="display:block">Times your page was opened</span>
+          <span class="t-meta" style="display:block;color:var(--secondary);padding-top:2px;text-wrap:pretty">
+            Counted while the page is on. Never who, and never for a record you sent.</span>
+        </span>
+        <span class="t-data col-r">{{ pubViews }}</span>
+      </div>
+
       <div style="padding-top:14px">
         <span class="t-micro" style="display:block;color:var(--secondary);padding-bottom:6px">
           What the page always shows, and never shows</span>
@@ -111,9 +120,12 @@
           </span>
         </button>
       </sc-for>
+      <!-- The rationale clause that used to close this paragraph ("this screen
+           says so rather than implying otherwise") was addressed to a reviewer,
+           not to the worker. The two sentences before it already do the work. -->
       <p class="t-meta" style="margin:12px 0 0;color:var(--secondary);text-wrap:pretty">
         Ending a grant stops future reads. It cannot pull back what a business
-        already read and kept. This screen says so rather than implying otherwise.</p>
+        already read and kept.</p>
     </div>
 
     <div class="grp">
@@ -126,16 +138,13 @@
       <button class="btn-secondary press" style="width:100%">Send your record</button>
     </div>
 
-    <div class="grp">
-      <div class="sechead"><h2 class="t-sec" style="margin:0">Who has read it</h2></div>
-      <div class="sinerule">@@SINERULE@@</div>
-      <sc-for list="{{ reads }}" as="r" hint-placeholder-count="3">
-        <div class="srow">
-          <span style="flex:1;min-width:0" class="t-rec">{{ r.party }}</span>
-          <span class="t-data col-r" style="color:var(--secondary)">{{ r.when }}</span>
-        </div>
-      </sc-for>
-    </div>
+    <!-- No read log. Decision 035 B4: the worker sees the grant's state and no
+         read events, because a read stream during a live application is an
+         anxiety feed and surveillance of the employer. 057 made a read
+         attributable in the ledger, which is not the same as surfacing it, and
+         057 did not supersede this. Public-profile views are counted, which is
+         the one thing 035 B4 permits, and it sits with the page it counts. -->
+
 
   </main>
 </div>
@@ -158,7 +167,7 @@ class Component extends DCLogic {
     return {
       noop,
       exposure: 'Your public page is off. Two parties hold a grant to your record.',
-      pubState: 'Off', pubOn: 'false',
+      pubState: 'Off', pubOn: 'false', pubViews: 'None while off',
       grantCount: '2',
       // The measures row is gone rather than reworded. Nothing derived from them
       // renders (054) and what consent and the packet say about collecting them
@@ -181,10 +190,6 @@ class Component extends DCLogic {
          since:'Granted 4 Aug 2026', state:'Ends', until:'2 Sep', go:noop},
         {party:'Teleperformance Philippines', what:'Your whole record',
          since:'Granted 19 Jul 2026', state:'Ends', until:'17 Aug', go:noop}
-      ],
-      reads: [
-        {party:'Alorica Philippines', when:'12 Aug'},
-        {party:'Teleperformance Philippines', when:'9 Aug'}
       ]
     };
   }

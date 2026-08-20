@@ -123,20 +123,38 @@ open(os.path.join(OUT,"ceremony-before.svgfrag"),"w").write(G % imprint._strand(
 after = imprint._strand(r_cur[0], r_cur[1], CUR_WOVEN, PPU, DPR).replace("<path d=","<path pathLength='1' d=")
 open(os.path.join(OUT,"ceremony-after.svgfrag"),"w").write(G % after)
 
-# gutter swatches, the same construction unrolled over one lobe period, at a
-# larger box and lower counts so 3-vs-5 is countable at 1x (design/07 §3).
-W, MID = 34.0, 8.0
-def unrolled(n, amp=5.6):
-    out = []
-    for i in range(n):
-        d = i*(TAU/LOBES)/n
-        pts = ["%.1f %.1f" % (W*j/72.0, MID + amp*math.sin(TAU*(j/72.0) + math.pi/2.0 + d)) for j in range(73)]
-        out.append("<path d='M" + " L".join(pts) + "'/>")
-    return "".join(out)
-def flat(dash=False):
+# Gutter swatches. They differ by SHAPE, not by thread count. The previous set
+# drew peer, single-party and multi-party as the same wave at 2, 3 and 5 threads,
+# and rendered at the 34px they actually occupy those three are one small arch:
+# count is invisible below a pitch floor, which is the defect decision 044 fixed
+# once already in imprint.py. Decision 055 made the mark the sole carrier of
+# provenance, so three of five states were carrying weight they could not hold.
+#
+# The system, derivable in one sentence: the BASELINE is the business, an ARCH is
+# an attestation of the work, and the NUMBER of arches is the number of parties.
+# That also gives employment_verified its meaning rather than an arbitrary glyph:
+# a baseline with no arch is a business confirming you were there and saying
+# nothing about the work, which is exactly what the state is.
+W, MID, AMP = 34.0, 11.5, 7.5
+def rule(dash=False):
     return "<path d='M0 %.1f L%.1f %.1f'%s/>" % (MID, W, MID, " stroke-dasharray='3 4'" if dash else "")
-for k, v in {"self_asserted": flat(True), "employment_verified": flat(),
-             "peer_attested": unrolled(2), "party_single": unrolled(3), "party_multi": unrolled(5)}.items():
+def arches(count, baseline):
+    """`count` half-period arches across the box, optionally on a business rule."""
+    out = []
+    span = W / count
+    for k in range(count):
+        x0 = k * span
+        pts = ["%.1f %.1f" % (x0 + span*j/24.0, MID - AMP*math.sin(math.pi*(j/24.0)))
+               for j in range(25)]
+        out.append("<path d='M" + " L".join(pts) + "'/>")
+    if baseline:
+        out.append(rule())
+    return "".join(out)
+for k, v in {"self_asserted":       rule(dash=True),
+             "employment_verified": rule(),
+             "peer_attested":       arches(1, baseline=False),
+             "party_single":        arches(1, baseline=True),
+             "party_multi":         arches(2, baseline=True)}.items():
     open(os.path.join(OUT,"sw-"+k+".svgfrag"),"w").write(v)
 # The mark, at the sizes the screens actually set. `README.md` said gen.py ran
 # mark.py and it never did: the four mark fragments had no generator at all, so

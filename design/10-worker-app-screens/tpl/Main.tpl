@@ -113,7 +113,7 @@
   <main id="scroll" class="dissolve" style="position:absolute;top:52px;bottom:0;left:0;right:0;overflow-y:auto;
                            padding:0 20px 56px 20px;scroll-behavior:smooth">
 
-    <!-- ===== identity and imprint, composed as one hero (029 §B1) ========= -->
+    <!-- ===== identity and imprint, composed as one hero (035 §B1) ========= -->
     <section id="sec-0" style="padding-top:20px">
       <!-- No portrait slot. It was a drawn container (§8 deletes those) holding a
            placeholder for a picture of a person, in a product that refuses to draw
@@ -275,9 +275,9 @@
 </x-dc>
 
 <script data-dc-script data-props='{"$preview":{"width":360,"height":800}}'>
-// Order per decision 029 (amending 028): identity + imprint composed, then
+// Order per decision 035 (amending 028): identity + imprint composed, then
 // outstanding verification, work history, sharing. Grants carry state only, no
-// read events (029 §B4). Revised against design/07.
+// read events (035 §B4). Revised against design/07.
 class Component extends DCLogic {
   constructor(p){ super(p); this.state = {active:0, sheet:null}; }
 
