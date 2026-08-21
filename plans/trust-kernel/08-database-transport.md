@@ -3,7 +3,7 @@ id: trust-kernel/08
 type: task
 layer: trust-kernel
 satisfies: []
-status: ready
+status: in_progress
 depends_on: []
 migrations: []
 binds: [decisions/LOG.md#065]
