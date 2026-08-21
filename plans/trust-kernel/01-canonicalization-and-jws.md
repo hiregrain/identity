@@ -3,11 +3,16 @@ id: trust-kernel/01
 type: task
 layer: trust-kernel
 satisfies: [1]
-status: in_progress
+status: done
 depends_on: [foundation/01, foundation/02]
 binds: [contract/CONTRACT.md, decisions/LOG.md#012, decisions/LOG.md#019]
-evidence: []
-verified_by: null
+evidence:
+  - "test:make check green at 6c78d826d9712f7bcfe7671a81e643128dbc11da; make check-red red paths 16 to 20; make kernel-governance exits 0 against the live host"
+  - "test:differential run against reference at origin/task/trust-kernel-06, 18075 of 20096 requests byte-identical, every divergence a lone surrogate (ambiguity A3, raised)"
+  - "log:log/2026-08-21-trust-kernel-01-verification.md"
+  - "diff:PR #15 @ 6c78d826d9712f7bcfe7671a81e643128dbc11da"
+  - "review:log/2026-08-21-trust-kernel-01-head-reverification.md"
+verified_by: head-reverifier@2026-08-21
 ---
 
 # Canonicalization and JWS core

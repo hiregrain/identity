@@ -1,0 +1,26 @@
+# Kernel governance seed (trust-kernel/01, decisions 019 and 087).
+#
+# This file requests reviewers. It does not require them, and under
+# decision 087 nothing on the host does either: every pull request here is
+# authored under the founder's own account and the host forbids approving
+# your own, so a required-approval rule was unsatisfiable by the only human
+# in the repository. What the host enforces instead is a ruleset blocking
+# force pushes and branch deletion on main, and what enforces kernel review
+# is the loop's own gates: clean-context verification, code review, and the
+# founder's read at merge.
+#
+# checks/kernel-governance.mjs asserts the host half by querying the host,
+# precisely so the presence of this file is never mistaken for a rule being
+# in force. Required approvals return here the day a second maintainer
+# holds write access; 087 writes that trigger down.
+
+# The frozen core: canonicalization, sign/verify, chain append/verify, and
+# tree construction and proofs. Everything a subtle bug here would be
+# unrecoverable in.
+/core/kernel/ @KyleHChoy
+
+# The vector generator and the two runners hold the bytes the frozen core
+# is judged against, so a change to them is a change to the contract's
+# teeth.
+/core/cmd/vectors/ @KyleHChoy
+/contract/ @KyleHChoy
