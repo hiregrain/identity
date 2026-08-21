@@ -7,7 +7,18 @@ status: in_progress
 depends_on: [trust-kernel/01, foundation/03, trust-kernel/08]
 migrations: [0006-key-event-log]
 binds: [design/stack-litigation/d3-verdict.md, decisions/LOG.md#011]
-evidence: []
+evidence:
+  [
+    "test:cd core && go test ./kernel -run TestSignatureValidAcrossTheRuleBoundaries -- 20 boundary cases pass",
+    "test:cd core && go test ./kernel -run 'TestABackdatedCompromiseClaimInvalidatesNothing|TestTheRuleIsIndependentOfEventOrder|TestARepeatedEventKindTakesTheEarliest|TestValidKeyEventKind' -- pass",
+    "test:make signing-test -- the operatorkey suite green under GRAIN_KEY_PROVIDER=software and =stub-kms",
+    "test:cd core && go test -tags db -count=1 ./kernel/keylog/... -- every test passes against the live spine",
+    "test:node checks/signing-seam.mjs -- 27 Go files scanned; 0 signing primitives outside the kernel",
+    "test:make check-red -- red path 21 fails as required and the verify-only green fixture passes",
+    "test:make check -- check: green at 1cd626b0",
+    "test:make check-red-db -- planted violations fail as required; databases left as found",
+    "diff:1cd626b0",
+  ]
 verified_by: null
 ---
 
@@ -54,3 +65,42 @@ compromise-vs-backdating rule enforceable.
 Verifier runs the boundary-case table, adds one adversarial case
 (backdated compromise claim), and confirms history is not retroactively
 invalidated.
+
+## Evidence
+
+- AC 1 (compromise at T): `core/kernel/keyevent.go` holds the rule,
+  `core/kernel/keyevent_test.go` the table. Every comparison the rule
+  makes is exercised strictly before, exactly at, and strictly after,
+  including at nanosecond distance from the report. The database half
+  runs the same claim over rows that made a round trip through the spine
+  (`TestTheCompromiseCutHoldsOverRowsReadBack`), so a coarsened or lost
+  timestamp on the way in or out shows up.
+  `TestABackdatedCompromiseClaimInvalidatesNothing` is the adversarial
+  case the Outside check names, written before the rule.
+- AC 2 (provider swap is config-only): `make signing-test` runs
+  `core/kernel/operatorkey`'s whole suite once per provider with
+  `GRAIN_KEY_PROVIDER` as the only difference between the two runs, the
+  shape `envelope-test` already uses. Every test taking one provider
+  takes the configured one, so the variable is load-bearing rather than
+  decorative. `TestTheTwoProvidersMintDistinguishableIdentifiers` is
+  what stops a swap passing by the two being one implementation in two
+  coats.
+- AC 3 (rotation is invisible): `TestRotationIsInvisibleToCallers`
+  drives `kernel.Sign` with a byte-identical call on both sides of a
+  rotation and asserts the record signed after names the new key, the
+  record signed before still verifies, and the two are not the same key.
+  Conformance checks 4 through 6 state the same contract for any future
+  provider.
+- Criterion 5's first half: `checks/signing-seam.mjs`, in
+  `checks/run.mjs`'s metadata group and therefore in `make check` and
+  CI. It flags a call to `ed25519.Sign`, `ed25519.GenerateKey`, or
+  `ed25519.NewKeyFromSeed` outside `core/kernel`, `core/cmd/kernel-adapter`
+  and `core/gen`. Red path 21 points it at a planted violation and at a
+  verify-only package that must pass, since the lint bans producing a
+  signature and not checking one.
+- The log: `db/migrations/spine/0006-key-event-log.sql`. Append-only by
+  the grants it does not hold, one event of each kind per key by its
+  primary key, and `ledger_ts` unwritable by the serving role because
+  the table-level INSERT grant is revoked and re-granted over the four
+  columns a caller may name. Each of those three is asserted against the
+  live database in `core/kernel/keylog/keylog_db_test.go`.
