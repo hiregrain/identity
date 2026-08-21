@@ -4355,3 +4355,40 @@ to stay in a tab is the one whose connectivity makes offline matter most.
 
 **`app-shell` goes `ready`.** It depends only on `foundation`, which is `done`,
 so its tasks are the first workable work in the repo.
+
+## 082 — The contract gains four sentences: surrogates refused, verdicts exact, spellings canonical (2026-08-21)
+
+Founder rulings on the four ambiguities `reference/README.md` recorded
+when trust-kernel/06 read the contract cold, sharpened by the first
+differential run: 18075 of 20096 requests agreed byte for byte, and
+every one of the 2021 divergences was the lone-surrogate silence.
+
+**A3, lone surrogates: the document is refused.** Rule 1 pins JCS, JCS
+assumes well-formed Unicode, and the contract now says so: input
+containing an unpaired surrogate is refused, never altered and never
+escaped. The kernel's prior behaviour, Go's silent U+FFFD substitution,
+returned bytes that were not the input's and called it success, which
+rule 1's no-normalization posture forbids outright. The alternative
+reading, JSON.stringify's preserve-and-escape, would have required a
+hand-written JSON string decoder inside the frozen core; refusal costs a
+few lines in the reference model instead.
+
+**A1, the true verdict: exactly `{"valid":true}`**, the only shape that
+invents nothing.
+
+**A2, base64url: strict.** A segment must be the canonical spelling of
+its bytes, surviving a decode and re-encode round trip. The differential
+run caught Go lenient about a final character's slack bits; strict was
+taken and is now normative. One envelope has one spelling, which is what
+rule 3's byte-exact header already claims.
+
+**A4, failure says nothing.** The false verdict stays exactly
+`{"valid":false}`, reason included in "no extra fields": distinguishable
+failure reasons are a side channel on the signature check. Debugging
+detail lives in logs, never in the verdict.
+
+The amendment lands as its own `docs(contract):` commit, per the rule
+that a contract change never rides an implementation diff. The reference
+model (PR #12) moves from preserve-and-escape to refusal; the kernel and
+TS runner (PR #15) already refuse, so `make differential` is expected
+green once both land.
