@@ -3,7 +3,7 @@ id: person-identity/04
 type: task
 layer: person-identity
 satisfies: []
-status: in_progress
+status: done
 depends_on: [person-identity/01]
 migrations: [0011-names]
 binds: [decisions/LOG.md#013, decisions/LOG.md#020, research/11-signup-identifiers-and-names.md]
@@ -20,7 +20,10 @@ evidence:
   - "diff:PR #16 @ 40fd466b1308c9e770838449fff016ac59a3c19f (decision 091 window semantics plus four code-review findings)"
   - "test:make check @ 40fd466 (green, run under a private compose project with host ports removed)"
   - "review:log/2026-08-21-person-identity-04-verification-4.md (clean-context verification at 40fd466, fail on criterion 3, a superseded row with its own future stated end stays in the employer render)"
-verified_by: null
+  - "diff:PR #16 @ 2d041346e09cbebc73f21961ec20f90612040583 (earlier-of-two-ends LEAST derivation per decision 092, and a named per-table conflict target)"
+  - "test:make check @ 2d04134 (green, run under a private compose project with host ports removed)"
+  - "review:log/2026-08-21-person-identity-04-verification-5.md (clean-context verification at 2d04134, pass)"
+verified_by: agent-afdda8a0f6d953fc3@2026-08-21
 ---
 
 # The name model
