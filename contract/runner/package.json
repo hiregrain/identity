@@ -1,0 +1,14 @@
+{
+  "name": "@grain/contract-runner",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "TypeScript runner for the golden vectors under contract/vectors (trust-kernel/01).",
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "node src/check.ts ../vectors"
+  },
+  "devDependencies": {
+    "@types/node": "^24.3.0"
+  }
+}

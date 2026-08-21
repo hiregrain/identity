@@ -43,8 +43,9 @@ successful takeover still cannot destroy the record.
 
 ## Acceptance
 
-- AC (mechanical): a document-verified account cannot be recovered by
-  email/SMS code alone, proven by an attempted downgrade path.
+- (The downgrade-proof criterion, a document-verified account refusing
+  code-only recovery, is cut by decision 086: no such account exists in
+  first-product per decision 071. It returns with the verification layer.)
 - AC (mechanical): deletion attempted inside the freeze window does not
   execute, and **does not execute at expiry either**. It waits for fresh
   confirmation, proven by advancing the clock past expiry with no further

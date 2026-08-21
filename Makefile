@@ -12,9 +12,17 @@ PSQL_PAYLOAD := $(COMPOSE) exec -T payload psql -v ON_ERROR_STOP=1 -U identity -
 DUMP_SPINE := $(COMPOSE) exec -T spine pg_dump --schema-only --restrict-key=dump -U identity spine
 DUMP_PAYLOAD := $(COMPOSE) exec -T payload pg_dump --schema-only --restrict-key=dump -U identity payload
 
-.PHONY: check check-red check-red-db metadata install lint fmt-check go-check ts-check db-up db-reset migrate migrate-verify typegen typegen-check append-only spine-schema payload-residency scored-columns two-plane-split envelope-test cross-plane-constructs cross-plane-outbox deletion-test reference-test differential differential-red db-down
+# The golden vectors both language runners read (trust-kernel/01).
+# Absolute, so the red paths below can point both runners at a mutated copy
+# in a temp directory without either one's own working directory mattering.
+# Quoted at every use: $(CURDIR) carries whatever the checkout path is, and
+# a developer checkout under a directory with a space in it split the
+# argument and failed with the usage line.
+VECTORS ?= $(CURDIR)/contract/vectors
 
-check: metadata install lint go-check reference-test db-up migrate-verify typegen-check append-only spine-schema payload-residency scored-columns two-plane-split envelope-test cross-plane-constructs cross-plane-outbox deletion-test ts-check
+.PHONY: check check-red check-red-db metadata install lint fmt-check go-check ts-check db-up db-reset migrate migrate-verify typegen typegen-check append-only spine-schema payload-residency scored-columns two-plane-split envelope-test cross-plane-constructs cross-plane-outbox person-test deletion-test reference-test differential differential-red db-down vectors vectors-check kernel-budget kernel-governance
+
+check: metadata install lint go-check reference-test differential db-up migrate-verify typegen-check append-only spine-schema payload-residency scored-columns two-plane-split envelope-test cross-plane-constructs cross-plane-outbox person-test deletion-test ts-check
 	$(COMPOSE) down
 	@echo "check: green"
 
@@ -32,7 +40,7 @@ fmt-check:
 	if [ -n "$$unformatted" ]; then echo "gofmt needed on:"; echo "$$unformatted"; exit 1; fi
 
 lint: fmt-check
-	pnpm exec prettier --check "checks/**/*.mjs" "db/**/*.mjs" "db/**/*.ts" "db/*.json" "test/*.mjs" "eslint.config.mjs" "reference/**/*.ts" "reference/*.json" "surfaces/**/*.{ts,tsx,js,json}" --no-error-on-unmatched-pattern
+	pnpm exec prettier --check "checks/**/*.mjs" "db/**/*.mjs" "db/**/*.ts" "db/*.json" "test/*.mjs" "eslint.config.mjs" "reference/**/*.ts" "reference/*.json" "surfaces/**/*.{ts,tsx,js,json}" "contract/runner/**/*.{ts,json}" --no-error-on-unmatched-pattern
 	pnpm exec eslint .
 
 go-check:
@@ -146,6 +154,18 @@ cross-plane-constructs:
 cross-plane-outbox:
 	node test/cross-plane-outbox.test.mjs
 
+# The signup and id-issuance acceptance suite (person-identity/01):
+# signup driven end to end across both planes, the spine transaction that
+# issues an id, the outbox worker that carries the payload half, and the
+# reuse and assurance probes. Build tag db like the envelope suite;
+# -count=1 because the databases are state the test cache cannot see.
+# One provider run: nothing this suite proves depends on which key
+# provider seals the content, and the swap is proven both ways by
+# `envelope-test`. Runs before deletion-test, which recreates the payload
+# container mid-run.
+person-test:
+	cd core && GRAIN_KEY_PROVIDER=software go test -tags db -count=1 ./person/...
+
 # The deletion-mechanics acceptance suite (foundation/08): a real
 # pg_dump backup taken pre-deletion, restored (db/backup.mjs and
 # db/restore.mjs, driven exactly as an operator runs them), the restore
@@ -192,6 +212,45 @@ differential:
 
 db-down:
 	$(COMPOSE) down
+
+# The golden vectors (trust-kernel/01). `vectors` regenerates them from
+# core/cmd/vectors and is what a change to the generator is followed by.
+# A forgotten regeneration is caught by checks/vector-freshness.mjs in the
+# metadata group, which runs the generator and compares bytes on every
+# run. The Go test that compares them too is a fast developer signal and
+# not the enforcement: it can be served from the test cache, because the
+# vectors live outside the `core` module.
+vectors:
+	cd core && go run ./cmd/vectors generate "$(VECTORS)"
+
+# Both language runners over the same files. The green path is already
+# covered by `check`: go-check runs the kernel against the committed
+# vectors and ts-check runs contract/runner against them. This target
+# exists so the red path can aim both at a mutated copy in one place.
+vectors-check:
+	cd core && go run ./cmd/vectors check "$(VECTORS)"
+	cd contract/runner && node src/check.ts "$(VECTORS)"
+
+# The frozen core's line budget (decision 019). Registered in
+# checks/run.mjs's metadata group, so `make check` and CI already run it;
+# this target is for running it alone.
+kernel-budget:
+	node checks/kernel-budget.mjs
+
+# The host policy on the frozen core (trust-kernel/01, decision 087):
+# force pushes and branch deletion blocked on main, CODEOWNERS present on
+# the kernel paths. This is the local entry point; the enforcement is CI's
+# kernel-governance job, which is in the all-green fan-in and therefore
+# blocks a merge. It is not part of `check` because every other target in
+# this file runs against local containers with no credentials, and a host
+# query here would fail for any developer who has not authenticated.
+#
+# Decision 087 superseded 019's two-approval rule rather than its intent:
+# every pull request here is authored under the founder's own account and
+# the host forbids self-approval, so a required-approval rule was
+# unsatisfiable. The dormant code and its trigger are in the check.
+kernel-governance:
+	node checks/kernel-governance.mjs
 
 # Red paths: prove each enforcement fails when pointed at a planted
 # violation, without touching the tree the green path checks. No database
@@ -258,7 +317,39 @@ check-red:
 	! node checks/unslop.mjs test/fixtures/redpath/unslop
 	@echo "red path 15: a hand-rolled psql invocation outside core/transport fails the transport-seam check (no database)"
 	! node checks/transport-seam.mjs test/fixtures/redpath/transport
-	@echo "red path 16: the differential harness catches a deliberately planted contract misreading, and reports zero divergence when there is none (no database)"
+	@echo "red path 16: a mutated golden vector fails BOTH language runners (no database)"
+	@dir="$$(mktemp -d)"; \
+	cp "$(VECTORS)/canonicalization.json" "$(VECTORS)/sign-verify.json" "$$dir/" && \
+	node -e 'const fs=require("fs");const f=process.argv[1];const v=JSON.parse(fs.readFileSync(f,"utf8"));const c=v.cases.find(c=>c.canonical!==undefined);c.canonical=c.canonical+" ";fs.writeFileSync(f,JSON.stringify(v,null,2)+"\n");' "$$dir/canonicalization.json" && \
+	( cd core && ! go run ./cmd/vectors check "$$dir" ) && \
+	( cd contract/runner && ! node src/check.ts "$$dir" ) && \
+	rm -rf "$$dir" && \
+	echo "flagged by the go kernel and by the typescript runner"
+	@echo "red path 17: a frozen core over its line budget fails the budget check (no database)"
+	! node checks/kernel-budget.mjs core/kernel 10
+	@echo "red path 18: signing with a caller-supplied key does not compile, and fails for that reason (decision 019)"
+	@out="$$(cd test/fixtures/redpath/kernel-sign && go build ./... 2>&1)"; \
+	if [ -z "$$out" ]; then echo "the fixture compiled; the signing path takes a key"; exit 1; fi; \
+	echo "$$out"; \
+	echo "$$out" | grep -qF "too many arguments in call to kernel.Sign" || \
+	  { echo "the fixture failed for some other reason than the one this red path is about"; exit 1; }; \
+	echo "flagged: kernel.Sign has no parameter another party's key could travel in"
+	@echo "red path 19: a vector file edited without regenerating fails the freshness check, even when the edit is one both runners tolerate (no database)"
+	@dir="$$(mktemp -d)"; \
+	cp "$(VECTORS)/canonicalization.json" "$(VECTORS)/sign-verify.json" "$$dir/" && \
+	node -e 'const fs=require("fs");const f=process.argv[1];fs.writeFileSync(f,fs.readFileSync(f,"utf8").replace("\"empty array\"","\"empty array (hand edited)\""));' "$$dir/canonicalization.json" && \
+	( cd core && go run ./cmd/vectors check "$$dir" ) && \
+	( cd contract/runner && node src/check.ts "$$dir" ) && \
+	! node checks/vector-freshness.mjs "$$dir" && \
+	rm -rf "$$dir" && \
+	echo "flagged: both runners passed the edited file and the freshness check did not"
+	@echo "red path 20: each piece of decision 087's policy going missing fails the governance check on its own line, and the policy in force passes (no database)"
+	! node checks/kernel-governance.mjs hiregrain/identity test/fixtures/redpath/kernel-governance/no-force-push-rule
+	! node checks/kernel-governance.mjs hiregrain/identity test/fixtures/redpath/kernel-governance/no-deletion-rule
+	! node checks/kernel-governance.mjs hiregrain/identity test/fixtures/redpath/kernel-governance/no-codeowners
+	! node checks/kernel-governance.mjs hiregrain/identity test/fixtures/redpath/kernel-governance/nothing
+	node checks/kernel-governance.mjs hiregrain/identity test/fixtures/greenpath/kernel-governance/in-force
+	@echo "red path 21: the differential harness catches a deliberately planted contract misreading, and reports zero divergence when there is none (no database)"
 	$(MAKE) differential-red
 	@echo "check-red: all red paths fail as required"
 

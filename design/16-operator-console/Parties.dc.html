@@ -1,0 +1,520 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap');
+    /* Grain, per DESIGN.md §5 colour, §6 type, §7 spacing/radius/depth */
+    :root{
+      --ink:#1B2A44; --paper:#F8F5EE;
+      /* Ratios are given for BOTH grounds, because the reader surfaces (Grant,
+         Public, PublicReduced) sit on --page and the old single figure was the
+         paper one. --rule was 7E8794: 3.34 on paper, 2.89 on page, so the token
+         whose comment reads "every line that carries meaning" failed 1.4.11 on
+         exactly the surfaces a partner reads. Both tokens are darkened until the
+         worse ground clears with headroom rather than by hundredths. */
+      --secondary:#55606E; /* 5.87:1 paper, 5.09:1 page, text */
+      --rule:#727C8A;      /* 3.88:1 paper, 3.37:1 page, every line that carries meaning */
+      --hairline:#D3D7D6;  /* 1.33:1 paper, 1.16:1 page. Pure separation, never a state, so
+                              contrast is deliberately below 3:1 and it may never carry one. */
+      --page:#E9E5DE;
+
+      /* The spacing scale, which lived only in the review artifact and in
+         DESIGN.md §7, in two versions that disagreed, while the templates used
+         thirteen raw values on neither. checks/design-system.mjs reads this
+         block, so the scale and its check can no longer diverge. */
+      --sp1:2px; --sp2:4px; --sp3:6px; --sp4:8px; --sp5:10px; --sp6:12px;
+      --sp7:14px; --sp8:16px; --sp9:20px; --sp10:24px; --sp11:28px;
+      --sp12:32px; --sp13:40px; --sp14:56px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--page);color:var(--ink);
+         font-family:'Archivo',-apple-system,'Helvetica Neue',sans-serif;
+         -webkit-font-smoothing:antialiased}
+    a{color:var(--ink);text-decoration:underline;text-underline-offset:2px}
+    a:hover{color:var(--ink);text-decoration-thickness:2px}
+    button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;text-align:left}
+    /* §6 uses one family, hierarchy from width, weight and tracking */
+    /* Two registers added because the screens were already asking for them in
+       inline overrides: t-lead at 19 appeared twelve times patching t-sec
+       upward for a statement that opens a screen, and t-head at 25 appeared
+       eleven times patching t-title downward for a pushed screen, where a 28px
+       title next to a 52px header band reads as a second masthead. Adding two
+       registers is a smaller change than thirty-two local patches, and it is
+       the only one a check can hold. */
+    .t-title {font-stretch:125%;font-weight:700;font-size:28px;line-height:1.12;text-wrap:balance}
+    .t-head  {font-stretch:110%;font-weight:700;font-size:25px;line-height:1.16;text-wrap:balance}
+    .t-lead  {font-weight:600;font-size:19px;line-height:1.35;text-wrap:pretty}
+    .t-sec   {font-weight:600;font-size:17px;line-height:1.2;text-wrap:balance}
+    .t-rec   {font-weight:600;font-size:15px;line-height:1.3}
+    .t-body  {font-weight:400;font-size:14px;line-height:1.6}
+    .t-data  {font-weight:500;font-size:13px;line-height:1.35;font-variant-numeric:tabular-nums}
+    .t-meta  {font-weight:400;font-size:12px;line-height:1.4}
+    /* The two uppercase registers, and what each may hold. The old comment said
+       "labels ONLY, never a value, a date, a name or a sentence" and governed
+       both, which made every screen title a violation of its own rule. Split:
+       t-serial names the screen, which is a label for the surface; t-micro
+       labels a field or a group inside one. Neither may carry a value, a date, a
+       name or a sentence, because uppercase with tracking is unreadable at
+       length and meaningless in Devanagari, which is on the roadmap. */
+    .t-micro {font-weight:500;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;line-height:1.3}
+    .t-serial{font-weight:500;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;line-height:1.2}
+    .t-inst  {font-stretch:125%;font-weight:800;font-size:40px;line-height:1;font-variant-numeric:tabular-nums;white-space:nowrap}
+    /* §7 depth presses down. Verified rows have zero press-give, and rigidity is
+       how permanence is expressed. Both halves are load-bearing. */
+    .press{transition:transform 60ms cubic-bezier(0.2,0,0,1)}
+    .press:active{transform:translateY(2px)}
+    .rigid:active{transform:none}
+    /* §8 buttons have no pills, no icons inside. 44px minimum (§12). */
+    .btn-primary{background:var(--ink);color:var(--paper);border-radius:3px;
+                 padding:12px 16px;font-weight:600;font-size:15px;width:100%;
+                 text-align:center;min-height:44px}
+    .btn-secondary{border:1px solid var(--ink);border-radius:3px;padding:12px 16px;
+                   font-weight:600;font-size:15px;width:100%;text-align:center;min-height:44px}
+    .btn-tertiary{font-weight:600;font-size:14px;text-decoration:underline;
+                  text-underline-offset:3px;min-height:44px;padding:12px 8px;display:inline-block}
+    /* a disabled control loses its ink, never its contrast (law 8) */
+    /* A disabled control loses its ink, never its contrast (§7). It also has to
+       lose its resemblance to an ENABLED secondary, which is a hairline box with
+       ink text: the two were separable only by border colour, and an outside
+       reviewer read a disabled primary as a deliberate secondary and concluded
+       the button grammar had no rule. Dashed is the state grammar's own word for
+       not-yet, and it cannot be mistaken for a solid hairline. */
+    .btn-primary[disabled]{background:none;color:var(--ink);
+                           border:1px dashed var(--rule);cursor:default}
+    :focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+    @media (prefers-reduced-motion:reduce){
+      *{animation-duration:1ms !important;transition-duration:1ms !important;
+        animation-delay:0ms !important;transition-delay:0ms !important}
+    }
+
+    /* the plate (§9) marks the RECORD. A settings sheet is not one, so the
+       corners appear on the record surface and nowhere else. */
+    .plate{position:absolute;inset:0;pointer-events:none}
+    .reg{position:absolute;width:11px;height:11px;border:0 solid var(--rule)}
+    .row{display:flex;gap:12px;align-items:flex-start;padding:12px 0;
+         border-bottom:1px solid var(--hairline);width:100%}
+    .row-sel{border-bottom:1.5px solid var(--rule)}
+    .gutter{flex:0 0 26px;padding-top:4px}
+    .sechead{display:flex;justify-content:space-between;align-items:baseline;
+             border-bottom:1px solid var(--ink);padding-bottom:8px;gap:12px}
+    .icon{stroke:var(--ink);stroke-width:1.5;fill:none;stroke-linecap:square}
+    .col-r{text-align:right;white-space:nowrap;padding-top:2px}
+    main::-webkit-scrollbar{width:0}
+
+    /* §9's sine-modulated divider and the rung scale live in the chassis, not in
+       one screen's helmet: both are shared vocabulary, and a class defined in
+       Main only meant every other screen rendered them unstyled. */
+    /* §9's sine-modulated divider carries the figure's own frequency, so it
+       means "this section is about the record the figure draws". It was under
+       every section header on every screen, including settings groups, which is
+       01-banned-patterns test 3: a device applied uniformly is a tell rather
+       than a system. It now appears only on surfaces that show the figure. */
+    .sinerule{margin-top:-2px;line-height:0;opacity:.9}
+    /* No .rung. It drew the seven measures as a graded ladder, and decision 054
+       renders nothing derived from them: a ladder with a mark on it is an
+       ordinal whether or not the number is printed. */
+
+    /* Provenance is carried by the mark, and the sentence it stands for is
+       reachable on hover, tap and keyboard focus (055). The sentence also stays
+       in the DOM as the mark's accessible name, which is the text equivalent
+       §12 requires and the only provenance a crawler can read. One string
+       serves all three. Enforced by reading. */
+    .prov{position:relative;flex:0 0 auto;min-width:44px;min-height:44px;
+          display:inline-flex;align-items:center;justify-content:flex-start;
+          margin-left:-4px;padding-left:4px}
+    /* opacity, never visibility or display: a hidden-by-visibility tip leaves
+       the accessibility tree and the crawler gets nothing, which would defeat
+       the whole point of keeping one string. */
+    .prov .tip{position:absolute;left:0;top:calc(100% - 6px);z-index:6;
+               background:var(--ink);color:var(--paper);padding:8px 12px;
+               width:max-content;max-width:min(260px, 68vw);text-align:left;
+               opacity:0;pointer-events:none;transition:opacity 110ms linear}
+    .prov:hover .tip,.prov:focus-visible .tip{opacity:1;pointer-events:auto}
+    /* 1.4.13 wants the revealed content hoverable. It stays up while the
+       pointer is on it. Enforced by reading. */
+    .prov .tip:hover{opacity:1;pointer-events:auto}
+    @media (prefers-reduced-motion:reduce){ .prov .tip{transition:none} }
+    /* The imprint is capped and centred wherever it appears. A fluid root with an
+       uncapped figure grows until the figure swallows the display, the defect
+       fixed on the record and still live on three other screens. 320 is the size
+       it is drawn and thread-budgeted at (044). */
+    .imprint{display:block;width:100%;max-width:320px;margin-inline:auto}
+    /* An instrument reading: the figure and what it counts. baseline alignment
+       hung the small text off the numeral's foot, which reads as two things that
+       missed each other. The text block is centred against the numeral instead,
+       and the numeral gets its own optical trim, a 40px 800-weight Expanded
+       figure sits high in its line box. */
+    .reading{display:flex;align-items:center;gap:14px}
+    .reading .t-inst{flex:0 0 auto;line-height:.82;position:relative;top:1px}
+    .reading > span:last-child{flex:1;min-width:0}
+    /* A row that goes somewhere says so. Rows that only state a fact carry no
+       chevron, since a fact dressed as a control lies about what can be changed. */
+    .chev{flex:0 0 16px;display:flex;align-items:center;padding-left:4px}
+    /* The bottom of a scroller is where the system's own bar begins. Content that
+       simply stops there reads as cut off, and a large empty band reads as a
+       mistake. `.dissolve` fades the last 28px of the scroll into the paper, so
+       the record ends rather than being truncated, and the home indicator has
+       something to sit against. 28 is the smallest band that reads as intentional
+       at the 16px body size, below that it is a hairline nobody sees. */
+    .dissolve{-webkit-mask-image:linear-gradient(to bottom, #000 calc(100% - 28px), transparent 100%);
+              mask-image:linear-gradient(to bottom, #000 calc(100% - 28px), transparent 100%)}
+    @media (prefers-reduced-transparency:reduce){
+      .dissolve{-webkit-mask-image:none;mask-image:none}
+    }
+
+    /* A pushed screen, which is a shape the app did not have. `design/08` §3:
+       the sheets carry a Close and nothing drew a back affordance, because iOS
+       takes the left edge and Android's gesture nav takes both, so an edge
+       swipe is the platform's and not ours (048). A drawn back control is the
+       only honest answer. */
+    .pushhead{height:52px;display:flex;align-items:center;gap:4px;padding:0 8px 0 4px;
+              border-bottom:1px solid var(--hairline);position:relative;z-index:3;
+              background:var(--paper);flex:0 0 auto}
+    .pushhead .t-serial{flex:1;min-width:0}
+    .iconbtn{width:44px;height:44px;display:flex;align-items:center;justify-content:center;
+             flex:0 0 44px}
+    .iconbtn svg{stroke:var(--ink);stroke-width:1.5;fill:none;stroke-linecap:butt;
+                 stroke-linejoin:miter}
+    /* A fixed action band at the foot of a pushed screen. Sits above the
+       dissolve so a primary control is never faded by it. */
+    .actions{position:absolute;left:0;right:0;bottom:0;padding:16px 20px;
+             background:var(--paper);border-top:1px solid var(--ink);z-index:4}
+
+    /* §12 says loading is the scribing arc, never a spinner, and nothing drew
+       it. One lobe period of the figure's own wave, scribed and released. It
+       carries no percentage, because an arc that pretends to know how long is
+       the same lie as a spinner that pretends to make progress. */
+    .arc{display:block;margin-inline:auto}
+    .arc path{stroke-dasharray:1;stroke-dashoffset:1;
+              animation:arcscribe 1400ms cubic-bezier(0.4,0,0.2,1) infinite}
+    @keyframes arcscribe{
+      0%{stroke-dashoffset:1}
+      55%{stroke-dashoffset:0}
+      100%{stroke-dashoffset:-1}
+    }
+    /* Progress, where the length IS known: a band closing on the figure's
+       radius. §9 specifies it and nothing used it. */
+    .band{height:3px;background:var(--hairline);overflow:hidden}
+    .band i{display:block;height:100%;background:var(--ink);
+            transition:width 320ms cubic-bezier(0.2,0,0,1)}
+    @media (prefers-reduced-motion:reduce){
+      .arc path{animation:none;stroke-dashoffset:0}
+      .band i{transition:none}
+    }
+
+    /* The state grammar as a control, not a platform switch (`design/08` §2).
+       On is ink filled to the right, off is the rule alone: the same
+       ink-versus-rule distinction every other state in the system uses, so
+       nobody has to learn a second vocabulary for a setting. */
+    /* The control is 46x44 so it clears §12's target floor; the track it draws
+       is 26 tall and sits inside that. A 26px-high switch was the shape the
+       platform switches use and it fails 2.5.8 on both of them. */
+    .sw{flex:0 0 auto;width:46px;height:44px;border:0;background:none;padding:0;
+        position:relative}
+    .sw::before{content:'';position:absolute;left:0;right:0;top:9px;height:26px;
+                border:1px solid var(--rule);border-radius:3px;box-sizing:border-box}
+    .sw i{position:absolute;top:13px;left:4px;width:18px;height:18px;
+          background:var(--rule);transition:left 140ms cubic-bezier(0.2,0,0,1),
+          background-color 140ms linear}
+    .sw[aria-checked="true"]::before{border-color:var(--ink)}
+    .sw[aria-checked="true"] i{left:24px;background:var(--ink)}
+    @media (prefers-reduced-motion:reduce){ .sw i{transition:none} }
+
+    /* Nothing in the system acknowledged a completed action. Inline, in ink,
+       under the thing that changed, never a floating toast that steals focus. */
+    .said{display:flex;gap:8px;align-items:flex-start;padding:10px 0 0}
+    .said svg{flex:0 0 16px;margin-top:2px;stroke:var(--ink);stroke-width:1.5;fill:none}
+
+    /* A list that has not arrived yet. Rules at the row rhythm, no shimmer:
+       §5 forbids a moving gradient and the rhythm alone reads as structure. */
+    .skel{border-bottom:1px solid var(--hairline);padding:14px 0}
+    .skel span{display:block;height:9px;background:var(--hairline)}
+    .skel span + span{margin-top:8px;width:58%}
+
+    /* Promoted from three screen helmets, where they had already drifted to two
+       different paddings. A settings-style group, its rows, and the one block
+       in the system that raises its voice. */
+    .grp{padding-top:24px}
+    .srow{display:flex;gap:12px;align-items:baseline;padding:12px 0;
+          border-bottom:1px solid var(--hairline);width:100%;min-height:44px;
+          text-align:left}
+    /* An interactive row and a static one were the same object: label left,
+       value right, hairline under. The only boundary in the system is
+       --hairline, which is deliberately below 3:1 because it may never carry a
+       state, so nothing marked what responded to touch. Every button row now
+       carries the chevron, from the chassis, so no screen can forget it and no
+       static row can borrow it. */
+    button.srow::after{content:'';flex:0 0 7px;height:7px;align-self:center;
+      border-right:1.5px solid var(--rule);border-top:1.5px solid var(--rule);
+      transform:rotate(45deg);margin-left:4px}
+    button.srow.press:active::after{border-color:var(--ink)}
+    button.srow:has(.chev)::after{content:none}
+    .warn{background:var(--ink);color:var(--paper);padding:14px 16px}
+    .warn .t-data{color:var(--paper)}
+
+    /* §8's input: a hairline you type on, focus thickens ink-ward, an error
+       thickens it further and speaks in ink rather than colour (law 8). It
+       existed in ten copies across five divergent variants, which is the defect
+       _chrome.part was written to prevent, committed against the control the
+       app uses most. Reconciled: centre alignment, no padding under the rule
+       (the input's own padding sets the height), .bad for the error, and 16px
+       because anything smaller makes iOS zoom the viewport on focus and the
+       screen never comes back. .lg is the name field, which is the one place a
+       larger value is the point. */
+    .ruled{display:flex;align-items:center;border-bottom:1px solid var(--rule)}
+    .ruled:focus-within{border-bottom:2px solid var(--ink)}
+    .ruled.bad{border-bottom:2.5px solid var(--ink)}
+    .ruled input{border:0;outline:0;background:none;font:inherit;color:var(--ink);
+                 flex:1;min-width:0;padding:12px 0;font-weight:600;font-size:16px;
+                 min-height:44px;box-sizing:border-box}
+    .ruled.lg input{font-size:18px}
+    /* A multi-line field is the same object with room to grow. */
+    .ta{width:100%;min-height:132px;border:0;border-bottom:1px solid var(--rule);
+        background:none;font:inherit;font-size:16px;color:var(--ink);outline:0;
+        padding:12px 0;resize:none}
+    .ta:focus{border-bottom:2px solid var(--ink)}
+
+    /* The reader-facing row. Three screens carried their own copy. */
+    .prow{display:flex;gap:12px;align-items:flex-start;padding:14px 0;
+          border-bottom:1px solid var(--hairline)}
+    /* A key and its value, for a screen that lists raw facts. */
+    .drow{display:flex;gap:14px;align-items:flex-start;padding:12px 0;
+          border-bottom:1px solid var(--hairline)}
+    .dk{flex:0 0 108px;padding-top:2px}
+
+    /* The console is not a record: no plate, no graticule, no registration
+       corners (design/15 §3). What crosses is the row grammar, the state
+       grammar and the type ramp, so this file adds navigation and layout and
+       nothing that carries meaning on its own. */
+    /* Navigation is a rail, not a strip across the top. Two questions live on
+       two axes: the rail answers which queue you are in, the case bar answers
+       how deep you are. Stacked as three horizontal bars they were mistaken for
+       each other, which is the defect this replaced. Decision 048 refused a tab
+       bar for the worker app on a phone because the destination count was two
+       and nothing switched; the console inverts both, and 048 is scoped to the
+       app by its own last line. */
+    .rail{flex:0 0 220px;background:var(--page);border-right:1px solid var(--hairline);
+          display:flex;flex-direction:column;padding:var(--sp10) 0 var(--sp9)}
+    .railhead{padding:0 var(--sp9) var(--sp10)}
+    .railsp{flex:1}
+    .railfoot{padding:var(--sp7) var(--sp9) 0;border-top:1px solid var(--hairline);
+              margin:0 var(--sp9);padding-left:0;padding-right:0}
+    .navgrp{display:block;padding:0 var(--sp9) var(--sp4);color:var(--secondary)}
+    /* The active item takes the paper of the content area and punches through
+       the rail's own border, so it reads as joined to what it opened. No left
+       bar: 01-banned-patterns names that device by name. */
+    .nav{display:flex;align-items:center;gap:9px;width:100%;text-align:left;
+         padding:0 var(--sp9);min-height:38px;color:var(--secondary);
+         font-weight:500;font-size:14px;
+         border-right:1px solid transparent;margin-right:-1px}
+    .nav:hover{color:var(--ink)}
+    .navsp{flex:1}
+    .nav .lock{stroke:var(--secondary);stroke-width:1.3;fill:none;flex:0 0 11px}
+    /* A queue says it holds work and never how much: a count on an adjudication
+       surface is what design/15 §4 refuses, and a filled square is the state
+       grammar's own word rather than a badge. */
+    .nav .work{display:block;width:7px;height:7px;background:var(--rule);flex:0 0 7px}
+    .nav .work.off{display:none}
+    .rail[data-active="merges"]    .nav[data-tab="merges"],
+    .rail[data-active="parties"]   .nav[data-tab="parties"],
+    .rail[data-active="markers"]   .nav[data-tab="markers"],
+    .rail[data-active="disputes"]  .nav[data-tab="disputes"],
+    .rail[data-active="deletions"] .nav[data-tab="deletions"]{
+      background:var(--paper);color:var(--ink);font-weight:600;
+      border-right-color:var(--paper)}
+    .rail[data-active="merges"]   .nav[data-tab="merges"] .work,
+    .rail[data-active="disputes"] .nav[data-tab="disputes"] .work{background:var(--ink)}
+    .rail[data-active="markers"]  .nav[data-tab="markers"] .lock{stroke:var(--ink)}
+
+    /* The content beside the rail. */
+    .pane{flex:1;min-width:0;display:flex;flex-direction:column;background:var(--paper)}
+
+    /* Depth. A case is a layer under the strip, and the bar names where back
+       goes rather than drawing a bare chevron that could mean anywhere. */
+    .casebar{height:52px;padding:0 32px;display:flex;align-items:center;
+             gap:var(--sp8);border-bottom:1px solid var(--hairline);flex:0 0 auto}
+    .back{display:flex;align-items:center;gap:7px;height:44px;padding-right:var(--sp5);
+          font-weight:600;font-size:14px;flex:0 0 auto}
+    .back svg{stroke:var(--ink);stroke-width:1.5;fill:none;flex:0 0 auto}
+    .back:hover{text-decoration:underline;text-underline-offset:3px}
+    .crumbsep{width:1px;height:15px;background:var(--hairline);flex:0 0 1px}
+    .barsp{flex:1;min-width:0}
+    /* A party has several views of one entry. The switch sits in the case bar
+       because it moves you inside a thing, which is the depth axis; putting it
+       in the rail would make it compete with the queues. */
+    .views{display:flex;border:1px solid var(--rule);border-radius:3px;overflow:hidden;flex:0 0 auto}
+    .views button{padding:0 11px;font-weight:500;font-size:12px;min-height:32px;
+                  border-right:1px solid var(--rule);color:var(--secondary);background:none}
+    .views button:last-child{border-right:0}
+    .views button:hover{color:var(--ink)}
+    .views button[aria-current="page"]{background:var(--ink);color:var(--paper)}
+    /* A gate that is not met, drawn as a state rather than as an error. Neither
+       limb is a checkbox and the surface may not imply one can be ticked. */
+    .limb{display:flex;gap:var(--sp7);align-items:flex-start;padding:var(--sp7) 0;
+          border-bottom:1px solid var(--hairline)}
+    .limbmark{flex:0 0 26px;padding-top:3px}
+    .cap{display:flex;gap:var(--sp7);align-items:flex-start;padding:var(--sp7) 0;
+         border-bottom:1px solid var(--hairline)}
+    .capname{flex:0 0 232px}
+    .tier{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--rule);
+          border-radius:3px;padding:5px 9px}
+    .tier svg{stroke:var(--ink);stroke-width:1.4;fill:none}
+
+    .body{padding:26px 32px 0;flex:1;min-height:0}
+
+    /* The evidence ledger. Four columns, the last tabular and right set, which
+       is §8's row grammar with the two records taking the middle. */
+    .sig{display:grid;grid-template-columns:170px minmax(0,1fr) minmax(0,1fr) 92px;
+         gap:var(--sp9);padding:9px 0;border-bottom:1px solid var(--hairline);
+         align-items:baseline}
+    .sig .w{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+    .sighead{border-bottom:1px solid var(--ink);padding-bottom:7px}
+    .sigtot{border-bottom:0;padding-top:var(--sp6)}
+    /* Triage evidence is fenced, never faded: law 8 forbids drawing a weaker
+       claim as a fainter one, so the boundary is labelled and the rows inside
+       it keep full contrast. */
+    .fence{border-top:1px solid var(--rule);margin-top:var(--sp1);padding-top:var(--sp5)}
+    /* An approval slot. A solid rule is an approval that landed, dashed is one
+       that has not: line quality (law 4), never a badge. */
+    .slots{display:flex;gap:var(--sp6);padding-top:var(--sp6)}
+    .slot{flex:1;border:1px solid var(--rule);border-radius:3px;padding:11px 13px}
+    .slot.open{border-style:dashed}
+    /* A control that widens what an operator sees states its cost beside it. */
+    .esc{display:flex;gap:var(--sp8);align-items:flex-start;justify-content:space-between;
+         border:1px solid var(--rule);border-radius:3px;padding:var(--sp7) var(--sp8);
+         margin-top:var(--sp10)}
+    /* The action band, below the evidence on every adjudication surface and
+       never beside a row. An ink rule above it, not a hairline: a boundary a
+       reader must notice. */
+    .band-act{border-top:1px solid var(--ink);margin-top:var(--sp10);
+              padding:var(--sp8) 32px var(--sp10);flex:0 0 auto}
+    .acts{display:flex;gap:var(--sp6);align-items:center}
+    .acts button{width:auto;padding:12px 20px;min-height:44px}
+    .marklead{flex:0 0 26px;padding-top:5px}
+    .lead{max-width:640px;text-wrap:pretty}
+
+    .prow2{display:flex;gap:var(--sp7);align-items:center;padding:13px 0;
+           border-bottom:1px solid var(--hairline);width:100%;min-height:44px;text-align:left}
+    .prow2::after{content:'';flex:0 0 7px;height:7px;align-self:center;
+      border-right:1.5px solid var(--rule);border-top:1.5px solid var(--rule);
+      transform:rotate(45deg);margin-left:var(--sp2)}
+    .prow2:hover{background:rgba(27,42,68,.04)}
+    .asks{flex:0 0 250px}
+    .waited{flex:0 0 96px}
+  </style>
+</helmet>
+
+<div style="width:1120px;height:600px;background:var(--paper);position:relative;
+            display:flex;overflow:hidden">
+
+  <aside class="rail" data-active="{{tab}}">
+    <div class="railhead">
+      <svg width="127" height="22" viewBox="0 0 150 26" aria-label="Grain"><svg x='0' y='0' width='26.00' height='26.00' viewBox='0 0 600 600'><g fill='none' stroke='#1B2A44' stroke-width='28.85'><path d='M564.00 300.00 L584.44 333.88 L586.74 369.29 L565.95 398.78 L529.42 417.75 L492.65 429.76 L470.47 446.91 L465.16 480.54 L462.52 526.50 L445.69 564.26 L412.09 576.40 L372.28 564.53 L336.52 544.65 L306.92 533.31 L278.76 538.27 L246.36 554.85 L209.17 568.68 L173.56 565.42 L147.91 540.91 L134.78 503.62 L127.29 467.66 L113.74 442.19 L87.12 425.73 L51.95 409.27 L22.38 384.78 L12.19 351.73 L24.39 316.36 L48.54 285.08 L68.13 258.33 L72.64 230.57 L64.85 196.42 L58.25 157.23 L66.57 121.80 L93.86 99.88 L132.54 93.62 L170.23 94.43 L199.36 88.73 L221.72 68.46 L244.89 38.19 L274.39 12.76 L308.69 6.77 L341.23 23.80 L367.28 53.79 L389.04 80.45 L414.04 93.15 L447.82 93.99 L487.44 95.10 L521.90 108.76 L540.00 138.35 L539.59 177.03 L530.41 214.41 L527.56 245.01 L540.14 271.40 L564.00 300.00 Z'></path><path d='M472.00 300.00 L502.50 326.66 L505.12 354.96 L474.49 372.28 L428.29 374.07 L395.48 373.26 L393.79 393.79 L409.22 442.34 L409.74 490.08 L383.80 502.31 L347.64 477.78 L319.01 444.41 L300.00 430.65 L280.76 446.11 L252.79 476.17 L220.03 493.08 L196.68 478.96 L192.11 440.60 L198.38 401.62 L195.01 380.56 L168.36 376.00 L126.95 371.68 L96.54 354.52 L98.01 326.59 L128.00 300.00 L160.93 281.69 L171.18 265.48 L155.23 240.04 L133.72 204.00 L132.08 171.15 L158.38 158.38 L198.47 167.69 L231.32 181.04 L248.32 175.23 L258.16 143.86 L274.37 105.33 L300.00 88.00 L325.63 105.33 L341.84 143.86 L351.68 175.23 L368.68 181.04 L401.53 167.69 L441.62 158.38 L467.92 171.15 L466.28 204.00 L444.76 240.04 L428.81 265.49 L439.03 281.70 L472.00 300.00 Z'></path><path d='M390.00 300.00 L406.81 314.06 L408.37 329.04 L391.72 337.99 L366.58 338.44 L348.86 337.49 L348.33 348.33 L357.27 374.63 L358.06 400.56 L344.33 407.02 L325.01 393.34 L309.86 374.86 L300.00 367.25 L290.02 375.80 L275.23 392.45 L257.77 401.94 L245.47 394.44 L243.46 373.68 L247.36 352.64 L245.90 341.51 L231.58 339.50 L209.07 337.66 L192.54 328.79 L193.47 314.03 L210.00 300.00 L228.07 290.53 L233.59 282.21 L224.63 268.78 L212.53 249.50 L211.29 231.93 L225.36 225.36 L246.96 230.88 L264.53 238.56 L273.34 235.63 L278.18 218.57 L286.50 197.49 L300.00 188.00 L313.50 197.49 L321.82 218.57 L326.66 235.63 L335.47 238.56 L353.04 230.88 L374.64 225.36 L388.71 231.93 L387.47 249.50 L375.37 268.78 L366.40 282.21 L371.91 290.53 L390.00 300.00 Z'></path></g></svg><text x='39.93' y='21.96' font-family='Archivo' font-size='26.92' font-weight='600' font-stretch='125%' letter-spacing='2.42' fill='#1B2A44'>GRAIN</text></svg>
+      <span class="t-serial" style="display:block;padding-top:7px;color:var(--secondary)">Operator console</span>
+    </div>
+
+    <nav aria-label="Queues">
+      <span class="t-micro navgrp">Decide</span>
+      <button type="button" class="nav" data-tab="merges" aria-current="{{acMerges}}">Merges<span class="navsp"></span><i class="work {{wMerges}}"></i></button>
+      <button type="button" class="nav" data-tab="parties" aria-current="{{acParties}}">Parties<span class="navsp"></span><i class="work {{wParties}}"></i></button>
+      <button type="button" class="nav" data-tab="markers" aria-current="{{acMarkers}}">Markers<span class="navsp"></span><svg class="lock" width="11" height="12" viewBox="0 0 11 12" aria-hidden="true"><rect x="0.75" y="5.25" width="9.5" height="6"></rect><path d="M2.9 5.25 V3.2 A2.6 2.6 0 0 1 8.1 3.2 V5.25"></path></svg></button>
+
+      <span class="t-micro navgrp" style="padding-top:var(--sp9)">Watch</span>
+      <button type="button" class="nav" data-tab="disputes" aria-current="{{acDisputes}}">Disputes<span class="navsp"></span><i class="work {{wDisputes}}"></i></button>
+      <button type="button" class="nav" data-tab="deletions" aria-current="{{acDeletions}}">Deletions<span class="navsp"></span></button>
+    </nav>
+
+    <span class="railsp"></span>
+    <div class="railfoot">
+      <span class="t-meta" style="display:block;color:var(--secondary)">Signed in as</span>
+      <span class="t-rec" style="display:block;padding-top:2px">D. Okafor</span>
+    </div>
+  </aside>
+
+
+  <div class="pane">
+
+  <div class="body">
+
+    <div class="sechead">
+      <span class="t-sec">Parties waiting on a decision</span>
+      <span class="t-meta" style="color:var(--secondary)">Oldest first</span>
+    </div>
+
+    <button type="button" class="prow2 press">
+      <span class="gutter">
+        <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><rect x="1.5" y="1.5" width="11" height="11" fill="none" stroke="var(--ink)"></rect></svg>
+      </span>
+      <span style="flex:1;min-width:0">
+        <span class="t-rec" style="display:block">Northgate Learning Institute</span>
+        <span class="t-meta" style="display:block;color:var(--secondary);padding-top:var(--sp1)">Writes frozen. No finding has been made</span>
+      </span>
+      <span class="t-data col-r asks" style="color:var(--secondary)">Accreditation not on the list</span>
+      <span class="t-data col-r waited" style="color:var(--secondary)">6 days</span>
+    </button>
+
+    <button type="button" class="prow2 press">
+      <span class="gutter">
+        <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><rect x="1.5" y="1.5" width="11" height="11" fill="none" stroke="var(--ink)" stroke-dasharray="2.4 2.2"></rect></svg>
+      </span>
+      <span style="flex:1;min-width:0">
+        <span class="t-rec" style="display:block">Iloilo BPO Holdings</span>
+        <span class="t-meta" style="display:block;color:var(--secondary);padding-top:var(--sp1)">Probationary, ninety days elapsed</span>
+      </span>
+      <span class="t-data col-r asks" style="color:var(--secondary)">Probation review due</span>
+      <span class="t-data col-r waited" style="color:var(--secondary)">3 days</span>
+    </button>
+
+    <button type="button" class="prow2 press">
+      <span class="gutter">
+        <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><rect x="1.5" y="1.5" width="11" height="11" fill="none" stroke="var(--ink)" stroke-dasharray="2.4 2.2"></rect></svg>
+      </span>
+      <span style="flex:1;min-width:0">
+        <span class="t-rec" style="display:block">Davao Contact Solutions</span>
+        <span class="t-meta" style="display:block;color:var(--secondary);padding-top:var(--sp1)">Probationary, asking for room to write more</span>
+      </span>
+      <span class="t-data col-r asks" style="color:var(--secondary)">Cap increase requested</span>
+      <span class="t-data col-r waited" style="color:var(--secondary)">2 days</span>
+    </button>
+
+    <button type="button" class="prow2 press">
+      <span class="gutter">
+        <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><rect x="1.5" y="1.5" width="11" height="11" fill="none" stroke="var(--ink)"></rect></svg>
+      </span>
+      <span style="flex:1;min-width:0">
+        <span class="t-rec" style="display:block">Cebu Pacific Air Services</span>
+        <span class="t-meta" style="display:block;color:var(--secondary);padding-top:var(--sp1)">New registration, diligence filed</span>
+      </span>
+      <span class="t-data col-r asks" style="color:var(--secondary)">First review, tier not set</span>
+      <span class="t-data col-r waited" style="color:var(--secondary)">1 day</span>
+    </button>
+
+    <div class="skel" style="border-bottom:0;padding-top:18px">
+      <span style="width:34%"></span>
+      <span style="width:22%"></span>
+    </div>
+
+  </div>
+
+  </div>
+
+</div>
+</x-dc>
+
+<script data-dc-script data-props='{}'>
+class Component extends DCLogic {
+  renderVals(){
+    return { tab:'parties', acMerges:'false', acParties:'page',
+             acMarkers:'false', acDisputes:'false', acDeletions:'false',
+             wMerges:'', wParties:'', wDisputes:'' };
+  }
+}
+</script>
+</body>
+</html>

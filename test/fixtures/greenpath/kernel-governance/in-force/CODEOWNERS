@@ -1,0 +1,7 @@
+# A stand-in for .github/CODEOWNERS, carrying only what the check reads:
+# the governed paths and an owner on each. The real file is asserted by the
+# live run, which is what CI's kernel-governance job does; this copy exists
+# so the green verdict can be proven without the network.
+/core/kernel/ @example-owner
+/core/cmd/vectors/ @example-owner
+/contract/ @example-owner

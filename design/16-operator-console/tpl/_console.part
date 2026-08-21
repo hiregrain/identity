@@ -1,0 +1,110 @@
+    /* The console is not a record: no plate, no graticule, no registration
+       corners (design/15 §3). What crosses is the row grammar, the state
+       grammar and the type ramp, so this file adds navigation and layout and
+       nothing that carries meaning on its own. */
+    /* Navigation is a rail, not a strip across the top. Two questions live on
+       two axes: the rail answers which queue you are in, the case bar answers
+       how deep you are. Stacked as three horizontal bars they were mistaken for
+       each other, which is the defect this replaced. Decision 048 refused a tab
+       bar for the worker app on a phone because the destination count was two
+       and nothing switched; the console inverts both, and 048 is scoped to the
+       app by its own last line. */
+    .rail{flex:0 0 220px;background:var(--page);border-right:1px solid var(--hairline);
+          display:flex;flex-direction:column;padding:var(--sp10) 0 var(--sp9)}
+    .railhead{padding:0 var(--sp9) var(--sp10)}
+    .railsp{flex:1}
+    .railfoot{padding:var(--sp7) var(--sp9) 0;border-top:1px solid var(--hairline);
+              margin:0 var(--sp9);padding-left:0;padding-right:0}
+    .navgrp{display:block;padding:0 var(--sp9) var(--sp4);color:var(--secondary)}
+    /* The active item takes the paper of the content area and punches through
+       the rail's own border, so it reads as joined to what it opened. No left
+       bar: 01-banned-patterns names that device by name. */
+    .nav{display:flex;align-items:center;gap:9px;width:100%;text-align:left;
+         padding:0 var(--sp9);min-height:38px;color:var(--secondary);
+         font-weight:500;font-size:14px;
+         border-right:1px solid transparent;margin-right:-1px}
+    .nav:hover{color:var(--ink)}
+    .navsp{flex:1}
+    .nav .lock{stroke:var(--secondary);stroke-width:1.3;fill:none;flex:0 0 11px}
+    /* A queue says it holds work and never how much: a count on an adjudication
+       surface is what design/15 §4 refuses, and a filled square is the state
+       grammar's own word rather than a badge. */
+    .nav .work{display:block;width:7px;height:7px;background:var(--rule);flex:0 0 7px}
+    .nav .work.off{display:none}
+    .rail[data-active="merges"]    .nav[data-tab="merges"],
+    .rail[data-active="parties"]   .nav[data-tab="parties"],
+    .rail[data-active="markers"]   .nav[data-tab="markers"],
+    .rail[data-active="disputes"]  .nav[data-tab="disputes"],
+    .rail[data-active="deletions"] .nav[data-tab="deletions"]{
+      background:var(--paper);color:var(--ink);font-weight:600;
+      border-right-color:var(--paper)}
+    .rail[data-active="merges"]   .nav[data-tab="merges"] .work,
+    .rail[data-active="disputes"] .nav[data-tab="disputes"] .work{background:var(--ink)}
+    .rail[data-active="markers"]  .nav[data-tab="markers"] .lock{stroke:var(--ink)}
+
+    /* The content beside the rail. */
+    .pane{flex:1;min-width:0;display:flex;flex-direction:column;background:var(--paper)}
+
+    /* Depth. A case is a layer under the strip, and the bar names where back
+       goes rather than drawing a bare chevron that could mean anywhere. */
+    .casebar{height:52px;padding:0 32px;display:flex;align-items:center;
+             gap:var(--sp8);border-bottom:1px solid var(--hairline);flex:0 0 auto}
+    .back{display:flex;align-items:center;gap:7px;height:44px;padding-right:var(--sp5);
+          font-weight:600;font-size:14px;flex:0 0 auto}
+    .back svg{stroke:var(--ink);stroke-width:1.5;fill:none;flex:0 0 auto}
+    .back:hover{text-decoration:underline;text-underline-offset:3px}
+    .crumbsep{width:1px;height:15px;background:var(--hairline);flex:0 0 1px}
+    .barsp{flex:1;min-width:0}
+    /* A party has several views of one entry. The switch sits in the case bar
+       because it moves you inside a thing, which is the depth axis; putting it
+       in the rail would make it compete with the queues. */
+    .views{display:flex;border:1px solid var(--rule);border-radius:3px;overflow:hidden;flex:0 0 auto}
+    .views button{padding:0 11px;font-weight:500;font-size:12px;min-height:32px;
+                  border-right:1px solid var(--rule);color:var(--secondary);background:none}
+    .views button:last-child{border-right:0}
+    .views button:hover{color:var(--ink)}
+    .views button[aria-current="page"]{background:var(--ink);color:var(--paper)}
+    /* A gate that is not met, drawn as a state rather than as an error. Neither
+       limb is a checkbox and the surface may not imply one can be ticked. */
+    .limb{display:flex;gap:var(--sp7);align-items:flex-start;padding:var(--sp7) 0;
+          border-bottom:1px solid var(--hairline)}
+    .limbmark{flex:0 0 26px;padding-top:3px}
+    .cap{display:flex;gap:var(--sp7);align-items:flex-start;padding:var(--sp7) 0;
+         border-bottom:1px solid var(--hairline)}
+    .capname{flex:0 0 232px}
+    .tier{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--rule);
+          border-radius:3px;padding:5px 9px}
+    .tier svg{stroke:var(--ink);stroke-width:1.4;fill:none}
+
+    .body{padding:26px 32px 0;flex:1;min-height:0}
+
+    /* The evidence ledger. Four columns, the last tabular and right set, which
+       is §8's row grammar with the two records taking the middle. */
+    .sig{display:grid;grid-template-columns:170px minmax(0,1fr) minmax(0,1fr) 92px;
+         gap:var(--sp9);padding:9px 0;border-bottom:1px solid var(--hairline);
+         align-items:baseline}
+    .sig .w{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+    .sighead{border-bottom:1px solid var(--ink);padding-bottom:7px}
+    .sigtot{border-bottom:0;padding-top:var(--sp6)}
+    /* Triage evidence is fenced, never faded: law 8 forbids drawing a weaker
+       claim as a fainter one, so the boundary is labelled and the rows inside
+       it keep full contrast. */
+    .fence{border-top:1px solid var(--rule);margin-top:var(--sp1);padding-top:var(--sp5)}
+    /* An approval slot. A solid rule is an approval that landed, dashed is one
+       that has not: line quality (law 4), never a badge. */
+    .slots{display:flex;gap:var(--sp6);padding-top:var(--sp6)}
+    .slot{flex:1;border:1px solid var(--rule);border-radius:3px;padding:11px 13px}
+    .slot.open{border-style:dashed}
+    /* A control that widens what an operator sees states its cost beside it. */
+    .esc{display:flex;gap:var(--sp8);align-items:flex-start;justify-content:space-between;
+         border:1px solid var(--rule);border-radius:3px;padding:var(--sp7) var(--sp8);
+         margin-top:var(--sp10)}
+    /* The action band, below the evidence on every adjudication surface and
+       never beside a row. An ink rule above it, not a hairline: a boundary a
+       reader must notice. */
+    .band-act{border-top:1px solid var(--ink);margin-top:var(--sp10);
+              padding:var(--sp8) 32px var(--sp10);flex:0 0 auto}
+    .acts{display:flex;gap:var(--sp6);align-items:center}
+    .acts button{width:auto;padding:12px 20px;min-height:44px}
+    .marklead{flex:0 0 26px;padding-top:5px}
+    .lead{max-width:640px;text-wrap:pretty}

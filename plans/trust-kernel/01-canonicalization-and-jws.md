@@ -3,11 +3,16 @@ id: trust-kernel/01
 type: task
 layer: trust-kernel
 satisfies: [1]
-status: in_progress
+status: done
 depends_on: [foundation/01, foundation/02]
 binds: [contract/CONTRACT.md, decisions/LOG.md#012, decisions/LOG.md#019]
-evidence: []
-verified_by: null
+evidence:
+  - "test:make check green at 6c78d826d9712f7bcfe7671a81e643128dbc11da; make check-red red paths 16 to 20; make kernel-governance exits 0 against the live host"
+  - "test:differential run against reference at origin/task/trust-kernel-06, 18075 of 20096 requests byte-identical, every divergence a lone surrogate (ambiguity A3, raised)"
+  - "log:log/2026-08-21-trust-kernel-01-verification.md"
+  - "diff:PR #15 @ 6c78d826d9712f7bcfe7671a81e643128dbc11da"
+  - "review:log/2026-08-21-trust-kernel-01-head-reverification.md"
+verified_by: head-reverifier@2026-08-21
 ---
 
 # Canonicalization and JWS core
@@ -46,12 +51,12 @@ cleanup; `contract/CONTRACT.md` preserves the normative rules).
   sign/verify incl. tampered cases) committed to `contract/vectors/`,
   plus a TS vector-runner so both languages exercise identical bytes in
   CI from day one.
-- Kernel governance seed: CODEOWNERS on `core/kernel/`, **plus the host
-  branch-protection rule that actually enforces two approvals**.
-  CODEOWNERS alone requests reviewers, it does not require them, and a
-  synthetic PR in local CI cannot prove a rule that lives in the repo
-  host's settings. The acceptance below checks the host policy, not just
-  the file.
+- Kernel governance seed: CODEOWNERS on `core/kernel/`, plus the host
+  ruleset decision 087 names: force pushes and branch deletion blocked
+  on `main`. The two-approval host rule is dormant with its trigger
+  written in 087 (it returns when a second maintainer holds write
+  access); kernel review is enforced by the loop's own gates. The
+  acceptance below checks the host policy, not just the file.
 - A kernel-side adapter speaking `reference/`'s differential harness
   protocol, so `make differential KERNEL_ADAPTER=...` runs the kernel
   against the reference model (founder ruling 2026-08-21, resolving the
@@ -73,9 +78,10 @@ cleanup; `contract/CONTRACT.md` preserves the normative rules).
   by its type signature, so passing another party's key is not expressible.
 - AC (mechanical): the key identifier is inside the signed bytes; altering
   it invalidates the signature (vector case).
-- AC (mechanical): CI blocks any budget overrun, and the **host
-  branch-protection policy** requiring two approvals on `core/kernel/` is
-  asserted by querying the host, not inferred from CODEOWNERS.
+- AC (mechanical): CI blocks any budget overrun, and the **host policy
+  decision 087 names** (force pushes and branch deletion blocked on
+  `main`, CODEOWNERS present on the kernel paths) is asserted by
+  querying the host, not inferred from the file.
 
 ## Outside check
 
@@ -83,4 +89,5 @@ Verifier regenerates vectors from the generator, diffs against committed
 files (byte-identical), runs both language runners, attempts to sign with a
 non-operator key and confirms it does not compile, tampers with the payload
 key identifier and confirms verification fails, and confirms the host
-branch-protection rule is present rather than only the CODEOWNERS file.
+ruleset decision 087 names is in force rather than only the CODEOWNERS
+file.

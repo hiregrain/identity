@@ -97,10 +97,12 @@ func (b Bytea) sqlLiteral() (string, error) {
 }
 
 // Literal renders one Arg as a SQL literal outside a Query or Tx call.
-// The one legitimate caller is core/outbox/instruction.go, which
-// assembles a full INSERT statement from an externally supplied
-// instruction row rather than a fixed $n-placeholder query. Everywhere
-// else, pass Args to Query or Tx and let $n substitution do this.
+// The one legitimate caller is core/outbox, which assembles full
+// statements a second package composes into its own transaction:
+// ApplySQL, from an externally supplied instruction row rather than a
+// fixed $n-placeholder query, and InsertStatement, so signup's spine
+// commit runs the same entry statement Enqueue does. Everywhere else,
+// pass Args to Query or Tx and let $n substitution do this.
 func Literal(a Arg) (string, error) { return a.sqlLiteral() }
 
 // placeholderPattern finds every $n token in a statement. A single

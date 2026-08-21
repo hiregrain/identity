@@ -559,7 +559,7 @@ micro-caption band with the record still readable from cache.
 3. **The display identifier**: whether a human-facing number is shown at all,
    and if so its format. Distinct from the opaque `ledger_person_id`, which is
    permanent and never surfaces. Four formats rendered, none chosen. **Newly
-   entangled (035):** the public handle now exists (`hiregrain.com/u/<handle>`,
+   entangled (035):** the public handle now exists (`grainidentity.com/u/<handle>`,
    Latin-only, claimed after the record exists, changeable but never released)
    and nothing has decided whether it becomes the display identifier.
 4. ~~The record schema~~: **proposed 2026-08-18** in

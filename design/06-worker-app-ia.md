@@ -115,9 +115,10 @@ record value. Intake and adjudication sit outside the app.
 
 ## 5. The public profile
 
-**Address.** `hiregrain.com/u/<handle>`. A dedicated identity domain is a
-possible pre-launch requirement; the never-reissue rule below makes a later 301
-free.
+**Address.** `grainidentity.com/u/<handle>` (decision 084, discharging the
+dedicated-domain item 035 left open). The prefix stays: a bare handle at root
+consumes the whole namespace and makes the App Links pattern claim every path,
+including the ones that must open in a browser.
 
 **Handle.** Latin-only `[a-z0-9-]`, prefilled by auto-transliteration of the
 person's name and never rejected. The field arrives already populated, so the

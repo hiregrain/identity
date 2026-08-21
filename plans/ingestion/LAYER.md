@@ -2,7 +2,7 @@
 id: ingestion
 type: layer
 status: ready
-milestone: v1
+milestone: first-product
 depends_on: [trust-kernel, party-registry, person-identity, self-asserted-record]
 binds:
   - model/attestation-interface.md
