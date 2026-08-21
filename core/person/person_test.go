@@ -4,7 +4,13 @@
 package person
 
 import (
+	"context"
+	"encoding/hex"
+	"encoding/json"
+	"errors"
+	"sort"
 	"strings"
+	"sync"
 	"testing"
 	"time"
 
@@ -198,40 +204,156 @@ func TestDisplayNameAtTheBoundIsAccepted(t *testing.T) {
 	}
 }
 
-// The issuance transaction: the person row, the 'active' transition and
-// one outbox entry per payload row, all inside one BEGIN/COMMIT. If the
-// person row ever left this transaction, "issued at spine commit" would
-// stop being one claim.
-func TestIssueScriptIsOneTransaction(t *testing.T) {
+// The issuance transaction's statements: the person row, the 'active'
+// transition, and one outbox entry per payload row. If the person row
+// ever left this transaction, "issued at spine commit" would stop being
+// one claim. Every entry statement must be outbox.InsertStatement's
+// output verbatim, not a lookalike this package composed: the two paths
+// that write an outbox entry, signup and the worker's Enqueue, run one
+// builder.
+func TestIssueStatementsComeFromTheOutboxBuilder(t *testing.T) {
 	id, err := NewID()
 	if err != nil {
 		t.Fatalf("id generation: %v", err)
 	}
-	script, err := issueScript(id, []outbox.Instruction{
-		{Table: "person_record", Row: map[string]any{"person_id": id}},
-		{Table: "person_contact_channel", Row: map[string]any{"person_id": id}},
-	})
+	entries := []entry{
+		{ID: "11111111-1111-4111-8111-111111111111", Raw: []byte(`{"table":"person_record","row":{"a":1}}`)},
+		{ID: "22222222-2222-4222-8222-222222222222", Raw: []byte(`{"table":"person_contact_channel","row":{"b":2}}`)},
+	}
+	statements, err := issueStatements(id, entries)
 	if err != nil {
-		t.Fatalf("issueScript: %v", err)
+		t.Fatalf("issueStatements: %v", err)
 	}
-	if !strings.HasPrefix(script, "BEGIN;\n") || !strings.HasSuffix(script, "COMMIT;\n") {
-		t.Fatalf("script is not one transaction:\n%s", script)
+	if len(statements) != len(entries)+2 {
+		t.Fatalf("statements: %d, want the person row, the transition, and one per entry", len(statements))
 	}
-	for _, want := range []string{
-		"INSERT INTO person (person_id) VALUES ('" + id + "');",
-		"INSERT INTO person_lifecycle_transition (person_id, state) VALUES ('" + id + "', 'active');",
-	} {
-		if !strings.Contains(script, want) {
-			t.Fatalf("script is missing %q:\n%s", want, script)
+	if want := "INSERT INTO person (person_id) VALUES ('" + id + "');"; statements[0] != want {
+		t.Fatalf("person row statement:\n got  %q\n want %q", statements[0], want)
+	}
+	want := "INSERT INTO person_lifecycle_transition (person_id, state) VALUES ('" + id + "', 'active');"
+	if statements[1] != want {
+		t.Fatalf("transition statement:\n got  %q\n want %q", statements[1], want)
+	}
+	for i, e := range entries {
+		built, err := outbox.InsertStatement(e.ID, e.Raw)
+		if err != nil {
+			t.Fatalf("InsertStatement: %v", err)
 		}
-	}
-	if got := strings.Count(script, "INSERT INTO cross_plane_outbox"); got != 2 {
-		t.Fatalf("outbox entries: %d, want one per payload row", got)
+		if statements[i+2] != built {
+			t.Fatalf("entry statement %d is not the builder's:\n got  %q\n want %q",
+				i, statements[i+2], built)
+		}
 	}
 }
 
-func TestIssueScriptRefusesAnIDItDidNotIssue(t *testing.T) {
-	if _, err := issueScript("'; DROP TABLE person; --", nil); err == nil {
-		t.Fatal("issueScript accepted an id that is not a uuid")
+func TestIssueStatementsRefuseAnIDNotOurs(t *testing.T) {
+	if _, err := issueStatements("'; DROP TABLE person; --", nil); err == nil {
+		t.Fatal("issueStatements accepted an id that is not a uuid")
+	}
+}
+
+// stubSealer records what it was asked to seal and hands back a
+// deterministic ciphertext, so the instruction shape can be asserted
+// with no database and no key provider.
+type stubSealer struct {
+	mu     sync.Mutex
+	sealed []string
+	fail   bool
+}
+
+func (s *stubSealer) Provision(context.Context, string) error { return nil }
+
+func (s *stubSealer) Encrypt(_ context.Context, _ string, plaintext []byte) ([]byte, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if s.fail {
+		return nil, errors.New("stub sealer refused")
+	}
+	s.sealed = append(s.sealed, string(plaintext))
+	return append([]byte("sealed:"), plaintext...), nil
+}
+
+// An email-only signup seals exactly the address, and the record row
+// carries an explicit absent display name rather than an empty string.
+// Nothing names residency_region: the region is the database's, and an
+// instruction carrying it is refused by core/outbox.
+func TestInstructionsForAnEmailAloneSignup(t *testing.T) {
+	sealer := &stubSealer{}
+	svc := New(sealer)
+	req := Request{Email: Channel{Address: "worker@example.test", VerifiedAt: time.Now()}}
+	if err := req.prepare(); err != nil {
+		t.Fatalf("prepare: %v", err)
+	}
+	id, err := NewID()
+	if err != nil {
+		t.Fatalf("id generation: %v", err)
+	}
+	instructions, err := svc.instructions(context.Background(), id, req)
+	if err != nil {
+		t.Fatalf("instructions: %v", err)
+	}
+	if len(instructions) != 2 {
+		t.Fatalf("instructions: %d, want the record row and one channel", len(instructions))
+	}
+	if len(sealer.sealed) != 1 || sealer.sealed[0] != "worker@example.test" {
+		t.Fatalf("sealed: %v, want the address alone", sealer.sealed)
+	}
+	record := instructions[0]
+	if record.Table != "person_record" || record.Row["display_name_ciphertext"] != nil {
+		t.Fatalf("record instruction: %+v", record)
+	}
+	for _, instruction := range instructions {
+		if _, present := instruction.Row["residency_region"]; present {
+			t.Fatalf("%s names residency_region, which is the database's", instruction.Table)
+		}
+		raw, err := json.Marshal(instruction)
+		if err != nil {
+			t.Fatalf("marshal: %v", err)
+		}
+		if _, err := outbox.Parse(raw); err != nil {
+			t.Fatalf("%s does not survive the worker's own validation: %v", instruction.Table, err)
+		}
+	}
+	channel := instructions[1].Row
+	if channel["address_ciphertext"] != `\x`+hex.EncodeToString([]byte("sealed:worker@example.test")) {
+		t.Fatalf("address ciphertext: %v", channel["address_ciphertext"])
+	}
+	if channel["assurance"] != AssuranceChannelControl || channel["line_country"] != nil {
+		t.Fatalf("channel row: %+v", channel)
+	}
+}
+
+// A phone signup seals both addresses and the display name, and a
+// failure in any concurrent seal aborts before anything is issued.
+func TestInstructionsSealEveryValueAndAbortTogether(t *testing.T) {
+	sealer := &stubSealer{}
+	svc := New(sealer)
+	req := Request{
+		Email:       Channel{Address: "worker@example.test", VerifiedAt: time.Now()},
+		Phone:       &Channel{Address: "+639171234567", VerifiedAt: time.Now()},
+		DisplayName: "Maria",
+	}
+	if err := req.prepare(); err != nil {
+		t.Fatalf("prepare: %v", err)
+	}
+	id, _ := NewID()
+	instructions, err := svc.instructions(context.Background(), id, req)
+	if err != nil {
+		t.Fatalf("instructions: %v", err)
+	}
+	if len(instructions) != 3 {
+		t.Fatalf("instructions: %d, want the record row and both channels", len(instructions))
+	}
+	sort.Strings(sealer.sealed)
+	if got := strings.Join(sealer.sealed, ","); got != "+639171234567,Maria,worker@example.test" {
+		t.Fatalf("sealed: %q", got)
+	}
+	if instructions[0].Row["display_name_ciphertext"] == nil {
+		t.Fatal("the display name was not sealed into the record row")
+	}
+
+	failing := &stubSealer{fail: true}
+	if _, err := New(failing).instructions(context.Background(), id, req); err == nil {
+		t.Fatal("a failed seal did not abort before issuance")
 	}
 }

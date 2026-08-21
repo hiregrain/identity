@@ -1,10 +1,9 @@
 -- 0010-person-core (person-identity/01; decisions 013, 017, 075): the
 -- person's spine half. Number 0010 under the one shared numbering
--- sequence, claimed by the task frontmatter. The payload half carries
--- the same number and name in the payload chain
--- (db/migrations/payload/0010-person-core.sql), because signup is one
--- migration across the split rather than two; the numbering check reads
--- a number and a name, and both files declare the same pair.
+-- sequence, claimed by the task frontmatter. The payload half is
+-- 0036-person-record-and-channels: a number belongs to one chain and one
+-- file (decision 017), so one task's schema across the split carries two
+-- numbers, not one number twice.
 --
 -- What the spine holds for a person: the id, when it was issued, and the
 -- lifecycle transitions that id has passed through. Nothing else. Every

@@ -35,6 +35,23 @@ var identifier = regexp.MustCompile(`^[a-z_][a-z0-9_]*$`)
 var uuidShape = regexp.MustCompile(
 	`^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$`)
 
+// reservedColumns are the columns an instruction may never carry,
+// because something other than the instruction owns their value:
+//
+//   - outbox_entry_id is the worker's idempotency key, written by
+//     ApplySQL itself (migration 0020).
+//   - residency_region is the database's own declaration. 0004 makes
+//     the DATABASE authoritative and the payload tables take the value
+//     from a column default that reads database_residency. A default
+//     is only a default, so an instruction naming the column would
+//     override it and choose its own region; refusing the name here is
+//     what makes the stamp binding rather than customary.
+var reservedColumns = map[string]string{
+	"outbox_entry_id": "the worker's column, not the instruction's",
+	"residency_region": "the database's own declaration, taken from a column default; " +
+		"an instruction may not choose a region",
+}
+
 // Parse decodes and validates an instruction's raw bytes.
 func Parse(raw []byte) (Instruction, error) {
 	var in Instruction
@@ -58,8 +75,8 @@ func (in Instruction) validate() error {
 		if !identifier.MatchString(column) {
 			return fmt.Errorf("instruction: column %q is not a valid identifier", column)
 		}
-		if column == "outbox_entry_id" {
-			return fmt.Errorf("instruction: outbox_entry_id is the worker's column, not the instruction's")
+		if why, reserved := reservedColumns[column]; reserved {
+			return fmt.Errorf("instruction: %s is %s", column, why)
 		}
 	}
 	return nil

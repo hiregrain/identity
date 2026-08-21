@@ -28,22 +28,25 @@
 // name, no date of birth, nothing else (decision 013). Request is shaped
 // so that is visible in the type: everything except the email channel is
 // a pointer or a zero value.
+//
+// Every statement here crosses core/transport, the one seam any SQL
+// path in this repo may use (trust-kernel/08, decision 065).
 package person
 
 import (
 	"context"
 	"crypto/rand"
-	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"regexp"
-	"strings"
+	"sync"
 	"time"
 	"unicode/utf8"
 
 	"github.com/hiregrain/identity/core/outbox"
+	"github.com/hiregrain/identity/core/transport"
 )
 
 // Errors. Every one names a rule a caller can fix; none carries an
@@ -166,22 +169,14 @@ type Request struct {
 	DisplayName string
 }
 
-// Spine executes statements against the spine plane as the serving role
-// (identity_app: SELECT and INSERT, migration 0002, which is the whole
-// vocabulary this package needs). Script runs a multi-statement script,
-// which is how the person row, its lifecycle transition, and the outbox
-// entries reach one transaction. Rows returns tuples-only lines.
-//
-// Implementations transmit statements as given. Every value this
-// package interpolates is validated first: a uuid, a member of a closed
-// vocabulary, a hex-encoded ciphertext, an RFC 3339 timestamp, or a
-// decimal integer. The database transport that will own this seam is
-// trust-kernel/08; until it lands, the local implementation is psql
-// through docker compose, matching core/outbox and core/envelope.
-type Spine interface {
-	Script(ctx context.Context, sql string) error
-	Rows(ctx context.Context, query string) ([]string, error)
-}
+// The spine plane and the role every statement here runs as:
+// identity_app holds SELECT and INSERT (migration 0002), which is the
+// whole vocabulary signup needs. Reached through core/transport, the
+// one seam every SQL path in this repo crosses (decision 065).
+const (
+	spinePlane  = "spine"
+	servingRole = "identity_app"
+)
 
 // Sealer seals worker content under the person's own DEK. Satisfied by
 // *envelope.Envelope (foundation/05). Provision registers the person's
@@ -194,12 +189,12 @@ type Sealer interface {
 
 // Service issues identities.
 type Service struct {
-	spine  Spine
 	sealer Sealer
 }
 
-// New binds the spine and the seal path.
-func New(s Spine, sealer Sealer) *Service { return &Service{spine: s, sealer: sealer} }
+// New binds the seal path. The spine is reached through core/transport,
+// which no caller injects.
+func New(sealer Sealer) *Service { return &Service{sealer: sealer} }
 
 var (
 	uuidShape    = regexp.MustCompile(`^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$`)
@@ -352,105 +347,12 @@ func (s *Service) Signup(ctx context.Context, req Request) (string, error) {
 	if err := s.sealer.Provision(ctx, id); err != nil {
 		return "", fmt.Errorf("person: provisioning the person's key: %w", err)
 	}
-
-	var instructions []outbox.Instruction
-
-	record := map[string]any{"person_id": id, "display_name_ciphertext": nil}
-	if req.DisplayName != "" {
-		sealed, err := s.sealer.Encrypt(ctx, id, []byte(req.DisplayName))
-		if err != nil {
-			return "", fmt.Errorf("person: sealing the display name: %w", err)
-		}
-		record["display_name_ciphertext"] = hexLiteral(sealed)
-	}
-	instructions = append(instructions, outbox.Instruction{Table: "person_record", Row: record})
-
-	channels := []Channel{req.Email}
-	if req.Phone != nil {
-		channels = append(channels, *req.Phone)
-	}
-	for _, channel := range channels {
-		row, err := s.channelRow(ctx, id, channel)
-		if err != nil {
-			return "", err
-		}
-		instructions = append(instructions, outbox.Instruction{Table: "person_contact_channel", Row: row})
-	}
-
-	script, err := issueScript(id, instructions)
+	instructions, err := s.instructions(ctx, id, req)
 	if err != nil {
 		return "", err
 	}
-	if err := s.spine.Script(ctx, script); err != nil {
-		return "", fmt.Errorf("person: issuing the id: %w", err)
-	}
-	return id, nil
-}
-
-// channelRow seals the address and renders one channel as an outbox row.
-func (s *Service) channelRow(ctx context.Context, id string, c Channel) (map[string]any, error) {
-	sealed, err := s.sealer.Encrypt(ctx, id, []byte(c.Address))
-	if err != nil {
-		return nil, fmt.Errorf("person: sealing a channel address: %w", err)
-	}
-	row := map[string]any{
-		"person_id":          id,
-		"channel_kind":       string(c.Kind),
-		"address_ciphertext": hexLiteral(sealed),
-		"verified_at":        c.VerifiedAt.UTC().Format(time.RFC3339Nano),
-		"line_type":          c.Risk.LineType,
-		"line_country":       nil,
-		"carrier_reputation": c.Risk.CarrierReputation,
-		"velocity_observed":  float64(c.Risk.VelocityObserved),
-		"velocity_threshold": float64(c.Risk.VelocityThreshold),
-		"assurance":          Assurance(c.Kind, c.Risk),
-	}
-	if c.Risk.Country != "" {
-		row["line_country"] = c.Risk.Country
-	}
-	return row, nil
-}
-
-// Tombstone records the lifecycle transition that spends an id. It is
-// write-once: the (person_id, state) key means a second call conflicts
-// rather than overwriting, and no path anywhere removes the row.
-// Destroying the person's content and their DEK is the deletion
-// subsystem's (foundation/08); this marks the id.
-func (s *Service) Tombstone(ctx context.Context, id string) error {
-	if err := ValidID(id); err != nil {
-		return err
-	}
-	return s.spine.Script(ctx, fmt.Sprintf(
-		"INSERT INTO person_lifecycle_transition (person_id, state) VALUES ('%s', 'tombstoned');", id))
-}
-
-// Tombstoned reports whether an id is spent, read through the view that
-// is the queryable form of that fact (migration 0010-person-core).
-func (s *Service) Tombstoned(ctx context.Context, id string) (bool, error) {
-	if err := ValidID(id); err != nil {
-		return false, err
-	}
-	lines, err := s.spine.Rows(ctx, fmt.Sprintf(
-		"SELECT 1 FROM person_tombstoned WHERE person_id = '%s'", id))
-	if err != nil {
-		return false, err
-	}
-	return len(lines) > 0, nil
-}
-
-// issueScript renders the one spine transaction that issues an id: the
-// person row, its 'active' transition, and one outbox entry per payload
-// row. Its COMMIT is the issuance event, which is what makes "instantly"
-// a single claim.
-func issueScript(id string, instructions []outbox.Instruction) (string, error) {
-	if err := ValidID(id); err != nil {
-		return "", err
-	}
-	var b strings.Builder
-	b.WriteString("BEGIN;\n")
-	fmt.Fprintf(&b, "INSERT INTO person (person_id) VALUES ('%s');\n", id)
-	fmt.Fprintf(&b, "INSERT INTO person_lifecycle_transition (person_id, state) VALUES ('%s', 'active');\n", id)
-	for _, instruction := range instructions {
+	entries := make([]entry, len(instructions))
+	for i, instruction := range instructions {
 		entryID, err := NewID()
 		if err != nil {
 			return "", err
@@ -465,13 +367,182 @@ func issueScript(id string, instructions []outbox.Instruction) (string, error) {
 		if _, err := outbox.Parse(raw); err != nil {
 			return "", err
 		}
-		fmt.Fprintf(&b,
-			"INSERT INTO cross_plane_outbox (entry_id, target_plane, instruction)\n"+
-				"VALUES ('%s', 'payload', decode('%s', 'base64'));\n",
-			entryID, base64.StdEncoding.EncodeToString(raw))
+		entries[i] = entry{ID: entryID, Raw: raw}
 	}
-	b.WriteString("COMMIT;\n")
-	return b.String(), nil
+	if err := issue(id, entries); err != nil {
+		return "", fmt.Errorf("person: issuing the id: %w", err)
+	}
+	return id, nil
+}
+
+// entry is one outbox entry the issuance transaction carries.
+type entry struct {
+	ID  string
+	Raw []byte
+}
+
+// instructions seals the request's content and renders the payload rows.
+//
+// The seals run concurrently. Every Encrypt re-runs the serving-gate
+// assertion, the registry lookup and the provider's unwrap, which is a
+// key-management round trip each once the provider is a real KMS, and
+// the calls are order-independent: each seals one value under the same
+// already-provisioned key. A failure in any of them returns before the
+// spine transaction opens, so the abort-before-issuance semantics are
+// unchanged; the first error is the one reported.
+//
+// stdlib synchronization rather than errgroup: golang.org/x/sync would
+// be this module's first dependency, and a WaitGroup with a guarded
+// first error does the same job in the same number of lines.
+func (s *Service) instructions(ctx context.Context, id string, req Request) ([]outbox.Instruction, error) {
+	channels := []Channel{req.Email}
+	if req.Phone != nil {
+		channels = append(channels, *req.Phone)
+	}
+
+	type sealed struct {
+		value string
+		err   error
+	}
+	// One slot per seal: the display name first when there is one,
+	// then one per channel, in channel order.
+	results := make([]sealed, len(channels)+1)
+	plaintexts := make([]string, len(results))
+	plaintexts[0] = req.DisplayName
+	for i, channel := range channels {
+		plaintexts[i+1] = channel.Address
+	}
+
+	var wg sync.WaitGroup
+	for i, plaintext := range plaintexts {
+		if plaintext == "" {
+			continue
+		}
+		wg.Add(1)
+		go func(slot int, text string) {
+			defer wg.Done()
+			out, err := s.sealer.Encrypt(ctx, id, []byte(text))
+			if err != nil {
+				results[slot] = sealed{err: err}
+				return
+			}
+			results[slot] = sealed{value: hexLiteral(out)}
+		}(i, plaintext)
+	}
+	wg.Wait()
+	for _, result := range results {
+		if result.err != nil {
+			return nil, fmt.Errorf("person: sealing worker content: %w", result.err)
+		}
+	}
+
+	record := map[string]any{"person_id": id, "display_name_ciphertext": nil}
+	if req.DisplayName != "" {
+		record["display_name_ciphertext"] = results[0].value
+	}
+	instructions := []outbox.Instruction{{Table: "person_record", Row: record}}
+	for i, channel := range channels {
+		instructions = append(instructions, outbox.Instruction{
+			Table: "person_contact_channel",
+			Row:   channelRow(id, channel, results[i+1].value),
+		})
+	}
+	return instructions, nil
+}
+
+// channelRow renders one channel as an outbox row around its sealed
+// address.
+func channelRow(id string, c Channel, addressCiphertext string) map[string]any {
+	row := map[string]any{
+		"person_id":          id,
+		"channel_kind":       string(c.Kind),
+		"address_ciphertext": addressCiphertext,
+		"verified_at":        c.VerifiedAt.UTC().Format(time.RFC3339Nano),
+		"line_type":          c.Risk.LineType,
+		"line_country":       nil,
+		"carrier_reputation": c.Risk.CarrierReputation,
+		"velocity_observed":  float64(c.Risk.VelocityObserved),
+		"velocity_threshold": float64(c.Risk.VelocityThreshold),
+		"assurance":          Assurance(c.Kind, c.Risk),
+	}
+	if c.Risk.Country != "" {
+		row["line_country"] = c.Risk.Country
+	}
+	return row
+}
+
+// Tombstone records the lifecycle transition that spends an id. It is
+// write-once: the (person_id, state) key means a second call conflicts
+// rather than overwriting, and no path anywhere removes the row.
+// Destroying the person's content and their DEK is the deletion
+// subsystem's (foundation/08); this marks the id.
+func (s *Service) Tombstone(_ context.Context, id string) error {
+	if err := ValidID(id); err != nil {
+		return err
+	}
+	_, err := transport.Query(spinePlane, servingRole,
+		"INSERT INTO person_lifecycle_transition (person_id, state) VALUES ($1, 'tombstoned')",
+		transport.String(id))
+	return err
+}
+
+// Tombstoned reports whether an id is spent, read through the view that
+// is the queryable form of that fact (migration 0010-person-core).
+func (s *Service) Tombstoned(_ context.Context, id string) (bool, error) {
+	if err := ValidID(id); err != nil {
+		return false, err
+	}
+	lines, err := transport.Query(spinePlane, servingRole,
+		"SELECT 1 FROM person_tombstoned WHERE person_id = $1", transport.String(id))
+	if err != nil {
+		return false, err
+	}
+	return len(lines) > 0, nil
+}
+
+// issue runs the one spine transaction that issues an id: the person
+// row, its 'active' transition, and one outbox entry per payload row.
+// Its COMMIT is the issuance event, which is what makes "instantly" a
+// single claim.
+func issue(id string, entries []entry) error {
+	statements, err := issueStatements(id, entries)
+	if err != nil {
+		return err
+	}
+	return transport.Tx(spinePlane, servingRole, func(tx *transport.Transaction) error {
+		for _, statement := range statements {
+			tx.ExecLiteral(statement)
+		}
+		return nil
+	})
+}
+
+// issueStatements renders that transaction's statements in order. The
+// entry statements come from outbox.InsertStatement, the same builder
+// Enqueue runs, so signup's spine commit cannot drift into a second
+// statement that merely looks like the worker's.
+func issueStatements(id string, entries []entry) ([]string, error) {
+	if err := ValidID(id); err != nil {
+		return nil, err
+	}
+	idLiteral, err := transport.Literal(transport.String(id))
+	if err != nil {
+		return nil, err
+	}
+	statements := []string{
+		fmt.Sprintf("INSERT INTO person (person_id) VALUES (%s);", idLiteral),
+		fmt.Sprintf(
+			"INSERT INTO person_lifecycle_transition (person_id, state) VALUES (%s, 'active');",
+			idLiteral),
+	}
+	for _, e := range entries {
+		statement, err := outbox.InsertStatement(e.ID, e.Raw)
+		if err != nil {
+			return nil, err
+		}
+		statements = append(statements, statement)
+	}
+	return statements, nil
 }
 
 // ValidID gates every id this package interpolates into SQL, and pins
@@ -484,7 +555,14 @@ func ValidID(id string) error {
 	return nil
 }
 
-// hexLiteral renders sealed bytes in Postgres bytea hex input form. It
-// carries no quote or backslash-escape hazard, which is what lets a
-// ciphertext ride an outbox instruction as an ordinary JSON string.
+// hexLiteral renders sealed bytes in Postgres bytea hex input form, so
+// a ciphertext can ride an outbox instruction as an ordinary JSON
+// string and land in a bytea column.
+//
+// The backslash it carries is inert only because a plain quoted literal
+// processes no escape sequences, which holds while
+// standard_conforming_strings is on. That is not assumed: core/transport
+// asserts it live, once per plane, before any statement runs, and
+// core/outbox renders this value through transport.String, whose
+// quote-doubling makes the same assumption.
 func hexLiteral(b []byte) string { return `\x` + hex.EncodeToString(b) }

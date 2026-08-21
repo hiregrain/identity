@@ -16,6 +16,7 @@ import (
 
 	"github.com/hiregrain/identity/core/outbox"
 	"github.com/hiregrain/identity/core/person"
+	"github.com/hiregrain/identity/core/transport"
 )
 
 // The address a signup uses is unique per run so a repeated suite never
@@ -28,7 +29,6 @@ func addresses() (email string) {
 // as a run: an email and nothing else in, an id out, usable at spine
 // commit, with every optional field absent rather than defaulted.
 func TestSignupWithEmailAloneYieldsAUsableIdentity(t *testing.T) {
-	atRepoRoot(t)
 	ctx := context.Background()
 	svc, env := newService(t)
 
@@ -46,19 +46,21 @@ func TestSignupWithEmailAloneYieldsAUsableIdentity(t *testing.T) {
 	if err := person.ValidID(id); err != nil {
 		t.Fatalf("issued id: %v", err)
 	}
+	idArg := transport.String(id)
 
 	// Issued at spine commit: the person row and its 'active' transition
 	// are there the moment Signup returns.
 	if got := ownerSQL(t, "spine",
-		"SELECT count(*) FROM person WHERE person_id = '"+id+"'"); got != "1" {
+		"SELECT count(*) FROM person WHERE person_id = $1", idArg); got != "1" {
 		t.Fatalf("person row at spine commit: got %q", got)
 	}
 	if got := ownerSQL(t, "spine",
-		"SELECT string_agg(state, ',' ORDER BY state) FROM person_lifecycle_transition WHERE person_id = '"+id+"'"); got != "active" {
+		"SELECT string_agg(state, ',' ORDER BY state) FROM person_lifecycle_transition WHERE person_id = $1",
+		idArg); got != "active" {
 		t.Fatalf("lifecycle transitions: got %q, want active", got)
 	}
 	if got := ownerSQL(t, "spine",
-		"SELECT created_at IS NOT NULL FROM person WHERE person_id = '"+id+"'"); got != "t" {
+		"SELECT created_at IS NOT NULL FROM person WHERE person_id = $1", idArg); got != "t" {
 		t.Fatalf("created_at: got %q", got)
 	}
 
@@ -77,7 +79,7 @@ func TestSignupWithEmailAloneYieldsAUsableIdentity(t *testing.T) {
 	// drained the entries are unacknowledged. This is the whole of what
 	// "instantly" claims and does not claim.
 	if got := ownerSQL(t, "payload",
-		"SELECT count(*) FROM person_record WHERE person_id = '"+id+"'"); got != "0" {
+		"SELECT count(*) FROM person_record WHERE person_id = $1", idArg); got != "0" {
 		t.Fatalf("payload row before the drain: got %q, want 0", got)
 	}
 	if _, _, err := outbox.Drain(""); err != nil {
@@ -86,17 +88,21 @@ func TestSignupWithEmailAloneYieldsAUsableIdentity(t *testing.T) {
 
 	// The payload row, with every optional field absent.
 	record := ownerSQL(t, "payload",
-		"SELECT display_name_ciphertext IS NULL, residency_region FROM person_record WHERE person_id = '"+id+"'")
-	if record != "t|us" {
-		t.Fatalf("person_record: got %q, want t|us (display name absent, residency stamped)", record)
+		"SELECT display_name_ciphertext IS NULL, residency_region FROM person_record WHERE person_id = $1",
+		idArg)
+	if record != "t\tus" {
+		t.Fatalf("person_record: got %q, want t/us (display name absent, residency stamped)", record)
 	}
 
 	channel := ownerSQL(t, "payload", `
 		SELECT channel_kind, line_type, coalesce(line_country, 'absent'),
 		       carrier_reputation, velocity_observed, velocity_threshold,
 		       assurance, verified_at IS NOT NULL, residency_region
-		  FROM person_contact_channel WHERE person_id = '`+id+`'`)
-	want := "email|email|absent|unknown|0|5|channel-control|t|us"
+		  FROM person_contact_channel WHERE person_id = $1`, idArg)
+	want := strings.Join([]string{
+		"email", "email", "absent", "unknown", "0", "5",
+		"channel-control", "t", "us",
+	}, "\t")
 	if channel != want {
 		t.Fatalf("person_contact_channel:\n got  %q\n want %q", channel, want)
 	}
@@ -105,7 +111,8 @@ func TestSignupWithEmailAloneYieldsAUsableIdentity(t *testing.T) {
 	// else: it reaches the payload plane as ciphertext inside the outbox
 	// instruction, so neither plane holds it in the clear.
 	stored := ownerSQL(t, "payload",
-		"SELECT encode(address_ciphertext, 'hex') FROM person_contact_channel WHERE person_id = '"+id+"'")
+		"SELECT encode(address_ciphertext, 'hex') FROM person_contact_channel WHERE person_id = $1",
+		idArg)
 	raw := decodeHex(t, stored)
 	back, err := env.Decrypt(ctx, id, raw)
 	if err != nil {
@@ -127,7 +134,6 @@ func TestSignupWithEmailAloneYieldsAUsableIdentity(t *testing.T) {
 // enforced, not promised. The package refuses the request and the
 // column refuses the row.
 func TestUnverifiedChannelIsRefused(t *testing.T) {
-	atRepoRoot(t)
 	svc, _ := newService(t)
 
 	_, err := svc.Signup(context.Background(), person.Request{
@@ -142,8 +148,9 @@ func TestUnverifiedChannelIsRefused(t *testing.T) {
 		  (outbox_entry_id, person_id, channel_kind, address_ciphertext,
 		   verified_at, line_type, carrier_reputation, velocity_observed,
 		   velocity_threshold, assurance)
-		VALUES (gen_random_uuid(), gen_random_uuid(), 'email', '\x00',
-		        NULL, 'email', 'unknown', 0, 5, 'channel-control')`); err == nil {
+		VALUES (gen_random_uuid(), gen_random_uuid(), 'email', $1,
+		        NULL, 'email', 'unknown', 0, 5, 'channel-control')`,
+		transport.Bytea([]byte{0})); err == nil {
 		t.Fatal("the channel table accepted a row with no verified_at")
 	}
 }
@@ -152,7 +159,6 @@ func TestUnverifiedChannelIsRefused(t *testing.T) {
 // sides it can fail on: the generator, which must not be able to return
 // a spent id, and the table, which must refuse one that is offered.
 func TestTombstonedIDIsNeverIssuedAgain(t *testing.T) {
-	atRepoRoot(t)
 	ctx := context.Background()
 	svc, _ := newService(t)
 
@@ -197,7 +203,8 @@ func TestTombstonedIDIsNeverIssuedAgain(t *testing.T) {
 	// for the serving role and for the owner alike.
 	for _, role := range []string{"identity_app", "identity"} {
 		if _, err := roleSQL("spine", role,
-			"INSERT INTO person (person_id) VALUES ('"+spent+"')"); err == nil {
+			"INSERT INTO person (person_id) VALUES ($1)",
+			transport.String(spent)); err == nil {
 			t.Fatalf("the person table accepted the tombstoned id again as %s", role)
 		}
 	}
@@ -215,33 +222,29 @@ func TestTombstonedIDIsNeverIssuedAgain(t *testing.T) {
 // (decision 013) and a US mobile does not, end to end, plus the
 // database's refusal to hold the marker on anything else.
 func TestAssuranceFollowsTheLine(t *testing.T) {
-	atRepoRoot(t)
 	ctx := context.Background()
 	svc, _ := newService(t)
 
 	cases := []struct {
-		name    string
-		number  string
-		country string
-		want    string
+		name     string
+		number   string
+		country  string
+		lineType string
+		want     string
 	}{
-		{"PH mobile", "+639171234567", "ph", person.AssurancePHSIMRegistered},
-		{"US mobile", "+14155550142", "us", person.AssuranceChannelControl},
-		{"PH landline", "+63288887777", "ph", person.AssuranceChannelControl},
+		{"PH mobile", "+639171234567", "ph", person.LineMobile, person.AssurancePHSIMRegistered},
+		{"US mobile", "+14155550142", "us", person.LineMobile, person.AssuranceChannelControl},
+		{"PH landline", "+63288887777", "ph", person.LineLandline, person.AssuranceChannelControl},
 	}
 	ids := make([]string, len(cases))
 	for i, c := range cases {
-		lineType := person.LineMobile
-		if strings.Contains(c.name, "landline") {
-			lineType = person.LineLandline
-		}
 		id, err := svc.Signup(ctx, person.Request{
 			Email: person.Channel{Address: addresses(), VerifiedAt: time.Now().UTC()},
 			Phone: &person.Channel{
 				Address:    c.number,
 				VerifiedAt: time.Now().UTC(),
 				Risk: person.RiskSignals{
-					LineType:          lineType,
+					LineType:          c.lineType,
 					Country:           c.country,
 					CarrierReputation: person.CarrierClear,
 					VelocityObserved:  1,
@@ -257,14 +260,17 @@ func TestAssuranceFollowsTheLine(t *testing.T) {
 		t.Fatalf("drain: %v", err)
 	}
 	for i, c := range cases {
+		idArg := transport.String(ids[i])
 		got := ownerSQL(t, "payload",
-			"SELECT assurance FROM person_contact_channel WHERE person_id = '"+ids[i]+"' AND channel_kind = 'phone'")
+			"SELECT assurance FROM person_contact_channel WHERE person_id = $1 AND channel_kind = 'phone'",
+			idArg)
 		if got != c.want {
 			t.Fatalf("%s: assurance %q, want %q", c.name, got, c.want)
 		}
 		// The email channel on the same account is never promoted.
 		if got := ownerSQL(t, "payload",
-			"SELECT assurance FROM person_contact_channel WHERE person_id = '"+ids[i]+"' AND channel_kind = 'email'"); got != person.AssuranceChannelControl {
+			"SELECT assurance FROM person_contact_channel WHERE person_id = $1 AND channel_kind = 'email'",
+			idArg); got != person.AssuranceChannelControl {
 			t.Fatalf("%s: the email channel carries %q", c.name, got)
 		}
 	}
@@ -276,9 +282,29 @@ func TestAssuranceFollowsTheLine(t *testing.T) {
 		  (outbox_entry_id, person_id, channel_kind, address_ciphertext,
 		   verified_at, line_type, line_country, carrier_reputation,
 		   velocity_observed, velocity_threshold, assurance)
-		VALUES (gen_random_uuid(), gen_random_uuid(), 'phone', '\x00',
-		        now(), 'mobile', 'us', 'clear', 0, 5, 'ph-sim-registered')`); err == nil {
+		VALUES (gen_random_uuid(), gen_random_uuid(), 'phone', $1,
+		        now(), 'mobile', 'us', 'clear', 0, 5, 'ph-sim-registered')`,
+		transport.Bytea([]byte{0})); err == nil {
 		t.Fatal("the channel table accepted the elevated marker on a US mobile")
+	}
+}
+
+// TestResidencyIsNotTheCallersToChoose: the region is the database's own
+// declaration. An instruction naming the column is refused before it can
+// reach a row, so the default is binding rather than customary.
+func TestResidencyIsNotTheCallersToChoose(t *testing.T) {
+	_, err := outbox.Instruction{
+		Table: "person_record",
+		Row: map[string]any{
+			"person_id":        "00000000-0000-4000-8000-000000000000",
+			"residency_region": "zz",
+		},
+	}.ApplySQL("00000000-0000-4000-8000-000000000001")
+	if err == nil {
+		t.Fatal("an instruction was allowed to choose its own residency region")
+	}
+	if !strings.Contains(err.Error(), "residency_region") {
+		t.Fatalf("refusal does not name the column: %v", err)
 	}
 }
 

@@ -1,11 +1,13 @@
--- 0010-person-core (person-identity/01; decisions 013, 017, 075): the
--- person's payload half. Number 0010 under the one shared numbering
--- sequence, the same number and name as the spine file
--- (db/migrations/spine/0010-person-core.sql), because signup is one
--- migration written across the physical split rather than two
--- migrations. The numbering check reads a number and a name and both
--- files declare the same pair, so the number is claimed once, by the
--- task frontmatter, exactly as it was written there.
+-- 0036-person-record-and-channels (person-identity/01; decisions 013,
+-- 017, 075): the person's payload half, the partner of the spine's
+-- 0010-person-core. Number 0036 under the one shared numbering
+-- sequence, the next number no landed file and no task claim holds.
+--
+-- A number belongs to one chain and one file (decision 017: each chain
+-- has gaps where the other's numbers fall), so the two halves of one
+-- task's schema carry two numbers. Founder ruling on the raise this
+-- task made when it first landed both halves under 0010. The task
+-- frontmatter's claim is amended separately, on main.
 --
 -- Everything a person told us is here, and nothing here is readable
 -- without the person's DEK. Content columns hold ciphertext core/envelope
@@ -30,9 +32,14 @@
 -- residency and 0005's registry stamps the value with a subquery at
 -- every insert. An outbox apply cannot: it renders one flat INSERT from
 -- an instruction (core/outbox), and a subquery there would mean an
--- instruction could choose its own region. Moving the stamp into the
--- default keeps the authority where 0004 put it and takes the choice
--- away from the caller entirely.
+-- instruction could choose its own region.
+--
+-- A default alone is only a default: an INSERT naming the column still
+-- overrides it. What makes the stamp binding on this path is that no
+-- instruction may name the column at all, refused by the denylist in
+-- core/outbox's Instruction.validate alongside outbox_entry_id, plus
+-- checks/payload-residency.mjs, which fails any row whose region
+-- disagrees with the database it sits in.
 CREATE FUNCTION declared_residency_region() RETURNS residency_region
 LANGUAGE sql STABLE AS $$
   SELECT residency_region FROM database_residency
