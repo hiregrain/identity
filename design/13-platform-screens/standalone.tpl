@@ -87,6 +87,8 @@ body{background:var(--page);display:flex;flex-direction:column;align-items:cente
      align-items:center;justify-content:space-between;padding:0 7.5px;gap:6px}
 .barslot{display:flex;align-items:center;min-width:0}
 .backbtn{display:flex;align-items:center;gap:2px;min-height:44px;padding:0 6px 0 2px}
+.homebtn{display:flex;align-items:center;min-height:44px;padding:0 6px 0 2px}
+.bardiv{flex:0 0 1px;height:16px;background:var(--hairline);margin:0 3px}
 .android .bar{padding:0 4px}
 
 /* ---------- documents ---------- */
@@ -135,8 +137,21 @@ body{background:var(--page);display:flex;flex-direction:column;align-items:cente
 .unrolling .ch4 path{stroke-dasharray:1;stroke-dashoffset:1;animation:scribe 620ms cubic-bezier(0.2,0,0,1) 330ms forwards}
 @keyframes matched{from{transform:scale(.56) translateY(46px);opacity:.55} to{transform:scale(1) translateY(0);opacity:1}}
 .unrolling{animation:matched 420ms cubic-bezier(0.32,0.72,0,1) both}
-.fx .ch{opacity:.18;transition:opacity 360ms linear}
+/* Selecting a chapter lights its band. The first version only dimmed the
+   others, which is a subtractive signal: four hairlines going fainter reads as
+   the figure losing contrast rather than as one band being chosen, especially
+   at the size the figure sits beside a list. The selected band now also
+   thickens, so the signal is additive and survives being glanced at. */
+.fx .ch{opacity:.12;transition:opacity 300ms linear}
+.fx .ch *{transition:stroke-width 240ms linear}
 .fx.f0 .ch0,.fx.f1 .ch1,.fx.f2 .ch2,.fx.f3 .ch3,.fx.f4 .ch4{opacity:1}
+.fx.f0 .ch0 *,.fx.f1 .ch1 *,.fx.f2 .ch2 *,.fx.f3 .ch3 *,.fx.f4 .ch4 *{stroke-width:2.6}
+@media (prefers-reduced-motion:reduce){
+  .fx .ch,.fx .ch *{transition:none}
+}
+/* And the row that caused it says so. Without this the figure changed and
+   nothing on the screen connected the change to the thing that was clicked. */
+.disc.on > [data-row]{box-shadow:inset 2px 0 0 var(--ink)}
 
 /* ---------- §7 depth, and §10's attestation landing ---------- */
 .row.proud{transform:translateY(-2px)}
@@ -302,7 +317,7 @@ body{background:var(--page);display:flex;flex-direction:column;align-items:cente
 
     <div class="layer base" id="base">
       <span class="grat" aria-hidden="true">
-        <svg viewBox="0 0 402 874" preserveAspectRatio="none" fill="none"
+        <svg aria-hidden="true" viewBox="0 0 402 874" preserveAspectRatio="none" fill="none"
              stroke="var(--rule)" stroke-width="0.5">@@GRATICULE_SCREEN@@</svg>
       </span>
       <div class="doc" id="rec"></div>
@@ -397,12 +412,32 @@ var OUT = [
    gap:'A coworker attested this. The business can attest it too.',
    body:'A coworker you named is a real witness. If someone confirms a work address at the business, the record shows a person at a business Grain recognises. Grain checks control of the address and records nothing about when they worked there.'}
 ];
+/* Every row here is a destination the app already draws. They were chevroned
+   buttons that went nowhere, so half the account surfaces could only be reached
+   by typing their name into the console. A row that carries a chevron and does
+   not move is a fact dressed as a control, which the chassis forbids in the
+   other direction and should forbid in this one. */
 var ACCOUNT = [
-  ['Name and identity','What Grain checked, and when'],
-  ['Phone and email','How you sign in'],
-  ['Who you have disclosed to','Every grant you have ever made'],
-  ['Export your record','A file you keep'],
-  ['Delete everything','Files a request. Access stops the moment you file it.']
+  ['Identity', [
+    ['idwhy', 'Name and identity', 'What Grain checked, and when'],
+    ['unlock', 'Unlock this device', 'Biometrics or your passcode']
+  ]],
+  ['Your record', [
+    ['requests', 'Requests you have made', 'What you have asked, and whether it has been answered'],
+    ['ledger', 'The ledger', 'Every entry, in the order it happened'],
+    ['disclosure', 'Who has read it', 'The record of disclosures, on request'],
+    ['exportrec', 'Export your record', 'A file you keep']
+  ]],
+  ['This app', [
+    ['notifprefs', 'Notifications', 'What Grain may tell you about'],
+    ['language', 'Language', 'English'],
+    ['legal', 'How this works', 'Terms, privacy, and what the marks mean']
+  ]],
+  ['Getting help, and leaving', [
+    ['support', 'Message support', 'The route for every account change'],
+    ['deleterec', 'Delete everything', 'Files a request. Access stops the moment you file it.'],
+    ['signout', 'Sign out', null]
+  ]]
 ];
 
 
@@ -417,10 +452,43 @@ var PARTIES = [
   {name:'Bataan Poultry Processing', where:'Bataan', reg:false},
   {name:'Alorica Philippines', where:'Taguig', reg:true}
 ];
-var draft = {party:null, typed:'', from:'', to:''};
+/* Decision 062 made education and credentials record objects and neither had
+   ever been drawn, so `self-asserted-record` was ready with a third of its
+   objects unreachable in the app. Schema 8 and 9 govern every field here,
+   including the two "not present, deliberately" refusals: no grade, no GPA. */
+var LEVELS = [['secondary','Secondary'],['diploma','Diploma'],['bachelor','Bachelor'],
+              ['master','Master'],['doctorate','Doctorate'],['other','Other']];
+var INSTITUTIONS = [
+  {name:'Bataan Peninsula State University', where:'Philippines', reg:true},
+  {name:'Polytechnic University of the Philippines', where:'Philippines', reg:true},
+  {name:'TESDA Regional Training Center', where:'Philippines', reg:true}
+];
+var EDU = [
+  {inst:'Bataan Peninsula State University', ref:true, level:'Diploma',
+   field:'Food technology', from:'Jun 2014', to:'Mar 2016', completed:true}
+];
+var CRED = [
+  {issuer:'TESDA', ref:true, name:'Food Safety NC II', from:'Aug 2017', to:'Aug 2022', doc:true}
+];
+var edraft = {inst:'', ref:false, country:0, level:null, field:'', completed:true};
+var cdraft = {issuer:'', ref:false, country:0, name:'', doc:false};
+
+var draft = {party:null, typed:'', from:'', to:'', reg:false,
+             country:0, locality:'', kind:null,
+             volUnit:'', volCount:'', firstPosition:false,
+             positions:[], pos:{title:'', from:'', to:'', directed:'', team:'', same:''}};
+
+/* model/record-schema.md 2. `relationship_kind` is an enum with no judgment in
+   it, and in this population agency and platform work are common enough that
+   collapsing them into "employed" loses a real distinction. */
+var KINDS = [
+  ['employment', 'Employed'], ['engagement', 'Engaged directly'],
+  ['platform', 'Through a platform'], ['agency', 'Through an agency'],
+  ['self_employed', 'Self-employed']
+];
 
 var S = {stack:[], sheetOpen:false, platform:'ios', scale:1, state:'full',
-         lockup:'none', bar:'hard', five:null};
+         lockup:'none', bar:'hard', five:null, ask:4};
 
 var mark = function(sw, w, h, sweight){
   return '<svg viewBox="0 0 34 16" width="' + (w||34) + '" height="' + (h||16) + '" fill="none" ' +
@@ -483,7 +551,7 @@ function recordBody(){
         '<span class="figreg" style="top:0;right:0;border-top-width:1px;border-right-width:1px"></span>' +
         '<span class="figreg" style="bottom:0;left:0;border-bottom-width:1px;border-left-width:1px"></span>' +
         '<span class="figreg" style="bottom:0;right:0;border-bottom-width:1px;border-right-width:1px"></span>' +
-        '<span class="figground" aria-hidden="true"><svg viewBox="0 0 296 296" preserveAspectRatio="xMidYMid slice" fill="none" stroke="var(--rule)" stroke-width="0.5">' + GRAT2 + '</svg></span>' +
+        '<span class="figground" aria-hidden="true"><svg aria-hidden="true" viewBox="0 0 296 296" preserveAspectRatio="xMidYMid slice" fill="none" stroke="var(--rule)" stroke-width="0.5">' + GRAT2 + '</svg></span>' +
         '<svg class="fig moved" viewBox="0 0 600 600" role="img" aria-label="Your imprint. Five chapters, oldest innermost.">' + FIGURE + '</svg>' +
       '</div>' +
       '<button class="figopen press js-imprint">' +
@@ -491,13 +559,56 @@ function recordBody(){
         '<span class="chevs">' + CHEV + '</span></button>';
   }
 
+  /* Education and credentials are record objects (062) and the record showed
+     neither, so a third of the schema was unreachable in the app. They are not
+     chapters and they draw no ring: the figure is chapters, and putting them on
+     it would claim a shape the imprint does not encode. */
+  if(EDU.length){
+    out += '<div style="padding-top:28px">' + sechead('Education', EDU.length) +
+      EDU.map(function(e){
+        return '<div class="prow"><span class="gutter">' + mark(e.ref ? '#sw-emp' : '#sw-self') + '</span>' +
+          '<span style="flex:1;min-width:0"><span class="t-rec" style="display:block">' + esc(e.inst) + '</span>' +
+          '<span class="t-meta" style="display:block;color:var(--secondary);padding-top:3px">' +
+            esc(e.level + ', ' + e.field + (e.completed ? '' : ', not completed')) + '</span></span>' +
+          '<span class="col-r t-data" style="color:var(--secondary)">' + esc(e.from + ' to ' + e.to) + '</span></div>';
+      }).join('') + '</div>';
+  }
+  if(CRED.length){
+    out += '<div style="padding-top:28px">' + sechead('Certificates', CRED.length) +
+      CRED.map(function(c2){
+        return '<div class="prow"><span class="gutter">' + mark(c2.ref ? '#sw-emp' : '#sw-self') + '</span>' +
+          '<span style="flex:1;min-width:0"><span class="t-rec" style="display:block">' + esc(c2.name) + '</span>' +
+          '<span class="t-meta" style="display:block;color:var(--secondary);padding-top:3px">' +
+            esc(c2.issuer + (c2.doc ? '. Document on file, which you supplied.' : '')) + '</span></span>' +
+          '<span class="col-r t-data" style="color:var(--secondary)">' + esc(c2.from + ' to ' + c2.to) + '</span></div>';
+      }).join('') + '</div>';
+  }
+
+  out += '<div style="padding-top:26px">' +
+    goRow('addchapter', 'Add a chapter', 'Somewhere else you have worked') +
+    goRow('education', 'Add a qualification', 'What you studied, and where') +
+    goRow('credential', 'Add a certificate', 'A licence, a certificate, or a course') + '</div>';
+
+  out += '<div style="padding-top:26px">' +
+    goRow('requests', 'Requests you have made', REQUESTS.length + ' outstanding, none of them answered yet') +
+    '</div>';
+
   out += '<div style="padding-top:28px">' + sechead('Who else could attest') +
     OUT.map(function(o, n){
       var c = CH[o.i];
+      /* On a desk the chapter list is already on this surface, so naming the
+         party again would be the second mention worker-surface criterion 01
+         forbids, and it was failing that criterion. The prompt points at the
+         chapter by its dates, which are unique and already the row's own
+         right-hand column, rather than renaming it. On a phone the list is a
+         push away, so the name is the only thing that identifies it. */
+      var desk = (typeof S.vp !== 'undefined' && S.vp === 'desktop' && chapters().length);
       return '<button class="row press" data-out="' + n + '">' +
         '<span class="gutter">' + mark(c.sw) + '</span>' +
-        '<span style="flex:1;min-width:0"><span class="t-rec" style="display:block">' + esc(c.party) + '</span>' +
-        '<span class="t-meta" style="display:block;color:var(--secondary);padding-top:4px">' + esc(o.gap) + '</span></span>' +
+        '<span style="flex:1;min-width:0"><span class="t-rec" style="display:block">' +
+          (desk ? esc(o.gap) : esc(c.party)) + '</span>' +
+        '<span class="t-meta" style="display:block;color:var(--secondary);padding-top:4px">' +
+          (desk ? 'The chapter above, ' + esc(c.from + ' to ' + c.to) : esc(o.gap)) + '</span></span>' +
         '<span class="col-r t-data" style="color:var(--secondary)">' + esc(c.from + ' to ' + c.to) + '</span></button>';
     }).join('') + '</div>';
   return out;
@@ -505,11 +616,13 @@ function recordBody(){
 
 function imprintBody(p){
   var chs = chapters();
+  var vh = 'position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap';
   var focus = (typeof p.n === 'number') ? ' fx f' + p.n : '';
-  var out = '<div style="padding-top:4px">';
+  var out = '<div style="padding-top:4px">' +
+    '<h1 class="t-sec" style="' + vh + '">Your imprint, chapter by chapter</h1>';
   if(!figureHidden()){
     out += '<span class="bigwrap">' +
-      '<span class="figground" aria-hidden="true"><svg viewBox="0 0 296 296" preserveAspectRatio="xMidYMid slice" fill="none" stroke="var(--rule)" stroke-width="0.5">' + GRAT2 + '</svg></span>' +
+      '<span class="figground" aria-hidden="true"><svg aria-hidden="true" viewBox="0 0 296 296" preserveAspectRatio="xMidYMid slice" fill="none" stroke="var(--rule)" stroke-width="0.5">' + GRAT2 + '</svg></span>' +
       '<svg class="bigfig unrolling' + focus + '" viewBox="0 0 600 600" role="img" aria-label="Your imprint at full size.">' + FIGURE + '</svg></span>';
   }
   out += '<p class="t-body" style="margin:20px 0 0;color:var(--secondary);text-wrap:pretty">Each ring is one chapter. The earliest is innermost, and a ring is as wide as the time it covers. The weave shows who attested it.</p>' +
@@ -518,7 +631,7 @@ function imprintBody(p){
       return '<div class="disc" data-disc="' + i + '">' +
         '<button class="row press' + (c.attested ? '' : ' proud') + '" data-open="' + i + '" data-row="' + i + '">' +
           '<span class="prov ' + (c.attested ? 'rigid' : 'press') + '" tabindex="0">' + mark(c.sw) +
-            '<span class="tip t-meta">' + esc(c.label + ' ' + c.by + '. ' + c.note) + '</span></span>' +
+            '<span class="tip t-meta">' + esc(c.label + ' ' + (c.by === c.party ? 'the business itself' : c.by) + '. ' + c.note) + '</span></span>' +
           '<span style="flex:1;min-width:0"><span class="t-rec" style="display:block">' + esc(c.party) + '</span>' +
           '<span class="t-meta" style="display:block;color:var(--secondary);padding-top:3px">' + esc(c.kind) + '</span></span>' +
           '<span class="col-r t-data" style="color:var(--secondary)">' + esc(c.from) + '</span>' +
@@ -527,13 +640,29 @@ function imprintBody(p){
           '<div class="attest"><span class="attmark">' + mark(c.sw, 68, 32, 0.5) + '</span>' +
             '<span style="flex:1;min-width:0">' +
               '<span class="t-micro" style="display:block;color:var(--secondary)">' + esc(c.label) + '</span>' +
-              '<span class="t-lead" style="display:block;padding-top:3px;text-wrap:pretty">' + esc(c.by) + '</span>' +
+              '<span class="t-lead" style="display:block;padding-top:3px;text-wrap:pretty">' +
+                esc(c.by === c.party ? 'The business itself' : c.by) + '</span>' +
               '<span class="t-meta" style="display:block;padding-top:5px;color:var(--secondary);text-wrap:pretty">' + esc(c.note) + '</span>' +
             '</span></div>' +
           '<div class="attrow"><span class="t-micro" style="color:var(--secondary)">Dates</span>' +
             '<span class="t-data">' + esc(c.from + ' to ' + c.to) + '</span></div>' +
           '<div class="attrow"><span class="t-micro" style="color:var(--secondary)">Standing</span>' +
             '<span class="t-data">' + (c.attested ? 'Permanent' : 'Your own account') + '</span></div>' +
+          /* What a worker can do about this chapter, next to the chapter. The
+             record named two chapters worth chasing on the home surface and
+             offered nothing anywhere else, so every other chapter was a fact
+             with no available action. */
+          '<div style="padding-top:6px">' +
+            '<button class="listrow press" data-ask="' + i + '"><span style="flex:1;min-width:0">' +
+              '<span class="t-rec" style="display:block">Get this confirmed</span>' +
+              '<span class="t-meta" style="display:block;color:var(--secondary);padding-top:3px">' +
+                (c.attested ? 'Another party agreeing shows as a second mark.' : 'Nobody has confirmed this yet.') +
+              '</span></span><span class="chevs">' + CHEV + '</span></button>' +
+            goRow('addposition', 'Add a position here', 'A change of title inside this chapter') +
+            (c.attested ? goRow('dispute', 'Dispute this attestation', 'If it is not genuine, or to attach your side of it') : '') +
+            goRow(c.attested ? 'minoredit' : 'permanence',
+                  c.attested ? 'What you can still change' : 'What you can change') +
+          '</div>' +
         '</div></div></div>';
     }).join('') + '</div>';
   return out;
@@ -543,27 +672,36 @@ function sharingBody(){
   return '<div><h1 class="t-head" style="margin:0">Who can read this</h1>' +
     '<p class="t-body" style="margin:8px 0 0;color:var(--secondary);text-wrap:pretty">Each grant ends on its own date. A grant is to a named recipient, and it is not a link anyone can forward.</p>' +
     '<div style="margin-top:24px">' + sechead('Grants', 2) + '</div>' +
-    '<div class="row"><span style="flex:1"><span class="t-rec" style="display:block">Alorica Philippines</span>' +
+    '<button class="row press" data-go="grantdetail"><span style="flex:1;min-width:0"><span class="t-rec" style="display:block">Alorica Philippines</span>' +
     '<span class="t-meta" style="display:block;color:var(--secondary);padding-top:3px">Whole record</span></span>' +
-    '<span class="col-r t-data" style="color:var(--secondary)">Ends Sep 2026</span></div>' +
-    '<div class="row"><span style="flex:1"><span class="t-rec" style="display:block">Cebu Pacific Cargo Services</span>' +
+    '<span class="col-r t-data" style="color:var(--secondary)">Ends Sep 2026</span>' +
+    '<span class="chev">' + CHEV + '</span></button>' +
+    '<button class="row press" data-go="grantdetail"><span style="flex:1;min-width:0"><span class="t-rec" style="display:block">Cebu Pacific Cargo Services</span>' +
     '<span class="t-meta" style="display:block;color:var(--secondary);padding-top:3px">Whole record</span></span>' +
-    '<span class="col-r t-data" style="color:var(--secondary)">Ends Nov 2026</span></div>' +
+    '<span class="col-r t-data" style="color:var(--secondary)">Ends Nov 2026</span>' +
+    '<span class="chev">' + CHEV + '</span></button>' +
+    goRow('sendrecord', 'Send your record to someone', 'A grant to a named person, with its own end date') +
     '<div class="listrow" style="margin-top:20px"><span style="flex:1;min-width:0">' +
     '<span class="t-rec" style="display:block">Public page</span>' +
     '<span class="t-meta" style="display:block;color:var(--secondary);padding-top:3px">Off. Nobody reaches your record by searching.</span></span>' +
     '<button class="sw press js-sw" role="switch" aria-checked="false" aria-label="Public page"><i></i></button></div>' +
+    goRow('publicpage', 'Manage your public page', 'What it would carry, and a preview') +
     '<p class="t-meta" style="color:var(--secondary);margin:24px 0 0;text-wrap:pretty">This record is held by its worker. A grant ends when its date passes, and revoking one stops access from that moment. Neither erases that the grant existed.</p></div>';
 }
 
+function goRow(route, label, note){
+  return '<button class="listrow press" data-go="' + route + '"><span style="flex:1;min-width:0">' +
+    '<span class="t-rec" style="display:block">' + esc(label) + '</span>' +
+    (note ? '<span class="t-meta" style="display:block;color:var(--secondary);padding-top:3px;text-wrap:pretty">' + esc(note) + '</span>' : '') +
+    '</span><span class="chevs">' + CHEV + '</span></button>';
+}
 function accountBody(){
-  return '<div><h1 class="t-head" style="margin:0">Your account</h1><div style="margin-top:20px">' +
-    ACCOUNT.map(function(a){
-      return '<button class="listrow press"><span style="flex:1;min-width:0">' +
-        '<span class="t-rec" style="display:block">' + esc(a[0]) + '</span>' +
-        '<span class="t-meta" style="display:block;color:var(--secondary);padding-top:3px">' + esc(a[1]) + '</span></span>' +
-        '<span class="chevs">' + CHEV + '</span></button>';
-    }).join('') + '</div></div>';
+  return '<div><h1 class="t-head" style="margin:0">Your account</h1>' +
+    ACCOUNT.map(function(g){
+      return '<div class="grp"><span class="t-micro" style="display:block;color:var(--secondary);padding-bottom:2px">' +
+        esc(g[0]) + '</span>' +
+        g[1].map(function(a){ return goRow(a[0], a[1], a[2]); }).join('') + '</div>';
+    }).join('') + '</div>';
 }
 
 
@@ -584,7 +722,7 @@ function codeBody(){
     '<div style="margin-top:28px">' +
       '<button class="btn-primary press" id="otpgo" disabled>Continue</button>' +
       '<div style="text-align:center;padding-top:6px">' +
-        '<button class="btn-tertiary press" id="resend">Send it again</button></div>' +
+        '<button class="btn-tertiary press js-said" id="resend">Send it again</button></div>' +
     '</div>' +
     '<p class="t-meta" style="margin:26px 0 0;color:var(--secondary);text-wrap:pretty">' +
       'Using someone else\'s phone? The code signs you in on this handset only, and you can sign out from your account.</p>' +
@@ -594,25 +732,58 @@ function codeBody(){
 /* ---------------- Add your first chapter (C1) ----------------
    The moment of value creation. Party search, a free-text fallback that never
    auto-resolves, and month precision only because no party attests a day. */
+/* Decision 074. This screen collected an employer and two dates, which cannot
+   produce a valid chapter: `party_country` is required whenever `party_ref` is
+   null, and that is the common case here because most employers in the target
+   population are not registered. Country and city appear only when the party
+   is unregistered, because a registered party already carries them and asking
+   twice implies Grain does not know. */
 function addBody(){
-  return '<div>' +
+  var unreg = !draft.reg && (draft.party || draft.typed);
+  var out = '<div>' +
     '<h1 class="t-head" style="margin:0">Where did you work?</h1>' +
     '<div style="margin-top:26px">' +
       '<span class="t-micro" style="display:block;color:var(--secondary);padding-bottom:4px">Employer or business</span>' +
       '<span class="ruled lg"><input id="psearch" autocomplete="organization" ' +
         'aria-label="Employer or business" placeholder="Start typing" value="' + esc(draft.typed) + '"></span>' +
       '<div id="presults"></div>' +
-    '</div>' +
-    '<div class="grp">' +
+    '</div>';
+
+  if(unreg){
+    out += '<div class="grp">' +
+      '<button class="srow press" data-chcountry="1"><span class="t-rec" style="flex:1">Country</span>' +
+        '<span class="t-data" style="color:var(--secondary)">' + esc(COUNTRIES[draft.country].c) + '</span></button>' +
+      '<div style="padding-top:14px">' +
+        '<span class="t-micro" style="display:block;color:var(--secondary);padding-bottom:4px">City or town</span>' +
+        '<span class="ruled"><input id="chcity" aria-label="City or town" placeholder="As you would say it" value="' + esc(draft.locality) + '"></span>' +
+      '</div>' +
+      '<p class="t-meta" style="margin:12px 0 0;color:var(--secondary);text-wrap:pretty">Grain does not know this business yet. Where it is keeps your record findable later, and it is never used to match you to a party on its own.</p>' +
+    '</div>';
+  }
+
+  out += '<div style="padding-top:20px">' +
+    goRow('parsing', 'Or import a resume', 'Grain reads it and you confirm every line before anything is added') +
+    '</div>';
+
+  out += '<div class="grp">' +
+    '<span class="t-micro" style="display:block;color:var(--secondary);padding-bottom:8px">How you worked there</span>' +
+    '<div class="mgrid" style="grid-template-columns:repeat(2,1fr);padding-bottom:6px">' +
+      KINDS.map(function(k){
+        return '<button data-kind="' + k[0] + '" aria-pressed="' + (draft.kind === k[0]) + '">' + esc(k[1]) + '</button>';
+      }).join('') +
+    '</div></div>';
+
+  out += '<div class="grp">' +
       '<button class="srow press" data-month="from"><span class="t-rec" style="flex:1">Started</span>' +
         '<span class="t-data" style="color:var(--secondary)">' + (draft.from || 'Pick a month') + '</span></button>' +
       '<button class="srow press" data-month="to"><span class="t-rec" style="flex:1">Ended</span>' +
         '<span class="t-data" style="color:var(--secondary)">' + (draft.to || 'Pick a month') + '</span></button>' +
       '<p class="t-meta" style="margin:12px 0 0;color:var(--secondary);text-wrap:pretty">Month only. Grain records no day, because no party attests one.</p>' +
     '</div>' +
-    '<div style="margin-top:26px"><button class="btn-primary press"' +
-      (draft.party || draft.typed ? '' : ' disabled') + '>Add this chapter</button></div>' +
+    '<div style="margin-top:26px"><button class="btn-primary press" id="chapgo"' +
+      ((draft.party || draft.typed) && draft.kind ? '' : ' disabled') + '>Next, what you did</button></div>' +
   '</div>';
+  return out;
 }
 
 function partyResults(){
@@ -620,7 +791,7 @@ function partyResults(){
   if(!q) return '';
   var hits = PARTIES.filter(function(p){ return p.name.toLowerCase().indexOf(q) > -1; }).slice(0, 4);
   var out = hits.map(function(p){
-    return '<button class="row press" data-party="' + esc(p.name) + '">' +
+    return '<button class="row press" data-party="' + esc(p.name) + '" data-reg="' + (p.reg ? '1' : '') + '">' +
       '<span class="gutter">' + mark(p.reg ? '#sw-emp' : '#sw-self') + '</span>' +
       '<span style="flex:1;min-width:0"><span class="t-rec" style="display:block">' + esc(p.name) + '</span>' +
       '<span class="t-meta" style="display:block;color:var(--secondary);padding-top:3px">' +
@@ -688,10 +859,10 @@ function identifierBody(){
           '<span class="t-data" style="color:var(--secondary)">' + esc(c.c) + ' ' + esc(c.d) + '</span></button></div>' +
         '<div style="margin-top:18px"><span class="t-micro" style="display:block;color:var(--secondary);padding-bottom:4px">Mobile number</span>' +
         '<span class="ruled lg"><span class="t-rec" style="padding-right:10px;color:var(--secondary)">' + esc(c.d) + '</span>' +
-        '<input id="idfield" inputmode="tel" autocomplete="tel-national" aria-label="Mobile number" placeholder="917 000 0000"></span></div>'
+        '<input id="idinput" inputmode="tel" autocomplete="tel-national" aria-label="Mobile number" placeholder="917 000 0000"></span></div>'
       : '<div style="margin-top:26px"><span class="t-micro" style="display:block;color:var(--secondary);padding-bottom:4px">Email address</span>' +
         '<span class="ruled lg"><input id="idfield" inputmode="email" autocomplete="email" aria-label="Email address" placeholder="name@example.com"></span></div>') +
-    '<div style="margin-top:28px"><button class="btn-primary press" disabled>Send the code</button>' +
+    '<div style="margin-top:28px"><button class="btn-primary press" id="idgo" data-go="code" disabled>Send the code</button>' +
     '<div style="text-align:center;padding-top:6px"><button class="btn-tertiary press" data-idmode="' +
       (idf.mode === 'phone' ? 'email' : 'phone') + '">Use ' + (idf.mode === 'phone' ? 'an email' : 'a number') + ' instead</button></div></div></div>';
 }
@@ -702,8 +873,8 @@ function nameBody(){
   return '<div><h1 class="t-head" style="margin:0">What is your name?</h1>' +
     '<p class="t-body" style="margin:8px 0 0;color:var(--secondary);text-wrap:pretty">Write it the way you write it, in any script. It goes on your record exactly as typed.</p>' +
     '<div style="margin-top:26px"><span class="t-micro" style="display:block;color:var(--secondary);padding-bottom:4px">Full name</span>' +
-    '<span class="ruled lg"><input id="namefield" autocomplete="name" aria-label="Full name" placeholder="Liezel Mendoza"></span></div>' +
-    '<div style="margin-top:28px"><button class="btn-primary press" disabled>Continue</button></div></div>';
+    '<span class="ruled lg"><input id="nameinput" autocomplete="name" aria-label="Full name" placeholder="Liezel Mendoza"></span></div>' +
+    '<div style="margin-top:28px"><button class="btn-primary press" id="namego" data-go="consent" disabled>Continue</button></div></div>';
 }
 
 /* F2. Document type and issuing country, using the state grammar for choice:
@@ -716,12 +887,12 @@ function docTypeBody(){
     '<span class="t-data" style="color:var(--secondary)">' + esc(COUNTRIES[idf.country].c) + '</span></button></div>' +
     '<div style="margin-top:20px">' + DOCS.map(function(d, i){
       return '<button class="row press" data-doc="' + i + '"><span class="gutter" style="padding-top:2px">' +
-        '<svg width="20" height="20" viewBox="0 0 24 24" class="icon" style="stroke-linecap:square"><use href="' +
+        '<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" class="icon" style="stroke-linecap:square"><use href="' +
         (docPick === i ? '#i-done' : '#i-open') + '"></use></svg></span>' +
         '<span style="flex:1;min-width:0"><span class="t-rec" style="display:block">' + esc(d[0]) + '</span>' +
         '<span class="t-meta" style="display:block;color:var(--secondary);padding-top:3px">' + esc(d[1]) + '</span></span></button>';
     }).join('') + '</div>' +
-    '<div style="margin-top:26px"><button class="btn-primary press">Continue</button></div></div>';
+    '<div style="margin-top:26px"><button class="btn-primary press" data-go="capture">Continue</button></div></div>';
 }
 
 /* F3. The registration corners get their one honest job: framing a real
@@ -734,8 +905,8 @@ function captureBody(){
       ['They check the document','And send Grain the result, nothing else.'],
       ['You come straight back here','However it goes.']
     ]) + '</div>' +
-    '<div style="margin-top:26px"><button class="btn-primary press">Open Persona</button>' +
-    '<div style="text-align:center;padding-top:6px"><button class="btn-tertiary press">Not now</button></div></div>' +
+    '<div style="margin-top:26px"><button class="btn-primary press" data-go="idchecking">Open Persona</button>' +
+    '<div style="text-align:center;padding-top:6px"><button class="btn-tertiary press js-back">Not now</button></div></div>' +
     '<p class="t-meta" style="margin:22px 0 0;color:var(--secondary);text-wrap:pretty">Neither vendor lets an app host their capture step, so Grain does not pretend to. Being handed to a stranger mid-flow is what the warning above is for.</p></div>';
 }
 
@@ -747,16 +918,29 @@ function parseBody(){
       'stroke="var(--ink)" stroke-width="1.5" aria-label="Reading your file">' +
       '<path pathLength="1" d="@@ARC@@"></path></svg>' +
     '<p class="t-lead" style="margin:24px 0 0">Reading your file</p>' +
-    '<p class="t-body" style="margin:8px 0 0;color:var(--secondary);text-wrap:pretty">Nothing is added to your record yet. You see everything we find and choose what to keep.</p></div>';
+    '<p class="t-body" style="margin:8px 0 0;color:var(--secondary);text-wrap:pretty">Nothing is added to your record yet. You see everything we find and choose what to keep.</p>' +
+    '<div style="padding-top:28px;text-align:left">' +
+      goRow('importreview', 'When it finishes', 'Every line it found, before anything is kept') +
+      goRow('sensitive', 'If it holds something Grain does not keep', 'What was dropped, and why') +
+      goRow('importfail', 'If it cannot be read', 'What to do next') +
+    '</div></div>';
 }
 
 /* A11. Review before commit. The state grammar carries the choice, and the
    count on the action is the only number on the screen. */
+/* `match` is what Grain proposes, never what it asserts. The schema rule is
+   that a worker-typed name is never resolved into a `party_ref` automatically
+   because a name match is not an identity, and the defect this fixes was that
+   the screen performed the match silently and said nothing. */
 var FOUND = [
-  {p:'Cebu Pacific Cargo Services', k:'Cargo handling supervisor', d:'Jan 2025 to present', on:true},
-  {p:'Metro Manila Logistics', k:'Warehouse coordinator', d:'Mar 2023 to Jan 2025', on:true},
-  {p:'R. Santos Dry Goods', k:'Stall assistant', d:'Sep 2020 to Mar 2023', on:true},
-  {p:'Sunrise Foods Mfg.', k:'Packing line operator', d:'Mar 2019 to Sep 2021', on:false}
+  {p:'Cebu Pacific Cargo Services', k:'Cargo handling supervisor', d:'Jan 2025 to present', on:true,
+   match:'Cebu Pacific Cargo Services', confirmed:true},
+  {p:'Metro Manila Logistics', k:'Warehouse coordinator', d:'Mar 2023 to Jan 2025', on:true,
+   match:'Metro Manila Logistics', confirmed:false},
+  {p:'R. Santos Dry Goods', k:'Stall assistant', d:'Sep 2020 to Mar 2023', on:true,
+   match:null, confirmed:false},
+  {p:'Sunrise Foods Mfg.', k:'Packing line operator', d:'Mar 2019 to Sep 2021', on:false,
+   match:'Sunrise Foods Manufacturing', confirmed:false}
 ];
 function importBody(){
   var n = FOUND.filter(function(f){ return f.on; }).length;
@@ -764,26 +948,65 @@ function importBody(){
     '<p class="t-body" style="margin:8px 0 0;color:var(--secondary);text-wrap:pretty">Your own account of it until a party attests. Nothing is on your record until you add it.</p>' +
     '<div style="margin-top:22px">' + FOUND.map(function(f, i){
       return '<button class="row press" data-found="' + i + '"><span class="gutter" style="padding-top:2px">' +
-        '<svg width="20" height="20" viewBox="0 0 24 24" class="icon" style="stroke-linecap:square"><use href="' +
+        '<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" class="icon" style="stroke-linecap:square"><use href="' +
         (f.on ? '#i-done' : '#i-open') + '"></use></svg></span>' +
         '<span style="flex:1;min-width:0"><span class="t-rec" style="display:block">' + esc(f.p) + '</span>' +
         '<span class="t-meta" style="display:block;color:var(--secondary);padding-top:3px">' + esc(f.k) + '</span></span>' +
-        '<span class="col-r t-data" style="color:var(--secondary)">' + esc(f.d) + '</span></button>';
+        '<span class="col-r t-data" style="color:var(--secondary)">' + esc(f.d) + '</span></button>' +
+        (f.on && f.match && !f.confirmed
+          ? '<div style="padding:0 0 14px 38px;border-bottom:1px solid var(--hairline)">' +
+              '<span class="t-meta" style="display:block;color:var(--secondary);text-wrap:pretty">' +
+              'Grain thinks this is <strong>' + esc(f.match) + '</strong>, a business it has checked. ' +
+              'It will not decide that for you.</span>' +
+              '<div style="display:flex;gap:10px;padding-top:10px">' +
+                '<button class="btn-secondary press" data-confirm-match="' + i + '" style="flex:1">Yes, that is them</button>' +
+                '<button class="btn-tertiary press" data-keep-raw="' + i + '" style="flex:1">Keep my words</button>' +
+              '</div></div>'
+          : '') +
+        (f.on && f.confirmed
+          ? '<div style="padding:0 0 12px 38px;border-bottom:1px solid var(--hairline)">' +
+              '<span class="t-meta" style="color:var(--secondary)">Confirmed as ' + esc(f.match) + '. You can change it before you add.</span></div>'
+          : '') +
+        (f.on && !f.match
+          ? '<div style="padding:0 0 12px 38px;border-bottom:1px solid var(--hairline)">' +
+              '<span class="t-meta" style="color:var(--secondary)">Grain does not know this business. It stays in your words.</span></div>'
+          : '');
     }).join('') + '</div>' +
-    '<div style="margin-top:26px"><button class="btn-primary press"' + (n ? '' : ' disabled') + '>' +
+    '<div style="margin-top:26px"><button class="btn-primary press js-home"' + (n ? '' : ' disabled') + '>' +
     (n ? 'Add ' + n + ' chapter' + (n > 1 ? 's' : '') : 'Nothing selected') + '</button></div></div>';
 }
 
 /* A12. The handle, which is the only public name a record ever has. */
+/* From `plans/self-asserted-record` 2026-08-20 defect list: there was no screen
+   for a file that could not be read, and no screen for content Grain refuses to
+   take. Both are ordinary outcomes in this population, not edge cases. */
+function importFailBody(){
+  return msg({pad:20, alert:true, title:'Grain could not read that file',
+    body:'It happens with photographs of printed pages, scanned documents, and files a phone made itself. Nothing was added and nothing was kept.',
+    rows:[['The file is gone','Grain does not hold a file it could not read.'],
+          ['Nothing is on your record','No chapter, no qualification, nothing.'],
+          ['Typing it is not slower','Most records here are three or four chapters.']],
+    cta:'Type it instead', ctaGo:'addchapter', alt:'Try another file', altId:'js-back'});
+}
+function sensitiveBody(){
+  return msg({pad:20, alert:true, title:'Some of that file is not going on your record',
+    body:'Grain found things it does not keep, and it dropped them before anything was saved. You can still add the rest.',
+    rows:[['A national ID number','Grain never stores one on a record, and identity checking does not use the record.'],
+          ['A date of birth and a home address','Neither is a fact about your work.'],
+          ['A photograph of a document','Kept only where you attach it to a certificate on purpose.']],
+    cta:'Carry on with the rest', ctaGo:'importreview', alt:'Start again', altId:'js-back',
+    foot:'These were dropped, not stored and hidden. Grain cannot show you what it did not keep.'});
+}
+
 function handleBody(){
   return '<div><h1 class="t-head" style="margin:0">Claim your address</h1>' +
     '<p class="t-body" style="margin:8px 0 0;color:var(--secondary);text-wrap:pretty">Where your record lives if you ever turn the public page on. It is off by default.</p>' +
     '<div style="margin-top:26px"><span class="t-micro" style="display:block;color:var(--secondary);padding-bottom:4px">Address</span>' +
     '<span class="ruled lg"><span class="t-rec" style="color:var(--secondary);padding-right:2px">hiregrain.com/u/</span>' +
-    '<input id="handlefield" autocomplete="off" aria-label="Address" placeholder="liezel"></span>' +
-    '<div class="said" style="padding-top:10px"><svg width="16" height="16" viewBox="0 0 24 24" class="icon" style="stroke-linecap:square"><use href="#i-done"></use></svg>' +
+    '<input id="handleinput" autocomplete="off" aria-label="Address" placeholder="liezel"></span>' +
+    '<div class="said" style="padding-top:10px"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" class="icon" style="stroke-linecap:square"><use href="#i-done"></use></svg>' +
     '<span class="t-meta" style="color:var(--secondary)">Available. You can change it once.</span></div></div>' +
-    '<div style="margin-top:28px"><button class="btn-primary press">Claim it</button></div></div>';
+    '<div style="margin-top:28px"><button class="btn-primary press js-home">Claim it</button></div></div>';
 }
 
 /* I6, I7. Grain asks before the system does. Asking at launch is the pattern
@@ -802,8 +1025,8 @@ function permBody(kind){
           return '<div class="row"><span style="flex:1;min-width:0"><span class="t-rec" style="display:block">' + esc(r[0]) + '</span>' +
             '<span class="t-meta" style="display:block;color:var(--secondary);padding-top:3px">' + esc(r[1]) + '</span></span></div>';
         }).join('') + '</div>') +
-    '<div style="margin-top:26px"><button class="btn-primary press">' + (cam ? 'Allow the camera' : 'Turn these on') + '</button>' +
-    '<div style="text-align:center;padding-top:6px"><button class="btn-tertiary press">Not now</button></div></div>' +
+    '<div style="margin-top:26px"><button class="btn-primary press js-back">' + (cam ? 'Allow the camera' : 'Turn these on') + '</button>' +
+    '<div style="text-align:center;padding-top:6px"><button class="btn-tertiary press js-back">Not now</button></div></div>' +
     '<p class="t-meta" style="margin:22px 0 0;color:var(--secondary);text-wrap:pretty">' +
     (cam ? 'Declining means you cannot verify a document, and nothing else changes.'
          : 'Read events are never sent, here or anywhere.') + '</p></div>';
@@ -839,17 +1062,17 @@ function stateBody(kind, title){
   }
   if(kind === 'offline'){
     return '<div class="statewrap"><div class="offband">' +
-      '<svg width="16" height="16" viewBox="0 0 24 24" class="icon" style="stroke:var(--paper);stroke-linecap:square"><use href="#i-alert"></use></svg>' +
+      '<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" class="icon" style="stroke:var(--paper);stroke-linecap:square"><use href="#i-alert"></use></svg>' +
       '<span class="t-meta">Offline. This is the copy on your phone.</span></div>' +
       '<h1 class="t-head" style="margin:0">' + esc(title) + '</h1>' +
       '<p class="t-body" style="margin:10px 0 0;color:var(--secondary);text-wrap:pretty">Everything already on your record stays readable. Nothing new arrives until you are back.</p></div>';
   }
   if(kind === 'error'){
     return '<div class="statewrap" style="padding-top:24px">' +
-      '<svg width="26" height="26" viewBox="0 0 24 24" class="icon" style="stroke-linecap:square"><use href="#i-alert"></use></svg>' +
+      '<svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" class="icon" style="stroke-linecap:square"><use href="#i-alert"></use></svg>' +
       '<h1 class="t-head" style="margin:16px 0 0">That did not work</h1>' +
       '<p class="t-body" style="margin:10px 0 22px;color:var(--secondary);text-wrap:pretty">Nothing was changed. Your record is exactly as it was.</p>' +
-      '<button class="btn-primary press">Try again</button></div>';
+      '<button class="btn-primary press js-back">Try again</button></div>';
   }
   if(kind === 'denied'){
     return '<div class="statewrap" style="padding-top:24px">' +
@@ -870,13 +1093,14 @@ function stateBody(kind, title){
    drifts, so they are written once. */
 function msg(o){
   return '<div style="padding-top:' + (o.pad == null ? 0 : o.pad) + 'px">' +
-    (o.alert ? '<svg width="26" height="26" viewBox="0 0 24 24" class="icon" style="stroke-linecap:square;margin-bottom:16px"><use href="#i-alert"></use></svg>' : '') +
+    (o.alert ? '<svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" class="icon" style="stroke-linecap:square;margin-bottom:16px"><use href="#i-alert"></use></svg>' : '') +
     '<h1 class="t-head" style="margin:0">' + esc(o.title) + '</h1>' +
     (o.body ? '<p class="t-body" style="margin:10px 0 0;color:var(--secondary);text-wrap:pretty">' + esc(o.body) + '</p>' : '') +
     (o.rows ? '<div style="margin-top:22px">' + rows(o.rows) + '</div>' : '') +
     (o.warn ? '<div class="warn" style="margin-top:22px"><p class="t-body" style="margin:0;text-wrap:pretty">' + esc(o.warn) + '</p></div>' : '') +
-    (o.cta ? '<div style="margin-top:26px"><button class="btn-primary press"' + (o.ctaOff ? ' disabled' : '') + '>' + esc(o.cta) + '</button>' +
-      (o.alt ? '<div style="text-align:center;padding-top:6px"><button class="btn-tertiary press">' + esc(o.alt) + '</button></div>' : '') + '</div>' : '') +
+    (o.cta ? '<div style="margin-top:26px"><button class="btn-primary press' + (o.ctaId ? ' ' + o.ctaId : '') + '"' +
+      (o.ctaGo ? ' data-go="' + o.ctaGo + '"' : '') + (o.ctaOff ? ' disabled' : '') + '>' + esc(o.cta) + '</button>' +
+      (o.alt ? '<div style="text-align:center;padding-top:6px"><button class="btn-tertiary press ' + (o.altId || 'js-back') + '">' + esc(o.alt) + '</button></div>' : '') + '</div>' : '') +
     (o.foot ? '<p class="t-meta" style="margin:22px 0 0;color:var(--secondary);text-wrap:pretty">' + esc(o.foot) + '</p>' : '') +
   '</div>';
 }
@@ -922,29 +1146,318 @@ function landerBody(){
     '<svg viewBox="0 0 160 26" width="140" height="23" role="img" aria-label="Grain" style="opacity:.85">' + LOCKUP + '</svg>' +
     '<h1 class="t-title" style="margin:14px 0 0;text-wrap:balance">A record of what you have actually done</h1>' +
     '<p class="t-body" style="margin:12px 0 0;color:var(--secondary);text-wrap:pretty">Kept by you, confirmed by the people who saw the work. Nobody reads it until you say so.</p>' +
-    '<div style="margin-top:28px"><button class="btn-primary press">Start your record</button>' +
-    '<div style="text-align:center;padding-top:6px"><button class="btn-tertiary press">I already have one</button></div></div>' +
+    '<div style="margin-top:28px"><button class="btn-primary press" data-go="identifier">Start your record</button>' +
+    '<div style="text-align:center;padding-top:6px"><button class="btn-tertiary press" data-go="welcome">I already have one</button></div></div>' +
     '<p class="t-meta" style="margin:26px 0 0;color:var(--secondary);text-wrap:pretty">Free, permanently. Grain never charges a worker for the record.</p></div>';
 }
 function welcomeBody(){
   return msg({title:'Welcome back', body:'Sign in to the number ending 4471.',
-    cta:'Send a code', alt:'Use a different number',
+    cta:'Send a code', ctaGo:'code', alt:'Use a different number', altId:'js-back',
     foot:'If this is not your phone, use a different number. The record stays where it is either way.'});
 }
 
 /* ================= C, chapter management ================= */
-function positionBody(){
-  return '<div><h1 class="t-head" style="margin:0">Add a position</h1>' +
-    '<p class="t-body" style="margin:8px 0 0;color:var(--secondary);text-wrap:pretty">Inside Sunrise Foods Manufacturing. A change of title is a division inside one chapter, not a new one.</p>' +
-    '<div style="margin-top:26px"><span class="t-micro" style="display:block;color:var(--secondary);padding-bottom:4px">Title</span>' +
-    '<span class="ruled lg"><input aria-label="Title" placeholder="Line lead"></span></div>' +
-    '<div class="grp">' +
-    '<button class="srow press" data-month="from"><span class="t-rec" style="flex:1">Started</span>' +
-    '<span class="t-data" style="color:var(--secondary)">' + (draft.from || 'Pick a month') + '</span></button>' +
-    '<button class="srow press" data-month="to"><span class="t-rec" style="flex:1">Ended</span>' +
-    '<span class="t-data" style="color:var(--secondary)">' + (draft.to || 'Still there') + '</span></button></div>' +
-    '<div style="margin-top:26px"><button class="btn-primary press">Add the position</button></div></div>';
+/* The employer was hard coded to one of the seeded chapters, so arriving here
+   from the add flow showed a business the worker had not typed. It reads from
+   the draft now.
+
+   Decision 074. The title lives on `position` and never on `chapter`, so the
+   add flow has to pass through here or the chapter commits with no role on it.
+   The three counts are counts: a number with a unit may be collected, a
+   position on a scale may not, and 054 is untouched. Two of them describe the
+   operation rather than the person, which is the point. A line lead over four
+   on a crew of six and a line lead over four on a crew of two hundred are not
+   the same job, and no title distinguishes them.
+
+   A chapter takes several positions, because a promotion is a division inside
+   one chapter rather than a new one (schema 3, decision 028). */
+function numfield(id, label, hint, val){
+  return '<div style="flex:1;min-width:0">' +
+    '<span class="t-micro" style="display:block;color:var(--secondary);padding-bottom:4px">' + esc(label) + '</span>' +
+    '<span class="ruled"><input id="' + id + '" type="text" inputmode="numeric" pattern="[0-9]*" ' +
+      'autocomplete="off" aria-label="' + esc(label) + '" placeholder="' + esc(hint) + '" value="' + esc(val) + '"></span>' +
+    '</div>';
 }
+
+function positionBody(){
+  var who = draft.party || draft.typed || 'Sunrise Foods Manufacturing';
+  var first = !!draft.firstPosition;
+  var P = draft.pos;
+  var out = '<div><h1 class="t-head" style="margin:0">' +
+      (first ? 'What did you do there?' : 'Add a position') + '</h1>' +
+    '<p class="t-body" style="margin:8px 0 0;color:var(--secondary);text-wrap:pretty">' +
+      (first
+        ? 'At ' + esc(who) + '. The title is yours to state. Grain records it for a reader and never compares it across parties.'
+        : 'Inside ' + esc(who) + '. A change of title is a division inside one chapter, not a new one.') +
+      '</p>';
+
+  if(draft.positions.length){
+    out += '<div style="margin-top:24px">' + sechead('Already on this chapter', draft.positions.length) +
+      draft.positions.map(function(q){
+        return '<div class="row"><span style="flex:1;min-width:0">' +
+          '<span class="t-rec" style="display:block">' + esc(q.title || 'Untitled position') + '</span>' +
+          '<span class="t-meta" style="display:block;color:var(--secondary);padding-top:3px">' +
+            esc([q.directed ? q.directed + ' directed' : '', q.team ? 'team of ' + q.team : ''].filter(Boolean).join(', ') || 'No counts given') +
+          '</span></span>' +
+          '<span class="col-r t-data" style="color:var(--secondary)">' + esc(q.from || 'No date') + '</span></div>';
+      }).join('') + '</div>';
+  }
+
+  out += '<div style="margin-top:26px"><span class="t-micro" style="display:block;color:var(--secondary);padding-bottom:4px">Title</span>' +
+    '<span class="ruled lg"><input id="postitle" aria-label="Title" placeholder="Line lead" value="' + esc(P.title) + '"></span></div>' +
+    '<div class="grp">' +
+    '<button class="srow press" data-month="posFrom"><span class="t-rec" style="flex:1">Started</span>' +
+    '<span class="t-data" style="color:var(--secondary)">' + (P.from || 'Pick a month') + '</span></button>' +
+    '<button class="srow press" data-month="posTo"><span class="t-rec" style="flex:1">Ended</span>' +
+    '<span class="t-data" style="color:var(--secondary)">' + (P.to || 'Still there') + '</span></button></div>' +
+
+    '<div class="grp">' +
+      '<span class="t-micro" style="display:block;color:var(--secondary);padding-bottom:10px">How big the operation was</span>' +
+      '<div style="display:flex;gap:14px">' +
+        numfield('headcount', 'You directed', 'None', P.directed) +
+        numfield('teamsize', 'On your team', 'Including you', P.team) +
+      '</div>' +
+      '<div style="display:flex;gap:14px;padding-top:16px">' +
+        numfield('samerole', 'Doing your job', 'Of that team', P.same) +
+        '<div style="flex:1;min-width:0"></div>' +
+      '</div>' +
+      '<p class="t-meta" style="margin:14px 0 0;color:var(--secondary);text-wrap:pretty">' +
+        'Numbers, not levels. They say how big the operation was, which the business can confirm or correct. ' +
+        'Nothing here asks you, or anyone else, to rate you.</p>' +
+    '</div>' +
+
+    '<div style="margin-top:26px"><button class="btn-primary press" id="posgo">' +
+      (first ? 'Next, what you counted' : 'Add the position') + '</button>' +
+      '<div style="text-align:center;padding-top:6px">' +
+        '<button class="btn-tertiary press js-addanother">Add another position here</button></div>' +
+    '</div></div>';
+  return out;
+}
+
+/* Decision 074. `chapter.volume` has been a ratified field since 0.1 and no
+   surface ever collected it. For the population this product is for, the title
+   says least and the count says most: a warehouse coordinator who moved nine
+   hundred pallets a day has a record, and the title alone does not. Optional
+   and skippable, because 038's drop-off warning is about exactly these people. */
+function countableBody(){
+  var who = draft.party || draft.typed || 'this business';
+  return '<div><h1 class="t-head" style="margin:0">Did you count anything?</h1>' +
+    '<p class="t-body" style="margin:8px 0 0;color:var(--secondary);text-wrap:pretty">' +
+      'Plenty of work is measured in something. If yours was, say what and how much. ' +
+      'Skip this if nothing was counted, and you can add it later.</p>' +
+    '<div class="grp">' +
+      '<span class="t-micro" style="display:block;color:var(--secondary);padding-bottom:4px">What you counted</span>' +
+      '<span class="ruled"><input id="volunit" aria-label="What you counted" placeholder="Pallets, orders, calls, hectares" value="' + esc(draft.volUnit) + '"></span>' +
+    '</div>' +
+    '<div class="grp">' +
+      '<span class="t-micro" style="display:block;color:var(--secondary);padding-bottom:4px">How many, typically per day</span>' +
+      '<span class="ruled"><input id="volcount" type="text" inputmode="numeric" pattern="[0-9]*" aria-label="How many per day" placeholder="A number" value="' + esc(draft.volCount) + '"></span>' +
+    '</div>' +
+    '<p class="t-meta" style="margin:20px 0 0;color:var(--secondary);text-wrap:pretty">' +
+      'This is your own account until ' + esc(who) + ' confirms it, and it carries the mark that says so. ' +
+      'Nobody is asked to score you, here or anywhere.</p>' +
+    '<div style="margin-top:26px"><button class="btn-primary press js-home">Add the chapter</button>' +
+      '<div style="text-align:center;padding-top:6px">' +
+        '<button class="btn-tertiary press js-skipvol">Nothing was counted</button></div></div>' +
+  '</div>';
+}
+
+/* Moves the form's current position onto the chapter and empties the form.
+   Called by both actions: adding another, and moving on. */
+/* A flow starts empty. Without this, adding a second chapter opened on the
+   first one's employer, its relationship kind and its positions, and asking a
+   second person opened on the first person's name and address. Both are the
+   same defect: in-flight state outliving the flow that owned it. */
+function resetDraft(){
+  draft.party = null; draft.typed = ''; draft.reg = false;
+  draft.from = ''; draft.to = ''; draft.country = 0; draft.locality = '';
+  draft.kind = null; draft.volUnit = ''; draft.volCount = '';
+  draft.firstPosition = false; draft.positions = [];
+  draft.pos = {title:'', from:'', to:'', directed:'', team:'', same:''};
+}
+function resetInvite(){ invite.name = ''; invite.contact = ''; invite.mode = 'email'; }
+
+function commitPos(){
+  var P = draft.pos;
+  if(P.title || P.from || P.directed || P.team || P.same){
+    draft.positions.push({title:P.title, from:P.from, to:P.to,
+                          directed:P.directed, team:P.team, same:P.same});
+  }
+  draft.pos = {title:'', from:'', to:'', directed:'', team:'', same:''};
+}
+
+/* Schema 8. Institution resolution is propose-and-confirm and never automatic,
+   so the list proposes and the worker confirms, and an unmatched name stays the
+   worker's own words with a country beside it. */
+function educationBody(){
+  var q = edraft.inst.trim().toLowerCase();
+  var hits = q ? INSTITUTIONS.filter(function(i){ return i.name.toLowerCase().indexOf(q) > -1; }).slice(0, 3) : [];
+  var out = '<div><h1 class="t-head" style="margin:0">Add a qualification</h1>' +
+    '<p class="t-body" style="margin:8px 0 0;color:var(--secondary);text-wrap:pretty">' +
+      'What you studied and where. An enrollment you did not finish is a real record, not a gap.</p>' +
+    '<div style="margin-top:26px">' +
+      '<span class="t-micro" style="display:block;color:var(--secondary);padding-bottom:4px">Institution</span>' +
+      '<span class="ruled lg"><input id="edinst" autocomplete="organization" aria-label="Institution" ' +
+        'placeholder="Start typing" value="' + esc(edraft.inst) + '"></span>' +
+      '<div>' + hits.map(function(i){
+        return '<button class="row press" data-inst="' + esc(i.name) + '"><span class="gutter">' + mark('#sw-emp') + '</span>' +
+          '<span style="flex:1;min-width:0"><span class="t-rec" style="display:block">' + esc(i.name) + '</span>' +
+          '<span class="t-meta" style="display:block;color:var(--secondary);padding-top:3px">On the accreditation list, ' + esc(i.where) + '</span></span></button>';
+      }).join('') +
+      (q ? '<button class="row press" data-inst=""><span class="gutter">' + mark('#sw-self') + '</span>' +
+        '<span style="flex:1;min-width:0"><span class="t-rec" style="display:block">Use it as you typed it</span>' +
+        '<span class="t-meta" style="display:block;color:var(--secondary);padding-top:3px">Your own words. Grain confirms a match, it never makes one for you.</span></span></button>' : '') +
+      '</div></div>';
+  if(edraft.inst && !edraft.ref){
+    out += '<div class="grp"><button class="srow press" data-edcountry="1"><span class="t-rec" style="flex:1">Country</span>' +
+      '<span class="t-data" style="color:var(--secondary)">' + esc(COUNTRIES[edraft.country].c) + '</span></button>' +
+      '<p class="t-meta" style="margin:10px 0 0;color:var(--secondary);text-wrap:pretty">Grain does not have this institution on a list yet. Where it is keeps the record legible later.</p></div>';
+  }
+  out += '<div class="grp">' +
+      '<span class="t-micro" style="display:block;color:var(--secondary);padding-bottom:8px">Level</span>' +
+      '<div class="mgrid" style="grid-template-columns:repeat(2,1fr);padding-bottom:6px">' +
+        LEVELS.map(function(l){
+          return '<button data-level="' + l[0] + '" aria-pressed="' + (edraft.level === l[0]) + '">' + esc(l[1]) + '</button>';
+        }).join('') + '</div></div>' +
+    '<div class="grp">' +
+      '<span class="t-micro" style="display:block;color:var(--secondary);padding-bottom:4px">Field of study</span>' +
+      '<span class="ruled"><input id="edfield" aria-label="Field of study" placeholder="As it is written on the certificate" value="' + esc(edraft.field) + '"></span>' +
+    '</div>' +
+    '<div class="grp">' +
+      '<button class="srow press" data-month="edFrom"><span class="t-rec" style="flex:1">Started</span>' +
+        '<span class="t-data" style="color:var(--secondary)">' + (draft.edFrom || 'Pick a month') + '</span></button>' +
+      '<button class="srow press" data-month="edTo"><span class="t-rec" style="flex:1">Ended</span>' +
+        '<span class="t-data" style="color:var(--secondary)">' + (draft.edTo || 'Pick a month') + '</span></button>' +
+      '<div class="listrow"><span style="flex:1;min-width:0"><span class="t-rec" style="display:block">You completed it</span>' +
+        '<span class="t-meta" style="display:block;color:var(--secondary);padding-top:3px">Turn it off if you left before the end. That is a record, not a gap.</span></span>' +
+        '<button class="sw press js-sw" role="switch" aria-checked="' + (edraft.completed ? 'true' : 'false') + '" aria-label="You completed it"><i></i></button></div>' +
+    '</div>' +
+    '<p class="t-meta" style="margin:20px 0 0;color:var(--secondary);text-wrap:pretty">' +
+      'Grain does not ask for a grade or a GPA. A score is a claim about how well you did, ' +
+      'and nobody attests your own account of that.</p>' +
+    '<div style="margin-top:26px"><button class="btn-primary press js-home"' +
+      (edraft.inst && edraft.level ? '' : ' disabled') + '>Add it to your record</button></div></div>';
+  return out;
+}
+
+/* Schema 9. No credential vocabulary exists, so the name is raw and the issuer
+   is matched against the party registry propose-and-confirm like any other
+   open-set population. The document is optional and lives in the payload
+   plane, which is why the copy says where it goes and when it dies. */
+function credentialBody(){
+  var q = cdraft.issuer.trim().toLowerCase();
+  var hits = q ? PARTIES.filter(function(i){ return i.name.toLowerCase().indexOf(q) > -1; }).slice(0, 3) : [];
+  var out = '<div><h1 class="t-head" style="margin:0">Add a certificate</h1>' +
+    '<p class="t-body" style="margin:8px 0 0;color:var(--secondary);text-wrap:pretty">' +
+      'A licence, a certificate, or a course somebody signed off. Grain records it as your own account until an issuer confirms it.</p>' +
+    '<div style="margin-top:26px">' +
+      '<span class="t-micro" style="display:block;color:var(--secondary);padding-bottom:4px">What it is called</span>' +
+      '<span class="ruled lg"><input id="crname" aria-label="Credential name" placeholder="As it is written on the certificate" value="' + esc(cdraft.name) + '"></span></div>' +
+    '<div class="grp">' +
+      '<span class="t-micro" style="display:block;color:var(--secondary);padding-bottom:4px">Who issued it</span>' +
+      '<span class="ruled"><input id="crissuer" autocomplete="organization" aria-label="Issuer" placeholder="Start typing" value="' + esc(cdraft.issuer) + '"></span>' +
+      '<div>' + hits.map(function(i){
+        return '<button class="row press" data-issuer="' + esc(i.name) + '"><span class="gutter">' + mark(i.reg ? '#sw-emp' : '#sw-self') + '</span>' +
+          '<span style="flex:1;min-width:0"><span class="t-rec" style="display:block">' + esc(i.name) + '</span>' +
+          '<span class="t-meta" style="display:block;color:var(--secondary);padding-top:3px">' +
+            (i.reg ? 'Registered with Grain, ' + esc(i.where) : 'Not registered, ' + esc(i.where)) + '</span></span></button>';
+      }).join('') + '</div></div>' +
+    '<div class="grp">' +
+      '<button class="srow press" data-month="crFrom"><span class="t-rec" style="flex:1">Issued</span>' +
+        '<span class="t-data" style="color:var(--secondary)">' + (draft.crFrom || 'Pick a month') + '</span></button>' +
+      '<button class="srow press" data-month="crTo"><span class="t-rec" style="flex:1">Expires</span>' +
+        '<span class="t-data" style="color:var(--secondary)">' + (draft.crTo || 'Does not expire') + '</span></button>' +
+      '<p class="t-meta" style="margin:12px 0 0;color:var(--secondary);text-wrap:pretty">Renewing it makes a new record. The old one stays, so a reader can see it was held continuously.</p>' +
+    '</div>' +
+    '<div class="grp">' +
+      '<div class="listrow"><span style="flex:1;min-width:0"><span class="t-rec" style="display:block">Attach the certificate</span>' +
+        '<span class="t-meta" style="display:block;color:var(--secondary);padding-top:3px">Held under your own key and deleted with your record. A reader is told a document is on file and that you supplied it, never that Grain checked it.</span></span>' +
+        '<button class="sw press js-sw" role="switch" aria-checked="' + (cdraft.doc ? 'true' : 'false') + '" aria-label="Attach the certificate"><i></i></button></div>' +
+    '</div>' +
+    '<div style="margin-top:26px"><button class="btn-primary press js-home"' +
+      (cdraft.name && cdraft.issuer ? '' : ' disabled') + '>Add it to your record</button></div></div>';
+  return out;
+}
+
+/* Decisions 079 and 080. The dispute flow returns, bounded by 028's line:
+   Grain adjudicates authenticity and never substance, because FCRA 611's
+   reasonable-reinvestigation duty is a defining CRA duty and cuts against R1.
+   The screen is built around that split rather than hiding it, because a
+   worker who expects Grain to rule on fairness and finds out later is worse
+   off than one told at the top. */
+var DISPUTE = [
+  ['forged', 'They did not write this', 'You believe the party named never made this attestation.'],
+  ['duplicate', 'This is a duplicate', 'The same attestation is already on the record.'],
+  ['spam', 'This is spam', 'It came from someone with no connection to the work.']
+];
+var ddraft = {ground:null, statement:''};
+function disputeBody(){
+  var c = askTarget();
+  return '<div><h1 class="t-head" style="margin:0">Dispute this attestation</h1>' +
+    '<p class="t-body" style="margin:8px 0 0;color:var(--secondary);text-wrap:pretty">' +
+      'From ' + esc(c.by === c.party ? 'the business itself' : c.by) + ', on ' + esc(c.party) + '.</p>' +
+
+    '<div class="grp">' +
+      '<span class="t-micro" style="display:block;color:var(--secondary);padding-bottom:8px">What Grain can decide</span>' +
+      DISPUTE.map(function(d){
+        return '<button class="row press" data-ground="' + d[0] + '"><span class="gutter" style="padding-top:2px">' +
+          '<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" class="icon" style="stroke-linecap:square"><use href="' +
+          (ddraft.ground === d[0] ? '#i-done' : '#i-open') + '"></use></svg></span>' +
+          '<span style="flex:1;min-width:0"><span class="t-rec" style="display:block">' + esc(d[1]) + '</span>' +
+          '<span class="t-meta" style="display:block;color:var(--secondary);padding-top:3px;text-wrap:pretty">' + esc(d[2]) + '</span></span></button>';
+      }).join('') +
+      '<p class="t-meta" style="margin:12px 0 0;color:var(--secondary);text-wrap:pretty">' +
+        'These are questions about whether the attestation is genuine. Grain checks the signature, ' +
+        'the party and the history, and removes it if it does not hold up.</p>' +
+    '</div>' +
+
+    '<div class="grp">' +
+      '<span class="t-micro" style="display:block;color:var(--secondary);padding-bottom:4px">What Grain cannot decide</span>' +
+      '<p class="t-body" style="margin:6px 0 12px;color:var(--secondary);text-wrap:pretty">' +
+        'Whether what they wrote is fair. Grain does not investigate that and will not rule on it. ' +
+        'What you write here is attached beside their words, permanently, and never replaces them.</p>' +
+      '<textarea class="ta" id="dstatement" aria-label="Your statement" ' +
+        'placeholder="Your account of it, in your words">' + esc(ddraft.statement) + '</textarea>' +
+    '</div>' +
+
+    '<div class="warn" style="margin-top:24px">' +
+      '<p class="t-body" style="margin:0;text-wrap:pretty">A reader sees both. Your statement does not remove theirs, and theirs does not answer yours.</p>' +
+      '<p class="t-data" style="margin:10px 0 0">That is what it means for the record to belong to you and the attestation to belong to them.</p>' +
+    '</div>' +
+
+    '<div style="margin-top:26px"><button class="btn-primary press" data-go="disputesent"' +
+      (ddraft.ground || ddraft.statement.trim() ? '' : ' disabled') + '>File it</button>' +
+      '<div style="text-align:center;padding-top:6px">' +
+        '<button class="btn-tertiary press js-back">Not now</button></div></div></div>';
+}
+function disputeSentBody(){
+  var c = askTarget(), ground = ddraft.ground;
+  return msg({pad:16, title: ground ? 'Dispute filed' : 'Your statement is on the record',
+    body: ground
+      ? 'Grain will check whether this attestation is genuine. It does not check whether it is fair.'
+      : 'It sits beside their words on ' + c.party + ', and a reader sees both.',
+    rows: ground
+      ? [['Grain answers, usually within a week','It checks the signature, the party and the history.', 'Filed today'],
+         ['The attestation stays visible meanwhile','Marked as disputed. It is never silently removed.', null],
+         ['If it holds up, it stays','And your statement stays beside it, if you wrote one.', null]]
+      : [['It is permanent','A statement is part of the record and is not edited away.', 'Added today'],
+         ['It does not remove theirs','And theirs does not answer yours.', null]],
+    cta:'Back to your record', ctaId:'js-home'});
+}
+
+/* Decision 080's gate: filing a deletion revokes the worker's own read access,
+   so the screen that cancels it cannot sit behind the record. This is the way
+   back in, and it is the only surface a filed worker can reach. */
+function graceSignInBody(){
+  return msg({pad:20, alert:true, title:'Your record is waiting to be deleted',
+    body:'You asked Grain to delete everything. Nothing has been deleted yet, and you can stop it from here.',
+    rows:[['Signing in stops it','The request is cancelled and every unexpired grant resumes.'],
+          ['Doing nothing lets it run','Support carries out the erasure after the grace period.'],
+          ['Starting again means asking again','Cancelling does not leave the request half-filed.']],
+    cta:'Sign in and keep my record', ctaId:'js-home', alt:'Leave it', altId:'js-back',
+    foot:'This is the only screen your account reaches while a deletion is filed.'});
+}
+
 function minorEditBody(){
   return msg({title:'What you can still change',
     body:'This chapter is committed. Corrections are kept beside the original rather than replacing it.',
@@ -959,17 +1472,17 @@ function minorEditBody(){
 function notFoundBody(){
   return msg({pad:20, alert:true, title:'No record at that address',
     body:'hiregrain.com/u/liezel does not resolve. The address may have changed, or the record may have been deleted.',
-    cta:'Go to your record', foot:'Grain never says whether an address once existed.'});
+    cta:'Go to your record', ctaId:'js-home', foot:'Grain never says whether an address once existed.'});
 }
 function updateBody(){
   return msg({pad:20, title:'Update Grain to carry on',
     body:'This version can no longer read the ledger safely. Your record is untouched and waiting.',
-    cta:'Update'});
+    cta:'Update', ctaId:'js-home'});
 }
 function signedOutBody(){
   return msg({pad:20, title:'You have been signed out',
     body:'For your safety, on a device that has been idle a long time. Nothing about your record changed.',
-    cta:'Sign in again'});
+    cta:'Sign in again', ctaGo:'identifier'});
 }
 function pushBody2(){
   return '<div><h1 class="t-head" style="margin:0">What Grain sends</h1>' +
@@ -985,55 +1498,247 @@ function pushBody2(){
 }
 function legalBody(){
   return '<div><h1 class="t-head" style="margin:0">How this works</h1>' +
-    '<div style="margin-top:22px">' + listrows([
-      ['How the record works','What a chapter is, and what an attestation is'],
-      ['Who can read it','Grants, the public page, and what neither does'],
-      ['What Grain keeps','And for how long, and where'],
-      ['Terms','The agreement between you and Grain'],
-      ['Privacy','Written to be read, not to be survived']
-    ]) + '</div></div>';
+    '<div style="margin-top:22px">' + [
+      ['How the record works','What a chapter is, and what an attestation is',
+       'A chapter is one relationship with one party. An attestation is a party saying, in their words, what you did inside it. Neither can be edited once a party has attested, and every correction stays beside the original.'],
+      ['Who can read it','Grants, the public page, and what neither does',
+       'Nobody, until you grant it. A grant is to a named party or person and ends on its own date. The public page is off until you turn it on, and it is not a search result for your name.'],
+      ['What Grain keeps','And for how long, and where',
+       'The record, its attestations, and the ledger of what happened to it. Not your identity documents, and not the photographs taken to check them.'],
+      ['Terms','The agreement between you and Grain',
+       'You hold the record. Grain holds it for you and cannot sell it, and an attestation belongs to the party who made it.'],
+      ['Privacy','Written to be read, not to be survived',
+       'What is collected, why, who it reaches, and how to end it. In the same words as the rest of the app.']
+    ].map(function(r, ri){
+      return '<div class="disc"><button class="listrow press" data-open="' + ri + '">' +
+        '<span style="flex:1;min-width:0"><span class="t-rec" style="display:block">' + esc(r[0]) + '</span>' +
+        '<span class="t-meta" style="display:block;color:var(--secondary);padding-top:3px">' + esc(r[1]) + '</span></span>' +
+        '<span class="chevs">' + CHEV + '</span></button>' +
+        '<div class="discbody"><div><p class="t-body" style="margin:0;color:var(--secondary);text-wrap:pretty">' +
+        esc(r[2]) + '</p></div></div></div>';
+    }).join('') + '</div></div>';
 }
 
 
 /* ================= D, getting work verified =================
    Three routes, and each says exactly what the party can and cannot write,
    because the difference between them is the whole epistemic point. */
+/* D1 to D5 existed as five surfaces with no route between them: the record
+   named the chapters worth chasing, the sheet explained the gap, and its
+   button closed the sheet. Which routes exist is a fact the record already
+   holds, so the sheet asks it rather than choosing for the worker: a business
+   Grain has checked can be asked directly, one it has not cannot, and a person
+   who was there can always be asked. */
+var EXPIRY = ['In 30 days', 'In 90 days', 'In 6 months'];
+
+/* D5 was a single post-send state and there was no list, so a worker could
+   send three requests and then have nowhere to see any of them. Outstanding
+   verification on the record names chapters that COULD be attested; this names
+   what has actually been asked, which is a different question and the one a
+   person asks the day after. */
+var REQUESTS = [
+  {party:'Cebu Pacific Cargo Services', kind:'The business', state:'Waiting', when:'Sent 12 Mar'},
+  {party:'R. Santos Dry Goods', kind:'A coworker', state:'Link not opened yet', when:'Made 8 Mar'}
+];
+function requestsBody(){
+  if(!REQUESTS.length){
+    return msg({title:'Nothing outstanding',
+      body:'You have not asked anyone to confirm a chapter yet. The record shows which chapters a party could still attest.',
+      cta:'Back to your record', ctaId:'js-home'});
+  }
+  return '<div><h1 class="t-head" style="margin:0">Requests you have made</h1>' +
+    '<p class="t-body" style="margin:8px 0 0;color:var(--secondary);text-wrap:pretty">' +
+      'Nothing here has changed your record. A request does that only when it is answered.</p>' +
+    '<div style="margin-top:24px">' + sechead('Outstanding', REQUESTS.length) +
+    REQUESTS.map(function(r, ri){
+      return '<button class="row press" data-req="' + ri + '"><span style="flex:1;min-width:0">' +
+        '<span class="t-rec" style="display:block">' + esc(r.party) + '</span>' +
+        '<span class="t-meta" style="display:block;color:var(--secondary);padding-top:3px">' +
+          esc(r.kind + ', ' + r.state) + '</span></span>' +
+        '<span class="col-r t-data" style="color:var(--secondary)">' + esc(r.when) + '</span>' +
+        '<span class="chev">' + CHEV + '</span></button>';
+    }).join('') + '</div>' +
+    '<p class="t-meta" style="margin:22px 0 0;color:var(--secondary);text-wrap:pretty">' +
+      'Grain does not tell you when someone opens a request. Read events are not recorded anywhere.</p></div>';
+}
+var SAID = {
+  askcoworker:'Copied. Send it to them however you normally talk.',
+  code:'Sent again. It can take a minute to arrive.',
+  exportrec:'Asked. The file reaches your email within 24 hours, at the address you sign in with.',
+  support:'Sent. Support answers by email, usually within two working days.'
+};
+var expiryPick = 0;
+function confirmSheet(kind){
+  if(kind === 'revoke') return {
+    kicker:'End this grant', title:'Alorica Philippines',
+    body:'Access stops from this moment. It does not erase that the grant existed, and it does not unsend what they have already read.',
+    cta:'End the grant'};
+  return {
+    kicker:'Delete everything', title:'This files the request',
+    body:'Access stops the moment you file it. Support carries out the erasure after the grace period, and signing in during that period cancels the request.',
+    cta:'File the request'};
+}
+function askTarget(){ return CH[S.ask] || CH[CH.length - 1]; }
+function isRegistered(name){
+  for(var i = 0; i < PARTIES.length; i++){
+    if(PARTIES[i].name === name) return PARTIES[i].reg;
+  }
+  return false;
+}
+function askRoutes(i){
+  var c = CH[i], reg = isRegistered(c.party), r = [];
+  if(reg) r.push(['reqattest', 'Ask ' + c.party,
+    'The request goes to the domain Grain checked. Whoever answers it signs in first.']);
+  r.push(['askmanager', 'Ask a manager there',
+    reg ? 'A named person at the business, rather than the business itself.'
+        : 'Grain checks they control a work address at the business, and nothing more.']);
+  r.push(['askcoworker', 'Ask a coworker',
+    'Someone who saw the work. Their mark says a coworker, and a reader can tell.']);
+  return r;
+}
+function askSheet(i){
+  var c = CH[i];
+  return {
+    kicker: 'Get this confirmed',
+    title: c.party,
+    body: isRegistered(c.party)
+      ? 'Grain has checked this business, so you can ask the business itself or a person who was there.'
+      : 'Grain has not checked this business, so the request goes to a person who was there.',
+    slot: askRoutes(i).map(function(r){
+      return '<button class="listrow press" data-route="' + r[0] + '">' +
+        '<span style="flex:1;min-width:0">' +
+        '<span class="t-rec" style="display:block">' + esc(r[1]) + '</span>' +
+        '<span class="t-meta" style="display:block;color:var(--secondary);padding-top:3px;text-wrap:pretty">' + esc(r[2]) + '</span>' +
+        '</span><span class="chevs">' + CHEV + '</span></button>';
+    }).join('')
+  };
+}
+
 function reqAttestBody(){
-  return msg({title:'Ask Cebu Pacific to attest',
+  var c = askTarget();
+  return msg({title:'Ask ' + c.party + ' to attest',
     body:'They are registered with Grain, so the request goes to the domain Grain checked. Whoever answers signs in first.',
-    rows:[['They write what you did','In their words. You cannot edit it.'],
+    kicker:c.from + ' to ' + c.to,
+    rows:[['Your own account of it freezes now','From the moment you ask, you cannot edit this chapter. It thaws if no attestation arrives.'],
+          ['They write what you did','In their words. You cannot edit it.'],
           ['You can attach your side','Kept beside theirs, never replacing it.'],
           ['They can decline','And nothing is added, including that they declined.']],
-    cta:'Send the request', alt:'Not now',
+    cta:'Send the request', ctaId:'js-sendreq', alt:'Not now',
     foot:'A request tells them the dates you recorded. It tells them nothing about the rest of your record.'});
 }
+/* D3 and D4. Both were explainers with a button and no form, so neither could
+   name the person being asked. Decision 038 settles what the button does: an
+   invitation link opens the web attestation flow, where the attester makes an
+   account and attests. The form is Grain's and structured throughout, with no
+   free-response field (025), and this screen is the part that names a person
+   and a way to reach them.
+
+   The two differ in what Grain can check. A manager gives a work address at
+   the business, and Grain checks control of that address and nothing else,
+   which is what lets the mark say a named party at that business. A coworker
+   is a witness reachable any way at all, and their mark says coworker. */
+var invite = {name:'', contact:'', mode:'email'};
+
+function inviteName(label, hint){
+  return '<div style="margin-top:24px">' +
+    '<span class="t-micro" style="display:block;color:var(--secondary);padding-bottom:4px">' + esc(label) + '</span>' +
+    '<span class="ruled lg"><input id="invname" autocomplete="off" aria-label="' + esc(label) + '" ' +
+      'placeholder="' + esc(hint) + '" value="' + esc(invite.name) + '"></span></div>';
+}
+function inviteContact(label, hint, mode){
+  return '<div class="grp">' +
+    '<span class="t-micro" style="display:block;color:var(--secondary);padding-bottom:4px">' + esc(label) + '</span>' +
+    '<span class="ruled"><input id="invcontact" ' +
+      'inputmode="' + (mode === 'phone' ? 'tel' : 'email') + '" autocomplete="off" ' +
+      'aria-label="' + esc(label) + '" placeholder="' + esc(hint) + '" value="' + esc(invite.contact) + '"></span></div>';
+}
+function inviteReady(){ return !!(invite.name.trim() && invite.contact.trim()); }
+function inviteSend(label){
+  return '<div style="margin-top:26px">' +
+    '<button class="btn-primary press js-sendreq"' + (inviteReady() ? '' : ' disabled') + '>' + esc(label) + '</button>' +
+    '<div style="text-align:center;padding-top:6px">' +
+      '<button class="btn-tertiary press js-home">Not now</button></div></div>';
+}
+
 function askManagerBody(){
+  var c = askTarget();
   return '<div><h1 class="t-head" style="margin:0">Ask a manager</h1>' +
-    '<p class="t-body" style="margin:8px 0 0;color:var(--secondary);text-wrap:pretty">R. Santos Dry Goods is not registered with Grain. If someone there confirms a work address, your record shows a person at a business Grain recognises.</p>' +
-    '<div style="margin-top:26px"><span class="t-micro" style="display:block;color:var(--secondary);padding-bottom:4px">Their work email</span>' +
-    '<span class="ruled lg"><input inputmode="email" autocomplete="off" aria-label="Their work email" placeholder="name@rsantos.ph"></span></div>' +
+    '<p class="t-body" style="margin:8px 0 0;color:var(--secondary);text-wrap:pretty">' +
+      'Someone who managed you at ' + esc(c.party) + '. If they confirm a work address there, ' +
+      'your record shows a named person at a business Grain recognises.</p>' +
+    inviteName('Their name', 'As they are known at work') +
+    inviteContact('Their work email', 'name@' + esc(c.party.split(' ')[0].toLowerCase()) + '.com', 'email') +
+    '<p class="t-meta" style="margin:10px 0 0;color:var(--secondary);text-wrap:pretty">' +
+      'It has to be an address at the business. A personal address makes them a coworker, ' +
+      'which is a different mark and not a lesser one.</p>' +
     '<div style="margin-top:22px">' + rows([
-      ['Grain checks they control the address','Nothing more. Not their role, not their dates.'],
-      ['They attest what you did','And their mark says a named party at that business.']
+      ['Grain checks they control the address', 'Nothing more. Not their role, not their dates.'],
+      ['They write what you did', 'In their words. You cannot edit it, and you can attach your side.'],
+      ['They can decline', 'And nothing is added, including that they declined.']
     ]) + '</div>' +
-    '<div style="margin-top:26px"><button class="btn-primary press" disabled>Send the request</button></div></div>';
+    '<div class="grp"><span class="t-micro" style="display:block;color:var(--secondary);padding-bottom:2px">What they receive</span>' +
+      '<p class="t-body" style="margin:8px 0 0;color:var(--secondary);text-wrap:pretty">' +
+      'A link, and the dates you recorded for this chapter. Nothing else from your record. ' +
+      'They answer on the web and do not need the app.</p></div>' +
+    inviteSend('Send the request') + '</div>';
 }
+
 function askCoworkerBody(){
-  return msg({title:'Ask a coworker',
-    body:'Someone who saw the work. A coworker is a real witness, and the record says plainly that is what they are.',
-    rows:[['Their mark differs from a business mark','A reader can tell the two apart at a glance.'],
-          ['They are named on your record','Not anonymous, and not a rating.'],
-          ['One coworker is not two','A second party agreeing shows as a second mark.']],
-    cta:'Choose a coworker', alt:'Not now',
-    foot:'A coworker attestation is not a lesser answer. It is a different one, and the marks say which.'});
+  var c = askTarget();
+  return '<div><h1 class="t-head" style="margin:0">Ask a coworker</h1>' +
+    '<p class="t-body" style="margin:8px 0 0;color:var(--secondary);text-wrap:pretty">' +
+      'Someone who saw the work at ' + esc(c.party) + '. A coworker is a real witness, ' +
+      'and the record says plainly that is what they are.</p>' +
+
+    '<div style="margin-top:26px">' +
+      '<span class="t-micro" style="display:block;color:var(--secondary);padding-bottom:4px">Their link</span>' +
+      '<span class="ruled"><input id="cwlink" readonly aria-label="Link to send" ' +
+        'value="grain.id/a/' + esc(c.party.split(" ")[0].toUpperCase().slice(0, 4)) + '-7Q2M"></span>' +
+      '<div style="margin-top:14px"><button class="btn-primary press js-said">Copy the link</button></div>' +
+    '</div>' +
+
+    '<p class="t-meta" style="margin:14px 0 0;color:var(--secondary);text-wrap:pretty">' +
+      'Send it however you normally talk to them. Grain does not send it for you and does not ask ' +
+      'for their number or their email, because there is nothing about a coworker for Grain to check. ' +
+      'A manager is different: Grain checks control of a work address, which is the whole reason ' +
+      'that mark can name the business.</p>' +
+
+    '<div style="margin-top:24px">' + rows([
+      ['They make an account and answer there', 'On the web. They do not need the app, and they keep a record of their own if they want one.'],
+      ['Their mark differs from a business mark', 'A reader can tell the two apart at a glance.'],
+      ['They are named on your record', 'Not anonymous, and not a rating.'],
+      ['One coworker is not two', 'A second party agreeing shows as a second mark.']
+    ]) + '</div>' +
+
+    '<div class="warn" style="margin-top:24px">' +
+      '<p class="t-body" style="margin:0;text-wrap:pretty">The first person to open this link and sign in is the one who answers it. Send it to the person you mean, and to nobody else.</p>' +
+      '<p class="t-data" style="margin:10px 0 0">You can withdraw it until it is answered.</p>' +
+    '</div>' +
+
+    '<div style="margin-top:26px"><button class="btn-secondary press" data-go="requests">See it with your other requests</button>' +
+      '<div style="text-align:center;padding-top:6px">' +
+        '<button class="btn-tertiary press js-home">Done</button></div></div>' +
+
+    '<p class="t-meta" style="margin:22px 0 0;color:var(--secondary);text-wrap:pretty">' +
+      'A coworker attestation is not a lesser answer. It is a different one, and the marks say which.</p></div>';
 }
+
 function requestSentBody(){
-  return msg({pad:16, title:'Request sent',
-    body:'To Cebu Pacific Cargo Services, at the address Grain checked.',
-    rows:[['They have not answered yet','Nothing on your record has changed.', 'Sent 12 Mar'],
-          ['You can send it again','After seven days.', 'From 19 Mar'],
-          ['You can withdraw it','Until they answer.', null]],
-    cta:'Back to your record',
+  var c = askTarget(), link = S.lastAsk === 'askcoworker';
+  return msg({pad:16, title:link ? 'Waiting on your link' : 'Request sent',
+    body:link
+      ? 'A link for ' + c.party + '. Nobody has opened it yet, and nothing on your record has changed.'
+      : (invite.name
+          ? 'To ' + invite.name + ', at ' + (invite.contact || 'the address you gave') + '.'
+          : 'To ' + c.party + ', at the address Grain checked.'),
+    rows:link
+      ? [['Nobody has opened it','It does nothing until someone signs in through it.', 'Made 12 Mar'],
+         ['You can send it to someone else','The link is the same one.', null],
+         ['You can withdraw it','Until it is answered.', null]]
+      : [['They have not answered yet','Nothing on your record has changed.', 'Sent 12 Mar'],
+         ['You can send it again','After seven days.', 'From 19 Mar'],
+         ['You can withdraw it','Until they answer.', null]],
+    cta:'Back to your record', ctaId:'js-home',
     foot:'Grain does not tell you when they open it. Read events are not recorded anywhere.'});
 }
 
@@ -1047,14 +1752,20 @@ function idWhyBody(){
     rows:[['What is taken','A photograph of your document, and a photograph of you.'],
           ['Who sees it','Persona checks it. Grain stores the result, not the images.'],
           ['What it proves','That the document is genuine and it is yours. Nothing about your work.']],
-    cta:'Start', alt:'Not now',
+    cta:'Start', ctaGo:'doctype', alt:'Not now',
     foot:'You can delete the result at any time, and your record stays exactly as it is.'});
 }
 function idCheckingBody(){
+  /* Both outcomes are reachable. A checking screen that can only succeed is a
+     screen nobody has looked at in the state that matters. */
   return arcmark('Checking your document') +
     '<div style="text-align:center;padding-top:24px">' +
     '<p class="t-lead" style="margin:0">Checking the document</p>' +
-    '<p class="t-body" style="margin:8px 0 0;color:var(--secondary);text-wrap:pretty">Usually under a minute. You can leave this screen and come back.</p></div>';
+    '<p class="t-body" style="margin:8px 0 0;color:var(--secondary);text-wrap:pretty">Usually under a minute. You can leave this screen and come back.</p>' +
+    '<div style="padding-top:28px;text-align:left">' +
+      goRow('idresult', 'When it clears', 'What a reader sees afterwards') +
+      goRow('idfailed', 'When it does not', 'What to do next') +
+    '</div></div>';
 }
 function idResultBody(){
   return msg({title:'The document checked out',
@@ -1062,7 +1773,7 @@ function idResultBody(){
     rows:[['What you can see','That a document was checked, and when.'],
           ['What a party receives','Nothing. This never appears in anything sent to an employer.'],
           ['What is kept','The result. Not the document, not the photographs.']],
-    cta:'Back to your record',
+    cta:'Continue to liveness', ctaGo:'idliveness', alt:'Not now',
     foot:'Grain never prints that a person is verified, because a person is not a claim that can be true, and it does not send a partner a chip that would say so.'});
 }
 function idLivenessBody(){
@@ -1071,7 +1782,7 @@ function idLivenessBody(){
     rows:[['It is compared once','Against the document photograph, then discarded.'],
           ['It is not kept','Grain stores the answer, not the picture.'],
           ['Declining costs you one thing','The record says the document was checked, not that it was matched to you.']],
-    cta:'Take the photograph', alt:'Skip this'});
+    cta:'Take the photograph', ctaGo:'idresult', alt:'Skip this'});
 }
 function idFailedBody(){
   return msg({pad:16, alert:true, title:'That did not check out',
@@ -1079,7 +1790,7 @@ function idFailedBody(){
     rows:[['Try a different photograph','Flat, in good light, the whole document in frame.'],
           ['Try a different document','A passport reads more reliably than a card.'],
           ['Carry on without it','Your record works. A party can still attest your work.']],
-    cta:'Try again', alt:'Carry on without it'});
+    cta:'Try again', ctaGo:'doctype', alt:'Carry on without it', altId:'js-home'});
 }
 
 
@@ -1094,21 +1805,67 @@ function publicPageBody(){
     '<div class="listrow"><span style="flex:1;min-width:0"><span class="t-rec" style="display:block">Show your imprint on it</span>' +
     '<span class="t-meta" style="display:block;color:var(--secondary);padding-top:3px">To people. Search engines get the words and never the figure.</span></span>' +
     '<button class="sw press js-sw" role="switch" aria-checked="true" aria-label="Show your imprint"><i></i></button></div></div>' +
-    '<div style="margin-top:24px"><button class="btn-secondary press">Preview what a stranger sees</button></div>' +
+    '<div style="margin-top:24px">' +
+      goRow('publicpreview', 'Preview what a stranger sees', 'The page as a person loads it, imprint included') +
+      goRow('publiccrawler', 'And what a search engine gets', 'The same words with the figure left out (056)') +
+    '</div>' +
     '<p class="t-meta" style="margin:22px 0 0;color:var(--secondary);text-wrap:pretty">Turning it off removes the page. Anyone holding a grant still has one, until its date passes.</p></div>';
 }
+/* G3 and G4. The management screen offered a preview and there was nothing to
+   preview: neither view existed in this prototype, so the whole public-page
+   flow stopped at a switch. Decision 056 settles what the page carries:
+   employer, position and dates, provenance by mark, and the imprint to a human
+   visitor but never in the crawler payload. */
+function publicViewBody(crawler){
+  var chs = chapters();
+  var out = '<div class="statewrap">' +
+    '<span class="t-serial" style="color:var(--secondary)">' +
+      (crawler ? 'What a search engine receives' : 'What a stranger sees') + '</span>' +
+    '<h1 class="t-title" style="margin:12px 0 0">Liezel Mendoza</h1>' +
+    '<p class="t-body" style="margin:8px 0 0;color:var(--secondary);text-wrap:pretty">' +
+      'A work record held by the person it describes, at grain.id/liezel-mendoza.</p>';
+
+  if(!crawler){
+    out += '<div class="figwrap" style="pointer-events:none;margin-top:22px">' +
+      '<span class="figreg" style="top:0;left:0;border-top-width:1px;border-left-width:1px"></span>' +
+      '<span class="figreg" style="top:0;right:0;border-top-width:1px;border-right-width:1px"></span>' +
+      '<span class="figreg" style="bottom:0;left:0;border-bottom-width:1px;border-left-width:1px"></span>' +
+      '<span class="figreg" style="bottom:0;right:0;border-bottom-width:1px;border-right-width:1px"></span>' +
+      '<svg class="fig" viewBox="0 0 600 600" role="img" aria-label="Her imprint.">' + FIGURE + '</svg></div>';
+  }
+
+  out += '<div style="padding-top:26px">' + sechead('Work', chs.length) +
+    chs.map(function(c){
+      return '<div class="prow"><span class="gutter">' + mark(c.sw) + '</span>' +
+        '<span style="flex:1;min-width:0"><span class="t-rec" style="display:block">' + esc(c.party) + '</span>' +
+        '<span class="t-meta" style="display:block;color:var(--secondary);padding-top:3px">' + esc(c.kind) + '</span>' +
+        '<span class="t-meta" style="display:block;color:var(--secondary);padding-top:3px">' + esc(c.label + ' ' + c.by) + '</span></span>' +
+        '<span class="col-r t-data" style="color:var(--secondary)">' + esc(c.from + ' to ' + c.to) + '</span></div>';
+    }).join('') + '</div>' +
+    '<p class="t-meta" style="margin:22px 0 0;color:var(--secondary);text-wrap:pretty">' +
+      (crawler
+        ? 'The figure is left out of this payload on purpose. A page a person loads is gone when they close the tab; a page in an index is permanent.'
+        : 'Every line above says who attested it. A line with no attesting party says so, and Grain does not make it look like the others.') +
+    '</p>' +
+    '<div style="margin-top:24px"><button class="btn-secondary press js-back">Back to your settings</button></div>' +
+  '</div>';
+  return out;
+}
+function publicPreviewBody(){ return publicViewBody(false); }
+function publicCrawlerBody(){ return publicViewBody(true); }
+
 function sendRecordBody(){
   return '<div><h1 class="t-head" style="margin:0">Send your record</h1>' +
     '<p class="t-body" style="margin:8px 0 0;color:var(--secondary);text-wrap:pretty">To one named person. It is not a link that can be forwarded, and it ends on a date you set.</p>' +
     '<div style="margin-top:26px"><span class="t-micro" style="display:block;color:var(--secondary);padding-bottom:4px">Their email</span>' +
-    '<span class="ruled lg"><input inputmode="email" autocomplete="off" aria-label="Their email" placeholder="hiring@alorica.com"></span></div>' +
-    '<div class="grp"><button class="srow press"><span class="t-rec" style="flex:1">Ends</span>' +
+    '<span class="ruled lg"><input id="invcontact" inputmode="email" autocomplete="off" aria-label="Their email" placeholder="hiring@alorica.com" value="' + esc(invite.contact) + '"></span></div>' +
+    '<div class="grp"><button class="srow press" data-expiry="1"><span class="t-rec" style="flex:1">Ends</span>' +
     '<span class="t-data" style="color:var(--secondary)">In 30 days</span></button></div>' +
     '<div style="margin-top:24px">' + rows([
       ['They prove the address is theirs','Before they can read anything.'],
       ['They see the whole record','Grain does not offer a partial one, because a selection is a claim.']
     ]) + '</div>' +
-    '<div style="margin-top:26px"><button class="btn-primary press" disabled>Send it</button></div></div>';
+    '<div style="margin-top:26px"><button class="btn-primary press js-sendgrant">Send it</button></div></div>';
 }
 function grantDetailBody(){
   return msg({title:'Alorica Philippines',
@@ -1116,7 +1873,7 @@ function grantDetailBody(){
     rows:[['Granted','You sent it.','12 Feb 2026'],
           ['Ends','Unless you end it sooner.','12 Sep 2026'],
           ['Scope','The whole record. Grain has no partial grant.', null]],
-    cta:'End this grant now',
+    cta:'End this grant now', ctaId:'js-confirm-revoke',
     warn:'Ending it stops access from this moment. It does not erase that the grant existed, and it does not unsend what they already read.',
     foot:'Grain does not tell you whether they read it. Read events are not recorded.'});
 }
@@ -1147,17 +1904,18 @@ function notifPrefsBody(){
     }).join('') + '</div>' +
     '<p class="t-meta" style="margin:22px 0 0;color:var(--secondary);text-wrap:pretty">Grain never notifies you that someone read your record, because it does not record that.</p></div>';
 }
+var langPick = 0;
 function languageBody(){
   return '<div><h1 class="t-head" style="margin:0">Language</h1>' +
     '<div style="margin-top:22px">' +
-    [['English','', true],['Tagalog','', false]].map(function(l){
-      return '<button class="row press"><span class="gutter" style="padding-top:2px">' +
-        '<svg width="20" height="20" viewBox="0 0 24 24" class="icon" style="stroke-linecap:square"><use href="' +
+    [['English','', langPick === 0],['Tagalog','', langPick === 1]].map(function(l, li){
+      return '<button class="row press" data-lang="' + li + '"><span class="gutter" style="padding-top:2px">' +
+        '<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" class="icon" style="stroke-linecap:square"><use href="' +
         (l[2] ? '#i-done' : '#i-open') + '"></use></svg></span>' +
         '<span style="flex:1;min-width:0"><span class="t-rec" style="display:block">' + esc(l[0]) + '</span></span></button>';
     }).join('') +
     '<div class="row" style="opacity:.55"><span class="gutter" style="padding-top:2px">' +
-    '<svg width="20" height="20" viewBox="0 0 24 24" class="icon" style="stroke-linecap:square"><use href="#i-open"></use></svg></span>' +
+    '<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" class="icon" style="stroke-linecap:square"><use href="#i-open"></use></svg></span>' +
     '<span style="flex:1;min-width:0"><span class="t-rec" style="display:block">Hindi</span>' +
     '<span class="t-meta" style="display:block;color:var(--secondary);padding-top:3px">Not yet. Grain does not have a typeface that carries Devanagari at the quality the rest of the app is set in.</span></span></div>' +
     '</div></div>';
@@ -1168,7 +1926,7 @@ function exportBody(){
     rows:[['It arrives by email','Within 24 hours, to the address on your account.'],
           ['It is the whole thing','Not a summary, and not a selection.'],
           ['It is yours','Grain does not need to exist for the file to be readable.']],
-    cta:'Ask for an export',
+    cta:'Ask for an export', ctaId:'js-said',
     foot:'Asking again before it arrives does not make it faster.'});
 }
 function disclosureBody(){
@@ -1187,7 +1945,7 @@ function supportBody(){
     rows:[['Change your name or number','A person checks it is you.'],
           ['Dispute an attestation','You attach your side, and it stays attached.'],
           ['Delete everything','Filed here, and executed after the grace period.']],
-    cta:'Write to support', foot:'Usually answered within two working days.'});
+    cta:'Write to support', ctaId:'js-said', foot:'Usually answered within two working days.'});
 }
 function deleteBody(){
   return msg({title:'Delete everything',
@@ -1195,7 +1953,7 @@ function deleteBody(){
     rows:[['Your access stops now','The moment you file it, you cannot read your record.'],
           ['It is executed after 30 days','A person at Grain carries it out.'],
           ['Signing in cancels it','And you would have to file it again.']],
-    cta:'File the request', alt:'Keep my record',
+    cta:'File the request', ctaId:'js-confirm-delete', alt:'Keep my record',
     warn:'Attestations other parties made about you are erased with everything else. They cannot be recovered, by you or by them.'});
 }
 function deletePendingBody(){
@@ -1203,7 +1961,7 @@ function deletePendingBody(){
     body:'Filed 04 Mar 2026. Your record is closed to you and to everyone holding a grant.',
     rows:[['Executed on','Unless you sign in first.','03 Apr 2026'],
           ['Signing in cancels it','And restores every grant that has not expired.', null]],
-    cta:'Cancel the request and sign in'});
+    cta:'Cancel the request and sign in', ctaGo:'gracesignin'});
 }
 function unlockBody(){
   return '<div style="position:absolute;inset:0;display:flex;flex-direction:column;' +
@@ -1211,15 +1969,15 @@ function unlockBody(){
     '<svg viewBox="0 0 160 26" width="130" height="21" role="img" aria-label="Grain" style="opacity:.5">' + LOCKUP + '</svg>' +
     '<p class="t-lead" style="margin:0">Unlock to open your record</p>' +
     '<p class="t-body" style="margin:0;color:var(--secondary);text-wrap:pretty">A shared phone is a real thing, so the record does not open on its own.</p>' +
-    '<button class="btn-secondary press" style="max-width:260px">Use Face ID</button>' +
-    '<button class="btn-tertiary press">Use the passcode</button></div>';
+    '<button class="btn-secondary press js-home" style="max-width:260px">Use Face ID</button>' +
+    '<button class="btn-tertiary press js-home">Use the passcode</button></div>';
 }
 function signOutBody(){
   return msg({title:'Sign out',
     body:'On this phone only. Your record and every grant stay exactly as they are.',
     rows:[['You will need a code to return','Sent to the number on your account.'],
           ['Nothing is deleted','Signing out is not deleting.']],
-    cta:'Sign out', alt:'Stay signed in'});
+    cta:'Sign out', ctaGo:'signedout', alt:'Stay signed in'});
 }
 
 
@@ -1277,6 +2035,8 @@ var SURFACES = {
   capture: {title:'Capture', body:captureBody},
   parsing: {title:'Parsing', body:parseBody},
   importreview: {title:'Import', body:importBody},
+  importfail: {title:'Unreadable', body:importFailBody},
+  sensitive: {title:'Dropped', body:sensitiveBody},
   handle: {title:'Address', body:handleBody},
   permcamera: {title:'Camera', body:function(){ return permBody('camera'); }},
   permnotify: {title:'Notifications', body:function(){ return permBody('notify'); }},
@@ -1285,6 +2045,9 @@ var SURFACES = {
   lander: {title:'Lander', body:landerBody},
   welcome: {title:'Welcome', body:welcomeBody},
   addposition: {title:'Position', body:positionBody},
+  countable: {title:'Counted', body:countableBody},
+  education: {title:'Qualification', body:educationBody},
+  credential: {title:'Certificate', body:credentialBody},
   minoredit: {title:'Edits', body:minorEditBody},
   notfound: {title:'Not found', body:notFoundBody},
   updaterequired: {title:'Update', body:updateBody},
@@ -1295,12 +2058,15 @@ var SURFACES = {
   askmanager: {title:'Ask a manager', body:askManagerBody},
   askcoworker: {title:'Ask a coworker', body:askCoworkerBody},
   requestsent: {title:'Sent', body:requestSentBody},
+  requests: {title:'Requests', body:requestsBody},
   idwhy: {title:'Identity', body:idWhyBody},
   idchecking: {title:'Checking', body:idCheckingBody},
   idresult: {title:'Result', body:idResultBody},
   idliveness: {title:'Liveness', body:idLivenessBody},
   idfailed: {title:'Not checked', body:idFailedBody},
   publicpage: {title:'Public page', body:publicPageBody},
+  publicpreview: {title:'Your public page', body:publicPreviewBody},
+  publiccrawler: {title:'Crawler view', body:publicCrawlerBody},
   sendrecord: {title:'Send', body:sendRecordBody},
   grantdetail: {title:'Grant', body:grantDetailBody},
   ledger: {title:'Ledger', body:ledgerBody},
@@ -1311,6 +2077,9 @@ var SURFACES = {
   support: {title:'Support', body:supportBody},
   deleterec: {title:'Delete', body:deleteBody},
   deletepending: {title:'Deletion', body:deletePendingBody},
+  gracesignin: {title:'Deletion filed', body:graceSignInBody},
+  dispute: {title:'Dispute', body:disputeBody},
+  disputesent: {title:'Filed', body:disputeSentBody},
   unlock: {title:'Unlock', body:unlockBody},
   signout: {title:'Sign out', body:signOutBody},
   appicon: {title:'App icon', body:appIconBody},
@@ -1322,8 +2091,15 @@ function paintBar(){
   var lead = '', trail = '', n = S.stack.length;
   if(n){
     var prev = n > 1 ? SURFACES[S.stack[n-2].kind].title : 'Record';
-    lead = '<button class="backbtn press js-back" aria-label="Back">' +
-      '<svg width="22" height="22" viewBox="0 0 24 24" class="icon"><use href="#i-back"></use></svg>' +
+    /* Decision 075. The wordmark is the way home from any depth. It is absent
+       on the record itself because that is where it would take you, and its
+       standing question in design/12 (whether the lockup lives in the bar at
+       all) is untouched: this is the pushed bar only. */
+    lead = '<button class="homebtn press js-home" aria-label="Back to your record">' +
+        '<svg viewBox="0 0 160 26" width="72" height="12" aria-hidden="true">' + LOCKUP + '</svg></button>' +
+      '<span class="bardiv" aria-hidden="true"></span>' +
+      '<button class="backbtn press js-back" aria-label="Back to ' + esc(prev) + '">' +
+      '<svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" class="icon"><use href="#i-back"></use></svg>' +
       (S.platform === 'ios' ? '<span class="t-rec">' + esc(prev) + '</span>' : '') + '</button>';
   } else {
     if(S.lockup === 'bar'){
@@ -1420,7 +2196,7 @@ function monthSheetHTML(){
 }
 function openMonth(field){
   pick.field = field; pick.month = null;
-  $('sheetkicker').textContent = field === 'from' ? 'Started' : 'Ended';
+  $('sheetkicker').textContent = field.toLowerCase().indexOf('from') > -1 ? 'Started' : 'Ended';
   $('sheettitle').textContent = 'Pick a month';
   $('sheetbody-p').textContent = '';
   $('sheetslot').innerHTML = monthSheetHTML();
@@ -1431,7 +2207,41 @@ function openMonth(field){
     if(S.platform === 'ios'){ $('scr').classList.add('recede'); $('chrome').classList.add('onblack'); }
   });
 }
+function openConfirm(kind){
+  var o = confirmSheet(kind);
+  $('sheetkicker').textContent = o.kicker;
+  if($('sheetkicker2')) $('sheetkicker2').textContent = o.kicker;
+  $('sheettitle').textContent = o.title;
+  $('sheetbody-p').textContent = o.body;
+  $('sheetslot').innerHTML = '';
+  $('sheetcta').textContent = o.cta;
+  $('sheetcta').style.display = '';
+  S.sheetOpen = true; S.sheetKind = 'confirm'; S.confirmKind = kind;
+  requestAnimationFrame(function(){
+    $('sheet').classList.add('on'); $('scrim').classList.add('on');
+    if(typeof paintNavBtns === 'function') paintNavBtns();
+    if(S.platform === 'ios'){ $('scr').classList.add('recede'); $('chrome').classList.add('onblack'); }
+  });
+}
+function openAsk(i){
+  S.ask = i;
+  resetInvite();
+  var o = askSheet(i);
+  $('sheetkicker').textContent = o.kicker;
+  if($('sheetkicker2')) $('sheetkicker2').textContent = o.kicker;
+  $('sheettitle').textContent = o.title;
+  $('sheetbody-p').textContent = o.body;
+  $('sheetslot').innerHTML = o.slot;
+  $('sheetcta').style.display = 'none';
+  S.sheetOpen = true; S.sheetKind = 'ask';
+  requestAnimationFrame(function(){
+    $('sheet').classList.add('on'); $('scrim').classList.add('on');
+    if(typeof paintNavBtns === 'function') paintNavBtns();
+    if(S.platform === 'ios'){ $('scr').classList.add('recede'); $('chrome').classList.add('onblack'); }
+  });
+}
 function closeSheet(){
+  $('sheetcta').style.display = '';
   S.sheetOpen = false;
   $('sheet').classList.remove('on'); $('scrim').classList.remove('on');
   $('scr').classList.remove('recede'); $('chrome').classList.remove('onblack');
@@ -1485,10 +2295,12 @@ var GRAT2;
 var NAV = [
   ['First run', ['launch','lander','identifier','code','welcome','name','consent','handle']],
   ['The record', ['record','imprint','permanence']],
-  ['Chapters', ['addchapter','parsing','importreview','addposition','minoredit']],
+  ['Chapters', ['addchapter','parsing','importreview','sensitive','importfail','addposition','countable','minoredit']],
+  ['Education and certificates', ['education','credential']],
   ['Getting verified', ['reqattest','askmanager','askcoworker','requestsent']],
   ['Identity', ['idwhy','doctype','capture','idchecking','idresult','idliveness','idfailed','permcamera']],
   ['Sharing', ['sharing','publicpage','sendrecord','grantdetail']],
+  ['Disputes and deletion', ['dispute','disputesent','gracesignin']],
   ['Account', ['account','ledger','notifprefs','permnotify','language','exportrec','disclosure','support','deleterec','deletepending','unlock','signout']],
   ['System', ['notfound','updaterequired','signedout','pushcontent','legal','appicon']]
 ];
@@ -1497,7 +2309,9 @@ var NAVNAME = {
   code:'One-time code', welcome:'Welcome back', name:'Your name', consent:'Consent (blocked)',
   handle:'Claim your address', imprint:'Imprint', permanence:'What you can change',
   addchapter:'Add a chapter', parsing:'Parsing a file', importreview:'Import review',
-  addposition:'Add a position', minoredit:'Minor edits', reqattest:'Request attestation',
+  addposition:'Add a position', countable:'What you counted',
+  education:'Add a qualification', credential:'Add a certificate',
+  importfail:'File unreadable', sensitive:'Dropped from the file', minoredit:'Minor edits', reqattest:'Request attestation',
   askmanager:'Ask a manager', askcoworker:'Ask a coworker', requestsent:'Request sent',
   idwhy:'Why check identity', doctype:'Document type', capture:'Capture the document',
   idchecking:'Checking', idresult:'Result', idliveness:'Liveness', idfailed:'Could not check',
@@ -1505,7 +2319,8 @@ var NAVNAME = {
   sendrecord:'Send the record', grantdetail:'Grant detail', account:'Account', ledger:'The ledger',
   notifprefs:'Notification preferences', permnotify:'Notification permission', language:'Language',
   exportrec:'Export', disclosure:'Who can read it', support:'Support', deleterec:'Delete everything',
-  deletepending:'Deletion requested', unlock:'Unlock', signout:'Sign out',
+  deletepending:'Deletion requested', gracesignin:'Deletion filed, the way back',
+  dispute:'Dispute an attestation', disputesent:'Dispute filed', unlock:'Unlock', signout:'Sign out',
   appicon:'App icon (provisional)', notfound:'Address not found', updaterequired:'Update required', signedout:'Signed out',
   pushcontent:'Notification content', legal:'How this works'
 };
@@ -1522,33 +2337,92 @@ function buildNav(){
   sel.innerHTML = html;
 }
 
+/* The shared fragments are decorative glyphs, and several of them are whole
+   <svg> elements rather than path data. Unmarked, a screen reader announces
+   each as an unlabelled graphic; none of them carry anything the text beside
+   them does not already say. Marked once here rather than in design/10, whose
+   fragments are shared with its own artboards. */
+function deco(str){ return str.replace(/<svg(?![^>]*aria-)/g, '<svg aria-hidden="true"'); }
+
 function boot(){
-  SHARE = T('t-share'); ACC = T('t-acc'); CHEV = T('t-chev');
-  FIGURE = T('t-chapters'); RULE = T('t-sinerule'); LOCKUP = T('t-lockup');
-  GRAT = T('t-graticule'); GRAT2 = GRAT; PORTRAIT = T('t-portrait');
-  MARK56 = T('t-mark56'); EMPTYFIG = T('t-empty'); MARKSOLID = T('t-marksolid');
+  SHARE = deco(T('t-share')); ACC = deco(T('t-acc')); CHEV = deco(T('t-chev'));
+  FIGURE = T('t-chapters'); RULE = deco(T('t-sinerule')); LOCKUP = deco(T('t-lockup'));
+  GRAT = deco(T('t-graticule')); GRAT2 = GRAT; PORTRAIT = deco(T('t-portrait'));
+  MARK56 = deco(T('t-mark56')); EMPTYFIG = T('t-empty'); MARKSOLID = deco(T('t-marksolid'));
   buildNav();
   paintRecord(); applyPlatform();
   $('rec').addEventListener('scroll', syncEdge, {passive:true});
 }
 boot();
 
+/* The figure's focus state has existed since it was drawn: imprintBody takes a
+   ring index and the chart ground dims every other band. Nothing had ever
+   passed one, so the mechanism was unreachable on every platform. Opening a
+   chapter is what selects it, and the ring it names lights while the rest
+   recede.
+
+   Which figure to light depends on where it is. On a desk it is in the second
+   column beside the list; everywhere else it is inside the surface the list is
+   on. */
+function visibleFig(){
+  if(typeof S.vp !== 'undefined' && S.vp === 'desktop'){
+    var a = document.querySelector('#aside .bigfig');
+    if(a) return a;
+  }
+  var t = (typeof topLayer === 'function') ? topLayer() : null;
+  return (t && t.querySelector('.bigfig')) || document.querySelector('.bigfig');
+}
+function syncFocus(){
+  var fig = visibleFig();
+  if(!fig) return;
+  /* classList, not className: on an SVG element className is an
+     SVGAnimatedString, so assigning a string to it silently does nothing and
+     the figure never changes. */
+  fig.classList.remove('fx');
+  for(var i = 0; i < chapters().length + 2; i++) fig.classList.remove('f' + i);
+  /* The last chapter left open is the one the figure follows. Closing it hands
+     focus back to whichever is still open, rather than blanking the figure
+     while a chapter is plainly still selected. */
+  var open = document.querySelectorAll('.disc.on > [data-row]');
+  if(open.length){
+    fig.classList.add('fx');
+    fig.classList.add('f' + open[open.length - 1].getAttribute('data-row'));
+  }
+}
+
 document.addEventListener('click', function(e){
   var t = e.target; if(!t || !t.closest) return;
   if(t.closest('.js-imprint')) return push({kind:'imprint'});
   var row = t.closest('[data-out]');
-  if(row) return openSheet(OUT[+row.getAttribute('data-out')]);
+  if(row) return openAsk(OUT[+row.getAttribute('data-out')].i);
   var disc = t.closest('[data-open]');
-  if(disc){ disc.parentNode.classList.toggle('on'); return; }
+  if(disc){
+    disc.parentNode.classList.toggle('on');
+    if(disc.hasAttribute('data-row')) syncFocus();
+    return;
+  }
   if(t.closest('.js-back')) return pop();
   if(t.closest('.js-share')) return push({kind:'sharing'});
   if(t.closest('.js-acc')) return push({kind:'account'});
   if(t.closest('#sheetcta') && S.sheetKind === 'month'){
     if(pick.month != null){
-      draft[pick.field] = MON[pick.month] + ' ' + pick.year;
+      var val = MON[pick.month] + ' ' + pick.year;
+      if(pick.field === 'posFrom') draft.pos.from = val;
+      else if(pick.field === 'posTo') draft.pos.to = val;
+      else draft[pick.field] = val;
       repaintStack();
     }
     return closeSheet();
+  }
+  if(t.closest('#sheetcta') && S.sheetKind === 'confirm'){
+    var was = S.confirmKind;
+    closeSheet();
+    return setTimeout(function(){
+      while(S.stack.length) pop(true);
+      /* Filing a deletion lands on the grace-period state, which is the only
+         place that says what resets it. Revoking a grant just returns. */
+      if(was === 'delete') push({kind:'deletepending'});
+    }, 180);
   }
   if(t.closest('#sheetcancel') || t.closest('#sheetcta') || t.closest('#scrim')) return closeSheet();
   var yr = t.closest('[data-yr]');
@@ -1571,10 +2445,104 @@ document.addEventListener('click', function(e){
   var pp = t.closest('[data-party]');
   if(pp){
     draft.party = pp.getAttribute('data-party') || null;
+    draft.reg = !!pp.getAttribute('data-reg');
     if(draft.party) draft.typed = draft.party;
     repaintStack();
     return;
   }
+  var kd = t.closest('[data-kind]');
+  if(kd){ draft.kind = kd.getAttribute('data-kind'); repaintStack(); return; }
+  var cc = t.closest('[data-chcountry]');
+  if(cc){ draft.country = (draft.country + 1) % COUNTRIES.length; repaintStack(); return; }
+  /* The add flow is three steps and only the first is required to be useful:
+     chapter, then the position that carries the title (074), then anything
+     countable, which is skippable. */
+  if(t.closest('#chapgo') && !t.closest('#chapgo').disabled){
+    draft.firstPosition = true; return push({kind:'addposition'});
+  }
+  if(t.closest('.js-addanother')){ commitPos(); repaintStack(); return; }
+  if(t.closest('#posgo')){
+    commitPos();
+    if(draft.firstPosition) return push({kind:'countable'});
+    return pop();
+  }
+  if(t.closest('.js-skipvol')){
+    draft.volUnit = ''; draft.volCount = '';
+    while(S.stack.length) pop(true);
+    return;
+  }
+  /* Terminal actions. `js-home` returns to the record from any depth, which is
+     what a screen that has finished its job should do; `js-back` is one level. */
+  if(t.closest('.js-home')){ closeSheet(); while(S.stack.length) pop(true); return; }
+  var sd = t.closest('.js-said');
+  if(sd){
+    var host = sd.parentNode, kind = S.stack.length ? S.stack[S.stack.length-1].kind : '';
+    host.innerHTML = '<div class="said"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24">' +
+      '<use href="#i-done"></use></svg><span class="t-data">' + esc(SAID[kind] || 'Done.') + '</span></div>';
+    return;
+  }
+  /* The seam gives destructive confirmation to the system on both platforms and
+     to Grain in a browser. Either way the prototype had no instance of one. */
+  if(t.closest('.js-confirm-revoke')) return openConfirm('revoke');
+  if(t.closest('.js-confirm-delete')) return openConfirm('delete');
+  var im2 = t.closest('[data-invmode]');
+  if(im2){
+    var m = im2.getAttribute('data-invmode');
+    if(m !== invite.mode){ invite.mode = m; invite.contact = ''; }
+    repaintStack(); return;
+  }
+  var ei = t.closest('[data-inst]');
+  if(ei){ edraft.inst = ei.getAttribute('data-inst') || edraft.inst;
+          edraft.ref = !!ei.getAttribute('data-inst'); repaintStack(); return; }
+  var ci = t.closest('[data-issuer]');
+  if(ci){ cdraft.issuer = ci.getAttribute('data-issuer'); cdraft.ref = true; repaintStack(); return; }
+  var lv = t.closest('[data-level]');
+  if(lv){ edraft.level = lv.getAttribute('data-level'); repaintStack(); return; }
+  var ec = t.closest('[data-edcountry]');
+  if(ec){ edraft.country = (edraft.country + 1) % COUNTRIES.length; repaintStack(); return; }
+  var cm = t.closest('[data-confirm-match]');
+  if(cm){ FOUND[parseInt(cm.getAttribute('data-confirm-match'), 10)].confirmed = true; repaintStack(); return; }
+  var kr = t.closest('[data-keep-raw]');
+  if(kr){ var ki = parseInt(kr.getAttribute('data-keep-raw'), 10);
+          FOUND[ki].match = null; FOUND[ki].confirmed = false; repaintStack(); return; }
+  var dg = t.closest('[data-ground]');
+  if(dg){ var g=dg.getAttribute('data-ground');
+          ddraft.ground = (ddraft.ground === g) ? null : g; repaintStack(); return; }
+  var lg = t.closest('[data-lang]');
+  if(lg){ langPick = parseInt(lg.getAttribute('data-lang'), 10); repaintStack(); return; }
+  var ex = t.closest('[data-expiry]');
+  if(ex){ expiryPick = (expiryPick + 1) % EXPIRY.length; repaintStack(); return; }
+  /* One route for every destination row in the app. */
+  var go = t.closest('[data-go]');
+  if(go){
+    if(S.sheetOpen) closeSheet();
+    var gk = go.getAttribute('data-go');
+    if(gk === 'addchapter') resetDraft();
+    if(gk === 'addposition') draft.firstPosition = false;
+    return push({kind:go.getAttribute('data-go')});
+  }
+  var ask = t.closest('[data-ask]');
+  if(ask) return openAsk(parseInt(ask.getAttribute('data-ask'), 10));
+  var route = t.closest('[data-route]');
+  if(route){
+    var k = route.getAttribute('data-route');
+    S.lastAsk = k;
+    closeSheet();
+    return setTimeout(function(){ push({kind:k}); }, 120);
+  }
+  if(t.closest('.js-sendreq')){
+    /* A sent request joins the outstanding list, so the list is the app's
+       state rather than a static illustration of one. */
+    REQUESTS.unshift({
+      party: askTarget().party,
+      kind: S.lastAsk === 'askmanager' ? 'A manager' : (S.lastAsk === 'askcoworker' ? 'A coworker' : 'The business'),
+      state: 'Waiting', when: 'Sent today'
+    });
+    return push({kind:'requestsent'});
+  }
+  var rq = t.closest('[data-req]');
+  if(rq){ return push({kind:'requestsent'}); }
+  if(t.closest('.js-sendgrant')) return push({kind:'requestsent'});
   var sw = t.closest('.js-sw');
   if(sw) sw.setAttribute('aria-checked', sw.getAttribute('aria-checked') === 'true' ? 'false' : 'true');
 });
@@ -1603,6 +2571,34 @@ document.addEventListener('input', function(e){
     var r = document.getElementById('presults');
     if(r) r.innerHTML = partyResults();
   }
+  if(t.id === 'chcity'){ draft.locality = t.value; return; }
+  if(t.id === 'dstatement'){ ddraft.statement = t.value;
+    var fb = document.querySelector('[data-go="disputesent"]');
+    if(fb) fb.disabled = !(ddraft.ground || t.value.trim());
+    return; }
+  if(t.id === 'postitle'){ draft.pos.title = t.value; return; }
+  if(t.id === 'edinst'){ edraft.inst = t.value; edraft.ref = false;
+    var r1 = document.querySelector('.pushl:last-of-type'); repaintStack(); return; }
+  if(t.id === 'edfield'){ edraft.field = t.value; return; }
+  if(t.id === 'crname'){ cdraft.name = t.value;
+    var b1 = document.querySelector('.js-home.btn-primary'); repaintStack(); return; }
+  if(t.id === 'crissuer'){ cdraft.issuer = t.value; cdraft.ref = false; repaintStack(); return; }
+  if(t.id === 'invname' || t.id === 'invcontact'){
+    invite[t.id === 'invname' ? 'name' : 'contact'] = t.value;
+    var send = document.querySelector('.js-sendreq');
+    if(send) send.disabled = !inviteReady();
+    return;
+  }
+  if(t.id === 'idinput'){ var g = document.getElementById('idgo'); if(g) g.disabled = t.value.trim().length < 6; return; }
+  if(t.id === 'handleinput'){ return; }
+  if(t.id === 'nameinput'){ var ng = document.getElementById('namego'); if(ng) ng.disabled = !t.value.trim(); return; }
+  if(t.id === 'headcount' || t.id === 'teamsize' || t.id === 'samerole'){
+    t.value = t.value.replace(/[^0-9]/g, '').slice(0, 5);
+    draft.pos[{headcount:'directed', teamsize:'team', samerole:'same'}[t.id]] = t.value;
+    return;
+  }
+  if(t.id === 'volunit'){ draft.volUnit = t.value; return; }
+  if(t.id === 'volcount'){ t.value = t.value.replace(/[^0-9]/g, '').slice(0, 7); draft.volCount = t.value; return; }
   if(t.id === 'otp'){
     t.value = t.value.replace(/[^0-9]/g, '').slice(0, 6);
     var go = document.getElementById('otpgo');

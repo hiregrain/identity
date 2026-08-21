@@ -238,6 +238,8 @@ check-red:
 	! node checks/deletion-copy.mjs test/fixtures/redpath/deletion-copy/copy.md test/fixtures/redpath/deletion-copy/policy.json
 	@echo "red path 14: an em dash, a spaced en dash, curly quotes, a heading emoji, a JSON-escaped em dash, and both tell words each fail the unslop check (no database)"
 	! node checks/unslop.mjs test/fixtures/redpath/unslop
+	@echo "red path 15: a hand-rolled psql invocation outside core/transport fails the transport-seam check (no database)"
+	! node checks/transport-seam.mjs test/fixtures/redpath/transport
 	@echo "check-red: all red paths fail as required"
 
 # Database-dependent red path: a schema edit without regenerated types

@@ -7,6 +7,7 @@ depends_on: [person-identity, self-asserted-record]
 binds:
   - THESIS.md#5
   - decisions/LOG.md#022
+  - decisions/LOG.md#074
   - decisions/LOG.md#026
   - decisions/LOG.md#057
   - decisions/LOG.md#066
@@ -88,7 +89,11 @@ whatever verification level exists (the `provenance` field on each
 claim is the input; no attestation machinery is required to test
 weighting, fixtures set provenance directly), structured references
 where any exist (none in first-product), and observable meta-signals
-(average tenure in role, described responsibility, seniority);
+(average tenure in role, described responsibility, seniority, and
+**title**, which decision 074 added to 022's input set by name after the
+schema's refusal of it was found to misread the thesis; it is weighted by
+provenance like every other input and compared only inside a chapter,
+never ranked across parties);
 **provenance weighting** with corroboration counted once per claim,
 never twice; **party quality scores excluded**: the scoring path
 contains no reference to party score fields (the column itself arrives

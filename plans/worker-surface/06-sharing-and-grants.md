@@ -2,7 +2,7 @@
 id: worker-surface/06
 type: task
 layer: worker-surface
-satisfies: [1, 3, 5, 6, 7, 8]
+satisfies: [1, 2, 3, 5, 6, 7, 8]
 status: draft
 depends_on: [worker-surface/01]
 binds:
@@ -43,16 +43,16 @@ Surfaces implemented: G1, G2, G5, G6.
 
 ## Acceptance
 
-- AC (mechanical): the public page defaults to off on a newly created record,
+1. **A new record's public page is off.** (mechanical) the public page defaults to off on a newly created record,
   asserted on the stored state rather than the toggle's rendering.
-- AC (mechanical): no surface in this task exposes a read event or any value
+2. **Nothing here surfaces a read event.** (mechanical) no surface in this task exposes a read event or any value
   derived from one.
-- AC (mechanical): a revoked grant stops resolving immediately, proven by
+3. **Revoking a grant stops it resolving from that moment.** (mechanical) a revoked grant stops resolving immediately, proven by
   attempting a read with the recipient's credential after revocation, and the
   grant remains listed as having existed.
-- AC (mechanical): grant, revoke and send each complete on a 360px viewport
+4. **Grant, revoke and send each finish on a small phone over a slow link.** (mechanical) grant, revoke and send each complete on a 360px viewport
   over a throttled connection, driven end to end.
-- AC (adjudicated): no surface offers a partial grant or implies one is
+5. **Nothing offers a partial grant or implies one is possible.** (adjudicated) no surface offers a partial grant or implies one is
   possible, because a selection is itself a claim.
 
 ## Outside check

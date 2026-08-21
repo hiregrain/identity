@@ -1,10 +1,10 @@
 ---
-id: worker-surface/05
+id: worker-identity-surface/01
 type: task
-layer: worker-surface
-satisfies: [1, 5, 6, 7, 8]
+layer: worker-identity-surface
+satisfies: [1, 2, 3, 4, 5, 6, 7]
 status: draft
-depends_on: [worker-surface/01]
+depends_on: []
 binds:
   - decisions/LOG.md#010
   - decisions/LOG.md#027
@@ -44,16 +44,16 @@ Surfaces implemented: F1, F2, F3, F4, F5, F6, F7, I6.
 
 ## Acceptance
 
-- AC (mechanical): no packet or party-facing payload produced anywhere in
+1. **The assurance ladder never reaches a party.** (mechanical) no packet or party-facing payload produced anywhere in
   this flow contains an assurance tier, a verification chip, or any boolean
   derived from one. Asserted over the serialised payload, not the UI.
-- AC (mechanical): no surface renders the string "verified" applied to a
+2. **No surface calls a person verified.** (mechanical) no surface renders the string "verified" applied to a
   person, asserted over the rendered text of every surface in this task.
-- AC (mechanical): declining liveness leaves every pre-existing fact on the
+3. **Declining liveness costs nothing already on the record.** (mechanical) declining liveness leaves every pre-existing fact on the
   record unchanged, proven by comparing the record before and after.
-- AC (mechanical): no document image is written to any store the ledger can
+4. **No document image reaches a store this layer can read.** (mechanical) no document image is written to any store the ledger can
   read, asserted after a full capture cycle.
-- AC (adjudicated): the capture screen names the vendor before the handoff
+5. **The vendor is named before its screen opens, not after.** (adjudicated) the capture screen names the vendor before the handoff
   rather than after, and does not depict a viewfinder the integration does not
   provide.
 

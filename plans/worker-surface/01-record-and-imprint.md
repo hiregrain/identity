@@ -2,7 +2,7 @@
 id: worker-surface/01
 type: task
 layer: worker-surface
-satisfies: [1, 2, 6, 7, 8]
+satisfies: [1, 2, 4, 6, 7, 8]
 status: draft
 depends_on: []
 binds:
@@ -14,6 +14,8 @@ binds:
   - decisions/LOG.md#050
   - decisions/LOG.md#054
   - decisions/LOG.md#055
+  - decisions/LOG.md#076
+  - decisions/LOG.md#079
   - design/12-platform-seam.md
   - design/13-platform-screens
 evidence: []
@@ -52,21 +54,29 @@ Surfaces implemented: B1, B3, B4.
 
 ## Acceptance
 
-- AC (mechanical): rendering the demo record produces no element whose text
+1. **A party is never named twice on one surface.** (mechanical) rendering the demo record produces no element whose text
   content repeats a party name already rendered elsewhere on the same surface.
   The duplication this prevents is the defect that produced this scope.
-- AC (mechanical): every provenance class renders a distinct mark, asserted by
+2. **The five provenance marks are tellable apart in greyscale.** (mechanical) every provenance class renders a distinct mark, asserted by
   comparing the rendered geometry of all five, and no class is distinguished by
   colour alone. Greyscale conversion leaves all five distinguishable.
-- AC (mechanical): no lobe level, rung, ordinal or comparison appears in any
+3. **No chapter renders a level, a rung or a comparison.** (mechanical) no lobe level, rung, ordinal or comparison appears in any
   rendered output for any chapter, asserted by a search over the render tree
   for the measure fields.
-- AC (mechanical): a pending row's layout rectangle sits 2px above a verified
+4. **An unattested row sits proud of an attested one.** (mechanical) a pending row's layout rectangle sits 2px above a verified
   row's on the same baseline, read from the layout tree.
-- AC (adjudicated): the record surface claims nothing the ledger does not
+5. **The record claims nothing the ledger does not carry.** (adjudicated) the record surface claims nothing the ledger does not
   carry. Given the criterion and the diff alone, a verifier finds no text
   asserting a person is verified, no count of chapters nobody has asked about,
   and no collapse of a graded fact into a yes.
+
+6. **The record paints fast on a cheap phone, and the rows never wait for the figure.** (mechanical) the record's first paint, including the figure, completes
+  within budget on a device at or below the Android Go class (2 GB RAM):
+  2.5 s cold, 1 s warm. **The figure never blocks the rows from painting**,
+  proven by asserting the rows are present in a frame before the figure is.
+  The figure is computed on the device and never server-rendered (037), so
+  nothing else bounds this cost. Budgets are provisional until first
+  measurement; the progressive-paint rule is not.
 
 ## Outside check
 
