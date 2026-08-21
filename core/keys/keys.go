@@ -5,13 +5,20 @@
 // code may know. Observability, audit records, and incident response
 // legitimately need to (decision 017), which is why Name exists.
 //
-// A provider manages one wrapping key per scope. The scope is the
+// A provider manages one key per scope. Almost every scope is the
 // person's ledger id: per-person wrapping keys are what make destroy a
 // crypto-shred (foundation/05) rather than a bookkeeping flag. A
 // destroyed scope is destroyed forever. Wrap and Unwrap against it fail
 // from then on, and no call re-creates it. That matches decision 014's
 // never-reissue rule: a person id, once tombstoned, never carries key
 // material again.
+//
+// ScopeChannelLookup is the one scope that is not a person (decision
+// 089). It keys the contact-channel lookup index, so it is
+// population-wide by construction: a per-person key cannot answer "which
+// person holds this address" for a person nobody has named yet. Mac is
+// the only verb it takes, and the cost of the scope existing is recorded
+// with the ruling that created it, not softened here.
 //
 // The conformance suite (core/keys/conformance) states this contract as
 // executable checks. Both in-repo providers pass it in CI; the real KMS
@@ -47,6 +54,15 @@ type Provider interface {
 	// destroying a destroyed or never-seen scope succeeds and changes
 	// nothing.
 	Destroy(ctx context.Context, scope string) error
+
+	// Mac returns a deterministic message authentication code over
+	// message under the scope's key, creating the key if the scope has
+	// never been seen. The same scope and message always return the same
+	// code, which is what makes a keyed lookup index possible; the key
+	// never leaves the provider, which is what decision 020 requires of
+	// a keyed hash and decision 089 carries over to the channel index.
+	// Under a destroyed scope it fails with ErrScopeDestroyed.
+	Mac(ctx context.Context, scope string, message []byte) ([]byte, error)
 }
 
 // Errors a provider reports. Messages carry the scope and never any key
@@ -61,6 +77,20 @@ const (
 	NameSoftware = "software"
 	NameStubKMS  = "stub-kms"
 )
+
+// ScopeChannelLookup is the population-wide scope behind the contact
+// channel lookup index (decision 089). It is deliberately not a uuid:
+// every person scope in this repo is a lowercase uuid, checked at
+// core/envelope's door, so no deletion closure can name this scope and
+// no destroy path can reach it. That is the whole guard, and it is
+// stated here rather than enforced by a special case inside Destroy,
+// which would make the destroy contract read two ways.
+//
+// The index this key produces links every account that ever held one
+// address, across the whole population. Decision 089 records that cost
+// and bounds the use to login (person-identity/02) and duplicate
+// detection (person-identity/05). A third use is a new decision.
+const ScopeChannelLookup = "population/channel-lookup"
 
 // FromConfig returns the provider a configuration value names. This is
 // the one place a provider name is interpreted, the config seam of

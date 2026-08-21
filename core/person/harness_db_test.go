@@ -70,5 +70,5 @@ func newService(t *testing.T) (*person.Service, *envelope.Envelope) {
 	}
 	env := envelope.New(
 		transport.EnvelopeQuerier{Plane: "payload", Role: "identity_app"}, p)
-	return person.New(env), env
+	return person.New(env, person.NewChannelIndex(p)), env
 }

@@ -47,6 +47,22 @@ func (s *Software) Unwrap(_ context.Context, scope string, wrapped []byte) ([]by
 	return gcmOpen(kek, scope, wrapped)
 }
 
+// Mac implements Provider.
+//
+// The software provider holds every key in memory for the life of the
+// process (decision 011), so a restart forgets the channel-index key and
+// the codes it produced stop matching the stored index. That is the
+// ruled behaviour of this provider rather than a defect in the index:
+// local and CI runs create their index and read it inside one process,
+// and production runs on the KMS provider, whose keys are durable.
+func (s *Software) Mac(_ context.Context, scope string, message []byte) ([]byte, error) {
+	kek, err := s.scopeKEK(scope, true)
+	if err != nil {
+		return nil, err
+	}
+	return scopeMac(kek, scope, message), nil
+}
+
 // Destroy implements Provider. The scope's key material is zeroed and
 // dropped, and the scope is marked destroyed forever.
 func (s *Software) Destroy(_ context.Context, scope string) error {

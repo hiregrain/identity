@@ -6,6 +6,69 @@
 // when the row shapes coincide.
 export declare const payloadPlane: unique symbol;
 
+/** One row of payload.auth_code_attempt. */
+export interface AuthCodeAttemptRow {
+  readonly [payloadPlane]: "payload";
+  attempt_id: string;
+  challenge_id: string;
+  outcome: string;
+  recorded_at: string;
+  residency_region: string;
+}
+
+/** One row of payload.auth_code_challenge. */
+export interface AuthCodeChallengeRow {
+  readonly [payloadPlane]: "payload";
+  challenge_id: string;
+  person_id: string;
+  code_commitment: Uint8Array;
+  issued_at: string;
+  expires_at: string;
+  residency_region: string;
+}
+
+/** One row of payload.auth_credential. */
+export interface AuthCredentialRow {
+  readonly [payloadPlane]: "payload";
+  credential_id: string;
+  person_id: string;
+  credential_ciphertext: Uint8Array;
+  label_ciphertext: Uint8Array | null;
+  enrolled_at: string;
+  residency_region: string;
+}
+
+/** One row of payload.auth_event. */
+export interface AuthEventRow {
+  readonly [payloadPlane]: "payload";
+  event_id: string;
+  person_id: string;
+  method: string;
+  kind: string;
+  recorded_at: string;
+  residency_region: string;
+}
+
+/** One row of payload.auth_session. */
+export interface AuthSessionRow {
+  readonly [payloadPlane]: "payload";
+  session_id: string;
+  person_id: string;
+  token_commitment: Uint8Array;
+  method: string;
+  issued_at: string;
+  expires_at: string;
+  residency_region: string;
+}
+
+/** One row of payload.auth_session_revocation. */
+export interface AuthSessionRevocationRow {
+  readonly [payloadPlane]: "payload";
+  session_id: string;
+  recorded_at: string;
+  residency_region: string;
+}
+
 /** One row of payload.database_residency. */
 export interface DatabaseResidencyRow {
   readonly [payloadPlane]: "payload";
@@ -39,6 +102,7 @@ export interface PersonContactChannelRow {
   velocity_threshold: number;
   assurance: string;
   residency_region: string;
+  address_lookup: Uint8Array;
 }
 
 /** One row of payload.person_record. */

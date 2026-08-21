@@ -8,6 +8,63 @@ package payload
 
 import "time"
 
+// AuthCodeAttemptRow is one row of payload.auth_code_attempt.
+type AuthCodeAttemptRow struct {
+	AttemptId       string
+	ChallengeId     string
+	Outcome         string
+	RecordedAt      time.Time
+	ResidencyRegion string
+}
+
+// AuthCodeChallengeRow is one row of payload.auth_code_challenge.
+type AuthCodeChallengeRow struct {
+	ChallengeId     string
+	PersonId        string
+	CodeCommitment  []byte
+	IssuedAt        time.Time
+	ExpiresAt       time.Time
+	ResidencyRegion string
+}
+
+// AuthCredentialRow is one row of payload.auth_credential.
+type AuthCredentialRow struct {
+	CredentialId         string
+	PersonId             string
+	CredentialCiphertext []byte
+	LabelCiphertext      *[]byte
+	EnrolledAt           time.Time
+	ResidencyRegion      string
+}
+
+// AuthEventRow is one row of payload.auth_event.
+type AuthEventRow struct {
+	EventId         string
+	PersonId        string
+	Method          string
+	Kind            string
+	RecordedAt      time.Time
+	ResidencyRegion string
+}
+
+// AuthSessionRow is one row of payload.auth_session.
+type AuthSessionRow struct {
+	SessionId       string
+	PersonId        string
+	TokenCommitment []byte
+	Method          string
+	IssuedAt        time.Time
+	ExpiresAt       time.Time
+	ResidencyRegion string
+}
+
+// AuthSessionRevocationRow is one row of payload.auth_session_revocation.
+type AuthSessionRevocationRow struct {
+	SessionId       string
+	RecordedAt      time.Time
+	ResidencyRegion string
+}
+
 // DatabaseResidencyRow is one row of payload.database_residency.
 type DatabaseResidencyRow struct {
 	OneRow          bool
@@ -38,6 +95,7 @@ type PersonContactChannelRow struct {
 	VelocityThreshold int32
 	Assurance         string
 	ResidencyRegion   string
+	AddressLookup     []byte
 }
 
 // PersonRecordRow is one row of payload.person_record.

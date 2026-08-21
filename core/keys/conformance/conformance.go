@@ -19,6 +19,12 @@
 //  7. Destroy is idempotent, including on a never-seen scope.
 //  8. Other scopes survive a destroy untouched.
 //  9. No provider error message carries DEK or plaintext material.
+//  10. Mac is deterministic: one scope and one message always give one
+//     code. A lookup index is unusable without this.
+//  11. Mac is scope-bound and message-bound: changing either changes the
+//     code.
+//  12. A code is not the message, and does not contain it.
+//  13. Mac fails for a destroyed scope, like every other verb.
 package conformance
 
 import (
@@ -83,6 +89,39 @@ func Run(t *testing.T, factory func() keys.Provider) {
 		assertNoMaterial(t, err, dek, got)
 	}
 
+	// 10, 11, 12. The MAC contract the channel lookup index rests on
+	// (decision 089). Run under the subject scope, so the destroy below
+	// covers Mac as well.
+	message := []byte("CONFORMANCE-MESSAGE-MARKER-worker@example.test")
+	code, err := p.Mac(ctx, subject, message)
+	if err != nil {
+		t.Fatalf("Mac: %v", err)
+	}
+	again, err := p.Mac(ctx, subject, message)
+	if err != nil {
+		t.Fatalf("second Mac of the same message: %v", err)
+	}
+	if !bytes.Equal(code, again) {
+		t.Fatal("Mac is not deterministic; a lookup index cannot be built on it")
+	}
+	otherScope, err := p.Mac(ctx, bystander, message)
+	if err != nil {
+		t.Fatalf("Mac(bystander): %v", err)
+	}
+	if bytes.Equal(code, otherScope) {
+		t.Fatal("Mac is not scope-bound; one scope's codes are readable under another")
+	}
+	otherMessage, err := p.Mac(ctx, subject, append(append([]byte{}, message...), '2'))
+	if err != nil {
+		t.Fatalf("Mac of a second message: %v", err)
+	}
+	if bytes.Equal(code, otherMessage) {
+		t.Fatal("Mac is not message-bound; two addresses collide by construction")
+	}
+	if bytes.Contains(code, message) {
+		t.Fatal("the code carries the message it authenticates")
+	}
+
 	// 5+6. Destroy: unwrap and wrap both fail for the scope afterward.
 	if err := p.Destroy(ctx, subject); err != nil {
 		t.Fatalf("Destroy: %v", err)
@@ -97,6 +136,15 @@ func Run(t *testing.T, factory func() keys.Provider) {
 	}
 	if _, err := p.Wrap(ctx, subject, dek); !errors.Is(err, keys.ErrScopeDestroyed) {
 		t.Fatalf("Wrap after Destroy: got %v, want ErrScopeDestroyed, since a destroyed scope never carries key material again", err)
+	}
+
+	// 13. Mac fails for the destroyed scope too. Without this it would be
+	// the one verb that quietly recreates key material for an id the
+	// ledger has promised never to key again.
+	if got, err := p.Mac(ctx, subject, message); !errors.Is(err, keys.ErrScopeDestroyed) {
+		t.Fatalf("Mac after Destroy: got %v, want ErrScopeDestroyed", err)
+	} else {
+		assertNoMaterial(t, err, dek, got)
 	}
 
 	// 7. Idempotent, including a scope the provider has never seen.
