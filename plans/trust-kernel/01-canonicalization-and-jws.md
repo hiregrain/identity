@@ -7,8 +7,9 @@ status: in_progress
 depends_on: [foundation/01, foundation/02]
 binds: [contract/CONTRACT.md, decisions/LOG.md#012, decisions/LOG.md#019]
 evidence:
-  - "test:make check green at 3eef086f0f2b41402cc7cffc73dd9373f4cb67b2; make check-red red paths 15 to 17"
-  - "diff:PR #15 @ 3eef086f0f2b41402cc7cffc73dd9373f4cb67b2"
+  - "test:make check green at 2681b4f45eff733df341580c310f016b822fab59; make check-red red paths 15 to 19"
+  - "log:log/2026-08-21-trust-kernel-01-verification.md"
+  - "diff:PR #15 @ 2681b4f45eff733df341580c310f016b822fab59"
 verified_by: null
 ---
 
