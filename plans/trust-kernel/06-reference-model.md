@@ -10,7 +10,7 @@ binds: [contract/CONTRACT.md, decisions/LOG.md#019]
 evidence:
   - "test:make reference-test"
   - "test:make differential-red"
-  - "diff:PR #12 @ 7eeb746"
+  - "diff:PR #12 @ 274643c"
 verified_by: null
 ---
 
@@ -67,12 +67,17 @@ number-formatting bug in each implementation in turn to confirm detection.
   `reference/harness/mutant.ts` in turn and fails if the harness misses
   one, then requires an unplanted control run to be green. Wired into
   `make check-red` as red path 15.
-- `diff:PR #12 @ 7eeb746`.
+- `diff:PR #12 @ 274643c`.
+
+The third criterion is discharged: the four ambiguities this reading
+surfaced are ruled in decision 082 and written into
+`contract/CONTRACT.md`. Three ratified the readings this model had taken;
+A3 superseded its preserve-and-escape reading with refusal, and the model
+now refuses. Both superseded readings are kept as mutants, so the ruling
+leaves a test behind rather than a sentence.
 
 The two mechanical criteria compare **two** implementations, and only the
-reference exists at this branch's base: `core/kernel/` is unwritten and
-`trust-kernel/01` is `in_progress`. `make differential` is defined,
-takes `KERNEL_ADAPTER`, and is deliberately outside `check` until there
-is a kernel to differ from. The kernel side of both criteria, and the
-four ambiguities recorded in `reference/README.md`, are open raises; the
-task stays `in_progress`.
+reference is on `main`: the kernel adapter is `core/cmd/kernel-adapter`
+in `trust-kernel/01` (PR #15, unmerged). `make differential` is defined,
+takes `KERNEL_ADAPTER`, and is deliberately outside `check` until that
+merge. That is the one open raise; the task stays `in_progress`.
