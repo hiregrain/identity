@@ -4702,3 +4702,29 @@ holds six coordinates to a vertex's two. That is bandwidth on the
 record-fetch path, not render load; whether the wire format stays
 cubic, compresses, or ships polyline-with-render-side-fit is undecided
 and belongs to whichever task first serves the figure over a network.
+
+## 089 — The channel lookup index, and the module's first dependency (2026-08-21)
+
+Two founder rulings on person-identity/02's second raise.
+
+**A keyed lookup index over contact channels exists.** Signup sealed
+every address under the person's own DEK with no lookup column, which
+made finding a person from a typed address impossible and OTP login
+unbuildable; refusing the index would have demoted the code path, which
+decision 013 forbids. The index takes the cryptographic form decision
+020 ruled for safety markers: an HMAC of the canonicalized address
+under a key held in the KMS and never in the database. The key is
+population-wide, which is a new key-management concept: `core/keys`
+gains a non-person scope for it. **The cost is recorded with the
+ruling:** this index links every account that ever held one address,
+across the whole population. It serves login (02) and duplicate
+detection (05) and nothing else; a use beyond those two is a new
+decision, not an extension.
+
+**`go-webauthn` is the module's first third-party dependency,
+version-pinned.** The WebAuthn ceremony parses attacker-supplied CBOR
+and COSE from the enrolling device, and hand-rolled parsing of hostile
+binary formats inside identity crypto is where in-house implementations
+go wrong. The zero-dependency posture was a fact, not a rule; this
+entry is what licenses the exception, and the next dependency needs its
+own entry.
