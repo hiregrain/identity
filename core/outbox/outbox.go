@@ -58,23 +58,43 @@ func crash(configured, point string) {
 	os.Exit(3)
 }
 
+// InsertStatement renders the one statement that records an outbox
+// entry on the spine. Exported because a caller with its own spine
+// writes composes the entry into ITS transaction rather than calling
+// Enqueue: signup writes the person row, the lifecycle transition and
+// the entries in one commit (core/person). Enqueue runs the same
+// statement, from here, so the two paths cannot drift into two
+// statements that only look alike.
+func InsertStatement(entryID string, instruction []byte) (string, error) {
+	if err := validUUID(entryID); err != nil {
+		return "", err
+	}
+	id, err := transport.Literal(transport.String(entryID))
+	if err != nil {
+		return "", err
+	}
+	b64, err := transport.Literal(
+		transport.String(base64.StdEncoding.EncodeToString(instruction)))
+	if err != nil {
+		return "", err
+	}
+	return fmt.Sprintf(
+		"INSERT INTO cross_plane_outbox (entry_id, target_plane, instruction)\n"+
+			"VALUES (%s, 'payload', decode(%s, 'base64'));", id, b64), nil
+}
+
 // Enqueue writes the outbox entry in one spine transaction. The caller
 // composes any accompanying spine writes into the same script when they
 // exist; today the entry is the spine write. With crashPoint set to
 // CrashBeforeSpineCommit the process exits with the transaction open,
 // which must leave nothing on either plane.
 func Enqueue(entryID string, instruction []byte, crashPoint string) error {
-	if err := validUUID(entryID); err != nil {
+	statement, err := InsertStatement(entryID, instruction)
+	if err != nil {
 		return err
 	}
-	b64 := base64.StdEncoding.EncodeToString(instruction)
 	return transport.Tx("spine", "identity_app", func(tx *transport.Transaction) error {
-		if err := tx.Exec(
-			`INSERT INTO cross_plane_outbox (entry_id, target_plane, instruction)
-			 VALUES ($1, 'payload', decode($2, 'base64'));`,
-			transport.String(entryID), transport.String(b64)); err != nil {
-			return err
-		}
+		tx.ExecLiteral(statement)
 		tx.CrashPoint(crashPoint, CrashBeforeSpineCommit)
 		return nil
 	})

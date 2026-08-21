@@ -24,6 +24,32 @@ export interface DekRegistryRow {
   residency_region: string;
 }
 
+/** One row of payload.person_contact_channel. */
+export interface PersonContactChannelRow {
+  readonly [payloadPlane]: "payload";
+  outbox_entry_id: string;
+  person_id: string;
+  channel_kind: string;
+  address_ciphertext: Uint8Array;
+  verified_at: string;
+  line_type: string;
+  line_country: string | null;
+  carrier_reputation: string;
+  velocity_observed: number;
+  velocity_threshold: number;
+  assurance: string;
+  residency_region: string;
+}
+
+/** One row of payload.person_record. */
+export interface PersonRecordRow {
+  readonly [payloadPlane]: "payload";
+  outbox_entry_id: string;
+  person_id: string;
+  display_name_ciphertext: Uint8Array | null;
+  residency_region: string;
+}
+
 /** One row of payload.purge_audit. */
 export interface PurgeAuditRow {
   readonly [payloadPlane]: "payload";

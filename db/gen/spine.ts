@@ -33,6 +33,21 @@ export interface DeletionJournalRow {
   recorded_at: string;
 }
 
+/** One row of spine.person. */
+export interface PersonRow {
+  readonly [spinePlane]: "spine";
+  person_id: string;
+  created_at: string;
+}
+
+/** One row of spine.person_lifecycle_transition. */
+export interface PersonLifecycleTransitionRow {
+  readonly [spinePlane]: "spine";
+  person_id: string;
+  state: string;
+  recorded_at: string;
+}
+
 /** One row of spine.schema_migrations. */
 export interface SchemaMigrationsRow {
   readonly [spinePlane]: "spine";

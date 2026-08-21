@@ -51,6 +51,7 @@ func TestParseRejects(t *testing.T) {
 		"bad column":       `{"table":"t","row":{"a b":1}}`,
 		"empty row":        `{"table":"t","row":{}}`,
 		"reserved column":  `{"table":"t","row":{"outbox_entry_id":"x"}}`,
+		"chosen residency": `{"table":"t","row":{"residency_region":"zz"}}`,
 		"not JSON":         `nope`,
 		"uppercase table":  `{"table":"Widgets","row":{"a":1}}`,
 		"quoted injection": `{"table":"t\"","row":{"a":1}}`,
@@ -69,6 +70,25 @@ func TestApplySQLRejectsNestedValues(t *testing.T) {
 	}
 	if _, err := in.ApplySQL(entryID); err == nil {
 		t.Fatal("nested object rendered as a literal")
+	}
+}
+
+// The entry statement Enqueue runs and the one a caller composes into
+// its own spine transaction (core/person's signup) are one builder's
+// output, whole. Asserted here in full, because a caller checking only
+// the leading phrase would not notice the two drifting apart.
+func TestInsertStatementIsTheWholeEntryStatement(t *testing.T) {
+	statement, err := InsertStatement(entryID, []byte(`{"table":"t","row":{"a":1}}`))
+	if err != nil {
+		t.Fatalf("InsertStatement: %v", err)
+	}
+	want := "INSERT INTO cross_plane_outbox (entry_id, target_plane, instruction)\n" +
+		"VALUES ('" + entryID + "', 'payload', decode('eyJ0YWJsZSI6InQiLCJyb3ciOnsiYSI6MX19', 'base64'));"
+	if statement != want {
+		t.Fatalf("entry statement:\n got  %q\n want %q", statement, want)
+	}
+	if _, err := InsertStatement("not-a-uuid", nil); err == nil {
+		t.Fatal("InsertStatement accepted an entry id that is not a uuid")
 	}
 }
 

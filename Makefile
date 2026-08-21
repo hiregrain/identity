@@ -12,9 +12,9 @@ PSQL_PAYLOAD := $(COMPOSE) exec -T payload psql -v ON_ERROR_STOP=1 -U identity -
 DUMP_SPINE := $(COMPOSE) exec -T spine pg_dump --schema-only --restrict-key=dump -U identity spine
 DUMP_PAYLOAD := $(COMPOSE) exec -T payload pg_dump --schema-only --restrict-key=dump -U identity payload
 
-.PHONY: check check-red check-red-db metadata install lint fmt-check go-check ts-check db-up db-reset migrate migrate-verify typegen typegen-check append-only spine-schema payload-residency scored-columns two-plane-split envelope-test cross-plane-constructs cross-plane-outbox deletion-test db-down
+.PHONY: check check-red check-red-db metadata install lint fmt-check go-check ts-check db-up db-reset migrate migrate-verify typegen typegen-check append-only spine-schema payload-residency scored-columns two-plane-split envelope-test cross-plane-constructs cross-plane-outbox person-test deletion-test db-down
 
-check: metadata install lint go-check db-up migrate-verify typegen-check append-only spine-schema payload-residency scored-columns two-plane-split envelope-test cross-plane-constructs cross-plane-outbox deletion-test ts-check
+check: metadata install lint go-check db-up migrate-verify typegen-check append-only spine-schema payload-residency scored-columns two-plane-split envelope-test cross-plane-constructs cross-plane-outbox person-test deletion-test ts-check
 	$(COMPOSE) down
 	@echo "check: green"
 
@@ -144,6 +144,18 @@ cross-plane-constructs:
 # it needs Go as well as both migrated planes.
 cross-plane-outbox:
 	node test/cross-plane-outbox.test.mjs
+
+# The signup and id-issuance acceptance suite (person-identity/01):
+# signup driven end to end across both planes, the spine transaction that
+# issues an id, the outbox worker that carries the payload half, and the
+# reuse and assurance probes. Build tag db like the envelope suite;
+# -count=1 because the databases are state the test cache cannot see.
+# One provider run: nothing this suite proves depends on which key
+# provider seals the content, and the swap is proven both ways by
+# `envelope-test`. Runs before deletion-test, which recreates the payload
+# container mid-run.
+person-test:
+	cd core && GRAIN_KEY_PROVIDER=software go test -tags db -count=1 ./person/...
 
 # The deletion-mechanics acceptance suite (foundation/08): a real
 # pg_dump backup taken pre-deletion, restored (db/backup.mjs and
