@@ -3,7 +3,7 @@ id: app-shell/00
 type: task
 layer: app-shell
 satisfies: [7]
-status: ready
+status: in_progress
 depends_on: []
 binds:
   - decisions/LOG.md#040
