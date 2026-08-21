@@ -159,7 +159,12 @@ type Vault interface {
 // message and returns. Blocking on a mail or SMS provider here would
 // make the request endpoint's timing a function of whether the address
 // resolved to a person, which is the leak the whole path is arranged to
-// avoid.
+// avoid. Concretely, a blocking implementer breaks criterion 2: it is
+// reached only on the resolved branch (RequestCode calls Deliver only
+// when a code was created), so its latency lands on exactly one side of
+// the enumeration comparison and CodeUniformFloor cannot hide it. This
+// obligation is on the implementer and cannot be enforced from here,
+// which is why it is stated on the interface.
 type Deliverer interface {
 	Deliver(ctx context.Context, kind person.ChannelKind, address, code string) error
 }

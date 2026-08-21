@@ -375,6 +375,49 @@ SELECT coalesce(string_agg(encode(credential_ciphertext, 'escape'), ' '), '')
 	}
 }
 
+// An enrollment ceremony excludes the credentials the person already
+// holds, so one authenticator cannot enroll twice and appear in the
+// inventory as two devices.
+//
+// The exclusion is asserted on the ceremony options rather than on a
+// rejected second registration: the virtual authenticator here crafts
+// response bytes directly and does not consult the exclude list a real
+// platform authenticator would, so the check is that the list the
+// browser receives is populated and grows with each enrolled credential.
+func TestAuthEnrollmentExcludesExistingCredentials(t *testing.T) {
+	ctx := context.Background()
+	w := newWorld(t)
+	personID := w.signup(t, address(t))
+
+	// A first enrollment has nothing to exclude yet.
+	first, _, err := w.auth.BeginEnrollment(ctx, personID)
+	if err != nil {
+		t.Fatalf("BeginEnrollment: %v", err)
+	}
+	if n := len(first.Response.CredentialExcludeList); n != 0 {
+		t.Fatalf("first enrollment excludes %d credential(s), want none", n)
+	}
+
+	// After one device is enrolled, the next ceremony excludes it; after
+	// two, it excludes both.
+	w.enroll(t, personID, "the phone")
+	second, _, err := w.auth.BeginEnrollment(ctx, personID)
+	if err != nil {
+		t.Fatalf("BeginEnrollment: %v", err)
+	}
+	if n := len(second.Response.CredentialExcludeList); n != 1 {
+		t.Fatalf("second enrollment excludes %d credential(s), want the one enrolled", n)
+	}
+	w.enroll(t, personID, "the laptop")
+	third, _, err := w.auth.BeginEnrollment(ctx, personID)
+	if err != nil {
+		t.Fatalf("BeginEnrollment: %v", err)
+	}
+	if n := len(third.Response.CredentialExcludeList); n != 2 {
+		t.Fatalf("third enrollment excludes %d credential(s), want the two enrolled", n)
+	}
+}
+
 // Rate limiting and lockout on the code paths.
 func TestAuthCodeRateLimitAndLockout(t *testing.T) {
 	ctx := context.Background()

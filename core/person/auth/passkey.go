@@ -78,6 +78,13 @@ func (u ledgerUser) WebAuthnName() string                       { return u.id }
 func (u ledgerUser) WebAuthnDisplayName() string                { return u.id }
 func (u ledgerUser) WebAuthnCredentials() []webauthn.Credential { return u.credentials }
 
+// descriptors names the person's already-enrolled credentials, so an
+// enrollment ceremony can exclude them. The library's own helper over a
+// Credentials slice.
+func (u ledgerUser) descriptors() []protocol.CredentialDescriptor {
+	return webauthn.Credentials(u.credentials).CredentialDescriptors()
+}
+
 // BeginEnrollment starts a registration ceremony for a person who is
 // already signed in. The returned session data is the challenge and
 // belongs to the caller's own request state; it never touches the
@@ -92,7 +99,11 @@ func (s *Service) BeginEnrollment(ctx context.Context, personID string) (*protoc
 	if err != nil {
 		return nil, nil, err
 	}
-	return rp.BeginRegistration(user)
+	// Exclude the credentials the person already holds, so one
+	// authenticator cannot enroll twice on the same account and leave a
+	// duplicate row the worker's inventory then shows as two devices.
+	// s.user already loaded them, so this costs nothing further.
+	return rp.BeginRegistration(user, webauthn.WithExclusions(user.descriptors()))
 }
 
 // FinishEnrollment verifies the authenticator's response and stores the
@@ -172,6 +183,20 @@ SELECT credential_id FROM enrolled`,
 // BeginPasskeyLogin starts an assertion ceremony for a person the caller
 // has already resolved, by discoverable credential or by the address
 // lookup the code path uses.
+//
+// Caller obligation, the same shape as Sessions/Credentials/Events/Revoke
+// carry: when the personID was resolved from an address the visitor typed
+// rather than from a discoverable credential, the caller MUST mask
+// ErrNoCredential and return the identical response it returns for a
+// person who does have a passkey. This method distinguishes the two
+// (a challenge versus ErrNoCredential), which is correct for a
+// discoverable login where the authenticator already proved possession,
+// and an enumeration oracle on a typed address where it did not: without
+// the mask a serving layer would answer "this address has a passkey" to
+// anyone. The code path's own endpoints are uniform in wording and time
+// by construction (code.go); this one is uniform only if its caller makes
+// it so, which is why the obligation is stated rather than enforced here,
+// the resolution having happened before this call.
 func (s *Service) BeginPasskeyLogin(ctx context.Context, personID string) (*protocol.CredentialAssertion, *webauthn.SessionData, error) {
 	rp, err := relyingParty()
 	if err != nil {
@@ -207,6 +232,17 @@ func (s *Service) FinishPasskeyLogin(
 	if err != nil {
 		return "", err
 	}
+	// ValidateLogin returns the updated *webauthn.Credential, carrying the
+	// authenticator's new signature counter and its CloneWarning. Both are
+	// intentionally not persisted: the worker population this serves signs
+	// in with synced platform passkeys (iCloud Keychain, Google Password
+	// Manager), which report a signCount of 0 on every assertion, so a
+	// stored counter would never advance and a clone check against it would
+	// only produce false alarms. Clone detection is a hardware-security-key
+	// control, and decision 013 forbids requiring that class of device.
+	// This is recorded because every other comparable choice in this file
+	// is (the discarded discoverable-login user handle, the unchecked
+	// AAGUID); a silent discard here would be the one that is not.
 	if _, err := rp.ValidateLogin(user, session, response); err != nil {
 		return "", fmt.Errorf("auth: assertion rejected: %w", err)
 	}
