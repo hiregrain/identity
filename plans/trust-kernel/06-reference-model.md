@@ -11,10 +11,9 @@ evidence:
   - "test:make differential"
   - "test:make differential-red"
   - "test:make reference-test"
-  - "review:log/2026-08-21-trust-kernel-06-verification.md"
-  - "diff:PR #12 @ dc58543"
-  - "diff:PR #12 @ 0a82956"
-verified_by: clean-context-verifier@2026-08-21
+  - "review:log/2026-08-21-trust-kernel-06-reverification.md"
+  - "diff:PR #12 @ 97871a1"
+verified_by: clean-context-reverifier@2026-08-21
 ---
 
 # Independent reference model and differential harness
