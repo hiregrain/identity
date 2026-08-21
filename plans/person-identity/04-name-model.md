@@ -3,7 +3,7 @@ id: person-identity/04
 type: task
 layer: person-identity
 satisfies: []
-status: done
+status: in_progress
 depends_on: [person-identity/01]
 migrations: [0011-names]
 binds: [decisions/LOG.md#013, decisions/LOG.md#020, research/11-signup-identifiers-and-names.md]
@@ -17,7 +17,10 @@ evidence:
   - "diff:PR #16 @ ae3abf345a2f18c416e1a44c173f2253434211bd (end-dating derived at read time, supersedes column dropped)"
   - "test:make check @ ae3abf3 (green, run under a private compose project with host ports removed)"
   - "review:log/2026-08-21-person-identity-04-verification-3.md (clean-context verification at ae3abf3, pass)"
-verified_by: clean-context-verifier@2026-08-21
+  - "diff:PR #16 @ 40fd466b1308c9e770838449fff016ac59a3c19f (decision 091 window semantics plus four code-review findings)"
+  - "test:make check @ 40fd466 (green, run under a private compose project with host ports removed)"
+  - "review:log/2026-08-21-person-identity-04-verification-4.md (clean-context verification at 40fd466, fail on criterion 3, a superseded row with its own future stated end stays in the employer render)"
+verified_by: null
 ---
 
 # The name model
