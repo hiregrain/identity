@@ -14,7 +14,8 @@ evidence:
     "test:cd core && go test -tags db -count=1 -run TestChainAppendAddsOneRoundTrip ./streams/... -- unchained write 1 round trip; chained into three streams 2; added 1",
     "test:node test/append-only.test.mjs -- the stream_heads exemption is enumerated and the grant set still equals the list",
     "test:make check -- green end to end on the head commit",
-    "diff:PR #20 @ b278006",
+    "test:the ci run on this branch -- every stage green including the per-stream hash chains job",
+    "diff:PR #20 @ 8a6d549",
   ]
 verified_by: null
 ---
