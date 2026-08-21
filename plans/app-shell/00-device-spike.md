@@ -3,7 +3,7 @@ id: app-shell/00
 type: task
 layer: app-shell
 satisfies: [7]
-status: in_progress
+status: done
 depends_on: []
 binds:
   - decisions/LOG.md#040
@@ -11,12 +11,14 @@ binds:
   - design/09-app-framework-evaluation.md
 evidence:
   [
-    "diff:PR #17 @ 661414f",
+    "diff:PR #17 @ 3d55113",
     "test:surfaces/app-shell/test/stack.test.mjs",
     "test:surfaces/app-shell/test/fixture.test.mjs",
     "log:log/2026-08-21-app-shell-00-build-proof.md",
+    "log:design/09-app-framework-evaluation.md#62 @ 301d09a",
+    "review:log/2026-08-21-app-shell-00-verification.md",
   ]
-verified_by: null
+verified_by: verify-app-shell-00@2026-08-21
 ---
 
 # Device spike: does the ratified renderer survive the hardware this is for
@@ -121,11 +123,12 @@ result cannot be produced by reading the code.
   have: a space-free path, a UTF-8 locale, and `babel-preset-expo` declared
   rather than inherited. All three are toolchain defects rather than defects in
   the harness.
-- Criterion 5: **not discharged.** Decision 085 puts the findings in
-  `design/09` §6 as their own `docs(design):` commit on `main`, so they are not
-  in this diff, and recording a spike as run before its Android and handset
-  halves have been run would be a false record.
-- Criterion 6: **not discharged.** It is attested by the founder running the
+- Criterion 5: discharged on `main`, not in this diff, which is what decision
+  085 requires. `design/09` §6.2, commit `301d09a`, `docs(design): spike 1
+  finds the stack builds on both platforms (app-shell/00)`.
+- Criterion 6: **not discharged, deferred by decision 090** until the app is
+  usable, and required before `app-distribution` goes `ready`. It is attested
+  by the founder running the
   build on his own handsets. `surfaces/app-shell/README.md` states what he is
   asked to do, which artifact to install on each handset, and what a clean run
   does and does not prove.
