@@ -19,6 +19,12 @@ promise about intent. This model was written at a commit where
 than merely unread. The dispatch instruction was explicit and the
 verifier checks it against the dispatch record.
 
+The first run of the real pair, once the kernel landed, agreed byte for
+byte on 20108 requests and on four further runs at independent seeds.
+That is worth something only because of the paragraph above; two
+implementations by one author agreeing is not evidence, it is a
+restatement.
+
 The value decays if a later change to this directory is made by reading
 the kernel and matching it. **When the two disagree, the contract
 decides, and the losing side changes.** Copying the kernel's answer into
@@ -35,7 +41,7 @@ kernel to itself.
 | `conformance.test.ts` | The reference against the values the contract states in words |
 | `harness/differential.ts` | Runs N implementations over the corpus plus fresh random input, compares bytes |
 | `harness/generate.ts` | Seeded generator, biased toward the terrain the contract argues about |
-| `harness/mutant.ts` | The reference with one rule deliberately misread, so the harness can be shown to catch it |
+| `harness/mutant.ts` | The reference with one rule deliberately misread, so the harness can be shown to catch it, against either side |
 | `corpus/` | Committed inputs: a divergence found once is a regression test forever |
 
 Scope is canonicalization and the JWS envelope, which is what
@@ -46,10 +52,16 @@ harness.
 ## Running it
 
 ```
+make differential          # the kernel against this model, in `check`
+make differential-red      # every planted bug is caught, on either side
 make reference-test        # the conformance assertions
-make differential-red      # every planted bug is caught
-make differential KERNEL_ADAPTER=./core/cmd/kernel-adapter   # the real run
 ```
+
+`make differential` compares the two over the committed corpus plus
+20000 freshly generated requests, and runs inside `make check`. The seed
+is fresh every run and printed, so a divergence is replayable from the
+failure output. `differential-red` uses a fixed seed instead, because a
+red path that drifts run to run is not a proof.
 
 A divergence prints the request, both outputs as hex and as text, and
 the seed. Re-run with that `--seed` and `--fresh` to reproduce exactly,
