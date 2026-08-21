@@ -1,0 +1,54 @@
+{
+  "pages": [
+    {
+      "id": "page-1",
+      "name": "The seam"
+    },
+    {
+      "id": "page-2",
+      "name": "Open gates"
+    }
+  ],
+  "artboards": [
+    {
+      "file": "Main.dc.html",
+      "title": "The seam",
+      "page": "page-1",
+      "x": 0,
+      "y": 0,
+      "w": 660,
+      "h": 1060
+    },
+    {
+      "file": "Bar.dc.html",
+      "title": "The trailing cluster",
+      "page": "page-2",
+      "x": 0,
+      "y": 0,
+      "w": 500,
+      "h": 1690
+    }
+  ],
+  "annotations": [
+    {
+      "id": "where-the-record-is",
+      "x": 0,
+      "y": -300,
+      "w": 660,
+      "page": "page-1",
+      "text": "The record itself is not here.\n\nIt is a working prototype you open and drive, at its own link, because a canvas artboard is selected rather than operated. Keeping a second copy of the record here would only drift from it.\n\nThis canvas holds the two things that are documents rather than screens: where the seam falls, and the options still open."
+    },
+    {
+      "id": "gate-trailing",
+      "x": 0,
+      "y": -230,
+      "w": 500,
+      "page": "page-2",
+      "text": "Options B and D are closed. Sharing is a mark with no count, and the exposure sentence belongs to the sharing page rather than the foot of the record.\n\nWhat is left is A against C: the two marks split across the edges, or sharing moved to a bottom toolbar."
+    }
+  ],
+  "launch": {
+    "view": "canvas",
+    "page": "page-1"
+  }
+}

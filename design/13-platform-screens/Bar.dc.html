@@ -1,0 +1,461 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap');
+    /* Grain, per DESIGN.md §5 colour, §6 type, §7 spacing/radius/depth */
+    :root{
+      --ink:#1B2A44; --paper:#F8F5EE;
+      /* Ratios are given for BOTH grounds, because the reader surfaces (Grant,
+         Public, PublicReduced) sit on --page and the old single figure was the
+         paper one. --rule was 7E8794: 3.34 on paper, 2.89 on page, so the token
+         whose comment reads "every line that carries meaning" failed 1.4.11 on
+         exactly the surfaces a partner reads. Both tokens are darkened until the
+         worse ground clears with headroom rather than by hundredths. */
+      --secondary:#55606E; /* 5.87:1 paper, 5.09:1 page, text */
+      --rule:#727C8A;      /* 3.88:1 paper, 3.37:1 page, every line that carries meaning */
+      --hairline:#D3D7D6;  /* 1.33:1 paper, 1.16:1 page. Pure separation, never a state, so
+                              contrast is deliberately below 3:1 and it may never carry one. */
+      --page:#E9E5DE;
+
+      /* The spacing scale, which lived only in the review artifact and in
+         DESIGN.md §7, in two versions that disagreed, while the templates used
+         thirteen raw values on neither. checks/design-system.mjs reads this
+         block, so the scale and its check can no longer diverge. */
+      --sp1:2px; --sp2:4px; --sp3:6px; --sp4:8px; --sp5:10px; --sp6:12px;
+      --sp7:14px; --sp8:16px; --sp9:20px; --sp10:24px; --sp11:28px;
+      --sp12:32px; --sp13:40px; --sp14:56px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--page);color:var(--ink);
+         font-family:'Archivo',-apple-system,'Helvetica Neue',sans-serif;
+         -webkit-font-smoothing:antialiased}
+    a{color:var(--ink);text-decoration:underline;text-underline-offset:2px}
+    a:hover{color:var(--ink);text-decoration-thickness:2px}
+    button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;text-align:left}
+    /* §6 uses one family, hierarchy from width, weight and tracking */
+    /* Two registers added because the screens were already asking for them in
+       inline overrides: t-lead at 19 appeared twelve times patching t-sec
+       upward for a statement that opens a screen, and t-head at 25 appeared
+       eleven times patching t-title downward for a pushed screen, where a 28px
+       title next to a 52px header band reads as a second masthead. Adding two
+       registers is a smaller change than thirty-two local patches, and it is
+       the only one a check can hold. */
+    .t-title {font-stretch:125%;font-weight:700;font-size:28px;line-height:1.12;text-wrap:balance}
+    .t-head  {font-stretch:110%;font-weight:700;font-size:25px;line-height:1.16;text-wrap:balance}
+    .t-lead  {font-weight:600;font-size:19px;line-height:1.35;text-wrap:pretty}
+    .t-sec   {font-weight:600;font-size:17px;line-height:1.2;text-wrap:balance}
+    .t-rec   {font-weight:600;font-size:15px;line-height:1.3}
+    .t-body  {font-weight:400;font-size:14px;line-height:1.6}
+    .t-data  {font-weight:500;font-size:13px;line-height:1.35;font-variant-numeric:tabular-nums}
+    .t-meta  {font-weight:400;font-size:12px;line-height:1.4}
+    /* The two uppercase registers, and what each may hold. The old comment said
+       "labels ONLY, never a value, a date, a name or a sentence" and governed
+       both, which made every screen title a violation of its own rule. Split:
+       t-serial names the screen, which is a label for the surface; t-micro
+       labels a field or a group inside one. Neither may carry a value, a date, a
+       name or a sentence, because uppercase with tracking is unreadable at
+       length and meaningless in Devanagari, which is on the roadmap. */
+    .t-micro {font-weight:500;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;line-height:1.3}
+    .t-serial{font-weight:500;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;line-height:1.2}
+    .t-inst  {font-stretch:125%;font-weight:800;font-size:40px;line-height:1;font-variant-numeric:tabular-nums;white-space:nowrap}
+    /* §7 depth presses down. Verified rows have zero press-give, and rigidity is
+       how permanence is expressed. Both halves are load-bearing. */
+    .press{transition:transform 60ms cubic-bezier(0.2,0,0,1)}
+    .press:active{transform:translateY(2px)}
+    .rigid:active{transform:none}
+    /* §8 buttons have no pills, no icons inside. 44px minimum (§12). */
+    .btn-primary{background:var(--ink);color:var(--paper);border-radius:3px;
+                 padding:12px 16px;font-weight:600;font-size:15px;width:100%;
+                 text-align:center;min-height:44px}
+    .btn-secondary{border:1px solid var(--ink);border-radius:3px;padding:12px 16px;
+                   font-weight:600;font-size:15px;width:100%;text-align:center;min-height:44px}
+    .btn-tertiary{font-weight:600;font-size:14px;text-decoration:underline;
+                  text-underline-offset:3px;min-height:44px;padding:12px 8px;display:inline-block}
+    /* a disabled control loses its ink, never its contrast (law 8) */
+    /* A disabled control loses its ink, never its contrast (§7). It also has to
+       lose its resemblance to an ENABLED secondary, which is a hairline box with
+       ink text: the two were separable only by border colour, and an outside
+       reviewer read a disabled primary as a deliberate secondary and concluded
+       the button grammar had no rule. Dashed is the state grammar's own word for
+       not-yet, and it cannot be mistaken for a solid hairline. */
+    .btn-primary[disabled]{background:none;color:var(--ink);
+                           border:1px dashed var(--rule);cursor:default}
+    :focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+    @media (prefers-reduced-motion:reduce){
+      *{animation-duration:1ms !important;transition-duration:1ms !important;
+        animation-delay:0ms !important;transition-delay:0ms !important}
+    }
+
+    /* the plate (§9) marks the RECORD. A settings sheet is not one, so the
+       corners appear on the record surface and nowhere else. */
+    .plate{position:absolute;inset:0;pointer-events:none}
+    .reg{position:absolute;width:11px;height:11px;border:0 solid var(--rule)}
+    .row{display:flex;gap:12px;align-items:flex-start;padding:12px 0;
+         border-bottom:1px solid var(--hairline);width:100%}
+    .row-sel{border-bottom:1.5px solid var(--rule)}
+    .gutter{flex:0 0 26px;padding-top:4px}
+    .sechead{display:flex;justify-content:space-between;align-items:baseline;
+             border-bottom:1px solid var(--ink);padding-bottom:8px;gap:12px}
+    .icon{stroke:var(--ink);stroke-width:1.5;fill:none;stroke-linecap:square}
+    .col-r{text-align:right;white-space:nowrap;padding-top:2px}
+    main::-webkit-scrollbar{width:0}
+
+    /* §9's sine-modulated divider and the rung scale live in the chassis, not in
+       one screen's helmet: both are shared vocabulary, and a class defined in
+       Main only meant every other screen rendered them unstyled. */
+    /* §9's sine-modulated divider carries the figure's own frequency, so it
+       means "this section is about the record the figure draws". It was under
+       every section header on every screen, including settings groups, which is
+       01-banned-patterns test 3: a device applied uniformly is a tell rather
+       than a system. It now appears only on surfaces that show the figure. */
+    .sinerule{margin-top:-2px;line-height:0;opacity:.9}
+    /* No .rung. It drew the seven measures as a graded ladder, and decision 054
+       renders nothing derived from them: a ladder with a mark on it is an
+       ordinal whether or not the number is printed. */
+
+    /* Provenance is carried by the mark, and the sentence it stands for is
+       reachable on hover, tap and keyboard focus (055). The sentence also stays
+       in the DOM as the mark's accessible name, which is the text equivalent
+       §12 requires and the only provenance a crawler can read. One string
+       serves all three. Enforced by reading. */
+    .prov{position:relative;flex:0 0 auto;min-width:44px;min-height:44px;
+          display:inline-flex;align-items:center;justify-content:flex-start;
+          margin-left:-4px;padding-left:4px}
+    /* opacity, never visibility or display: a hidden-by-visibility tip leaves
+       the accessibility tree and the crawler gets nothing, which would defeat
+       the whole point of keeping one string. */
+    .prov .tip{position:absolute;left:0;top:calc(100% - 6px);z-index:6;
+               background:var(--ink);color:var(--paper);padding:8px 12px;
+               width:max-content;max-width:min(260px, 68vw);text-align:left;
+               opacity:0;pointer-events:none;transition:opacity 110ms linear}
+    .prov:hover .tip,.prov:focus-visible .tip{opacity:1;pointer-events:auto}
+    /* 1.4.13 wants the revealed content hoverable. It stays up while the
+       pointer is on it. Enforced by reading. */
+    .prov .tip:hover{opacity:1;pointer-events:auto}
+    @media (prefers-reduced-motion:reduce){ .prov .tip{transition:none} }
+    /* The imprint is capped and centred wherever it appears. A fluid root with an
+       uncapped figure grows until the figure swallows the display, the defect
+       fixed on the record and still live on three other screens. 320 is the size
+       it is drawn and thread-budgeted at (044). */
+    .imprint{display:block;width:100%;max-width:320px;margin-inline:auto}
+    /* An instrument reading: the figure and what it counts. baseline alignment
+       hung the small text off the numeral's foot, which reads as two things that
+       missed each other. The text block is centred against the numeral instead,
+       and the numeral gets its own optical trim, a 40px 800-weight Expanded
+       figure sits high in its line box. */
+    .reading{display:flex;align-items:center;gap:14px}
+    .reading .t-inst{flex:0 0 auto;line-height:.82;position:relative;top:1px}
+    .reading > span:last-child{flex:1;min-width:0}
+    /* A row that goes somewhere says so. Rows that only state a fact carry no
+       chevron, since a fact dressed as a control lies about what can be changed. */
+    .chev{flex:0 0 16px;display:flex;align-items:center;padding-left:4px}
+    /* The bottom of a scroller is where the system's own bar begins. Content that
+       simply stops there reads as cut off, and a large empty band reads as a
+       mistake. `.dissolve` fades the last 28px of the scroll into the paper, so
+       the record ends rather than being truncated, and the home indicator has
+       something to sit against. 28 is the smallest band that reads as intentional
+       at the 16px body size, below that it is a hairline nobody sees. */
+    .dissolve{-webkit-mask-image:linear-gradient(to bottom, #000 calc(100% - 28px), transparent 100%);
+              mask-image:linear-gradient(to bottom, #000 calc(100% - 28px), transparent 100%)}
+    @media (prefers-reduced-transparency:reduce){
+      .dissolve{-webkit-mask-image:none;mask-image:none}
+    }
+
+    /* A pushed screen, which is a shape the app did not have. `design/08` §3:
+       the sheets carry a Close and nothing drew a back affordance, because iOS
+       takes the left edge and Android's gesture nav takes both, so an edge
+       swipe is the platform's and not ours (048). A drawn back control is the
+       only honest answer. */
+    .pushhead{height:52px;display:flex;align-items:center;gap:4px;padding:0 8px 0 4px;
+              border-bottom:1px solid var(--hairline);position:relative;z-index:3;
+              background:var(--paper);flex:0 0 auto}
+    .pushhead .t-serial{flex:1;min-width:0}
+    .iconbtn{width:44px;height:44px;display:flex;align-items:center;justify-content:center;
+             flex:0 0 44px}
+    .iconbtn svg{stroke:var(--ink);stroke-width:1.5;fill:none;stroke-linecap:butt;
+                 stroke-linejoin:miter}
+    /* A fixed action band at the foot of a pushed screen. Sits above the
+       dissolve so a primary control is never faded by it. */
+    .actions{position:absolute;left:0;right:0;bottom:0;padding:16px 20px;
+             background:var(--paper);border-top:1px solid var(--ink);z-index:4}
+
+    /* §12 says loading is the scribing arc, never a spinner, and nothing drew
+       it. One lobe period of the figure's own wave, scribed and released. It
+       carries no percentage, because an arc that pretends to know how long is
+       the same lie as a spinner that pretends to make progress. */
+    .arc{display:block;margin-inline:auto}
+    .arc path{stroke-dasharray:1;stroke-dashoffset:1;
+              animation:arcscribe 1400ms cubic-bezier(0.4,0,0.2,1) infinite}
+    @keyframes arcscribe{
+      0%{stroke-dashoffset:1}
+      55%{stroke-dashoffset:0}
+      100%{stroke-dashoffset:-1}
+    }
+    /* Progress, where the length IS known: a band closing on the figure's
+       radius. §9 specifies it and nothing used it. */
+    .band{height:3px;background:var(--hairline);overflow:hidden}
+    .band i{display:block;height:100%;background:var(--ink);
+            transition:width 320ms cubic-bezier(0.2,0,0,1)}
+    @media (prefers-reduced-motion:reduce){
+      .arc path{animation:none;stroke-dashoffset:0}
+      .band i{transition:none}
+    }
+
+    /* The state grammar as a control, not a platform switch (`design/08` §2).
+       On is ink filled to the right, off is the rule alone: the same
+       ink-versus-rule distinction every other state in the system uses, so
+       nobody has to learn a second vocabulary for a setting. */
+    /* The control is 46x44 so it clears §12's target floor; the track it draws
+       is 26 tall and sits inside that. A 26px-high switch was the shape the
+       platform switches use and it fails 2.5.8 on both of them. */
+    .sw{flex:0 0 auto;width:46px;height:44px;border:0;background:none;padding:0;
+        position:relative}
+    .sw::before{content:'';position:absolute;left:0;right:0;top:9px;height:26px;
+                border:1px solid var(--rule);border-radius:3px;box-sizing:border-box}
+    .sw i{position:absolute;top:13px;left:4px;width:18px;height:18px;
+          background:var(--rule);transition:left 140ms cubic-bezier(0.2,0,0,1),
+          background-color 140ms linear}
+    .sw[aria-checked="true"]::before{border-color:var(--ink)}
+    .sw[aria-checked="true"] i{left:24px;background:var(--ink)}
+    @media (prefers-reduced-motion:reduce){ .sw i{transition:none} }
+
+    /* Nothing in the system acknowledged a completed action. Inline, in ink,
+       under the thing that changed, never a floating toast that steals focus. */
+    .said{display:flex;gap:8px;align-items:flex-start;padding:10px 0 0}
+    .said svg{flex:0 0 16px;margin-top:2px;stroke:var(--ink);stroke-width:1.5;fill:none}
+
+    /* A list that has not arrived yet. Rules at the row rhythm, no shimmer:
+       §5 forbids a moving gradient and the rhythm alone reads as structure. */
+    .skel{border-bottom:1px solid var(--hairline);padding:14px 0}
+    .skel span{display:block;height:9px;background:var(--hairline)}
+    .skel span + span{margin-top:8px;width:58%}
+
+    /* Promoted from three screen helmets, where they had already drifted to two
+       different paddings. A settings-style group, its rows, and the one block
+       in the system that raises its voice. */
+    .grp{padding-top:24px}
+    .srow{display:flex;gap:12px;align-items:baseline;padding:12px 0;
+          border-bottom:1px solid var(--hairline);width:100%;min-height:44px;
+          text-align:left}
+    /* An interactive row and a static one were the same object: label left,
+       value right, hairline under. The only boundary in the system is
+       --hairline, which is deliberately below 3:1 because it may never carry a
+       state, so nothing marked what responded to touch. Every button row now
+       carries the chevron, from the chassis, so no screen can forget it and no
+       static row can borrow it. */
+    button.srow::after{content:'';flex:0 0 7px;height:7px;align-self:center;
+      border-right:1.5px solid var(--rule);border-top:1.5px solid var(--rule);
+      transform:rotate(45deg);margin-left:4px}
+    button.srow.press:active::after{border-color:var(--ink)}
+    button.srow:has(.chev)::after{content:none}
+    .warn{background:var(--ink);color:var(--paper);padding:14px 16px}
+    .warn .t-data{color:var(--paper)}
+
+    /* §8's input: a hairline you type on, focus thickens ink-ward, an error
+       thickens it further and speaks in ink rather than colour (law 8). It
+       existed in ten copies across five divergent variants, which is the defect
+       _chrome.part was written to prevent, committed against the control the
+       app uses most. Reconciled: centre alignment, no padding under the rule
+       (the input's own padding sets the height), .bad for the error, and 16px
+       because anything smaller makes iOS zoom the viewport on focus and the
+       screen never comes back. .lg is the name field, which is the one place a
+       larger value is the point. */
+    .ruled{display:flex;align-items:center;border-bottom:1px solid var(--rule)}
+    .ruled:focus-within{border-bottom:2px solid var(--ink)}
+    .ruled.bad{border-bottom:2.5px solid var(--ink)}
+    .ruled input{border:0;outline:0;background:none;font:inherit;color:var(--ink);
+                 flex:1;min-width:0;padding:12px 0;font-weight:600;font-size:16px;
+                 min-height:44px;box-sizing:border-box}
+    .ruled.lg input{font-size:18px}
+    /* A multi-line field is the same object with room to grow. */
+    .ta{width:100%;min-height:132px;border:0;border-bottom:1px solid var(--rule);
+        background:none;font:inherit;font-size:16px;color:var(--ink);outline:0;
+        padding:12px 0;resize:none}
+    .ta:focus{border-bottom:2px solid var(--ink)}
+
+    /* The reader-facing row. Three screens carried their own copy. */
+    .prow{display:flex;gap:12px;align-items:flex-start;padding:14px 0;
+          border-bottom:1px solid var(--hairline)}
+    /* A key and its value, for a screen that lists raw facts. */
+    .drow{display:flex;gap:14px;align-items:flex-start;padding:12px 0;
+          border-bottom:1px solid var(--hairline)}
+    .dk{flex:0 0 108px;padding-top:2px}
+
+    .crop{width:402px;border-radius:26px 26px 0 0;overflow:hidden;background:var(--paper);
+          position:relative;height:190px;box-shadow:0 0 0 1px var(--hairline)}
+    .sysfont{font-family:-apple-system,'SF Pro Text','Helvetica Neue',sans-serif;
+             -webkit-font-smoothing:antialiased}
+    .island{position:absolute;top:11px;left:50%;transform:translateX(-50%);
+            width:126px;height:37px;border-radius:19px;background:#0C0F14;z-index:8}
+    .stat{position:absolute;top:22px;right:20px;display:flex;align-items:center;gap:6px;z-index:7}
+    .clock{position:absolute;left:0;width:138px;top:20px;text-align:center;z-index:7;
+           font-size:16px;font-weight:600;color:var(--ink);letter-spacing:-0.01em}
+    .bar{position:absolute;top:62px;left:0;right:0;height:44px;z-index:6;
+         display:flex;align-items:center;justify-content:space-between;padding:0 12px}
+    .txtbtn{min-height:44px;display:flex;align-items:center;gap:6px;padding:0 8px}
+    .opt{display:flex;flex-direction:column;gap:10px}
+    .arg{display:flex;gap:14px}
+    .arg > div{flex:1;min-width:0}
+  </style>
+</helmet>
+
+<div style="width:500px;position:relative;background:var(--page);padding:28px 28px 32px">
+
+  <span class="t-serial" style="color:var(--secondary)">The trailing cluster, four ways</span>
+  <p class="t-body" style="margin:8px 0 24px;color:var(--secondary);text-wrap:pretty">Account is who you are and is visited twice a year. Sharing is the one consequential act on this screen. Drawn as two matched 19px glyphs they read as a pair of settings, which is the thing they are least alike in being.</p>
+
+  <div style="display:flex;flex-direction:column;gap:28px">
+
+    <!-- A -->
+    <div class="opt">
+      <div class="crop">
+        <div class="clock sysfont">9:41</div>
+        <div class="stat sysfont"><svg width="18" height="12" viewBox="0 0 18 12" fill="var(--ink)" aria-hidden="true"><rect x="0" y="8" width="3" height="4" rx="1"></rect><rect x="5" y="6" width="3" height="6" rx="1"></rect><rect x="10" y="3" width="3" height="9" rx="1"></rect><rect x="15" y="0" width="3" height="12" rx="1"></rect></svg>
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="var(--ink)" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M1.2 4.1 C4.2 1.4 11.8 1.4 14.8 4.1"></path><path d="M3.9 6.9 C6.1 5.0 9.9 5.0 12.1 6.9"></path><path d="M6.6 9.6 C7.4 8.9 8.6 8.9 9.4 9.6"></path></svg>
+          <svg width="27" height="13" viewBox="0 0 27 13" aria-hidden="true"><rect x="0.5" y="0.5" width="23" height="12" rx="3.5" fill="none" stroke="var(--ink)" stroke-opacity="0.4"></rect><rect x="2" y="2" width="15" height="9" rx="2" fill="var(--ink)"></rect><path d="M25.2 4.4 C26.4 4.9 26.4 8.1 25.2 8.6 Z" fill="var(--ink)" fill-opacity="0.4"></path></svg>
+</div>
+        <div class="island"></div>
+        <div class="bar">
+          <button class="iconbtn press" aria-label="Account and settings"><svg width="22" height="22" viewBox="0 0 24 24" class="icon" style="stroke-linecap:square" aria-hidden="true"><use href="#i-account"></use></svg>
+</button>
+          <button class="txtbtn press" aria-label="Sharing, 2 parties hold a grant">
+            <svg width="22" height="22" viewBox="0 0 24 24" class="icon" style="stroke-linecap:square" aria-hidden="true"><use href="#i-share"></use></svg>
+<span class="t-data" style="font-size:13px">2</span>
+          </button>
+        </div>
+        <div style="position:absolute;top:112px;left:20px;right:20px">
+          <h1 class="t-title" style="margin:0">Liezel Mendoza</h1>
+        </div>
+      </div>
+      <div class="arg">
+        <div>
+          <span class="t-micro" style="color:var(--secondary)">Option A</span>
+          <span class="t-rec" style="display:block;padding-top:4px">Split by edge</span>
+          <span class="t-meta" style="display:block;color:var(--secondary);padding-top:4px;text-wrap:pretty">Leading is the who slot on both platforms, trailing is the what-you-can-do slot. Identity and action end up 360 points apart.</span>
+        </div>
+        <div>
+          <span class="t-micro" style="color:var(--secondary)">Its cost</span>
+          <span class="t-meta" style="display:block;color:var(--secondary);padding-top:22px;text-wrap:pretty">The leading slot is where back lives on every pushed screen, so the account glyph appears and vanishes as you navigate. And it collides with the lockup if the lockup stays in the bar.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- B -->
+    <div class="opt">
+      <div class="crop">
+        <div class="clock sysfont">9:41</div>
+        <div class="stat sysfont"><svg width="18" height="12" viewBox="0 0 18 12" fill="var(--ink)" aria-hidden="true"><rect x="0" y="8" width="3" height="4" rx="1"></rect><rect x="5" y="6" width="3" height="6" rx="1"></rect><rect x="10" y="3" width="3" height="9" rx="1"></rect><rect x="15" y="0" width="3" height="12" rx="1"></rect></svg>
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="var(--ink)" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M1.2 4.1 C4.2 1.4 11.8 1.4 14.8 4.1"></path><path d="M3.9 6.9 C6.1 5.0 9.9 5.0 12.1 6.9"></path><path d="M6.6 9.6 C7.4 8.9 8.6 8.9 9.4 9.6"></path></svg>
+          <svg width="27" height="13" viewBox="0 0 27 13" aria-hidden="true"><rect x="0.5" y="0.5" width="23" height="12" rx="3.5" fill="none" stroke="var(--ink)" stroke-opacity="0.4"></rect><rect x="2" y="2" width="15" height="9" rx="2" fill="var(--ink)"></rect><path d="M25.2 4.4 C26.4 4.9 26.4 8.1 25.2 8.6 Z" fill="var(--ink)" fill-opacity="0.4"></path></svg>
+</div>
+        <div class="island"></div>
+        <div class="bar" style="justify-content:flex-end">
+          <button class="iconbtn press" aria-label="Account and settings"><svg width="22" height="22" viewBox="0 0 24 24" class="icon" style="stroke-linecap:square" aria-hidden="true"><use href="#i-account"></use></svg>
+</button>
+        </div>
+        <div style="position:absolute;top:112px;left:20px;right:20px">
+          <h1 class="t-title" style="margin:0">Liezel Mendoza</h1>
+        </div>
+      </div>
+      <div class="arg">
+        <div>
+          <span class="t-micro" style="color:var(--secondary)">Option B</span>
+          <span class="t-rec" style="display:block;padding-top:4px">Sharing stops being a glyph</span>
+          <span class="t-meta" style="display:block;color:var(--secondary);padding-top:4px;text-wrap:pretty">It becomes a ruled row at the foot of the record: "Two parties hold a grant. Your public page is off." Everything else in this product refuses to compress a graded fact into a symbol, and a 2 beside an arrow is a badge.</span>
+        </div>
+        <div>
+          <span class="t-micro" style="color:var(--secondary)">Its cost</span>
+          <span class="t-meta" style="display:block;color:var(--secondary);padding-top:22px;text-wrap:pretty">Sharing is then a scroll away, and it touches decision 045's reasoning, which moved sharing out of the record. It would need a superseding entry rather than a quiet reinterpretation.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- C -->
+    <div class="opt">
+      <div class="crop" style="height:230px">
+        <div class="clock sysfont">9:41</div>
+        <div class="stat sysfont"><svg width="18" height="12" viewBox="0 0 18 12" fill="var(--ink)" aria-hidden="true"><rect x="0" y="8" width="3" height="4" rx="1"></rect><rect x="5" y="6" width="3" height="6" rx="1"></rect><rect x="10" y="3" width="3" height="9" rx="1"></rect><rect x="15" y="0" width="3" height="12" rx="1"></rect></svg>
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="var(--ink)" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M1.2 4.1 C4.2 1.4 11.8 1.4 14.8 4.1"></path><path d="M3.9 6.9 C6.1 5.0 9.9 5.0 12.1 6.9"></path><path d="M6.6 9.6 C7.4 8.9 8.6 8.9 9.4 9.6"></path></svg>
+          <svg width="27" height="13" viewBox="0 0 27 13" aria-hidden="true"><rect x="0.5" y="0.5" width="23" height="12" rx="3.5" fill="none" stroke="var(--ink)" stroke-opacity="0.4"></rect><rect x="2" y="2" width="15" height="9" rx="2" fill="var(--ink)"></rect><path d="M25.2 4.4 C26.4 4.9 26.4 8.1 25.2 8.6 Z" fill="var(--ink)" fill-opacity="0.4"></path></svg>
+</div>
+        <div class="island"></div>
+        <div class="bar" style="justify-content:flex-end">
+          <button class="iconbtn press" aria-label="Account and settings"><svg width="22" height="22" viewBox="0 0 24 24" class="icon" style="stroke-linecap:square" aria-hidden="true"><use href="#i-account"></use></svg>
+</button>
+        </div>
+        <div style="position:absolute;top:112px;left:20px;right:20px">
+          <h1 class="t-title" style="margin:0">Liezel Mendoza</h1>
+        </div>
+        <div style="position:absolute;left:0;right:0;bottom:0;height:56px;background:var(--page);
+                    border-top:1px solid var(--hairline);display:flex;align-items:center;
+                    justify-content:center;gap:8px">
+          <svg width="22" height="22" viewBox="0 0 24 24" class="icon" style="stroke-linecap:square" aria-hidden="true"><use href="#i-share"></use></svg>
+<span class="t-rec">Sharing</span>
+          <span class="t-data" style="color:var(--secondary)">2 parties</span>
+        </div>
+      </div>
+      <div class="arg">
+        <div>
+          <span class="t-micro" style="color:var(--secondary)">Option C</span>
+          <span class="t-rec" style="display:block;padding-top:4px">Sharing to a bottom toolbar</span>
+          <span class="t-meta" style="display:block;color:var(--secondary);padding-top:4px;text-wrap:pretty">Thumb reachable, and legitimate: Apple's toolbars run along the top or bottom edge, and decision 048 refused a tab bar, which is navigation between destinations, not an action bar.</span>
+        </div>
+        <div>
+          <span class="t-micro" style="color:var(--secondary)">Its cost</span>
+          <span class="t-meta" style="display:block;color:var(--secondary);padding-top:22px;text-wrap:pretty">048's arithmetic still lands. 56 pt plus the 34 pt inset is permanent chrome for something that happens when a person outside the app asks for it, which 048 named as the trade a bottom bar is worst at.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- D -->
+    <div class="opt">
+      <div class="crop">
+        <div class="clock sysfont">9:41</div>
+        <div class="stat sysfont"><svg width="18" height="12" viewBox="0 0 18 12" fill="var(--ink)" aria-hidden="true"><rect x="0" y="8" width="3" height="4" rx="1"></rect><rect x="5" y="6" width="3" height="6" rx="1"></rect><rect x="10" y="3" width="3" height="9" rx="1"></rect><rect x="15" y="0" width="3" height="12" rx="1"></rect></svg>
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="var(--ink)" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M1.2 4.1 C4.2 1.4 11.8 1.4 14.8 4.1"></path><path d="M3.9 6.9 C6.1 5.0 9.9 5.0 12.1 6.9"></path><path d="M6.6 9.6 C7.4 8.9 8.6 8.9 9.4 9.6"></path></svg>
+          <svg width="27" height="13" viewBox="0 0 27 13" aria-hidden="true"><rect x="0.5" y="0.5" width="23" height="12" rx="3.5" fill="none" stroke="var(--ink)" stroke-opacity="0.4"></rect><rect x="2" y="2" width="15" height="9" rx="2" fill="var(--ink)"></rect><path d="M25.2 4.4 C26.4 4.9 26.4 8.1 25.2 8.6 Z" fill="var(--ink)" fill-opacity="0.4"></path></svg>
+</div>
+        <div class="island"></div>
+        <div class="bar" style="justify-content:flex-end;gap:2px">
+          <button class="txtbtn press" aria-label="Sharing, 2 parties hold a grant">
+            <span class="t-rec">Sharing</span>
+            <span class="t-data" style="color:var(--secondary)">2</span>
+          </button>
+          <button class="iconbtn press" aria-label="Account and settings"><svg width="22" height="22" viewBox="0 0 24 24" class="icon" style="stroke-linecap:square" aria-hidden="true"><use href="#i-account"></use></svg>
+</button>
+        </div>
+        <div style="position:absolute;top:112px;left:20px;right:20px">
+          <h1 class="t-title" style="margin:0">Liezel Mendoza</h1>
+        </div>
+      </div>
+      <div class="arg">
+        <div>
+          <span class="t-micro" style="color:var(--secondary)">Option D</span>
+          <span class="t-rec" style="display:block;padding-top:4px">A word, not a matched glyph</span>
+          <span class="t-meta" style="display:block;color:var(--secondary);padding-top:4px;text-wrap:pretty">Both stay trailing, but they stop being a pair: one is a word with a number, one is a glyph. Text bar buttons are standard on both platforms, and the word says what the glyph could not.</span>
+        </div>
+        <div>
+          <span class="t-micro" style="color:var(--secondary)">Its cost</span>
+          <span class="t-meta" style="display:block;color:var(--secondary);padding-top:22px;text-wrap:pretty">The cheapest change here, and the least considered. It fixes the pairing without answering whether a count belongs in chrome at all. It also does not survive translation to Hindi with the same width.</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</x-dc>
+
+<script data-dc-script data-props='{}'>
+class Component extends DCLogic {
+  renderVals(){ return {}; }
+}
+</script>
+</body>
+</html>
