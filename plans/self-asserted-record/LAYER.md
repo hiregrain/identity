@@ -134,21 +134,25 @@ Acceptance:
     only.
 
 Screens defect list from the 2026-08-20 audit, owned by the design pass,
-recorded here so the grilling's findings are not rediscovered:
+recorded here so the grilling's findings are not rediscovered. **Every item was
+discharged in the 2026-08-21 design pass**, in `design/13-platform-screens` and
+imported by `design/14-web-app`; each is marked with what closed it. The list
+stays rather than being deleted, because a discharged defect that leaves no
+trace is one nobody can check was ever fixed.
 
-- `RequestAttestation` warns that the attestation is permanent but never
+- DISCHARGED. `RequestAttestation` warns that the attestation is permanent but never
   that the worker's own claim freezes at the ask, thawing only if no
   attestation arrives (decision 063 trigger).
-- `AddChapter` asks for neither `party_country`/`party_locality` nor
+- DISCHARGED. `AddChapter` asked for neither `party_country`/`party_locality` nor
   `relationship_kind`, so the manual path cannot produce a valid
   chapter.
-- `ChapterDetail` renders title as a chapter-level fact and claims to
+- DISCHARGED by decision 074 and the redraw. `ChapterDetail` rendered title as a chapter-level fact and claimed to
   show every raw fact while missing roughly half the 0.1 field set.
-- No screen exists for import failure to manual entry, sensitive-data
+- DISCHARGED. No screen existed for import failure to manual entry, sensitive-data
   rejection, education entry, credential entry, per-claim import
   confirmation, or a job-board/link import source.
-- `Parsing` advertises "Matching businesses Grain already knows" as a
+- DISCHARGED. `Parsing` advertised "Matching businesses Grain already knows" as a
   silent pipeline step; matching is propose-and-confirm and the screen
   must show the confirmation.
-- `AddPosition` asserts a non-overlap rule the schema does not have;
+- DISCHARGED. `AddPosition` asserted a non-overlap rule the schema does not have;
   the claim is dropped (decision 062).

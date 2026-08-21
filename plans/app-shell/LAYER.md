@@ -1,12 +1,19 @@
 ---
 id: app-shell
 type: layer
-status: draft
+status: ready
 milestone: v1
 depends_on: [foundation]
 soft_depends_on: [worker-surface, public-web]
 binds:
+  - decisions/LOG.md#037
+  - decisions/LOG.md#081
+  - decisions/LOG.md#039
   - decisions/LOG.md#040
+  - decisions/LOG.md#044
+  - decisions/LOG.md#046
+  - decisions/LOG.md#047
+  - decisions/LOG.md#049
   - design/09-app-framework-evaluation.md
   - decisions/LOG.md#028
   - decisions/LOG.md#041
@@ -126,12 +133,26 @@ seen this layer before. Where a check genuinely needs a phone, it says so.
    distribution preference. On Android the app must claim persistent storage,
    because eviction is least-recently-used under disk pressure.
 
-**Needs a real device, and nothing in the code can stand in for it.** Two
-things, named here so they are not quietly folded into the six above: whether
-the imprint's threads survive a dpr-1 panel in daylight, and whether Skia's
-renderer crashes on the PowerVR and MediaTek hardware this population carries.
-Both are open in `design/09` §6 and neither has been run.
+7. **The ratified renderer survives the hardware this product is for.** Two
+   things need a real device and nothing in the code can stand in for them:
+   whether the imprint's threads survive a dpr-1 panel in daylight, and whether
+   Skia crashes on the PowerVR and MediaTek hardware this population carries.
+   Both are open in `design/09` §6 and neither has been run. `design/09` records
+   that the adversarial auditor argued nothing should be ratified before they
+   did, and that it was right about the evidence. **Owned by `app-shell/00`,
+   which every other task in this layer depends on**, because building a shell
+   on an untested renderer is how a week of device time becomes a pilot
+   failure.
 
-**Outside check.** A person who has never seen the product, on a gesture-nav
-Android under 3GB of RAM, in daylight, completes: open a shared link, create an
-account, add one chapter, and find who can read their record. No coaching.
+**Outside check.** On a gesture-navigation Android under 3 GB of RAM, in
+daylight: the shell boots, the record renders from cache with the network off,
+the system text size at its largest does not clip a row, dark mode holds its
+contrast, and no swipe from either edge reaches a destination that has no other
+route to it.
+
+**The end-to-end walkthrough moved.** An earlier version of this check asked a
+stranger to open a shared link, create an account, add a chapter and find who
+could read their record. **This layer owns none of that** (outside voice,
+decision 079's review): no account flow, no chapter flow, no deep links, no
+permissions surface. That walkthrough is `worker-surface`'s outside check and
+belongs there, on the layer that builds every surface it touches.

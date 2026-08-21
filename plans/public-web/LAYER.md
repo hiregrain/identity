@@ -61,8 +61,23 @@ only through worker-shared links and grants (decision 002 §7).
 
 **The mockup gate applies here too** (`plans/worker-surface/LAYER.md` § Design
 venue). The public page and the attestation surface are drawn before they are
-built; only the public page exists today, in
-[`design/10-worker-app-screens/Public.dc.html`](../../design/10-worker-app-screens/Public.dc.html).
+built.
+
+**Both halves of the public page are drawn**, in
+[`design/13-platform-screens/`](../../design/13-platform-screens/) and imported
+by `design/14-web-app`: the view a person loads, carrying the imprint, and the
+crawler payload, which carries the same words with the figure left out. Decision
+056 is what splits them, and they are two surfaces rather than one so the
+difference is inspectable rather than asserted. Reached from the worker's own
+public-page management screen, which is where a worker decides to publish at
+all. `design/10-worker-app-screens/Public.dc.html` is the prior drawing and is
+superseded by these.
+
+**The attestation surface is still undrawn.** Decision 038 makes it this layer's
+scope and the product's primary growth loop, and the mockup gate therefore
+blocks building it. Its form is also partly gated: the seven-measure form itself
+belongs to `peer-references` and cannot be drawn while decision 054's measure-set
+divergence is open.
 
 Acceptance:
 1. **Every landing page ends in the same ledger chrome.** each landing variant terminates in the identical ledger-chrome

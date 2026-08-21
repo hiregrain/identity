@@ -1,9 +1,9 @@
 ---
 id: worker-surface
 type: layer
-status: draft
-milestone: v1
-depends_on: [person-identity, consent-and-deletion]
+status: ready
+milestone: first-product
+depends_on: [person-identity, consent-and-deletion, self-asserted-record]
 binds:
   - decisions/LOG.md#022
   - decisions/LOG.md#035
@@ -27,13 +27,17 @@ binds:
   - decisions/LOG.md#061
   - decisions/LOG.md#063
   - decisions/LOG.md#071
+  - decisions/LOG.md#074
+  - decisions/LOG.md#076
+  - decisions/LOG.md#079
+  - decisions/LOG.md#080
   - design/06-worker-app-ia.md
   - design/07-worker-app-design-review.md
   - design/08-app-inventory.md
   - design/12-platform-seam.md
   - design/ledger-design-0.1.md#7.1
   - design/ledger-design-0.1.md#8.1
-gated_criteria: [4]
+gated_criteria: []
 evidence: []
 verified_by: null
 ---
@@ -151,6 +155,19 @@ undrawn, but its criteria live in `app-shell` criterion 3, which checks the
 numbers rather than the drawing. Nothing in this layer's criteria depends on it,
 so authoring proceeded.
 
+## Identity left this layer (decision 079)
+
+Register section F, the identity flow's screens, is now
+[`plans/worker-identity-surface`](../worker-identity-surface/LAYER.md). It was
+task 05 here. The outside voice argued this layer was several layers wearing one
+name, and that corner is gated on the Persona DPA, India DPDP residency and
+counsel, none of which an engineer can clear. Left inside, a legal timetable
+would have held the record, sharing, deletion and onboarding hostage.
+
+The new layer depends on this one, because it renders in the chassis task 01
+builds. Criteria 1, 5, 6, 7 and 8 lose one of their owners and every one is
+still owned by at least four tasks.
+
 ## Design venue, and the mockup gate
 
 **Design happens in the prototype**, not in repo tasks:
@@ -159,7 +176,12 @@ so authoring proceeded.
 
 Its source of record is
 [`design/13-platform-screens/`](../../design/13-platform-screens/), which is
-authoritative where the two disagree. `design/10-worker-app-screens/` is the
+authoritative where the two disagree. **The browser surface is
+[`design/14-web-app/`](../../design/14-web-app/)** and it *imports* the record's
+own surfaces from `design/13` rather than redrawing them, so the two cannot
+drift on anything the record draws; what it authors is chrome, because a browser
+returns almost every control the platform seam had handed to the system
+(`design/12` "The seam in a browser"). `design/10-worker-app-screens/` is the
 prior canvas and is kept as the record of how the system got here; where it and
 `design/13` disagree, `design/13` governs, because 047's platform seam and the
 rulings of 2026-08-20 are only in the latter. Repo tasks in this layer cover
@@ -178,9 +200,18 @@ with no named surface is not authorable.** This is the design-track counterpart
 of "code is written only against a `ready` plan layer."
 
 **The register is [`design/08-app-inventory.md`](../../design/08-app-inventory.md) §1**,
-which lists every surface with its status. It is the checklist the gate runs
+which lists every surface with its status. **A task pins the register at the
+commit it was authored against**, named in the task, because the register is
+edited as design proceeds and an unpinned reference means a task's scope changes
+without anyone deciding it (outside voice, decision 079). It is the checklist the gate runs
 against, and it is also this layer's decomposition input. Tasks derive from it,
 not from prose here.
+
+**Decisions 074 and 076 are folded in.** Title, headcount and the countable
+step reach the app through the add flow (074); education and certificates are
+drawn at last, since 062 made them record objects and criterion 1 requires every
+fact about the person to be reachable; and a pushed bar carries the wordmark
+home (076), which amends `design/12`'s seam table on one row.
 
 **Most surfaces are drawn now**, in `design/13-platform-screens`, which is a
 working prototype rather than a set of artboards: every surface renders on both
@@ -203,25 +234,38 @@ Acceptance:
 1. **Every fact about the person is reachable in the app.** A side-by-side
    against a raw API dump shows nothing hidden. **Narrowed by decision 035
    §B4/§B5:** read events are excluded (grant *state* is shown, not reads,
-   the disclosure record is served on request), and there is no dispute UI,
-   so a chapter renders its `disputed` field but no dispute flow exists in
-   the app.
+   the disclosure record is served on request). **Decision 079 reinstates the
+   dispute flow** that 035 §B5 removed, bounded by 028's line: Grain
+   adjudicates authenticity, never substance, and a substance disagreement is
+   carried as the worker's counter-statement beside the claim. Its surfaces are
+   undrawn, so the mockup gate blocks building them.
 2. **Provenance is distinguishable everywhere it renders, without relying on
    colour.** Provenance classes are visually distinct at every rendering
    site, at WCAG-AA contrast, with no colour-only encoding.
 3. **Grant, revoke and delete each complete on a small phone over a slow
    link.** Each is completable start to finish on a 360px viewport over a
-   slow connection. Dispute is not in this list because decision 035 §B5
-   removed the in-app dispute flow, see criterion 1's narrowing.
-4. **Trust-bearing flows serve from the ledger's own origin.** No vertical
-   chrome, no theming beyond light/dark. **Declared gated.** This criterion
-   cites an invariant-chrome ruling as "pending in the decisions log", and no
-   such entry exists. A criterion that cites an artifact this repo does not
-   contain is a decision gate wearing one (`CLAUDE.md`), so it is declared in
-   `gated_criteria` rather than assigned to a task that could not grade it.
-   It discharges when the ruling is recorded.
+   connection throttled to **400 kbps down, 400 kbps up and 400 ms round trip**,
+   which is the standard Slow 3G profile and is reproducible rather than
+   judged. Budgets, end to end including taps: a grant in 15 s, a revoke in
+   8 s, a deletion request in 15 s. **The budgets are provisional until the
+   first measurement on real hardware** and are stated so the criterion can
+   fail; the profile is not provisional.
+4. **Trust-bearing flows serve from the ledger's own origin.** (adjudicated)
+   No vertical's branding, no theming beyond light and dark. This is the
+   neutrality guarantee `CLAUDE.md`'s product test turns on, given Grain both
+   holds the record and operates verticals on it (024). **Ungated by decision
+   079**, which makes the invariant-chrome ruling, and owned by task 01, which
+   already owns the chassis. **Owed:** "origin" is a web concept and the
+   primary target is native. **Decision 080 settles it:** a trust-bearing flow
+   is drawn by Grain's own code against Grain's API, with no vertical's
+   webview, vendor-themed component or SDK-rendered screen inside it. The one
+   exception is the contracted identity vendor, which 040 §C forces because
+   neither vendor permits an app to host their capture step, and which 036
+   bounds by requiring the vendor be named on screen before the handoff rather
+   than after. On the web the criterion keeps its literal origin meaning.
 5. **Every surface exists and carries all five of its states.** Every surface
-   in `design/08-app-inventory.md` §1 exists and carries all five states
+   in `design/08-app-inventory.md` §1 **that the register does not declare
+   blocked** exists and carries all five states
    named in its §2: loading, empty, error with a retry, offline, permission
    denied. A surface missing a state is not done. A state may be a shell
    renderer the surface declares rather than a separately drawn screen, which
