@@ -8,9 +8,10 @@ depends_on: [foundation/01]
 migrations: []
 binds: [contract/CONTRACT.md, decisions/LOG.md#019]
 evidence:
-  - "test:make reference-test"
+  - "test:make differential"
   - "test:make differential-red"
-  - "diff:PR #12 @ 274643c"
+  - "test:make reference-test"
+  - "diff:PR #12 @ d524c6b"
 verified_by: null
 ---
 
@@ -60,24 +61,29 @@ number-formatting bug in each implementation in turn to confirm detection.
 
 ## Evidence
 
+- `test:make differential` runs the kernel (`core/cmd/kernel-adapter`,
+  landed with `trust-kernel/01`) and this model over the committed
+  corpus plus 20000 freshly generated requests, comparing response bytes.
+  **Zero divergence over 20108 requests**, reproduced at four further
+  independent seeds. In `make check`; the whole run costs about nine
+  seconds, so the layer's hardest criterion sits in the standing gate
+  rather than in a runbook.
+- `test:make differential-red` plants each contract misreading in
+  `reference/harness/mutant.ts` in turn, **against the reference and
+  against the kernel**, and fails if the harness misses any of them, then
+  requires the unplanted reference-against-kernel control to be green.
+  In `make check-red` as red path 21.
 - `test:make reference-test` runs `reference/conformance.test.ts`: the
   reference model against the values `contract/CONTRACT.md` states in
   words rather than against its own output.
-- `test:make differential-red` plants each contract misreading in
-  `reference/harness/mutant.ts` in turn and fails if the harness misses
-  one, then requires an unplanted control run to be green. Wired into
-  `make check-red` as red path 15.
-- `diff:PR #12 @ 274643c`.
+- `diff:PR #12 @ d524c6b`.
 
-The third criterion is discharged: the four ambiguities this reading
-surfaced are ruled in decision 082 and written into
-`contract/CONTRACT.md`. Three ratified the readings this model had taken;
-A3 superseded its preserve-and-escape reading with refusal, and the model
-now refuses. Both superseded readings are kept as mutants, so the ruling
-leaves a test behind rather than a sentence.
+The four ambiguities this reading surfaced are ruled in decision 082 and
+written into `contract/CONTRACT.md`. Three ratified the readings this
+model had taken; A3 superseded its preserve-and-escape reading with
+refusal, and the model now refuses. Both superseded readings are kept as
+mutants, so the ruling leaves a test behind rather than a sentence.
 
-The two mechanical criteria compare **two** implementations, and only the
-reference is on `main`: the kernel adapter is `core/cmd/kernel-adapter`
-in `trust-kernel/01` (PR #15, unmerged). `make differential` is defined,
-takes `KERNEL_ADAPTER`, and is deliberately outside `check` until that
-merge. That is the one open raise; the task stays `in_progress`.
+No open raise remains. The earlier one, that the mechanical criteria
+compare two implementations and only the reference existed, is closed by
+`trust-kernel/01` merging.
