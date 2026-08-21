@@ -4742,3 +4742,19 @@ is not rediscovered late: **the attestation must be recorded before
 the founder ever having held the figure on a phone would discharge the
 spike's purpose on paper only. Criteria 4 and 5 stand as the task's
 done-condition in the meantime.
+
+## 091 — A name's period is a validity window, FHIR semantics (2026-08-21)
+
+Founder ruling on person-identity/04's review finding. As shipped, any
+stored `period_end`, future ones included, made a name not-current
+immediately, and a past stored end could leave a person with no current
+name at all; both were probed live. The task scope's "absent = current"
+was read literally where the schema's own reference model, FHIR
+HumanName, reads `period` as a validity window.
+
+**Ruled: window semantics.** A name is current when its effective
+`period_end` is NULL or later than now(). A future-dated end stays
+current until it passes; a temporary or document-bounded name expires
+on schedule; the lead() derivation continues to supply the end for
+rows with no stored one. The zero-current-rows case is a defect under
+this ruling and is fixed with it.
