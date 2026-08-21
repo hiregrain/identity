@@ -145,15 +145,17 @@ cross-plane-constructs:
 cross-plane-outbox:
 	node test/cross-plane-outbox.test.mjs
 
-# The signup and id-issuance acceptance suite (person-identity/01):
-# signup driven end to end across both planes, the spine transaction that
-# issues an id, the outbox worker that carries the payload half, and the
-# reuse and assurance probes. Build tag db like the envelope suite;
-# -count=1 because the databases are state the test cache cannot see.
-# One provider run: nothing this suite proves depends on which key
-# provider seals the content, and the swap is proven both ways by
-# `envelope-test`. Runs before deletion-test, which recreates the payload
-# container mid-run.
+# The signup and id-issuance acceptance suite (person-identity/01), plus
+# the name model's acceptance suite (person-identity/04): both live under
+# core/person, so `./person/...` carries both without a second target.
+# person-identity/04 drives the mononym MRZ-parsing named test, name
+# index regeneration, append-only name changes, and CJK multi-
+# representation rendering, all against the same two live planes. Build
+# tag db like the envelope suite; -count=1 because the databases are
+# state the test cache cannot see. One provider run: nothing either
+# suite proves depends on which key provider seals the content, and the
+# swap is proven both ways by `envelope-test`. Runs before deletion-test,
+# which recreates the payload container mid-run.
 person-test:
 	cd core && GRAIN_KEY_PROVIDER=software go test -tags db -count=1 ./person/...
 
