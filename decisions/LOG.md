@@ -4758,3 +4758,20 @@ current until it passes; a temporary or document-bounded name expires
 on schedule; the lead() derivation continues to supply the end for
 rows with no stored one. The zero-current-rows case is a defect under
 this ruling and is fixed with it.
+
+## 092 — A superseded name ends at the earlier of its stated end and its successor (2026-08-21)
+
+Founder ruling completing decision 091, on a case 091 did not reach:
+when a name row carries both its own stated `period_end` and a later
+row supersedes it, the shipped view took the stored end
+(`COALESCE(period_end, lead(asserted_at))`), so a name with a future
+stated end plus a replacement showed both as current and the prior name
+leaked into the employer-facing read, which is criterion 3's harm.
+
+**Ruled: the effective end is the earlier of the two.**
+`LEAST(stored period_end, the successor's asserted_at)`, with each side
+NULL-tolerant (a row with no successor keeps its stated end; a row with
+no stated end takes the successor's). A superseded name ends when it is
+superseded even if its own stated window ran longer; a name never
+superseded honours its stated window. This preserves every case 091
+fixed and closes the overlap.
