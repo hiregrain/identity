@@ -1,0 +1,26 @@
+{
+  "expo": {
+    "name": "Grain",
+    "slug": "grain-app-shell",
+    "scheme": "grain",
+    "version": "0.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "ios": {
+      "bundleIdentifier": "com.hiregrain.appshell",
+      "supportsTablet": false
+    },
+    "android": {
+      "package": "com.hiregrain.appshell"
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static"
+    },
+    "plugins": ["expo-router", "expo-splash-screen"],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}

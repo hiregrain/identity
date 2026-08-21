@@ -40,7 +40,7 @@ fmt-check:
 	if [ -n "$$unformatted" ]; then echo "gofmt needed on:"; echo "$$unformatted"; exit 1; fi
 
 lint: fmt-check
-	pnpm exec prettier --check "checks/**/*.mjs" "db/**/*.mjs" "db/**/*.ts" "db/*.json" "test/*.mjs" "eslint.config.mjs" "surfaces/**/*.{ts,tsx,js,json}" "contract/runner/**/*.{ts,json}" --no-error-on-unmatched-pattern
+	pnpm exec prettier --check "checks/**/*.mjs" "db/**/*.mjs" "db/**/*.ts" "db/*.json" "test/*.mjs" "eslint.config.mjs" "surfaces/**/*.{ts,tsx,js,json}" "!surfaces/**/{ios,android}/**" "contract/runner/**/*.{ts,json}" --no-error-on-unmatched-pattern
 	pnpm exec eslint .
 
 go-check:
