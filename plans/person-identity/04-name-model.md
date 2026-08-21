@@ -3,12 +3,27 @@ id: person-identity/04
 type: task
 layer: person-identity
 satisfies: []
-status: in_progress
+status: done
 depends_on: [person-identity/01]
 migrations: [0011-names]
 binds: [decisions/LOG.md#013, decisions/LOG.md#020, research/11-signup-identifiers-and-names.md]
-evidence: []
-verified_by: null
+evidence:
+  - "test:make person-test @ a5cc923 (core/person acceptance suite, both planes live, includes person-identity/01's own tests)"
+  - "test:make check @ a5cc923 (green, run under a no-ports compose override)"
+  - "diff:PR #16 @ a5cc923e81517212178d5d1ef8281e4d92b9b6a1"
+  - "review:log/2026-08-21-person-identity-04-verification.md (clean-context verification at a5cc923, fail on criterion 3)"
+  - "diff:PR #16 @ eca55e3 (end-dating rework, write-time supersession pointer)"
+  - "review:log/2026-08-21-person-identity-04-verification-2.md (clean-context verification, fail on criterion 3, end-dating held only on the drained path)"
+  - "diff:PR #16 @ ae3abf345a2f18c416e1a44c173f2253434211bd (end-dating derived at read time, supersedes column dropped)"
+  - "test:make check @ ae3abf3 (green, run under a private compose project with host ports removed)"
+  - "review:log/2026-08-21-person-identity-04-verification-3.md (clean-context verification at ae3abf3, pass)"
+  - "diff:PR #16 @ 40fd466b1308c9e770838449fff016ac59a3c19f (decision 091 window semantics plus four code-review findings)"
+  - "test:make check @ 40fd466 (green, run under a private compose project with host ports removed)"
+  - "review:log/2026-08-21-person-identity-04-verification-4.md (clean-context verification at 40fd466, fail on criterion 3, a superseded row with its own future stated end stays in the employer render)"
+  - "diff:PR #16 @ 2d041346e09cbebc73f21961ec20f90612040583 (earlier-of-two-ends LEAST derivation per decision 092, and a named per-table conflict target)"
+  - "test:make check @ 2d04134 (green, run under a private compose project with host ports removed)"
+  - "review:log/2026-08-21-person-identity-04-verification-5.md (clean-context verification at 2d04134, pass)"
+verified_by: agent-afdda8a0f6d953fc3@2026-08-21
 ---
 
 # The name model

@@ -84,10 +84,7 @@ func fullDump(t *testing.T, plane string) string {
 
 func newEnv(t *testing.T) (*envelope.Envelope, keys.Provider) {
 	t.Helper()
-	name := os.Getenv("GRAIN_KEY_PROVIDER")
-	if name == "" {
-		name = keys.NameSoftware
-	}
+	name, _ := keys.ConfiguredProviderName()
 	p, err := keys.FromConfig(name)
 	if err != nil {
 		t.Fatalf("provider config: %v", err)

@@ -1,0 +1,8 @@
+# Continuous native generation: ios/ and android/ are `expo prebuild` output,
+# regenerated from app.json and the config plugins. Decision 040 ratified CNG,
+# so committing them would make the generated tree the source of truth for the
+# native projects and the config plugins dead weight.
+ios/
+android/
+.expo/
+expo-env.d.ts

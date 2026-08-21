@@ -81,6 +81,34 @@ type DekRegistryRow struct {
 	ResidencyRegion string
 }
 
+// DocumentNameRow is one row of payload.document_name.
+type DocumentNameRow struct {
+	OutboxEntryId     string
+	PersonId          string
+	DocumentType      string
+	IssuingCountry    string
+	ScriptCode        string
+	Source            string
+	IsMononym         bool
+	PossiblyTruncated bool
+	NameCiphertext    []byte
+	CapturedAt        time.Time
+	ResidencyRegion   string
+}
+
+// NameIndexEntryRow is one row of payload.name_index_entry.
+type NameIndexEntryRow struct {
+	OutboxEntryId       string
+	PersonId            string
+	SourceTable         string
+	SourceOutboxEntryId string
+	SourceField         string
+	TokenKind           string
+	GeneratorVersion    int32
+	TokenCiphertext     []byte
+	ResidencyRegion     string
+}
+
 // PersonContactChannelRow is one row of payload.person_contact_channel.
 type PersonContactChannelRow struct {
 	OutboxEntryId     string
@@ -96,6 +124,20 @@ type PersonContactChannelRow struct {
 	Assurance         string
 	ResidencyRegion   string
 	AddressLookup     []byte
+}
+
+// PersonNameRow is one row of payload.person_name.
+type PersonNameRow struct {
+	OutboxEntryId   string
+	PersonId        string
+	TextCiphertext  []byte
+	PartsCiphertext *[]byte
+	Use             string
+	Representation  string
+	PeriodStart     *time.Time
+	PeriodEnd       *time.Time
+	AssertedAt      time.Time
+	ResidencyRegion string
 }
 
 // PersonRecordRow is one row of payload.person_record.

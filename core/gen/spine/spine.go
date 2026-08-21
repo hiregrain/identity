@@ -32,6 +32,15 @@ type DeletionJournalRow struct {
 	RecordedAt     time.Time
 }
 
+// KeyEventRow is one row of spine.key_event.
+type KeyEventRow struct {
+	PartyId     string
+	KeyId       string
+	Event       string
+	EffectiveAt time.Time
+	LedgerTs    time.Time
+}
+
 // PersonRow is one row of spine.person.
 type PersonRow struct {
 	PersonId  string
