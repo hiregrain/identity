@@ -9,7 +9,13 @@ binds:
   - decisions/LOG.md#040
   - decisions/LOG.md#044
   - design/09-app-framework-evaluation.md
-evidence: []
+evidence:
+  [
+    "diff:PR #17 @ 661414f",
+    "test:surfaces/app-shell/test/stack.test.mjs",
+    "test:surfaces/app-shell/test/fixture.test.mjs",
+    "log:log/2026-08-21-app-shell-00-ios-build.md",
+  ]
 verified_by: null
 ---
 
@@ -98,3 +104,32 @@ are allowed to assume.
 
 The spike is itself an outside check: it is the one thing in this layer whose
 result cannot be produced by reading the code.
+
+## Evidence
+
+- Criterion 4, resolve: `surfaces/app-shell/test/stack.test.mjs` reads the
+  installed packages rather than the lockfile and asserts Expo 57.0.15, React
+  Native 0.86.2, React 19.2.3, expo-router 57.0.15 and Skia 2.6.2, plus that
+  each is declared as an exact pin. Runs in `make check`'s ts-check stage
+  through `pnpm -r run test`.
+- Criterion 4, build, iOS: `log/2026-08-21-app-shell-00-ios-build.md` records
+  the prebuild, the pod install, the `xcodebuild` invocation that exits 0, and
+  the launched product rendering the figure and surviving a pinch. It also
+  records the two environment conditions the build has, a space-free path and a
+  UTF-8 locale, both of which are defects in the toolchain rather than in the
+  harness.
+- Criterion 4, build, Android: **not discharged.** The machine carries no
+  Android toolchain and no JDK 17. Raised rather than resolved quietly.
+- Criterion 5: **not discharged.** Decision 085 puts the findings in
+  `design/09` §6 as their own `docs(design):` commit on `main`, so they are not
+  in this diff, and recording a spike as run before its Android and handset
+  halves have been run would be a false record.
+- Criterion 6: **not discharged.** It is attested by the founder running the
+  build on his own handsets. `surfaces/app-shell/README.md` states what he is
+  asked to do and what a clean run does and does not prove.
+- The fixture the renderer is loaded with is checked by
+  `surfaces/app-shell/test/fixture.test.mjs`: 89 threads, 23,585 path commands,
+  counted out of the committed bytes rather than trusted from the declaration,
+  every thread a closed single-subpath cubic. `pnpm run fixture` regenerates it
+  from `imprint/imprint.py`; the regeneration is not in `make check` because it
+  needs Python and CI does not.
