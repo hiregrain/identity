@@ -1,4 +1,8 @@
 packages:
+  # contract/runner is the TypeScript half of the golden-vector check
+  # (trust-kernel/01). It is a workspace package so `make ts-check` runs it
+  # without a second registration anywhere.
+  - contract/*
   - surfaces/*
 
 # pnpm 10 blocks dependency install scripts by default. Skia's is what unpacks

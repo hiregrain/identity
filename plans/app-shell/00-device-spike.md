@@ -75,10 +75,13 @@ do not renumber; the identifiers below are stable.
    `docs(design):` commit on `main`, never inside the implementation diff
    (decision 085). A spike that runs and records nothing has not run.
 6. **The imprint survives the scribe and a pinch on the founder's handsets.**
-   (adjudicated) the figure renders through a full 1080 ms scribe and a pinch
-   on the founder's personal iPhone and Pixel without a crash, attested by the
-   founder running the build; decision 085 records that this is not evidence
-   about the GE8320 hardware the target population carries.
+   (adjudicated, deferred by decision 090) the figure renders through a full
+   1080 ms scribe and a pinch on the founder's personal iPhone and Pixel
+   without a crash, attested by the founder running the build. Deferred until
+   the app is usable; must be recorded before `app-distribution` goes
+   `ready` (decision 090). Criteria 4 and 5 are the done-condition
+   meanwhile; decision 085 records that this is not evidence about the
+   GE8320 hardware the target population carries.
 
 ## What a bad result means, pre-committed
 

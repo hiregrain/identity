@@ -4648,3 +4648,130 @@ ladder it grades against.
 migrations claim; auth needs schema on both planes. Claims are amended
 on main after the files land, the foundation/08 precedent now applied
 three times.
+
+## 087 — Kernel governance matches the team that exists; the two-human host rule becomes a trigger (2026-08-21)
+
+Founder ruling superseding decision 019's enforcement mechanism, not its
+intent. 019 gave the frozen core the expensive treatment, two-human
+review among it, and trust-kernel/01 made that a host-enforced
+branch-protection criterion. The loop then established the fact on the
+ground: every PR in this repository is authored under the founder's own
+account, and the host forbids approving one's own pull request, so any
+required-approval rule, two or one, is unsatisfiable by the only human
+here. A rule bypassed on every merge enforces nothing and claims
+otherwise, which is worse than its absence.
+
+**What the host now enforces, and the governance check asserts:** a
+ruleset on `main` blocking force pushes and branch deletion (in force,
+ruleset 21162777, verified 2026-08-21). Force-push protection is the
+rule with teeth here: the decisions log is append-only and every
+verification record cites SHAs, so a rewritten `main` is the one git
+operation that silently invalidates the repo's own evidence.
+CODEOWNERS stays as the reviewer-request seed on the kernel paths.
+
+**What enforces kernel review now:** the loop's own gates. A kernel
+change reaches `main` only through clean-context verification, a code
+review pass, and the founder's own read at merge, which is decision
+019's intent carried by the process that actually runs rather than by a
+setting that would be theatre.
+
+**The two-human host rule is dormant, with its trigger written:** the
+day a second maintainer holds write access, required approvals return to
+the host settings and `checks/kernel-governance.mjs` reverts to
+asserting them. Until then the check asserts what is true.
+
+Direct pushes of binding prose to `main` continue unaffected; neither
+rule in force touches a normal push.
+
+## 088 — The Bezier imprint supersedes the polyline; the pinch is the load anchor (2026-08-21)
+
+Founder ruling on app-shell/00's figure raise. Decision 040 stress-tested
+a 24,352-vertex polyline; `imprint.py` has since moved to a Bezier fit
+that draws the same record in 5,852 commands, so 040's worst case no
+longer describes anything the app renders. The spike anchored load to
+what a 2x pinch costs instead: 720 CSS px at dpr 3 on the densest
+reference record, 23,585 path commands across 89 threads, within 3% of
+040's number, and carried it through the full scribe and a pinch on an
+iPhone 17 Pro simulator without a crash.
+
+**Ruled: the supersession is recorded as tested.** The 2x-pinch figure
+is the load reference going forward. **The payload size is an open
+concern, named rather than accepted silently:** the Bezier encoding
+carries 984 KB where 040's polyline carried 364 KB, because a cubic
+holds six coordinates to a vertex's two. That is bandwidth on the
+record-fetch path, not render load; whether the wire format stays
+cubic, compresses, or ships polyline-with-render-side-fit is undecided
+and belongs to whichever task first serves the figure over a network.
+
+## 089 — The channel lookup index, and the module's first dependency (2026-08-21)
+
+Two founder rulings on person-identity/02's second raise.
+
+**A keyed lookup index over contact channels exists.** Signup sealed
+every address under the person's own DEK with no lookup column, which
+made finding a person from a typed address impossible and OTP login
+unbuildable; refusing the index would have demoted the code path, which
+decision 013 forbids. The index takes the cryptographic form decision
+020 ruled for safety markers: an HMAC of the canonicalized address
+under a key held in the KMS and never in the database. The key is
+population-wide, which is a new key-management concept: `core/keys`
+gains a non-person scope for it. **The cost is recorded with the
+ruling:** this index links every account that ever held one address,
+across the whole population. It serves login (02) and duplicate
+detection (05) and nothing else; a use beyond those two is a new
+decision, not an extension.
+
+**`go-webauthn` is the module's first third-party dependency,
+version-pinned.** The WebAuthn ceremony parses attacker-supplied CBOR
+and COSE from the enrolling device, and hand-rolled parsing of hostile
+binary formats inside identity crypto is where in-house implementations
+go wrong. The zero-dependency posture was a fact, not a rule; this
+entry is what licenses the exception, and the next dependency needs its
+own entry.
+
+## 090 — The handset attestation is deferred until the app is usable (2026-08-21)
+
+Founder ruling on app-shell/00's criterion 6: on-device runs on the
+founder's iPhone and Pixel are postponed until the app is done enough
+to be worth holding. The criterion is deferred, not cut: the release
+APK and the device-build instructions stay recorded in the task and its
+build log, and the attestation lands as an addendum to the task's
+verification record when it happens. The trigger is written here so it
+is not rediscovered late: **the attestation must be recorded before
+`app-distribution` goes `ready`**, since shipping to a store without
+the founder ever having held the figure on a phone would discharge the
+spike's purpose on paper only. Criteria 4 and 5 stand as the task's
+done-condition in the meantime.
+
+## 091 — A name's period is a validity window, FHIR semantics (2026-08-21)
+
+Founder ruling on person-identity/04's review finding. As shipped, any
+stored `period_end`, future ones included, made a name not-current
+immediately, and a past stored end could leave a person with no current
+name at all; both were probed live. The task scope's "absent = current"
+was read literally where the schema's own reference model, FHIR
+HumanName, reads `period` as a validity window.
+
+**Ruled: window semantics.** A name is current when its effective
+`period_end` is NULL or later than now(). A future-dated end stays
+current until it passes; a temporary or document-bounded name expires
+on schedule; the lead() derivation continues to supply the end for
+rows with no stored one. The zero-current-rows case is a defect under
+this ruling and is fixed with it.
+
+## 092 — A superseded name ends at the earlier of its stated end and its successor (2026-08-21)
+
+Founder ruling completing decision 091, on a case 091 did not reach:
+when a name row carries both its own stated `period_end` and a later
+row supersedes it, the shipped view took the stored end
+(`COALESCE(period_end, lead(asserted_at))`), so a name with a future
+stated end plus a replacement showed both as current and the prior name
+leaked into the employer-facing read, which is criterion 3's harm.
+
+**Ruled: the effective end is the earlier of the two.**
+`LEAST(stored period_end, the successor's asserted_at)`, with each side
+NULL-tolerant (a row with no successor keeps its stated end; a row with
+no stated end takes the successor's). A superseded name ends when it is
+superseded even if its own stated window ran longer; a name never
+superseded honours its stated window. This preserves every case 091
+fixed and closes the overlap.

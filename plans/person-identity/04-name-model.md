@@ -6,7 +6,7 @@ satisfies: []
 status: in_progress
 depends_on: [person-identity/01]
 migrations: [0011-names]
-binds: [decisions/LOG.md#013, decisions/LOG.md#020, research/13-name-standards.md]
+binds: [decisions/LOG.md#013, decisions/LOG.md#020, research/11-signup-identifiers-and-names.md]
 evidence: []
 verified_by: null
 ---

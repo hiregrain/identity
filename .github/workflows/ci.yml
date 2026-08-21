@@ -22,15 +22,41 @@ on:
   pull_request:
 
 jobs:
+  # Go is here for one check in this group: checks/vector-freshness.mjs
+  # runs the vector generator and compares bytes. It lives in the metadata
+  # group rather than beside the Go tests because the Go test cache does
+  # not track files outside the module, so a cached pass over an edited
+  # vector file is exactly the window this closes.
   metadata:
     name: repo metadata (before any database)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5.6.0
+        with:
+          go-version-file: core/go.mod
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 24
+      - run: make metadata
+
+  # The host policy on the frozen core (trust-kernel/01, decision 087):
+  # force pushes and branch deletion blocked on main. Its own job, and in
+  # the all-green fan-in below, so it blocks a merge. Only a query to the
+  # host can say what is actually in force, which is why this cannot be a
+  # file check; the rules-in-force endpoint answers for an ordinary read
+  # token, so GITHUB_TOKEN is enough.
+  kernel-governance:
+    name: host rules in force on the frozen core
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 24
-      - run: make metadata
+      - run: make kernel-governance
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   red-paths:
     name: red-path fixtures (database stage disabled)
@@ -117,6 +143,12 @@ jobs:
           go-version-file: core/go.mod
       - run: make go-check
 
+  # `make ts-check` carries the TypeScript half of the golden-vector check
+  # (trust-kernel/01): contract/runner is a workspace package, so
+  # `pnpm -r run test` runs it against contract/vectors, the same files the
+  # go job runs the kernel against. Both languages exercise identical bytes
+  # from the first day there is a kernel, which is what the layer's first
+  # criterion asks for.
   ts:
     name: pnpm typecheck + test
     needs: [db-migrate]
@@ -238,6 +270,7 @@ jobs:
     needs:
       [
         metadata,
+        kernel-governance,
         red-paths,
         lint,
         db-migrate,
