@@ -3804,3 +3804,89 @@ files leave binds lists, the evidence tier working as written; the
 live-flip verifier reads harness evidence rather than holding vendor
 credentials; and the staging store holds proposals and the text layer,
 never the artifact bytes, resolving the import task's contradiction.
+
+## 074 — Title is progression evidence; countable facts enter, scales do not (2026-08-20)
+
+Founder rulings raised by drawing the web app, where the add flow's gaps
+became visible. Both rulings are the same argument twice: Grain says what is
+known and how well, and refusing to carry a real signal understates what is
+known exactly as collapsing a graded one overstates it.
+
+**The schema's title paragraph was never ruled, and it misreads the thesis.**
+`model/record-schema.md` §2 carries "Not present, deliberately. No job title as
+a first-class comparable field. Titles are administrative acts and `THESIS.md`
+rejects them as a progression signal." No entry in this log ever ruled on job
+titles. Decision 062 ratified "the chapter, position and envelope sections of
+0.1 as they stand" in a grilling about education and credentials, which swept
+the paragraph in rather than arguing it.
+
+The appeal does not survive reading the thesis. `THESIS.md` "On proxies,
+honestly" says the first analytics product "uses signals from the same families
+it criticises: seniority, tenure, described responsibility", and that "the
+difference is not that Grain avoids proxies; it is that every proxy here
+carries its provenance class and resolves to the evidence underneath it". "A
+title with nothing beneath it reads as a title with nothing beneath it" is the
+pointer rule (027) applied to titles, not a refusal to carry one. Decision 022's
+input set already names seniority and described responsibility, and its slope
+failure modes name promotions as a modelled event.
+
+The incoherence sits inside one document. §3 opens "`position`: a promotion or
+role change inside a chapter" and gives it `title_asserted`, one section after
+saying titles carry no progression signal. Both cannot be true.
+
+**Title is evidence of progression and is carried as such.** It stays on
+`position`; the structure was never the problem. It enters analytics as a
+provenance-weighted input like every other signal under 022. A sequence of
+positions inside one chapter, attested by the employing party, is trajectory
+evidence and is among the strongest this record will hold.
+
+**What stays refused is cross-party title ranking without normalisation.**
+"VP" at a twelve-person business and "VP" at a bank are not one unit, and
+ranking them as though they were is the credential logic this product exists to
+replace. Same shape as 022's ruling that party quality scores are
+"incomparable by construction".
+
+**A quantity with a unit may be collected. A position on a scale may not.**
+Decision 054 stopped the seven measures because "no level definitions exist for
+any of the seven" and nobody had checked whether two managers scoring the same
+work produce the same numbers. That is an argument against ladders with
+undefined rungs, and it was strong enough to stop attesting parties supplying
+them. It is not an argument against counts: six people is six people, two
+describers agree, and the employing party can confirm or contradict it.
+
+`chapter.volume` (`{unit, count}`) already carried this shape and no surface
+ever collected it. **Headcount directed enters on `position`**, for the reason
+`title_asserted` is there: it changes with the role rather than with the
+relationship. `volume` stays on `chapter` as ratified.
+
+**Money controlled is deferred rather than refused.** Budget sits close enough
+to salary, which §2 bans by name, that the two need separating in writing
+before either is collected. It arrives with the entry that separates them, or
+not at all.
+
+**Decision 054 is untouched.** Discretion, Consequence Held, Ambiguity Handled,
+Autonomy and the rest stay collected and not rendered; the divergence between
+the two sets of seven stays open at its `plans/ORDER.md` gate; nothing here
+draws a level, a lobe depth or a rung.
+
+**The add-chapter screen was failing the schema before any of this.** It
+collected an employer and two dates. §2 requires `party_country` "whenever
+`party_ref` is null", which is the common case in the target population, and
+decision 039 asked for country and city at minimum. `relationship_kind` and
+`positions[]` were uncollected too, so the flow could not produce a valid
+chapter and committed one that never said what the worker did.
+
+**Progressive, never one form.** The population that abandons onboarding is the
+population this product exists for, which is why 038 shipped telemetry at all.
+The countable step is optional, skippable, and addable later, and an unattested
+count renders with the self-asserted mark like every other unattested claim.
+
+**A gate, not something to design around.** `work_kind` binds to "the ledger's
+own vocabulary", which does not exist yet. No surface may ask for it until it
+does, and `relationship_kind` is not a substitute for it.
+
+**Consequences.** §2's "Not present, deliberately" paragraph is superseded on
+titles and on countable facts, and a successor `model/record-schema.md` needs
+founder ratification; the last ratified version stays in force until then.
+Decision 022's input set gains title by name. `design/10`, `design/13` and
+`design/14` gain the fields.
