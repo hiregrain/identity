@@ -1,0 +1,19 @@
+# Kernel governance seed (trust-kernel/01, decision 019).
+#
+# This file requests reviewers. It does not require them, and it cannot:
+# the rule that a frozen-core change needs two approving reviews lives in
+# the repository host's branch-protection settings, and only a repository
+# admin can put it there. checks/kernel-governance.mjs asserts the host
+# policy by querying the host, precisely so that the presence of this file
+# is never mistaken for the rule being in force.
+
+# The frozen core: canonicalization, sign/verify, chain append/verify, and
+# tree construction and proofs. Everything a subtle bug here would be
+# unrecoverable in.
+/core/kernel/ @KyleHChoy
+
+# The vector generator and the two runners hold the bytes the frozen core
+# is judged against, so a change to them is a change to the contract's
+# teeth.
+/core/cmd/vectors/ @KyleHChoy
+/contract/ @KyleHChoy

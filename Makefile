@@ -12,7 +12,12 @@ PSQL_PAYLOAD := $(COMPOSE) exec -T payload psql -v ON_ERROR_STOP=1 -U identity -
 DUMP_SPINE := $(COMPOSE) exec -T spine pg_dump --schema-only --restrict-key=dump -U identity spine
 DUMP_PAYLOAD := $(COMPOSE) exec -T payload pg_dump --schema-only --restrict-key=dump -U identity payload
 
-.PHONY: check check-red check-red-db metadata install lint fmt-check go-check ts-check db-up db-reset migrate migrate-verify typegen typegen-check append-only spine-schema payload-residency scored-columns two-plane-split envelope-test cross-plane-constructs cross-plane-outbox deletion-test db-down
+# The golden vectors both language runners read (trust-kernel/01).
+# Absolute, so the red path below can point both runners at a mutated copy
+# in a temp directory without either one's own working directory mattering.
+VECTORS ?= $(CURDIR)/contract/vectors
+
+.PHONY: check check-red check-red-db metadata install lint fmt-check go-check ts-check db-up db-reset migrate migrate-verify typegen typegen-check append-only spine-schema payload-residency scored-columns two-plane-split envelope-test cross-plane-constructs cross-plane-outbox deletion-test db-down vectors vectors-check kernel-budget kernel-governance
 
 check: metadata install lint go-check db-up migrate-verify typegen-check append-only spine-schema payload-residency scored-columns two-plane-split envelope-test cross-plane-constructs cross-plane-outbox deletion-test ts-check
 	$(COMPOSE) down
@@ -32,7 +37,7 @@ fmt-check:
 	if [ -n "$$unformatted" ]; then echo "gofmt needed on:"; echo "$$unformatted"; exit 1; fi
 
 lint: fmt-check
-	pnpm exec prettier --check "checks/**/*.mjs" "db/**/*.mjs" "db/**/*.ts" "db/*.json" "test/*.mjs" "eslint.config.mjs" "surfaces/**/*.{ts,tsx,js,json}" --no-error-on-unmatched-pattern
+	pnpm exec prettier --check "checks/**/*.mjs" "db/**/*.mjs" "db/**/*.ts" "db/*.json" "test/*.mjs" "eslint.config.mjs" "surfaces/**/*.{ts,tsx,js,json}" "contract/runner/**/*.{ts,json}" --no-error-on-unmatched-pattern
 	pnpm exec eslint .
 
 go-check:
@@ -163,6 +168,39 @@ deletion-test:
 db-down:
 	$(COMPOSE) down
 
+# The golden vectors (trust-kernel/01). `vectors` regenerates them from
+# core/cmd/vectors and is what a change to the generator is followed by;
+# the regeneration is deterministic, and go-check fails if the committed
+# files differ from a fresh generation, so a forgotten `make vectors` is
+# caught rather than merged.
+vectors:
+	cd core && go run ./cmd/vectors generate $(VECTORS)
+
+# Both language runners over the same files. The green path is already
+# covered by `check`: go-check runs the kernel against the committed
+# vectors and ts-check runs contract/runner against them. This target
+# exists so the red path can aim both at a mutated copy in one place.
+vectors-check:
+	cd core && go run ./cmd/vectors check $(VECTORS)
+	cd contract/runner && node src/check.ts $(VECTORS)
+
+# The frozen core's line budget (decision 019). Registered in
+# checks/run.mjs's metadata group, so `make check` and CI already run it;
+# this target is for running it alone.
+kernel-budget:
+	node checks/kernel-budget.mjs
+
+# The two-approval rule on the frozen core (trust-kernel/01, decision
+# 019). NOT part of `check` and not a CI job: reading branch protection
+# needs repository-admin credentials that neither CI's token nor this
+# repo's tooling carries, so wiring it into the blocking pipeline would
+# fail every pull request for a reason no pull request can fix. Run by
+# whoever holds admin on the repository. It currently exits 1, which is
+# the honest answer: the host rule does not exist yet, and creating it is
+# a founder act (the raise recorded on plans/trust-kernel/01).
+kernel-governance:
+	node checks/kernel-governance.mjs
+
 # Red paths: prove each enforcement fails when pointed at a planted
 # violation, without touching the tree the green path checks. No database
 # is booted anywhere near these; the database-dependent red path is
@@ -226,6 +264,20 @@ check-red:
 	! node checks/deletion-copy.mjs test/fixtures/redpath/deletion-copy/copy.md test/fixtures/redpath/deletion-copy/policy.json
 	@echo "red path 14: an em dash, a spaced en dash, curly quotes, a heading emoji, a JSON-escaped em dash, and both tell words each fail the unslop check (no database)"
 	! node checks/unslop.mjs test/fixtures/redpath/unslop
+	@echo "red path 15: a mutated golden vector fails BOTH language runners (no database)"
+	@dir="$$(mktemp -d)"; \
+	cp "$(VECTORS)/canonicalization.json" "$(VECTORS)/sign-verify.json" "$$dir/" && \
+	node -e 'const fs=require("fs");const f=process.argv[1];const v=JSON.parse(fs.readFileSync(f,"utf8"));const c=v.cases.find(c=>c.canonical!==undefined);c.canonical=c.canonical+" ";fs.writeFileSync(f,JSON.stringify(v,null,2)+"\n");' "$$dir/canonicalization.json" && \
+	( cd core && ! go run ./cmd/vectors check "$$dir" ) && \
+	( cd contract/runner && ! node src/check.ts "$$dir" ) && \
+	rm -rf "$$dir" && \
+	echo "flagged by the go kernel and by the typescript runner"
+	@echo "red path 16: a frozen core over its line budget fails the budget check (no database)"
+	! node checks/kernel-budget.mjs core/kernel 10
+	@echo "red path 17: signing with a caller-supplied key does not compile (decision 019)"
+	@cd test/fixtures/redpath/kernel-sign && \
+	if go build ./... 2>/dev/null; then echo "the fixture compiled; the signing path takes a key"; exit 1; fi; \
+	echo "flagged: kernel.Sign has no parameter another party's key could travel in"
 	@echo "check-red: all red paths fail as required"
 
 # Database-dependent red path: a schema edit without regenerated types

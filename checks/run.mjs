@@ -35,6 +35,9 @@ const METADATA = [
   "cross-plane-constructs",
   "deletion-copy",
   "unslop",
+  // The frozen core's line budget (trust-kernel/01, decision 019).
+  // File-only, so it runs before any database with the rest of this group.
+  "kernel-budget",
 ];
 const SCHEMA = ["spine-schema", "payload-residency", "scored-columns"];
 

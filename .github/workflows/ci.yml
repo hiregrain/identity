@@ -117,6 +117,12 @@ jobs:
           go-version-file: core/go.mod
       - run: make go-check
 
+  # `make ts-check` carries the TypeScript half of the golden-vector check
+  # (trust-kernel/01): contract/runner is a workspace package, so
+  # `pnpm -r run test` runs it against contract/vectors, the same files the
+  # go job runs the kernel against. Both languages exercise identical bytes
+  # from the first day there is a kernel, which is what the layer's first
+  # criterion asks for.
   ts:
     name: pnpm typecheck + test
     needs: [db-migrate]
