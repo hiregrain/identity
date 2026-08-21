@@ -3,7 +3,7 @@ id: person-identity/01
 type: task
 layer: person-identity
 satisfies: []
-status: ready
+status: in_progress
 depends_on: [foundation/04, foundation/07]
 migrations: [0010-person-core]
 binds: [decisions/LOG.md#013, decisions/LOG.md#017]
