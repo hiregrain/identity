@@ -3,7 +3,7 @@ id: person-identity/02
 type: task
 layer: person-identity
 satisfies: []
-status: in_progress
+status: ready
 depends_on: [person-identity/01]
 binds: [decisions/LOG.md#013, decisions/LOG.md#020]
 evidence: []
