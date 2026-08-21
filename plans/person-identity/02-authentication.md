@@ -5,7 +5,8 @@ layer: person-identity
 satisfies: []
 status: done
 depends_on: [person-identity/01]
-binds: [decisions/LOG.md#013, decisions/LOG.md#020]
+migrations: [0037-authentication-and-sessions]
+binds: [decisions/LOG.md#013, decisions/LOG.md#020, decisions/LOG.md#089]
 evidence:
   - "test:make auth-test @ 1ab5887 (core/person/auth acceptance suite, both planes live)"
   - "test:make check, make check-red and make check-red-db @ 1ab5887 (green locally under a no-ports compose override)"

@@ -161,3 +161,30 @@ and the dpr-1 thread-separability question are therefore accepted open
 risks, not retired ones. Nothing in a clean iPhone or Pixel run speaks to
 either. If a pilot puts this app on sub-$120 PowerVR hardware, this is
 the paragraph that says nobody measured it first.
+
+### 6.2 Spike 1 findings: the stack builds on both platforms (app-shell/00)
+
+Recorded per decision 085's routing (findings land here as their own
+docs commit, never inside the implementation diff). Build evidence in
+`log/2026-08-21-app-shell-00-build-proof.md` on PR #17's branch.
+
+The ratified stack (Expo SDK 57, React Native 0.86, React 19.2.3,
+Skia 2.6.2 as bundled) resolves and produces real builds on both
+platforms: iOS via prebuild, pod install and xcodebuild (exit 0), and
+Android via assembleDebug and assembleRelease under JDK 17 (both
+successful, all four ABIs). On an iPhone 17 Pro simulator the figure
+carried 23,585 path commands across 89 threads through the full
+1080 ms scribe and a pinch with no crash. The 24,352-vertex polyline
+this section previously cited is superseded by the Bezier fit
+(decision 088); 23,585 is the 2x-pinch equivalent, and the payload is
+984 KB against the polyline's 364 KB, an open size concern 088 names.
+The GE8320 SIGSEGV question stays open per 085 (see 6.1). Founder
+handset attestation (criterion 6) is recorded in the task's
+verification, not here.
+
+Toolchain conditions the builds surfaced, each recorded in the build
+log: the iOS build dies on a checkout path containing a space (an
+Expo pod script defect); pod install needs LANG=en_US.UTF-8; Gradle
+needs JDK 17 where the machine default is 25; and under pnpm's
+isolated layout babel-preset-expo must be a declared dependency or
+release bundling fails while debug builds stay silently green.
