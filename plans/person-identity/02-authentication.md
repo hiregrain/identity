@@ -12,6 +12,7 @@ evidence:
   - "log:github.com/hiregrain/identity/actions/runs/32529483382 (every stage green at 1ab5887, including the authentication and sessions job)"
   - "diff:PR #19 @ 1ab58875f52f67f4f745456a12bb1e2bd26df578"
   - "review:log/2026-08-21-person-identity-02-verification.md (clean-context verification, pass at 0a8d68b)"
+  - "review:log/2026-08-21-person-identity-02-post-fix-verification.md (post-fix re-verification, pass at 6eb0994)"
 verified_by: clean-context-verifier@2026-08-21
 ---
 
