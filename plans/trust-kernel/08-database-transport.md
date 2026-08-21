@@ -3,7 +3,7 @@ id: trust-kernel/08
 type: task
 layer: trust-kernel
 satisfies: []
-status: in_progress
+status: done
 depends_on: []
 migrations: []
 binds: [decisions/LOG.md#065]
@@ -20,12 +20,13 @@ evidence:
     "test:node test/two-plane-split.test.mjs -- 8 assertions passed",
     "test:node checks/run.mjs -- metadata and schema groups green",
     "test:cd core && go test ./transport/... -run TestRenderDoesNotRescan -v -- multi-arg injection red path (post-verification fix) passes",
+    "log:log/2026-08-21-trust-kernel-08-verification.md",
     "test:node checks/transport-seam.mjs test/fixtures/redpath/transport -- both exec.Command and exec.CommandContext caught (code-review finding 1)",
     "test:cd core && go test ./transport/... -run TestEnvelopeRowsRejectsMultiColumnRows -v -- multi-column guard (code-review finding 2) passes",
     "test:cd core && go test ./transport/... -run TestNumericsRoundTripTyped -v -- Float covers whole numbers now that Int is removed (code-review finding 5)",
-    "diff:PR #13 @ 7f6c667f30faceb67ee1f40a077456321bc0a0c1",
+    "diff:PR #13 @ PLACEHOLDER_MERGE_SHA",
   ]
-verified_by: null
+verified_by: clean-context-verifier@2026-08-21
 ---
 
 # Database transport: one seam for every SQL path
