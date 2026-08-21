@@ -19,6 +19,7 @@ evidence:
     "test:node test/append-only.test.mjs -- 18 assertions passed on both planes",
     "test:node test/two-plane-split.test.mjs -- 8 assertions passed",
     "test:node checks/run.mjs -- metadata and schema groups green",
+    "diff:PR #13 @ 1f6ca2400ed78652c6caffcd23f2a391c1a21719",
   ]
 verified_by: null
 ---
