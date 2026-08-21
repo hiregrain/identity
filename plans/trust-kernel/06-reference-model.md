@@ -3,7 +3,7 @@ id: trust-kernel/06
 type: task
 layer: trust-kernel
 satisfies: [7]
-status: ready
+status: in_progress
 depends_on: [foundation/01]
 migrations: []
 binds: [contract/CONTRACT.md, decisions/LOG.md#019]
