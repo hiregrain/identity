@@ -3,14 +3,22 @@ id: app-shell/00
 type: task
 layer: app-shell
 satisfies: [7]
-status: in_progress
+status: done
 depends_on: []
 binds:
   - decisions/LOG.md#040
   - decisions/LOG.md#044
   - design/09-app-framework-evaluation.md
-evidence: []
-verified_by: null
+evidence:
+  [
+    "diff:PR #17 @ 3d55113",
+    "test:surfaces/app-shell/test/stack.test.mjs",
+    "test:surfaces/app-shell/test/fixture.test.mjs",
+    "log:log/2026-08-21-app-shell-00-build-proof.md",
+    "log:design/09-app-framework-evaluation.md#62 @ 301d09a",
+    "review:log/2026-08-21-app-shell-00-verification.md",
+  ]
+verified_by: verify-app-shell-00@2026-08-21
 ---
 
 # Device spike: does the ratified renderer survive the hardware this is for
@@ -67,10 +75,13 @@ do not renumber; the identifiers below are stable.
    `docs(design):` commit on `main`, never inside the implementation diff
    (decision 085). A spike that runs and records nothing has not run.
 6. **The imprint survives the scribe and a pinch on the founder's handsets.**
-   (adjudicated) the figure renders through a full 1080 ms scribe and a pinch
-   on the founder's personal iPhone and Pixel without a crash, attested by the
-   founder running the build; decision 085 records that this is not evidence
-   about the GE8320 hardware the target population carries.
+   (adjudicated, deferred by decision 090) the figure renders through a full
+   1080 ms scribe and a pinch on the founder's personal iPhone and Pixel
+   without a crash, attested by the founder running the build. Deferred until
+   the app is usable; must be recorded before `app-distribution` goes
+   `ready` (decision 090). Criteria 4 and 5 are the done-condition
+   meanwhile; decision 085 records that this is not evidence about the
+   GE8320 hardware the target population carries.
 
 ## What a bad result means, pre-committed
 
@@ -98,3 +109,35 @@ are allowed to assume.
 
 The spike is itself an outside check: it is the one thing in this layer whose
 result cannot be produced by reading the code.
+
+## Evidence
+
+- Criterion 4, resolve: `surfaces/app-shell/test/stack.test.mjs` reads the
+  installed packages rather than the lockfile and asserts Expo 57.0.15, React
+  Native 0.86.2, React 19.2.3, expo-router 57.0.15 and Skia 2.6.2, plus that
+  each is declared as an exact pin. Runs in `make check`'s ts-check stage
+  through `pnpm -r run test`.
+- Criterion 4, build, both platforms:
+  `log/2026-08-21-app-shell-00-build-proof.md` records the prebuilds, the pod
+  install, the `xcodebuild` invocation that exits 0, the launched iOS product
+  rendering the figure and surviving a pinch, and `./gradlew assembleDebug` and
+  `assembleRelease` both printing `BUILD SUCCESSFUL` with `librnskia.so` present
+  for every ABI. It also records the three environment conditions the builds
+  have: a space-free path, a UTF-8 locale, and `babel-preset-expo` declared
+  rather than inherited. All three are toolchain defects rather than defects in
+  the harness.
+- Criterion 5: discharged on `main`, not in this diff, which is what decision
+  085 requires. `design/09` §6.2, commit `301d09a`, `docs(design): spike 1
+  finds the stack builds on both platforms (app-shell/00)`.
+- Criterion 6: **not discharged, deferred by decision 090** until the app is
+  usable, and required before `app-distribution` goes `ready`. It is attested
+  by the founder running the
+  build on his own handsets. `surfaces/app-shell/README.md` states what he is
+  asked to do, which artifact to install on each handset, and what a clean run
+  does and does not prove.
+- The fixture the renderer is loaded with is checked by
+  `surfaces/app-shell/test/fixture.test.mjs`: 89 threads, 23,585 path commands,
+  counted out of the committed bytes rather than trusted from the declaration,
+  every thread a closed single-subpath cubic. `pnpm run fixture` regenerates it
+  from `imprint/imprint.py`; the regeneration is not in `make check` because it
+  needs Python and CI does not.

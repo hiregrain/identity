@@ -3,9 +3,10 @@ id: person-identity/02
 type: task
 layer: person-identity
 satisfies: []
-status: ready
+status: in_progress
 depends_on: [person-identity/01]
-binds: [decisions/LOG.md#013, decisions/LOG.md#020]
+migrations: [0037-authentication-and-sessions]
+binds: [decisions/LOG.md#013, decisions/LOG.md#020, decisions/LOG.md#089]
 evidence: []
 verified_by: null
 ---

@@ -4,3 +4,10 @@ packages:
   # without a second registration anywhere.
   - contract/*
   - surfaces/*
+
+# pnpm 10 blocks dependency install scripts by default. Skia's is what unpacks
+# the precompiled binaries decision 040 records the project cannot patch, so
+# without this entry the renderer resolves and never links. Every other
+# dependency stays blocked.
+onlyBuiltDependencies:
+  - '@shopify/react-native-skia'

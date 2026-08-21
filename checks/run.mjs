@@ -36,6 +36,9 @@ const METADATA = [
   "deletion-copy",
   "unslop",
   "transport-seam",
+  // The kernel's exclusive hold on the signing primitive
+  // (trust-kernel/02, decision 019). File-only, no database.
+  "signing-seam",
   // The frozen core's line budget (trust-kernel/01, decision 019).
   // File-only, so it runs before any database with the rest of this group.
   "kernel-budget",
@@ -47,7 +50,14 @@ const METADATA = [
   // this is for.
   "vector-freshness",
 ];
-const SCHEMA = ["spine-schema", "payload-residency", "scored-columns"];
+const SCHEMA = [
+  "spine-schema",
+  "payload-residency",
+  "scored-columns",
+  // The ledger stamp held out of the serving role's reach
+  // (trust-kernel/02). Live grants, so it belongs in this group.
+  "ledger-stamp-grant",
+];
 
 const flag = process.argv[2];
 let groups;

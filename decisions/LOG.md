@@ -4702,3 +4702,107 @@ holds six coordinates to a vertex's two. That is bandwidth on the
 record-fetch path, not render load; whether the wire format stays
 cubic, compresses, or ships polyline-with-render-side-fit is undecided
 and belongs to whichever task first serves the figure over a network.
+
+## 089 — The channel lookup index, and the module's first dependency (2026-08-21)
+
+Two founder rulings on person-identity/02's second raise.
+
+**A keyed lookup index over contact channels exists.** Signup sealed
+every address under the person's own DEK with no lookup column, which
+made finding a person from a typed address impossible and OTP login
+unbuildable; refusing the index would have demoted the code path, which
+decision 013 forbids. The index takes the cryptographic form decision
+020 ruled for safety markers: an HMAC of the canonicalized address
+under a key held in the KMS and never in the database. The key is
+population-wide, which is a new key-management concept: `core/keys`
+gains a non-person scope for it. **The cost is recorded with the
+ruling:** this index links every account that ever held one address,
+across the whole population. It serves login (02) and duplicate
+detection (05) and nothing else; a use beyond those two is a new
+decision, not an extension.
+
+**`go-webauthn` is the module's first third-party dependency,
+version-pinned.** The WebAuthn ceremony parses attacker-supplied CBOR
+and COSE from the enrolling device, and hand-rolled parsing of hostile
+binary formats inside identity crypto is where in-house implementations
+go wrong. The zero-dependency posture was a fact, not a rule; this
+entry is what licenses the exception, and the next dependency needs its
+own entry.
+
+## 090 — The handset attestation is deferred until the app is usable (2026-08-21)
+
+Founder ruling on app-shell/00's criterion 6: on-device runs on the
+founder's iPhone and Pixel are postponed until the app is done enough
+to be worth holding. The criterion is deferred, not cut: the release
+APK and the device-build instructions stay recorded in the task and its
+build log, and the attestation lands as an addendum to the task's
+verification record when it happens. The trigger is written here so it
+is not rediscovered late: **the attestation must be recorded before
+`app-distribution` goes `ready`**, since shipping to a store without
+the founder ever having held the figure on a phone would discharge the
+spike's purpose on paper only. Criteria 4 and 5 stand as the task's
+done-condition in the meantime.
+
+## 091 — A name's period is a validity window, FHIR semantics (2026-08-21)
+
+Founder ruling on person-identity/04's review finding. As shipped, any
+stored `period_end`, future ones included, made a name not-current
+immediately, and a past stored end could leave a person with no current
+name at all; both were probed live. The task scope's "absent = current"
+was read literally where the schema's own reference model, FHIR
+HumanName, reads `period` as a validity window.
+
+**Ruled: window semantics.** A name is current when its effective
+`period_end` is NULL or later than now(). A future-dated end stays
+current until it passes; a temporary or document-bounded name expires
+on schedule; the lead() derivation continues to supply the end for
+rows with no stored one. The zero-current-rows case is a defect under
+this ruling and is fixed with it.
+
+## 092 — A superseded name ends at the earlier of its stated end and its successor (2026-08-21)
+
+Founder ruling completing decision 091, on a case 091 did not reach:
+when a name row carries both its own stated `period_end` and a later
+row supersedes it, the shipped view took the stored end
+(`COALESCE(period_end, lead(asserted_at))`), so a name with a future
+stated end plus a replacement showed both as current and the prior name
+leaked into the employer-facing read, which is criterion 3's harm.
+
+**Ruled: the effective end is the earlier of the two.**
+`LEAST(stored period_end, the successor's asserted_at)`, with each side
+NULL-tolerant (a row with no successor keeps its stated end; a row with
+no stated end takes the successor's). A superseded name ends when it is
+superseded even if its own stated window ran longer; a name never
+superseded honours its stated window. This preserves every case 091
+fixed and closes the overlap.
+
+## 093 — Three executive-loop rulings: a types dependency, a criterion owner, an auth-plane confirmation (2026-08-21)
+
+Founder rulings batched from the executive loop.
+
+**`@types/node` is accepted as a types-only devDependency of the
+reference model.** The TypeScript reference (trust-kernel/06) cannot
+typecheck against `node:crypto` without it; it carries no runtime code
+and lives in `reference/`'s own devDependencies. This is the session's
+second dependency after `go-webauthn` (decision 089), and like that one
+it is licensed by name here so the next addition still needs its own
+entry.
+
+**Layer criterion 7's second clause gets its owner.** The criterion has
+two clauses, the reference-kernel agreement and "each checkpoint's
+predecessor link verifies". Only trust-kernel/06 declared `satisfies:
+[7]`, covering the first; checkpoints are trust-kernel/04's domain, so
+04's `satisfies` gains 7 for the predecessor-link clause. Both tasks now
+satisfy criterion 7, one clause each, and the layer cannot close until
+both land.
+
+**All authentication schema on the payload plane is confirmed correct.**
+person-identity/02 placed every auth datum (credentials, sessions,
+revocations, one-time codes, attempts, events, the address-lookup index)
+on payload. Decision 086's "auth needs schema on both planes" is read as
+describing the person-identity auth area, whose spine half is already
+`0010-person-core` from task 01, not as requiring a task-02 spine
+migration. Auth material and an address-derived re-identification handle
+must die with the person under the purge role; the spine is append-only
+and never deleted, tombstoned persons included (decision 014), so none
+of it may live there. Recorded so the plane split is not re-litigated.
