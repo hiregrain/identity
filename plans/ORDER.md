@@ -324,6 +324,7 @@ rather than one discovery at a time.
 | **The mark set is not a total function** (decision 061). Five states cannot encode two peers and no business, an agency plus its client as two registered businesses, or a peer at a registered business that never answered, for which the legend's own sentence is false. Determinism is claimed on every surface; it holds for the drawn examples and not for the reachable space | `worker-surface` going `ready`; the packet's provenance field | open, founder, and it is a model question before it is a drawing |
 | **A confirmation link makes a non-user the subject of a claim** (decision 061). Asking a manager to attest asked them to confirm a work address, and the copy took that as confirming their own time at the business: a person-record created as a side effect, upstream of any consent, for someone the product says does not need the app. The copy is withdrawn; whether the ledger may write anything at all about a third party from a confirmation is not settled | `peer-references`, and `public-web`'s attestation flow | open, founder, and it presses on entry 007's two-entity rule so it probably needs counsel |
 | **"Imprint to human visitors, never to the index" needs a mechanism or a narrower claim** (decision 056, challenged in 061). Serving one thing to a person and another to a crawler on the same logged-out URL is user-agent detection, unverifiable from a design, brittle against a crawler that renders or spoofs, and the pattern search engines penalise | `public-web`'s reduced page | open, founder, and the honest fallback is that the figure is simply absent from the logged-out page |
+| **Which layer owns the dispute lifecycle.** `design/ledger-design-0.1.md` §4 specifies it in full: the worker files against a specific attestation, the issuing party is notified, a 30-day window opens with 15 more on new evidence, and it ends in a correction, a permanent counter-statement, or an unresponsive-issuer flag that feeds the party's reliability signal. Layers across the plan reference disputes and none scopes the machinery | `operator-console` criterion 3, which asserts deadlines fire without operator polling, and the dispute administration surface it describes | open, and it is an ownership question before it is a design one |
 
 ## Work that has no layer
 
@@ -341,6 +342,10 @@ rather than one discovery at a time.
   requires inform, representations, human intervention, and contest. The
   brief's question is now who owes that duty, Grain or the deployer,
   (`research/14` §3).
+- **The dispute lifecycle.** Specified in `design/ledger-design-0.1.md` §4
+  and owned by no layer; no task file is named for one. Recorded as a decision
+  gate above, because `operator-console` criterion 3 already promises its
+  behaviour.
 - **Counsel briefs 1–3.** Inform design; block nothing in code. Brief 2
   (salted commitments) must return before checkpoints go *public*;
   private WORM anchoring is ungated.

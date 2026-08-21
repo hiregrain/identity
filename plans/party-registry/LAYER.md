@@ -2,7 +2,7 @@
 id: party-registry
 type: layer
 status: ready
-milestone: v1
+milestone: first-product
 depends_on: [foundation, trust-kernel]
 binds:
   - decisions/LOG.md#005

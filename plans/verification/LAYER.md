@@ -2,7 +2,7 @@
 id: verification
 type: layer
 status: ready
-milestone: v1
+milestone: first-product
 depends_on: [person-identity, party-registry, ingestion, self-asserted-record]
 binds:
   - decisions/LOG.md#010

@@ -2,7 +2,7 @@
 id: app-shell
 type: layer
 status: ready
-milestone: v1
+milestone: first-product
 depends_on: [foundation]
 soft_depends_on: [worker-surface, public-web]
 binds:
