@@ -8,6 +8,7 @@ soft_depends_on: [party-registry, ingestion, consent-and-deletion]
 gated_criteria: [3, 6]
 binds:
   - decisions/LOG.md#077
+  - decisions/LOG.md#083
   - decisions/LOG.md#013
   - decisions/LOG.md#014
   - decisions/LOG.md#015
@@ -32,6 +33,13 @@ person identity lands. Everything needing the attestation path, the party
 registry or the deletion saga is declared in `gated_criteria` and discharges when
 those layers arrive (decision 073: a layer is `done` when every non-gated
 criterion is met).
+
+**Sign-in is ruled and unbuilt** (decision 083). Operators are a third account
+kind in their own schema, unlinkable to persons; authentication is Grain's own
+with no external identity provider; passkeys with user verification on every act
+that appends, and reads on the session. Creating an operator is a two-admin
+anchored event, and recusal is self-declared because the invariant makes it
+unenforceable. No task file exists for any of it yet.
 
 **Two roles, admin and operator** (decision 077). Admin administers the console:
 access, configuration, role grants. Operator works the queues. `steward` is the
