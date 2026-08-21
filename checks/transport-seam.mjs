@@ -49,14 +49,29 @@ const EXEMPT_PATHS = new Set(["core/transport", "core/gen"]);
 // test/ when it is encountered as a descendant of the scan root.
 const EXEMPT_NAMES = new Set([".git", "node_modules", "test"]);
 
+// execPattern matches both exec.Command("cmd", ...) and
+// exec.CommandContext(ctx, "cmd", ...), the ordinary Go idiom for a
+// cancellable shell-out: CommandContext takes a leading context
+// argument before the command literal, which the optional non-greedy
+// group here skips over. A code-review finding on trust-kernel/08
+// confirmed CommandContext was invisible to the plain exec.Command(...
+// pattern: a planted exec.CommandContext(ctx, "psql", ...) outside
+// core/transport passed the check green.
+function execPattern(cmd) {
+  return new RegExp(
+    `exec\\.Command(?:Context)?\\(\\s*(?:[^,"]+,\\s*)?"${cmd}"`,
+    "g",
+  );
+}
+
 const EXEC_PATTERNS = [
   {
-    pattern: /exec\.Command\(\s*"docker"/g,
-    what: 'exec.Command reaching "docker"',
+    pattern: execPattern("docker"),
+    what: 'exec.Command(Context) reaching "docker"',
   },
   {
-    pattern: /exec\.Command\(\s*"psql"/g,
-    what: 'exec.Command reaching "psql"',
+    pattern: execPattern("psql"),
+    what: 'exec.Command(Context) reaching "psql"',
   },
 ];
 

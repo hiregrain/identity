@@ -60,19 +60,24 @@ func TestBoolRoundTripsTyped(t *testing.T) {
 }
 
 func TestNumericsRoundTripTyped(t *testing.T) {
-	intLit, err := Literal(Int(-42))
-	if err != nil {
-		t.Fatalf("Literal: %v", err)
-	}
-	if intLit != "-42" || strings.Contains(intLit, "'") {
-		t.Fatalf("Int(-42) rendered %q, want the bare literal -42", intLit)
-	}
+	// Int/intArg was removed: it had zero call sites (outbox's argFor
+	// maps JSON values onto nil/String/Bool/Float alone, and
+	// core/outbox.Reconcile's threshold renders through Float too).
+	// Float alone covers whole numbers as well: FormatFloat's 'g' verb
+	// renders 60.0 as "60", not "60.0".
 	floatLit, err := Literal(Float(3.5))
 	if err != nil {
 		t.Fatalf("Literal: %v", err)
 	}
 	if floatLit != "3.5" || strings.Contains(floatLit, "'") {
 		t.Fatalf("Float(3.5) rendered %q, want the bare literal 3.5", floatLit)
+	}
+	wholeLit, err := Literal(Float(60))
+	if err != nil {
+		t.Fatalf("Literal: %v", err)
+	}
+	if wholeLit != "60" || strings.Contains(wholeLit, "'") {
+		t.Fatalf("Float(60) rendered %q, want the bare literal 60 (no decimal point)", wholeLit)
 	}
 }
 
@@ -151,6 +156,27 @@ func TestRenderDoesNotRescanSubstitutedLiterals(t *testing.T) {
 	want2 := "SELECT '$1', '; CREATE TABLE verifier_injected(x int); --'"
 	if rendered2 != want2 {
 		t.Fatalf("render rescanned a substituted literal:\n got:  %q\nwant: %q", rendered2, want2)
+	}
+}
+
+// TestEnvelopeRowsRejectsMultiColumnRows is the code-review finding's
+// coverage gap: EnvelopeQuerier.Query previously wrapped every result
+// line as []string{line} unconditionally. Every query envelope.go
+// issues today selects one column, so that was correct by accident;
+// a future second column would mash into rows[0][0] and activeDEK's
+// len(rows[0]) != 1 guard (slice length, not column count) would not
+// catch it. envelopeRows is the row-shaping step Query delegates to,
+// tested directly here without a database.
+func TestEnvelopeRowsRejectsMultiColumnRows(t *testing.T) {
+	rows, err := envelopeRows([]string{"single-column-value"})
+	if err != nil {
+		t.Fatalf("a genuine single-column row was rejected: %v", err)
+	}
+	if len(rows) != 1 || len(rows[0]) != 1 || rows[0][0] != "single-column-value" {
+		t.Fatalf("got %v, want one row of one field", rows)
+	}
+	if _, err := envelopeRows([]string{"col-a\tcol-b"}); err == nil {
+		t.Fatal("a two-column row was accepted without error")
 	}
 }
 

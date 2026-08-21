@@ -20,7 +20,10 @@ evidence:
     "test:node test/two-plane-split.test.mjs -- 8 assertions passed",
     "test:node checks/run.mjs -- metadata and schema groups green",
     "test:cd core && go test ./transport/... -run TestRenderDoesNotRescan -v -- multi-arg injection red path (post-verification fix) passes",
-    "diff:PR #13 @ e52399ed05aaa1419c82a5833ec03a91e3a4f7d4",
+    "test:node checks/transport-seam.mjs test/fixtures/redpath/transport -- both exec.Command and exec.CommandContext caught (code-review finding 1)",
+    "test:cd core && go test ./transport/... -run TestEnvelopeRowsRejectsMultiColumnRows -v -- multi-column guard (code-review finding 2) passes",
+    "test:cd core && go test ./transport/... -run TestNumericsRoundTripTyped -v -- Float covers whole numbers now that Int is removed (code-review finding 5)",
+    "diff:PR #13 @ PLACEHOLDER_SHA",
   ]
 verified_by: null
 ---
@@ -157,9 +160,11 @@ symbols.
 - Criterion 4: `core/transport/transport_test.go` is the renderer's
   red-path suite: an injection-shaped string round-trips
   byte-identical, a NUL byte is refused, `Null` renders the keyword
-  `NULL` not the text `'NULL'`, `Bool`/`Int`/`Float` round-trip typed
-  and unquoted, a `\x`-shaped string renders as plain quoted text (not
-  hex), and `Bytea` is the only path to the hex literal form.
+  `NULL` not the text `'NULL'`, `Bool`/`Float` round-trip typed and
+  unquoted (`Int` was removed in the code-review pass below; `Float`
+  alone covers whole numbers, since `FormatFloat`'s `'g'` verb renders
+  `60.0` as `"60"`), a `\x`-shaped string renders as plain quoted text
+  (not hex), and `Bytea` is the only path to the hex literal form.
 - Criterion 5: preserved by construction, not just by unchanged
   assertions. `core/outbox/instruction.go`'s `ApplySQL` still renders
   free-text values through quote-doubling (`transport.String`), so an
@@ -185,6 +190,63 @@ never looked at again. `TestRenderDoesNotRescanSubstitutedLiterals` in
 payload and a `$1`-shaped string across two arguments, in both index
 orders) and asserts the rendered statement keeps the payload inside
 one quoted literal.
+
+A code-review pass on the same branch raised five further findings, all
+fixed here:
+
+1. `checks/transport-seam.mjs`'s exec pattern matched `exec.Command`
+   but not `exec.CommandContext`, the ordinary Go idiom for a
+   cancellable shell-out; a planted `exec.CommandContext(ctx, "psql",
+   ...)` outside `core/transport` passed the check green. The pattern
+   now matches `exec\.Command(?:Context)?\(` and skips an optional
+   leading context argument before the command literal. The red-path
+   fixture (`test/fixtures/redpath/transport/core/planted/planted.go`)
+   now plants both shapes and the check catches both.
+2. `EnvelopeQuerier.Query` wrapped every result line as `[]string{line}`
+   unconditionally, contrary to the package's own row-parsing contract.
+   Correct today only because every envelope query selects one column;
+   a future second column would mash into `rows[0][0]`, and
+   `activeDEK`'s `len(rows[0]) != 1` guard checks slice length, not
+   column count, so it would not catch it. `EnvelopeQuerier.Query` now
+   delegates to `envelopeRows`, which refuses a row with more than one
+   column. `TestEnvelopeRowsRejectsMultiColumnRows` in
+   `transport_test.go` covers both shapes directly, no database needed.
+3. `stringArg.sqlLiteral` escapes by quote-doubling alone, which is a
+   correct SQL-string escape only if `standard_conforming_strings` is
+   on; nothing asserted it. Not reachable off in the pinned config
+   (Postgres has defaulted it on since 9.1, and the compose image is
+   pinned to `postgres:18`), so not a live bug, but closed at the seam
+   anyway: `Query` and `Tx` now call `assertStandardConformingStrings`,
+   which runs `SHOW standard_conforming_strings` once per plane
+   (cached) and fails loudly if it is ever not `"on"`. Chosen over the
+   other option raised, rendering every string through
+   `decode('..','hex')` or dollar-quoting: that changes every
+   literal's shape for a setting this repo's own config never varies,
+   where a single cached live assertion costs one extra query per
+   plane for the process's lifetime.
+4. `core/outbox.Reconcile` built its SQL with `fmt.Sprintf`
+   interpolating `thresholdSeconds` into `interval '%d seconds'`
+   rather than a typed `Arg`, the one surviving call site that still
+   built SQL text. Not exploitable (the value is Go-`int`-typed), but
+   it was the exception to "call sites never build SQL strings"
+   (Scope). Now passes `transport.Float(float64(thresholdSeconds))` as
+   `$1` and builds the interval in SQL as `($1 || ' seconds')::interval`.
+5. `transport.Int`/`intArg` had zero call sites (`argFor` in
+   `instruction.go` maps JSON values onto `nil`/`String`/`Bool`/`Float`
+   alone, and finding 4 above uses `Float`, not `Int`, for
+   `Reconcile`'s threshold). Removed; `TestNumericsRoundTripTyped`
+   trimmed to `Float` alone, with a case proving a whole number renders
+   without a decimal point. `Bytea` was left as is per the finding,
+   despite also having no `argFor` call site today: it is the
+   documented sole path to hex rendering, not dead code the way `Int`
+   was.
+
+Explicitly out of scope for this pass, per the same review: the
+driver-import blocklist's width (deferred to the driver-adoption
+decision), the per-call docker-exec subprocess cost (decision 065),
+the eighth directory-walker copy (pre-existing repo debt), and the
+`test/`-dir pruning (already documented by design in criterion 1's
+evidence above).
 
 One environmental note, not a code defect: `make check`'s
 `migrate-verify` step (a `docker compose down && up` cycle, unrelated

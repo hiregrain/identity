@@ -33,6 +33,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"sync"
 )
 
 // Arg is a typed SQL argument the renderer turns into a literal. This
@@ -75,13 +76,6 @@ type boolArg bool
 func Bool(b bool) Arg { return boolArg(b) }
 
 func (a boolArg) sqlLiteral() (string, error) { return strconv.FormatBool(bool(a)), nil }
-
-type intArg int64
-
-// Int is an integer numeric argument.
-func Int(i int64) Arg { return intArg(i) }
-
-func (a intArg) sqlLiteral() (string, error) { return strconv.FormatInt(int64(a), 10), nil }
 
 type floatArg float64
 
@@ -161,10 +155,59 @@ func SplitRow(line string, columns int) []string {
 	return strings.SplitN(line, "\t", columns)
 }
 
+// standard_conforming_strings guards the one assumption String's
+// escaping makes: quote-doubling alone is a correct SQL-string escape
+// only if a plain quoted literal does not itself process backslash
+// escapes. Off, a payload's backslash could combine with the
+// following character into an escape sequence the renderer never
+// intended, inside a literal the renderer believed was inert.
+// Postgres has defaulted this on since 9.1 (2011) and the pinned image
+// this repo runs (postgres:18) inherits that default, so the setting
+// is not reachable off in this repo's own config; asserted live and
+// once per plane anyway, because correctness at the one SQL chokepoint
+// should not rest on an assumption nothing checks. Preferred over
+// rendering every string through decode('..','hex') or dollar-quoting
+// (the other option raised): those change every literal's shape for a
+// setting this repo's own compose config never varies, where a single
+// live assertion, cached, costs one extra query per plane for the
+// process's lifetime and fails loudly the moment it would matter.
+var (
+	scsMu      sync.Mutex
+	scsChecked = map[string]error{}
+)
+
+func assertStandardConformingStrings(plane, role string) error {
+	scsMu.Lock()
+	if err, checked := scsChecked[plane]; checked {
+		scsMu.Unlock()
+		return err
+	}
+	scsMu.Unlock()
+
+	out, err := psql(plane, role, []string{"-tAq", "-c", "SHOW standard_conforming_strings"}, "")
+	var result error
+	if err != nil {
+		result = fmt.Errorf("transport: checking standard_conforming_strings on %s: %w", plane, err)
+	} else if got := strings.TrimSpace(out); got != "on" {
+		result = fmt.Errorf(
+			"transport: %s has standard_conforming_strings = %q, want \"on\": "+
+				"String's quote-doubling escape assumes a plain quoted literal "+
+				"does not process backslash escapes", plane, got)
+	}
+
+	scsMu.Lock()
+	scsChecked[plane] = result
+	scsMu.Unlock()
+	return result
+}
+
 // Query executes one statement with $n placeholders against plane as
 // role, returning tab-separated result lines. A caller expecting more
 // than one column reads each line with SplitRow.
 func Query(plane, role, sql string, args ...Arg) ([]string, error) {
+	if err := assertStandardConformingStrings(plane, role); err != nil {
+		return nil, err
+	}
 	rendered, err := render(sql, args)
 	if err != nil {
 		return nil, err
@@ -229,6 +272,9 @@ func (tx *Transaction) CrashPoint(configured, point string) {
 // one script. fn may call tx.CrashPoint to abort by exit instead,
 // matching the outbox's crash-injection protocol.
 func Tx(plane, role string, fn func(tx *Transaction) error) error {
+	if err := assertStandardConformingStrings(plane, role); err != nil {
+		return err
+	}
 	tx := &Transaction{plane: plane, role: role}
 	if err := fn(tx); err != nil {
 		return err
@@ -284,9 +330,26 @@ func (q EnvelopeQuerier) Query(_ context.Context, sql string, args ...string) ([
 	if err != nil {
 		return nil, err
 	}
+	return envelopeRows(lines)
+}
+
+// envelopeRows shapes raw tab-separated result lines into the
+// [][]string envelope.Querier's contract expects. Every query
+// envelope.go issues selects exactly one column, per its own
+// documented Querier contract; this refuses a row that carries more
+// rather than silently mashing a second column into the first field,
+// which wrapping each line as []string{line} without checking would
+// otherwise do. A future query that grows a second column fails loudly
+// here instead of corrupting activeDEK's len(rows[0]) != 1 guard,
+// which counts slice length, not columns.
+func envelopeRows(lines []string) ([][]string, error) {
 	rows := make([][]string, len(lines))
 	for i, line := range lines {
-		rows[i] = []string{line}
+		fields := SplitRow(line, 2)
+		if len(fields) != 1 {
+			return nil, fmt.Errorf("transport: envelope querier: expected exactly one column, row has more: %q", line)
+		}
+		rows[i] = fields
 	}
 	return rows, nil
 }

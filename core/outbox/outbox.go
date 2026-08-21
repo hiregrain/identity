@@ -214,7 +214,7 @@ func Drain(crashPoint string) (applied, failed int, err error) {
 // means this command's non-zero exit in a pipeline, with the threshold
 // documented at the call site (Makefile).
 func Reconcile(thresholdSeconds int) (stragglers int, err error) {
-	lines, err := transport.Query("spine", "identity_app", fmt.Sprintf(`
+	lines, err := transport.Query("spine", "identity_app", `
 		SELECT o.entry_id,
 		       floor(extract(epoch FROM now() - o.created_at))::bigint,
 		       coalesce((SELECT max(a.attempt) FROM cross_plane_outbox_attempts a
@@ -226,8 +226,9 @@ func Reconcile(thresholdSeconds int) (stragglers int, err error) {
 		 WHERE NOT EXISTS (
 		    SELECT 1 FROM cross_plane_outbox_attempts a
 		     WHERE a.entry_id = o.entry_id AND a.state = 'applied')
-		   AND now() - o.created_at > interval '%d seconds'
-		 ORDER BY o.created_at, o.entry_id`, thresholdSeconds))
+		   AND now() - o.created_at > ($1 || ' seconds')::interval
+		 ORDER BY o.created_at, o.entry_id`,
+		transport.Float(float64(thresholdSeconds)))
 	if err != nil {
 		return 0, err
 	}

@@ -1,11 +1,21 @@
 // Package planted is a synthetic fixture (trust-kernel/08's red path):
-// a hand-rolled psql invocation outside core/transport, the shape
-// checks/transport-seam.mjs must fail on.
+// hand-rolled psql invocations outside core/transport, the shapes
+// checks/transport-seam.mjs must fail on, including the cancellable
+// exec.CommandContext form a code-review finding proved was invisible
+// to an exec.Command-only pattern.
 package planted
 
-import "os/exec"
+import (
+	"context"
+	"os/exec"
+)
 
 func psql(sql string) error {
 	cmd := exec.Command("docker", "compose", "exec", "-T", "payload", "psql", "-c", sql)
+	return cmd.Run()
+}
+
+func psqlWithContext(ctx context.Context, sql string) error {
+	cmd := exec.CommandContext(ctx, "docker", "compose", "exec", "-T", "payload", "psql", "-c", sql)
 	return cmd.Run()
 }
