@@ -9,6 +9,10 @@ language must match it byte-for-byte.
 
 1. **Canonicalization is RFC 8785 (JCS).** Unicode normalization: NONE,
    NFC and NFD are distinct strings and distinct object keys.
+   Input must be well-formed Unicode: a document containing an unpaired
+   surrogate is refused, never altered and never escaped (decision 082;
+   the differential harness measured 2021 of 20096 fresh cases diverging
+   on this silence, and substitution had silently changed input bytes).
 2. **Number formatting is ECMAScript `Number::toString`** exactly:
    `-0` → `0`; `1e21` → `1e+21` (explicit sign); the `1e-7` vs
    `0.000001` exponent threshold; full-decimal integers ≤ 2^53−1.
@@ -20,7 +24,14 @@ language must match it byte-for-byte.
 3. **JWS envelope**: compact serialization; the protected header is the
    exact 15 bytes `{"alg":"EdDSA"}`; verification compares header bytes
    and does not re-canonicalize the payload; a false verdict is exactly
-   `{"valid":false}` with no extra fields.
+   `{"valid":false}` with no extra fields, and it never says why: a
+   failure reason is a side channel on the signature check (decision
+   082). A true verdict is exactly `{"valid":true}` (decision 082).
+   Every base64url segment must be the canonical spelling of its bytes:
+   a segment that does not survive a decode and re-encode round trip,
+   including one with padding or slack final-character bits, does not
+   verify (decision 082; one envelope has one spelling, the posture the
+   fixed header already takes).
 4. **Key encodings**: Ed25519 private = 32-byte seed hex; public =
    32-byte raw hex (RFC 8032 conventions), not PEM/JWK.
 5. **Hash chain**: SHA-256; genesis prev = 32 zero bytes; records are
