@@ -3,7 +3,7 @@ id: trust-kernel/01
 type: task
 layer: trust-kernel
 satisfies: [1]
-status: in_progress
+status: done
 depends_on: [foundation/01, foundation/02]
 binds: [contract/CONTRACT.md, decisions/LOG.md#012, decisions/LOG.md#019]
 evidence:
@@ -11,7 +11,8 @@ evidence:
   - "test:differential run against reference at origin/task/trust-kernel-06, 18075 of 20096 requests byte-identical, every divergence a lone surrogate (ambiguity A3, raised)"
   - "log:log/2026-08-21-trust-kernel-01-verification.md"
   - "diff:PR #15 @ b87a7fb40c4eb9be9c1ff180ee227fdb57e89e6e"
-verified_by: null
+  - "review:log/2026-08-21-trust-kernel-01-reverification.md"
+verified_by: clean-context-verifier@2026-08-21
 ---
 
 # Canonicalization and JWS core
