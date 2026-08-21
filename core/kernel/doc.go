@@ -4,13 +4,19 @@
 // Ed25519 JWS envelope; chain append/verify and tree construction land in
 // trust-kernel/03 and /04.
 //
-// Everything in this package directory is under the line budget and the
-// two-human review rule. Orchestration that calls in (schedulers,
+// Everything in this package directory is under the line budget, enforced
+// by checks/kernel-budget.mjs, which counts this directory's non-test files
+// and not its subpackages. Orchestration that calls in (schedulers,
 // publishers, reconciliation, per-party root assembly) belongs outside it
 // under ordinary review, so the expensive discipline stays concentrated
-// where a subtle bug is unrecoverable. The budget is enforced by
-// checks/kernel-budget.mjs, which counts this directory's non-test files
-// and not its subpackages.
+// where a subtle bug is unrecoverable.
+//
+// Decision 019 also puts this directory under a two-human review rule.
+// That rule is NOT in force: it needs a branch-protection rule on the
+// repository host requiring two approving reviews with code-owner review,
+// and no such rule exists yet. checks/kernel-governance.mjs asserts it by
+// querying the host and fails until it does, which is why this paragraph
+// says "not in force" rather than describing the rule as if it were.
 //
 // The normative rules this package implements are contract/CONTRACT.md,
 // preserved from the T1 spike (decision 012). The golden vectors under

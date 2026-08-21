@@ -15,6 +15,9 @@ DUMP_PAYLOAD := $(COMPOSE) exec -T payload pg_dump --schema-only --restrict-key=
 # The golden vectors both language runners read (trust-kernel/01).
 # Absolute, so the red paths below can point both runners at a mutated copy
 # in a temp directory without either one's own working directory mattering.
+# Quoted at every use: $(CURDIR) carries whatever the checkout path is, and
+# a developer checkout under a directory with a space in it split the
+# argument and failed with the usage line.
 VECTORS ?= $(CURDIR)/contract/vectors
 
 .PHONY: check check-red check-red-db metadata install lint fmt-check go-check ts-check db-up db-reset migrate migrate-verify typegen typegen-check append-only spine-schema payload-residency scored-columns two-plane-split envelope-test cross-plane-constructs cross-plane-outbox deletion-test db-down vectors vectors-check kernel-budget kernel-governance
@@ -176,15 +179,15 @@ db-down:
 # not the enforcement: it can be served from the test cache, because the
 # vectors live outside the `core` module.
 vectors:
-	cd core && go run ./cmd/vectors generate $(VECTORS)
+	cd core && go run ./cmd/vectors generate "$(VECTORS)"
 
 # Both language runners over the same files. The green path is already
 # covered by `check`: go-check runs the kernel against the committed
 # vectors and ts-check runs contract/runner against them. This target
 # exists so the red path can aim both at a mutated copy in one place.
 vectors-check:
-	cd core && go run ./cmd/vectors check $(VECTORS)
-	cd contract/runner && node src/check.ts $(VECTORS)
+	cd core && go run ./cmd/vectors check "$(VECTORS)"
+	cd contract/runner && node src/check.ts "$(VECTORS)"
 
 # The frozen core's line budget (decision 019). Registered in
 # checks/run.mjs's metadata group, so `make check` and CI already run it;
@@ -280,9 +283,12 @@ check-red:
 	echo "flagged by the go kernel and by the typescript runner"
 	@echo "red path 17: a frozen core over its line budget fails the budget check (no database)"
 	! node checks/kernel-budget.mjs core/kernel 10
-	@echo "red path 18: signing with a caller-supplied key does not compile (decision 019)"
-	@cd test/fixtures/redpath/kernel-sign && \
-	if go build ./... 2>/dev/null; then echo "the fixture compiled; the signing path takes a key"; exit 1; fi; \
+	@echo "red path 18: signing with a caller-supplied key does not compile, and fails for that reason (decision 019)"
+	@out="$$(cd test/fixtures/redpath/kernel-sign && go build ./... 2>&1)"; \
+	if [ -z "$$out" ]; then echo "the fixture compiled; the signing path takes a key"; exit 1; fi; \
+	echo "$$out"; \
+	echo "$$out" | grep -qF "too many arguments in call to kernel.Sign" || \
+	  { echo "the fixture failed for some other reason than the one this red path is about"; exit 1; }; \
 	echo "flagged: kernel.Sign has no parameter another party's key could travel in"
 	@echo "red path 19: a vector file edited without regenerating fails the freshness check, even when the edit is one both runners tolerate (no database)"
 	@dir="$$(mktemp -d)"; \
