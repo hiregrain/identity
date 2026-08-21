@@ -6,7 +6,7 @@ satisfies: []
 status: done
 depends_on: [person-identity/01]
 migrations: [0011-names]
-binds: [decisions/LOG.md#013, decisions/LOG.md#020, research/13-name-standards.md]
+binds: [decisions/LOG.md#013, decisions/LOG.md#020, research/11-signup-identifiers-and-names.md]
 evidence:
   - "test:make person-test @ a5cc923 (core/person acceptance suite, both planes live, includes person-identity/01's own tests)"
   - "test:make check @ a5cc923 (green, run under a no-ports compose override)"

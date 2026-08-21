@@ -4588,3 +4588,173 @@ which makes this the cheap moment and not a tidy-up.
 
 **Cookies are host-only, per origin, never scoped to `.grainidentity.com`**, or
 the separation above is decoration.
+
+## 085 — The device spike runs on the founder's own handsets; the low-end-Android evidence is waived (2026-08-21)
+
+Founder rulings on app-shell/00's raises, 2026-08-21.
+
+**The Redmi-class requirement is cut.** Criteria asking for a Xiaomi
+Redmi 9C-class device (PowerVR GE8320, MediaTek Helio G35), the 20
+cold-start crash measurement, the frame-time trace with its 33 ms p95
+and 100 ms max budgets, and the dpr-1 daylight photograph are removed
+from app-shell/00 and from the layer's criterion 7. The spike tests on
+the founder's personal iPhone and Pixel, and the founder's words are
+recorded as given: "cut the requirement. this isn't that sensitive."
+
+**What this accepts, stated so nobody rediscovers it as a surprise:**
+design/09 §6 records a SIGSEGV crash-loop in the ratified renderer's own
+tracker on exactly the GE8320 hardware, Shopify ships precompiled
+binaries an app cannot patch, and the target population carries
+sub-$120 handsets. A clean run on an iPhone and a Pixel is evidence the
+stack builds and renders, not evidence it survives that GPU. The risk
+moves from "to be retired by measurement" to "accepted, open in
+design/09 §6". The frame-budget revision window is mooted with the
+criteria that carried it.
+
+**The spike's package path is `surfaces/`** and the harness is the seed
+of the client app, entering the pnpm workspace rather than a throwaway.
+
+**Spike findings land on `main`** as their own `docs(design):` commit in
+design/09 §6, never inside the implementation diff; the PR carries only
+the harness code.
+
+## 086 — Step-up leaves person-identity; it returns with the verification layer (2026-08-21)
+
+Founder ruling on person-identity/02's raise. The task's step-up
+criterion required a code session on a document-verified account to be
+refused sensitive operations, and decision 071 rules that
+document-verified accounts cannot exist in first-product: every account
+derives channel, so the criterion was unreachable code wearing a test.
+Decision 071 corrected the same premise in person-identity/03's scope
+and did not reach 02's, or 03's first acceptance criterion. This entry
+finishes the job.
+
+**Step-up is cut from person-identity/02 and the downgrade-proof
+criterion from person-identity/03.** Both return with the verification
+layer, whose task 04 owns the assurance ladder; the sensitive-set
+definition and decision 020's comparison rule are unchanged and wait
+there. 02 keeps what is real now: OTP login and passkeys as equal paths
+(decision 013), sessions and revocation, enumeration resistance, rate
+limiting, and append-only auth events, including the assertion that a
+code session is never blocked from routine operations.
+
+**How a session derives its own assurance is deferred with it.** The
+founder chose against method-based session assurance (code below
+passkey) because it demotes the code path, which decision 013 forbids.
+The derivation question lands in verification/04's lap alongside the
+ladder it grades against.
+
+**Migrations bookkeeping, same entry.** Tasks 02 and 03 carry no
+migrations claim; auth needs schema on both planes. Claims are amended
+on main after the files land, the foundation/08 precedent now applied
+three times.
+
+## 087 — Kernel governance matches the team that exists; the two-human host rule becomes a trigger (2026-08-21)
+
+Founder ruling superseding decision 019's enforcement mechanism, not its
+intent. 019 gave the frozen core the expensive treatment, two-human
+review among it, and trust-kernel/01 made that a host-enforced
+branch-protection criterion. The loop then established the fact on the
+ground: every PR in this repository is authored under the founder's own
+account, and the host forbids approving one's own pull request, so any
+required-approval rule, two or one, is unsatisfiable by the only human
+here. A rule bypassed on every merge enforces nothing and claims
+otherwise, which is worse than its absence.
+
+**What the host now enforces, and the governance check asserts:** a
+ruleset on `main` blocking force pushes and branch deletion (in force,
+ruleset 21162777, verified 2026-08-21). Force-push protection is the
+rule with teeth here: the decisions log is append-only and every
+verification record cites SHAs, so a rewritten `main` is the one git
+operation that silently invalidates the repo's own evidence.
+CODEOWNERS stays as the reviewer-request seed on the kernel paths.
+
+**What enforces kernel review now:** the loop's own gates. A kernel
+change reaches `main` only through clean-context verification, a code
+review pass, and the founder's own read at merge, which is decision
+019's intent carried by the process that actually runs rather than by a
+setting that would be theatre.
+
+**The two-human host rule is dormant, with its trigger written:** the
+day a second maintainer holds write access, required approvals return to
+the host settings and `checks/kernel-governance.mjs` reverts to
+asserting them. Until then the check asserts what is true.
+
+Direct pushes of binding prose to `main` continue unaffected; neither
+rule in force touches a normal push.
+
+## 088 — The Bezier imprint supersedes the polyline; the pinch is the load anchor (2026-08-21)
+
+Founder ruling on app-shell/00's figure raise. Decision 040 stress-tested
+a 24,352-vertex polyline; `imprint.py` has since moved to a Bezier fit
+that draws the same record in 5,852 commands, so 040's worst case no
+longer describes anything the app renders. The spike anchored load to
+what a 2x pinch costs instead: 720 CSS px at dpr 3 on the densest
+reference record, 23,585 path commands across 89 threads, within 3% of
+040's number, and carried it through the full scribe and a pinch on an
+iPhone 17 Pro simulator without a crash.
+
+**Ruled: the supersession is recorded as tested.** The 2x-pinch figure
+is the load reference going forward. **The payload size is an open
+concern, named rather than accepted silently:** the Bezier encoding
+carries 984 KB where 040's polyline carried 364 KB, because a cubic
+holds six coordinates to a vertex's two. That is bandwidth on the
+record-fetch path, not render load; whether the wire format stays
+cubic, compresses, or ships polyline-with-render-side-fit is undecided
+and belongs to whichever task first serves the figure over a network.
+
+## 089 — The channel lookup index, and the module's first dependency (2026-08-21)
+
+Two founder rulings on person-identity/02's second raise.
+
+**A keyed lookup index over contact channels exists.** Signup sealed
+every address under the person's own DEK with no lookup column, which
+made finding a person from a typed address impossible and OTP login
+unbuildable; refusing the index would have demoted the code path, which
+decision 013 forbids. The index takes the cryptographic form decision
+020 ruled for safety markers: an HMAC of the canonicalized address
+under a key held in the KMS and never in the database. The key is
+population-wide, which is a new key-management concept: `core/keys`
+gains a non-person scope for it. **The cost is recorded with the
+ruling:** this index links every account that ever held one address,
+across the whole population. It serves login (02) and duplicate
+detection (05) and nothing else; a use beyond those two is a new
+decision, not an extension.
+
+**`go-webauthn` is the module's first third-party dependency,
+version-pinned.** The WebAuthn ceremony parses attacker-supplied CBOR
+and COSE from the enrolling device, and hand-rolled parsing of hostile
+binary formats inside identity crypto is where in-house implementations
+go wrong. The zero-dependency posture was a fact, not a rule; this
+entry is what licenses the exception, and the next dependency needs its
+own entry.
+
+## 090 — The handset attestation is deferred until the app is usable (2026-08-21)
+
+Founder ruling on app-shell/00's criterion 6: on-device runs on the
+founder's iPhone and Pixel are postponed until the app is done enough
+to be worth holding. The criterion is deferred, not cut: the release
+APK and the device-build instructions stay recorded in the task and its
+build log, and the attestation lands as an addendum to the task's
+verification record when it happens. The trigger is written here so it
+is not rediscovered late: **the attestation must be recorded before
+`app-distribution` goes `ready`**, since shipping to a store without
+the founder ever having held the figure on a phone would discharge the
+spike's purpose on paper only. Criteria 4 and 5 stand as the task's
+done-condition in the meantime.
+
+## 091 — A name's period is a validity window, FHIR semantics (2026-08-21)
+
+Founder ruling on person-identity/04's review finding. As shipped, any
+stored `period_end`, future ones included, made a name not-current
+immediately, and a past stored end could leave a person with no current
+name at all; both were probed live. The task scope's "absent = current"
+was read literally where the schema's own reference model, FHIR
+HumanName, reads `period` as a validity window.
+
+**Ruled: window semantics.** A name is current when its effective
+`period_end` is NULL or later than now(). A future-dated end stays
+current until it passes; a temporary or document-bounded name expires
+on schedule; the lead() derivation continues to supply the end for
+rows with no stored one. The zero-current-rows case is a defect under
+this ruling and is fixed with it.

@@ -32,21 +32,20 @@ for. Every other task in this layer depends on this one.
 
 ## Scope
 
-- **The imprint on the hardware.** The figure at 24,352 vertices through the
-  1080 ms scribe and a pinch, on a sub-$120 gesture-navigation Android, with
-  frame times captured rather than judged. Skia's own tracker carries a
-  `SIGSEGV` crash-loop on a Xiaomi Redmi 9C, PowerVR GE8320, MediaTek Helio
-  G35, which took three and a half months to close, and **Shopify ships
-  precompiled binaries an app cannot patch**, so a recurrence is not something
-  the app can work around.
-- **The threads on a dpr-1 panel in daylight.** Whether the imprint's thread
-  separation survives a one-device-pixel-ratio screen outdoors, which is the
-  viewing condition this population actually has and which 044's pitch
-  arithmetic assumes away.
+Amended by decision 085: the Redmi-class hardware requirement is cut and
+the spike runs on the founder's personal iPhone and Pixel. The GE8320
+SIGSEGV risk design/09 §6 records is accepted rather than retired by
+measurement, and stays open there.
+
+- **The imprint on the founder's handsets.** The figure at 24,352 vertices
+  through the 1080 ms scribe and a pinch, on the founder's personal iPhone
+  and Pixel, without a crash.
 - **A build proof for the ratified stack.** Expo SDK 57, React Native 0.86 and
   React 19.2.3 are treated as settled fact by every task here and by decision
   040. This spike resolves and builds them before anything assumes they compose
   cleanly, because a version that does not resolve blocks the layer entirely.
+- **The harness is the client app's seed** (decision 085): it lives under
+  `surfaces/` and enters the pnpm workspace; it is not a throwaway.
 
 **Moved out of this spike.** The vendor SDK smoke test, Sumsub's iOS nil-modal
 crash and the APK/AAB size delta were in an earlier draft of this task. They
@@ -56,27 +55,25 @@ are identity and distribution concerns, not renderer risk, and they belong to
 
 ## Acceptance
 
-1. **The imprint survives the scribe and a pinch on named hardware.**
-   (mechanical) on a **Xiaomi Redmi 9C or a device carrying the same PowerVR
-   GE8320 and MediaTek Helio G35 pairing**, which is the exact configuration
-   `design/09` records the `SIGSEGV` against, the figure renders through a full
-   1080 ms scribe and a pinch across **20 consecutive cold starts** with zero
-   crashes. Frame times are written to a trace file, not described.
-2. **The scribe holds a stated frame budget.** (mechanical) during the scribe,
-   **p95 frame time is at or below 33 ms and no single frame exceeds 100 ms**,
-   read from the trace. Budgets are the layer's first measurement and may be
-   revised once, in writing, before any task depends on them; they may not be
-   revised after a run to make a result pass.
-3. **The threads are countable on a dpr-1 panel outdoors.** (adjudicated) a
-   verifier photographs the figure on a dpr-1 handset in daylight and states
-   whether adjacent threads are separable. If they are not, 044's pitch rule
-   needs the arithmetic redone at dpr 1 and that is the finding.
+Criteria 1 through 3 as originally written (Redmi-class crash measurement,
+frame-time budgets, dpr-1 daylight photograph) are cut by decision 085 and
+do not renumber; the identifiers below are stable.
+
 4. **The ratified stack resolves and builds.** (mechanical) Expo SDK 57, React
    Native 0.86 and React 19.2.3 resolve and produce a running debug build on
    both platforms, asserted from a real build rather than from the lockfile.
 5. **The result is written down either way.** (mechanical) the findings land in
-   `design/09` §6 as evidence, including a negative result. A spike that runs
-   and records nothing has not run.
+   `design/09` §6 as evidence, including a negative result, as their own
+   `docs(design):` commit on `main`, never inside the implementation diff
+   (decision 085). A spike that runs and records nothing has not run.
+6. **The imprint survives the scribe and a pinch on the founder's handsets.**
+   (adjudicated, deferred by decision 090) the figure renders through a full
+   1080 ms scribe and a pinch on the founder's personal iPhone and Pixel
+   without a crash, attested by the founder running the build. Deferred until
+   the app is usable; must be recorded before `app-distribution` goes
+   `ready` (decision 090). Criteria 4 and 5 are the done-condition
+   meanwhile; decision 085 records that this is not evidence about the
+   GE8320 hardware the target population carries.
 
 ## What a bad result means, pre-committed
 
@@ -86,14 +83,12 @@ blocked nothing, while the layer said every task depended on it. **That made
 the dependency performative and it is corrected here**: each outcome names what
 it stops.
 
-- **The imprint crashes, or misses criterion 2's frame budget.** Decision 040's
+- **The imprint crashes on either of the founder's handsets.** Decision 040's
   renderer choice reopens and this layer **returns to `draft`**. Tasks 02 and
   03 may continue, because the palette and the type scale do not depend on the
   renderer. Task 01 continues. Task 05 continues. Nothing that draws the figure
-  proceeds until 040 is re-ruled.
-- **The threads are not separable at dpr 1.** Decision 044's pitch rule changes
-  and the figure's meaning does not. The layer stays `ready`; `worker-surface`
-  task 01 gains the revised pitch. Nothing here stops.
+  proceeds until 040 is re-ruled. (The frame-budget and dpr-1 outcomes are cut
+  with their criteria, decision 085.)
 - **The stack does not resolve or build.** Everything stops. Decision 040's
   framework ruling reopens in full and the layer returns to `draft`, because no
   task in it can be written against a stack that does not exist.
