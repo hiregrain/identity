@@ -4,3 +4,8 @@
 .claude/
 node_modules/
 backups/
+
+# The Claude Design canvas is seeded from a ~2.4MB vendor payload whose editor
+# code is not ours, cannot be reviewed here, and fails the prose standard by
+# construction. The canvas is rebuilt from tpl/ and canvas.json by seed-canvas.
+design/13-platform-screens/grain-record-ios.html
