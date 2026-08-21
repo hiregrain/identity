@@ -17,14 +17,46 @@
 //   - Duplicate member names are the one thing JSON.parse hides (it keeps
 //     the last), so they are scanned for separately below.
 //   - No Unicode normalization happens anywhere, which is rule 1.
+//
+// One thing it does NOT lean on the platform for. ECMAScript carries an
+// unpaired surrogate through parse and stringify unchanged, and the Go
+// kernel's decoder substitutes U+FFFD for one. Substitution is a
+// normalization, which rule 1 forbids, so the kernel refuses such a
+// document; this runner refuses it too, because two implementations in
+// one repo disagreeing about an input is worse than either answer. The
+// reference model reads the same case the other way (ambiguity A3 in
+// reference/README.md) and nobody has ruled. See core/kernel/canonical.go.
 
 export function canonicalize(document: string): string {
   // Parse first: this is what rejects malformed input and trailing bytes,
-  // so the duplicate scan below never sees a document it has to be
-  // careful with.
+  // so the scans below never see a document they have to be careful with.
   const value: unknown = JSON.parse(document);
+  assertWellFormed(value);
   assertNoDuplicateNames(document);
   return write(value);
+}
+
+// assertWellFormed walks the parsed value and throws on any string, member
+// name included, that carries an unpaired surrogate. It runs over the
+// parsed form rather than the source text so an escape and a literal are
+// caught by one rule.
+function assertWellFormed(value: unknown): void {
+  if (typeof value === "string") {
+    if (value !== value.toWellFormed()) {
+      throw new Error("string carries an unpaired surrogate");
+    }
+    return;
+  }
+  if (Array.isArray(value)) {
+    for (const element of value) assertWellFormed(element);
+    return;
+  }
+  if (value !== null && typeof value === "object") {
+    for (const [name, member] of Object.entries(value)) {
+      assertWellFormed(name);
+      assertWellFormed(member);
+    }
+  }
 }
 
 function write(value: unknown): string {

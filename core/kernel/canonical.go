@@ -8,6 +8,7 @@ import (
 	"io"
 	"strings"
 	"unicode/utf16"
+	"unicode/utf8"
 )
 
 // Errors Canonicalize reports. Each names the contract rule it enforces so
@@ -16,7 +17,70 @@ var (
 	ErrNotJSON       = errors.New("kernel: input is not one JSON document")
 	ErrDuplicateKey  = errors.New("kernel: object has a duplicate member name")
 	ErrTrailingBytes = errors.New("kernel: input carries bytes after the JSON document")
+	ErrNotWellFormed = errors.New("kernel: input is not well-formed Unicode")
 )
+
+// checkWellFormed refuses the two inputs Go's JSON decoder would repair
+// into something else: invalid UTF-8 bytes, and an unpaired surrogate
+// escape. Both would come back as U+FFFD, which is a normalization rule 1
+// forbids. A correctly paired escape is untouched, which is what keeps the
+// supplementary-plane member-ordering case working.
+func checkWellFormed(document []byte) error {
+	if !utf8.Valid(document) {
+		return fmt.Errorf("%w: not valid UTF-8", ErrNotWellFormed)
+	}
+	for i := 0; i+5 < len(document)+1; i++ {
+		high, ok := surrogateEscapeAt(document, i)
+		if !ok {
+			continue
+		}
+		if high >= 0xdc00 {
+			return fmt.Errorf("%w: unpaired low surrogate escape at byte %d", ErrNotWellFormed, i)
+		}
+		low, ok := surrogateEscapeAt(document, i+6)
+		if !ok || low < 0xdc00 {
+			return fmt.Errorf("%w: unpaired high surrogate escape at byte %d", ErrNotWellFormed, i)
+		}
+		i += 11 // The whole pair is accounted for; resume past it.
+	}
+	return nil
+}
+
+// surrogateEscapeAt reports the code unit of a \uXXXX escape at offset i
+// when that escape names a surrogate, and whether it found one. A preceding
+// backslash would make the sequence a literal rather than an escape, so an
+// odd run of backslashes before it disqualifies the match.
+func surrogateEscapeAt(document []byte, i int) (uint32, bool) {
+	if i+6 > len(document) || document[i] != '\\' || document[i+1] != 'u' {
+		return 0, false
+	}
+	backslashes := 0
+	for j := i - 1; j >= 0 && document[j] == '\\'; j-- {
+		backslashes++
+	}
+	if backslashes%2 == 1 {
+		return 0, false
+	}
+	var unit uint32
+	for _, c := range document[i+2 : i+6] {
+		digit := strings.IndexByte("0123456789abcdef", lowerHex(c))
+		if digit < 0 {
+			return 0, false
+		}
+		unit = unit<<4 | uint32(digit)
+	}
+	if unit < 0xd800 || unit > 0xdfff {
+		return 0, false
+	}
+	return unit, true
+}
+
+func lowerHex(c byte) byte {
+	if c >= 'A' && c <= 'F' {
+		return c + ('a' - 'A')
+	}
+	return c
+}
 
 // Canonicalize returns the RFC 8785 (JCS) canonical form of one JSON
 // document, which is contract rules 1 and 2: no Unicode normalization, so
@@ -27,12 +91,21 @@ var (
 // is a property of the document, and routing it through a Go map would lose
 // duplicate members and reorder nothing reproducibly.
 //
-// One representational limit, and it is the reason no vector exercises it:
-// an unpaired surrogate escape survives ECMAScript's well-formed
-// JSON.stringify and does not survive Go's JSON decoder, which substitutes
-// U+FFFD. Inputs carrying one are outside what the two implementations can
-// agree on, so they are outside the contract rather than silently divergent.
+// A document carrying an unpaired surrogate, or a byte sequence that is not
+// valid UTF-8, is REFUSED rather than repaired. Go's JSON decoder would
+// substitute U+FFFD for either, and substitution is a normalization, which
+// rule 1 forbids in as many words: the input would come out as a different
+// string and canonicalization would report success on a document it had
+// altered. Refusing is not a reading of what such a document canonicalizes
+// to. The contract does not say, the reference model raised it as ambiguity
+// A3 and read it the other way, preserving the surrogate as an escape, and
+// the two answers are still open. Refusal is what is defensible until one
+// is ruled, because it is the only behaviour that never returns bytes that
+// are not the input's.
 func Canonicalize(document []byte) ([]byte, error) {
+	if err := checkWellFormed(document); err != nil {
+		return nil, err
+	}
 	decoder := json.NewDecoder(bytes.NewReader(document))
 	decoder.UseNumber()
 

@@ -70,13 +70,7 @@ func Sign(payload []byte, signer Signer) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	canonical, err := Canonicalize(bound)
-	if err != nil {
-		return "", err
-	}
-
-	signingInput := protectedHeaderB64 + "." + base64.RawURLEncoding.EncodeToString(canonical)
-	signature, usedKeyID, err := signer.Sign([]byte(signingInput))
+	compact, usedKeyID, err := SignEnvelope(bound, signer)
 	if err != nil {
 		return "", err
 	}
@@ -86,8 +80,31 @@ func Sign(payload []byte, signer Signer) (string, error) {
 	if usedKeyID != keyID {
 		return "", fmt.Errorf("%w: reported %q, embedded %q", ErrKeyRotatedMidSign, usedKeyID, keyID)
 	}
+	return compact, nil
+}
 
-	return signingInput + "." + base64.RawURLEncoding.EncodeToString(signature), nil
+// SignEnvelope is contract rule 3's envelope and nothing else: canonicalize
+// the payload, sign the compact signing input, return the serialization and
+// the key that signed it. It knows nothing about key identifiers, because
+// the contract does not; the payload it signs is the payload it is given.
+//
+// Separate from Sign because decision 019's key-identifier member is this
+// repo's policy on top of rule 3, not part of rule 3. The differential
+// harness compares the two implementations against the contract, so the
+// kernel adapter (core/cmd/kernel-adapter) has to be able to reach rule 3
+// without the policy wrapped around it. Sign is that policy, and it is the
+// entry point everything in the product uses.
+func SignEnvelope(payload []byte, signer Signer) (compact string, keyID string, err error) {
+	canonical, err := Canonicalize(payload)
+	if err != nil {
+		return "", "", err
+	}
+	signingInput := protectedHeaderB64 + "." + base64.RawURLEncoding.EncodeToString(canonical)
+	signature, keyID, err := signer.Sign([]byte(signingInput))
+	if err != nil {
+		return "", "", err
+	}
+	return signingInput + "." + base64.RawURLEncoding.EncodeToString(signature), keyID, nil
 }
 
 // withKeyID returns the payload with the key identifier added as a
@@ -156,6 +173,21 @@ func Verify(compact string, resolver Resolver) Verdict {
 	return Verdict{Valid: true, KeyID: keyID, Payload: payload}
 }
 
+// VerifyEnvelope is contract rule 3's verification and nothing else: the
+// header bytes, the segments, and the signature under the key it is given.
+// It answers with a bare yes or no, because that is all rule 3 asks.
+//
+// Separate from Verify for the reason SignEnvelope is separate from Sign:
+// binding a record to the key identifier inside its payload is decision
+// 019's policy, and the differential harness compares implementations
+// against the contract.
+func VerifyEnvelope(compact string, publicKey ed25519.PublicKey) bool {
+	_, signingInput, signature, ok := splitEnvelope(compact)
+	return ok &&
+		len(publicKey) == ed25519.PublicKeySize &&
+		ed25519.Verify(publicKey, signingInput, signature)
+}
+
 // VerifyWithKey verifies against one public key given directly, the shape
 // decision 019 keeps separate from signing: verification names its key,
 // signing never does. The payload's key identifier still has to match the
@@ -172,36 +204,68 @@ func VerifyWithKey(compact string, publicKey ed25519.PublicKey, keyID string) Ve
 	return Verdict{Valid: true, KeyID: keyID, Payload: payload}
 }
 
-// split takes a compact serialization apart and enforces contract rule 3's
-// header check: the protected header is compared byte-for-byte against the
-// frozen bytes and never parsed, so a header carrying an extra member is
-// rejected rather than tolerated. The payload is decoded and read but never
+// splitEnvelope takes a compact serialization apart under contract rule 3
+// and nothing else. The protected header is compared byte-for-byte against
+// the frozen bytes and never parsed, so a header carrying an extra member
+// is rejected rather than tolerated. The payload is decoded but never
 // re-canonicalized, also rule 3: the signature covers the bytes that were
 // transmitted, so re-deriving them would verify a different document.
-func split(compact string) (payload json.RawMessage, keyID string, signingInput, signature []byte, ok bool) {
+func splitEnvelope(compact string) (payload json.RawMessage, signingInput, signature []byte, ok bool) {
 	parts := strings.Split(compact, ".")
 	if len(parts) != 3 {
-		return nil, "", nil, nil, false
+		return nil, nil, nil, false
 	}
-	header, err := base64.RawURLEncoding.DecodeString(parts[0])
-	if err != nil || !bytes.Equal(header, []byte(ProtectedHeader)) {
-		return nil, "", nil, nil, false
+	header, ok := decodeSegment(parts[0])
+	if !ok || !bytes.Equal(header, []byte(ProtectedHeader)) {
+		return nil, nil, nil, false
 	}
-	payloadBytes, err := base64.RawURLEncoding.DecodeString(parts[1])
-	if err != nil {
-		return nil, "", nil, nil, false
+	payload, ok = decodeSegment(parts[1])
+	if !ok {
+		return nil, nil, nil, false
 	}
-	signature, err = base64.RawURLEncoding.DecodeString(parts[2])
-	if err != nil || len(signature) != ed25519.SignatureSize {
-		return nil, "", nil, nil, false
+	signature, ok = decodeSegment(parts[2])
+	if !ok || len(signature) != ed25519.SignatureSize {
+		return nil, nil, nil, false
 	}
+	return payload, []byte(parts[0] + "." + parts[1]), signature, true
+}
 
+// decodeSegment decodes one base64url segment and requires it to be the
+// canonical spelling of the bytes it carries: it must survive a decode and
+// re-encode round trip. Go's decoder is lenient about the unused trailing
+// bits of a final character, so without this one envelope has several
+// spellings, and rule 3's whole posture on the header is that it has one.
+//
+// The contract does not rule on the segments themselves, only on the
+// header bytes they carry, which is an ambiguity the reference model
+// raised as A3 in reference/README.md and nobody has ruled on. The strict
+// reading is taken here because it is what the TypeScript runner already
+// does and two implementations in this repo disagreeing is worse than
+// either reading.
+func decodeSegment(segment string) ([]byte, bool) {
+	decoded, err := base64.RawURLEncoding.DecodeString(segment)
+	if err != nil {
+		return nil, false
+	}
+	if base64.RawURLEncoding.EncodeToString(decoded) != segment {
+		return nil, false
+	}
+	return decoded, true
+}
+
+// split is splitEnvelope plus decision 019's key identifier, which every
+// caller in the product needs and the contract knows nothing about.
+func split(compact string) (payload json.RawMessage, keyID string, signingInput, signature []byte, ok bool) {
+	payload, signingInput, signature, ok = splitEnvelope(compact)
+	if !ok {
+		return nil, "", nil, nil, false
+	}
 	var members map[string]json.RawMessage
-	if err := json.Unmarshal(payloadBytes, &members); err != nil {
+	if err := json.Unmarshal(payload, &members); err != nil {
 		return nil, "", nil, nil, false
 	}
 	if err := json.Unmarshal(members[KeyIDField], &keyID); err != nil || keyID == "" {
 		return nil, "", nil, nil, false
 	}
-	return payloadBytes, keyID, []byte(parts[0] + "." + parts[1]), signature, true
+	return payload, keyID, signingInput, signature, true
 }
