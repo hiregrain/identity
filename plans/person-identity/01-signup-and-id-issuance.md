@@ -7,7 +7,10 @@ status: in_progress
 depends_on: [foundation/04, foundation/07]
 migrations: [0010-person-core]
 binds: [decisions/LOG.md#013, decisions/LOG.md#017]
-evidence: []
+evidence:
+  - "test:make person-test @ 9944b3e (core/person acceptance suite, both planes live)"
+  - "test:make check @ 9944b3e (green, run under a no-ports compose override)"
+  - "diff:PR #14 @ 9944b3ece92bfd79edce4cd9c378b43953191b3f"
 verified_by: null
 ---
 
