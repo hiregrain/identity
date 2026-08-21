@@ -4648,3 +4648,37 @@ ladder it grades against.
 migrations claim; auth needs schema on both planes. Claims are amended
 on main after the files land, the foundation/08 precedent now applied
 three times.
+
+## 087 — Kernel governance matches the team that exists; the two-human host rule becomes a trigger (2026-08-21)
+
+Founder ruling superseding decision 019's enforcement mechanism, not its
+intent. 019 gave the frozen core the expensive treatment, two-human
+review among it, and trust-kernel/01 made that a host-enforced
+branch-protection criterion. The loop then established the fact on the
+ground: every PR in this repository is authored under the founder's own
+account, and the host forbids approving one's own pull request, so any
+required-approval rule, two or one, is unsatisfiable by the only human
+here. A rule bypassed on every merge enforces nothing and claims
+otherwise, which is worse than its absence.
+
+**What the host now enforces, and the governance check asserts:** a
+ruleset on `main` blocking force pushes and branch deletion (in force,
+ruleset 21162777, verified 2026-08-21). Force-push protection is the
+rule with teeth here: the decisions log is append-only and every
+verification record cites SHAs, so a rewritten `main` is the one git
+operation that silently invalidates the repo's own evidence.
+CODEOWNERS stays as the reviewer-request seed on the kernel paths.
+
+**What enforces kernel review now:** the loop's own gates. A kernel
+change reaches `main` only through clean-context verification, a code
+review pass, and the founder's own read at merge, which is decision
+019's intent carried by the process that actually runs rather than by a
+setting that would be theatre.
+
+**The two-human host rule is dormant, with its trigger written:** the
+day a second maintainer holds write access, required approvals return to
+the host settings and `checks/kernel-governance.mjs` reverts to
+asserting them. Until then the check asserts what is true.
+
+Direct pushes of binding prose to `main` continue unaffected; neither
+rule in force touches a normal push.
