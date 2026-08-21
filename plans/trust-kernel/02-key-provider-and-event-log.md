@@ -10,17 +10,18 @@ binds: [design/stack-litigation/d3-verdict.md, decisions/LOG.md#011]
 evidence:
   [
     "test:cd core && go test ./kernel -run TestSignatureValidAcrossTheRuleBoundaries -- the boundary table passes",
-    "test:cd core && go test ./kernel -run 'TestABackdatedCompromiseClaimInvalidatesNothing|TestTheRuleIsIndependentOfEventOrder|TestARepeatedEventKindTakesTheEarliest|TestValidKeyEventKind' -- pass",
+    "test:cd core && go test ./kernel -run 'TestABackdatedCompromiseClaimInvalidatesNothing|TestTheRuleIsIndependentOfEventOrder|TestAnotherPartyCannotRetireThisPartysKey|TestDuplicateEventsFoldInTheDirectionThatCannotWidenValidity|TestValidKeyEventKind' -- pass",
     "test:make signing-test -- the operatorkey suite green under GRAIN_KEY_PROVIDER=software and =stub-kms",
     "test:cd core && go test -tags db -count=1 ./kernel/keylog/... -- every test passes against the live spine",
     "test:node checks/signing-seam.mjs -- 27 Go files scanned; 0 signing primitives outside the kernel",
     "test:make check-red -- red path 21 fails as required and the verify-only green fixture passes",
-    "test:make check -- check: green at 1cd626b0",
+    "test:make check -- check: green at a6207056",
     "test:make check-red-db -- planted violations fail as required; databases left as found",
-    "diff:1cd626b0",
+    "diff:a6207056",
     "review:log/2026-08-21-trust-kernel-02-verification.md",
+    "review:log/2026-08-21-trust-kernel-02-head-reverification.md",
   ]
-verified_by: clean-context-verifier@2026-08-21
+verified_by: head-reverifier@2026-08-21
 ---
 
 # Key provider and the key-event log
