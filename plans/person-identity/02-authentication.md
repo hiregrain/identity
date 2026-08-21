@@ -3,7 +3,7 @@ id: person-identity/02
 type: task
 layer: person-identity
 satisfies: []
-status: in_progress
+status: done
 depends_on: [person-identity/01]
 binds: [decisions/LOG.md#013, decisions/LOG.md#020]
 evidence:
@@ -11,7 +11,8 @@ evidence:
   - "test:make check, make check-red and make check-red-db @ 1ab5887 (green locally under a no-ports compose override)"
   - "log:github.com/hiregrain/identity/actions/runs/32529483382 (every stage green at 1ab5887, including the authentication and sessions job)"
   - "diff:PR #19 @ 1ab58875f52f67f4f745456a12bb1e2bd26df578"
-verified_by: null
+  - "review:log/2026-08-21-person-identity-02-verification.md (clean-context verification, pass at 0a8d68b)"
+verified_by: clean-context-verifier@2026-08-21
 ---
 
 # Authentication and sessions
