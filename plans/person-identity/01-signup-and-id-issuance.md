@@ -9,8 +9,9 @@ migrations: [0010-person-core]
 binds: [decisions/LOG.md#013, decisions/LOG.md#017]
 evidence:
   - "test:make person-test @ 9944b3e (core/person acceptance suite, both planes live)"
-  - "test:make check @ 9944b3e (green, run under a no-ports compose override)"
-  - "diff:PR #14 @ 9944b3ece92bfd79edce4cd9c378b43953191b3f"
+  - "test:make check @ 9944b3e and make check-red-db @ a15253c (green locally, run under a no-ports compose override)"
+  - "log:github.com/hiregrain/identity/actions/runs/32501436217 (every stage green at a15253c)"
+  - "diff:PR #14 @ a15253cb792edc3854dfa1872bbd1fdf7abdf616"
 verified_by: null
 ---
 
