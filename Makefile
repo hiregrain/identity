@@ -359,38 +359,63 @@ check-red:
 # The harness's own proof (trust-kernel/06 acceptance criterion 2). A
 # harness that has never been shown to fail is indistinguishable from one
 # that cannot, and this is the target that tells them apart. Each mutant
-# is the reference model with exactly one contract rule misread. Runs the
-# full corpus plus a fixed fresh seed, so a mutant that stops being
-# caught is a hard failure rather than a flake.
+# is the reference model with exactly one contract rule misread.
 #
-# Every mutant runs twice, once against the reference and once against
-# the kernel, because the criterion says a planted bug is caught in
-# EITHER implementation and a run that only ever pits the reference
-# against itself proves nothing about the kernel leg being live.
+# Three things make the proof hold rather than look like it holds:
 #
-# The green line at the end matters as much as the red ones: it proves
-# the harness is capable of reporting agreement, so the failures above
-# are not an unconditional exit 1. It is the real pair now, reference
-# against kernel, rather than the reference against a copy of itself.
-DIFFERENTIAL_MUTANTS := key-order-utf8 key-order-locale number-format-fixed number-format-negative-zero normalize-nfc surrogate-substitute surrogate-escape
+# 1. The mutant list comes from mutant.ts itself (`--list`), never from a
+#    copy here. A second copy drifts, and a renamed BUGS key would retire
+#    its mutant silently while this target still passed.
+# 2. A leg counts as caught only on exit 2, which the harness uses for
+#    "a divergence was found", AND on a DIVERGENCE line in the output.
+#    Scoring any non-zero exit as caught made deleting mutant.ts leave
+#    every leg green, because a missing file also exits non-zero.
+# 3. Every mutant runs against both the reference and the kernel, because
+#    the criterion says a planted bug is caught in EITHER implementation
+#    and a run that only pits the reference against itself proves nothing
+#    about the kernel leg being live.
+#
+# The output is kept and summarised per leg rather than discarded, so a
+# leg that starts passing for a new reason is readable rather than a bare
+# exit code. The green line at the end matters as much as the red ones:
+# it proves the harness can still report agreement, so the failures above
+# are not an unconditional exit 1. It is the real pair, reference against
+# kernel, not the reference against a copy of itself.
 differential-red:
-	@for bug in $(DIFFERENTIAL_MUTANTS); do \
+	@set -e; \
+	mutants="$$(node reference/harness/mutant.ts --list)"; \
+	if [ -z "$$mutants" ]; then \
+		echo "FAIL differential-red: mutant.ts listed no bugs, so this target would pass by testing nothing"; \
+		exit 1; \
+	fi; \
+	echo "differential-red: mutants, from mutant.ts --list: $$(echo $$mutants | tr '\n' ' ')"; \
+	out="$$(mktemp)"; \
+	for bug in $$mutants; do \
 		for side in reference kernel; do \
-			echo "differential-red: planting $$bug against the $$side"; \
 			if [ "$$side" = reference ]; then \
 				other="node reference/adapter.ts"; \
 			else \
 				other="$(KERNEL_ADAPTER)"; \
 			fi; \
-			if node reference/harness/differential.ts \
+			set +e; \
+			node reference/harness/differential.ts \
 				--impl "$$side=$$other" \
 				--impl mutant="node reference/harness/mutant.ts --bug $$bug" \
-				--fresh 500 --seed 7 > /dev/null 2>&1; then \
-				echo "FAIL differential-red: the harness did not catch $$bug against the $$side"; \
-				exit 1; \
+				--fresh 500 --seed 7 > "$$out" 2>&1; \
+			status=$$?; \
+			set -e; \
+			if [ "$$status" != 2 ]; then \
+				echo "FAIL differential-red: $$bug against the $$side exited $$status; only 2 (divergence found) counts as caught"; \
+				cat "$$out"; rm -f "$$out"; exit 1; \
 			fi; \
+			if ! grep -q '^DIVERGENCE at ' "$$out"; then \
+				echo "FAIL differential-red: $$bug against the $$side exited 2 but reported no divergence"; \
+				cat "$$out"; rm -f "$$out"; exit 1; \
+			fi; \
+			echo "  caught: $$bug against the $$side, $$(grep -m1 -o '[0-9]* divergence(s) over [0-9]* requests' "$$out")"; \
 		done; \
-	done
+	done; \
+	rm -f "$$out"
 	@echo "differential-red: the control run must be green, or the failures above prove nothing"
 	node reference/harness/differential.ts \
 		--impl reference="node reference/adapter.ts" \

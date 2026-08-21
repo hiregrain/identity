@@ -7,6 +7,7 @@ import { createPrivateKey, createPublicKey, sign, verify } from "node:crypto";
 import type { KeyObject } from "node:crypto";
 import {
   CONTRACT_RULES,
+  Refusal,
   canonicalize,
   canonicalizeWith,
   type CanonicalRules,
@@ -69,7 +70,7 @@ export function publicHexFromSeedHex(seedHex: string): string {
 
 function decodeKeyHex(value: string, what: string): Buffer {
   if (!/^[0-9a-f]{64}$/.test(value)) {
-    throw new TypeError(`${what} is not 32 bytes of lowercase hex`);
+    throw new Refusal(`${what} is not 32 bytes of lowercase hex`);
   }
   return Buffer.from(value, "hex");
 }

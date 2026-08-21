@@ -63,6 +63,15 @@ is fresh every run and printed, so a divergence is replayable from the
 failure output. `differential-red` uses a fixed seed instead, because a
 red path that drifts run to run is not a proof.
 
+The harness separates its exit codes: **0** agreement, **2** a divergence
+was found, **1** the harness could not run. `differential-red` requires
+exactly 2 plus a `DIVERGENCE` line before it calls a mutant caught.
+Scoring any non-zero exit as caught is the same bug as not checking at
+all: deleting `harness/mutant.ts` made every leg exit non-zero, and the
+red path passed while testing nothing. Its mutant list comes from
+`mutant.ts --list` for the same reason, so renaming a bug cannot retire
+it silently.
+
 A divergence prints the request, both outputs as hex and as text, and
 the seed. Re-run with that `--seed` and `--fresh` to reproduce exactly,
 then move the offending request into `corpus/` before fixing anything,

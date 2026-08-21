@@ -5,12 +5,28 @@
 // kernel, because two implementations sharing an author share their
 // misreadings and then agree on being wrong.
 
+/**
+ * A rejection this model meant to make: the contract says no to this
+ * input. Distinct from a crash, which is this model being wrong.
+ *
+ * The harness needs the distinction because two implementations that
+ * both fail are only in agreement when both **refused**. A reference
+ * `RangeError` and a kernel panic are not agreement, they are two
+ * separate defects that happen to look alike through a boolean, and
+ * counting them as a match is how a fuzzer goes quiet. Every deliberate
+ * rejection in this model throws this class and nothing else does, so
+ * `respond` in adapter.ts can label the two apart without guessing.
+ */
+export class Refusal extends Error {
+  override readonly name = "Refusal";
+}
+
 /** A value the contract's rule 1 admits. `undefined` is not JSON. */
 export type JsonValue =
   null | boolean | number | string | JsonValue[] | { [key: string]: JsonValue };
 
 /**
- * The three points where rules 1 and 2 make a choice another reading
+ * Every point where rule 1 or rule 2 makes a choice another reading
  * could get wrong. They are named and swappable so the harness can
  * plant a bug in one of them and prove it catches the divergence
  * (reference/harness/mutant.ts, and the differential red paths in the
@@ -62,7 +78,7 @@ function serialize(value: JsonValue, rules: CanonicalRules): string {
       return value ? "true" : "false";
     case "number":
       if (!Number.isFinite(value)) {
-        throw new RangeError(`not a JSON number: ${String(value)}`);
+        throw new Refusal(`not a JSON number: ${String(value)}`);
       }
       return rules.formatNumber(value);
     case "string":
@@ -70,7 +86,7 @@ function serialize(value: JsonValue, rules: CanonicalRules): string {
     case "object":
       break;
     default:
-      throw new TypeError(`not a JSON value: ${typeof value}`);
+      throw new Refusal(`not a JSON value: ${typeof value}`);
   }
   if (Array.isArray(value)) {
     return `[${value.map((item) => serialize(assertDefined(item), rules)).join(",")}]`;
@@ -84,7 +100,7 @@ function serialize(value: JsonValue, rules: CanonicalRules): string {
 }
 
 function assertDefined(value: JsonValue | undefined): JsonValue {
-  if (value === undefined) throw new TypeError("undefined is not a JSON value");
+  if (value === undefined) throw new Refusal("undefined is not a JSON value");
   return value;
 }
 
@@ -111,7 +127,7 @@ function admit(value: string, rules: CanonicalRules): string {
  * evidence of 2021 divergences in the first differential run.
  */
 function refuse(value: string): never {
-  throw new RangeError(
+  throw new Refusal(
     `not well-formed Unicode: unpaired surrogate at code unit ${firstUnpairedSurrogate(value)}`,
   );
 }

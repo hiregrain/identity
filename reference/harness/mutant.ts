@@ -9,11 +9,20 @@
 // contract spends a paragraph warning against each one.
 //
 // Usage: node reference/harness/mutant.ts --bug <name>
+//        node reference/harness/mutant.ts --list
+//
+// `--list` prints the BUGS keys, one per line, and the Makefile builds
+// its mutant list from that output rather than repeating the names.
+// A second copy of the list is a copy that drifts: renaming a key here
+// would have retired that mutant silently, leaving a red path that still
+// passed while testing one fewer misreading than it claimed.
 //
 // It is a first-class file rather than a test fixture because acceptance
-// criterion 2 of plans/trust-kernel/06 is a standing obligation. A bug
-// injector kept where lint and typecheck cannot see it rots, and the
-// first time anyone notices is when the red path stops proving anything.
+// criterion 2 of plans/trust-kernel/06 is a standing obligation, and a
+// bug injector nobody type-checks rots. `make ts-check` type-checks it
+// through reference/tsconfig.json and `make lint` formats it; no ESLint
+// rule reaches any TypeScript in this repo, because no TypeScript parser
+// is installed, which is a repo-wide gap and not a property of this file.
 
 import { serve } from "../adapter.ts";
 import {
@@ -88,6 +97,11 @@ const BUGS: Record<string, () => CanonicalRules> = {
   }),
 };
 
+if (process.argv.includes("--list")) {
+  for (const bug of Object.keys(BUGS).sort()) console.log(bug);
+  process.exit(0);
+}
+
 const index = process.argv.indexOf("--bug");
 const name = index === -1 ? undefined : process.argv[index + 1];
 const build = name === undefined ? undefined : BUGS[name];
@@ -95,7 +109,10 @@ if (build === undefined) {
   console.error(
     `mutant: --bug must be one of ${Object.keys(BUGS).sort().join(", ")}`,
   );
-  process.exit(2);
+  // 1, not 2: the harness reserves 2 for "a divergence was found", and a
+  // usage error that exited 2 read as a caught bug to anything checking
+  // the number rather than the output.
+  process.exit(1);
 }
 
 await serve(build());

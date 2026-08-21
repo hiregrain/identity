@@ -90,29 +90,113 @@ export const EDGE_STRINGS = [
   "\u4e00",
 ];
 
-export function randomValue(random: () => number, depth = 0): JsonValue {
-  const roll = random();
-  if (depth >= 4 || roll < 0.42) {
-    if (roll < 0.14) return pick(random, EDGE_NUMBERS);
-    if (roll < 0.28) return pick(random, EDGE_STRINGS);
-    if (roll < 0.33) return randomNumber(random);
-    if (roll < 0.37) return null;
-    return random() < 0.5;
+/**
+ * How deep and how wide one generated value may get.
+ *
+ * Depth and width are drawn as a pair rather than independently, because
+ * the product is the size of the value: 64 deep and 64 wide is not a
+ * fuzz case, it is an out-of-memory. Deep shapes are narrow and wide
+ * shapes are shallow, so each cap is reachable on its own.
+ *
+ * Every depth here stays under the kernel's own limit, which refuses
+ * past 256. Exceeding it would produce a divergence about a bound the
+ * contract does not mention, which is a question for the contract and
+ * not something for this generator to manufacture.
+ */
+const SHAPES = [
+  { weight: 84, maxDepth: 4, width: 5, budget: 60 },
+  { weight: 8, maxDepth: 3, width: 64, budget: 300 }, // large-object sort
+  { weight: 5, maxDepth: 12, width: 3, budget: 200 },
+  { weight: 2, maxDepth: 64, width: 2, budget: 200 },
+  { weight: 1, maxDepth: 200, width: 1, budget: 220 }, // a near-bound spine
+] as const;
+
+type Shape = { maxDepth: number; width: number; budget: number };
+
+function randomShape(random: () => number): Shape {
+  const total = SHAPES.reduce((sum, shape) => sum + shape.weight, 0);
+  let ticket = random() * total;
+  for (const shape of SHAPES) {
+    ticket -= shape.weight;
+    if (ticket < 0) return shape;
   }
-  if (roll < 0.68) {
+  return SHAPES[0];
+}
+
+/**
+ * One generated value.
+ *
+ * Every decision draws its own number. Sharing one draw between the
+ * container/leaf branch and the leaf's type, which this did before,
+ * correlates them: the branch reserved the low end of the range for
+ * leaves, so a leaf could only ever be drawn from that end, and at the
+ * depth cap, where every value is forced to be a leaf, the draw was
+ * unconstrained and 63% of forced leaves came out booleans. The edge
+ * numbers and edge strings that the contract actually argues about were
+ * the cases being crowded out.
+ */
+export function randomValue(
+  random: () => number,
+  depth = 0,
+  shape: Shape = randomShape(random),
+  remaining: { nodes: number } = { nodes: shape.budget },
+): JsonValue {
+  // The budget is what keeps depth and width from multiplying. 64 wide at
+  // 3 deep is 64^3 nodes if nothing stops it, which is not a fuzz case,
+  // it is a run that never finishes. Depth and width set the shape a
+  // value may reach; the budget sets how much of that shape it may fill.
+  if (
+    depth >= shape.maxDepth ||
+    remaining.nodes <= 0 ||
+    random() < leafChance(depth, shape)
+  ) {
+    return randomLeaf(random);
+  }
+  // A deep shape whose container draws zero children stops there, so the
+  // narrow deep shapes take at least one. A width-1 spine drawing 0 half
+  // the time averages two levels, not the two hundred it was drawn for.
+  const drawn = Math.floor(random() * (shape.width + 1));
+  const count = Math.min(
+    shape.maxDepth > 4 ? Math.max(1, drawn) : drawn,
+    remaining.nodes,
+  );
+  remaining.nodes -= count;
+  const asArray = random() < 0.5;
+  if (asArray) {
     const items: JsonValue[] = [];
-    const count = Math.floor(random() * 5);
     for (let index = 0; index < count; index += 1) {
-      items.push(randomValue(random, depth + 1));
+      items.push(randomValue(random, depth + 1, shape, remaining));
     }
     return items;
   }
   const object: { [key: string]: JsonValue } = {};
-  const count = Math.floor(random() * 6);
   for (let index = 0; index < count; index += 1) {
-    object[randomKey(random)] = randomValue(random, depth + 1);
+    object[randomKey(random)] = randomValue(
+      random,
+      depth + 1,
+      shape,
+      remaining,
+    );
   }
   return object;
+}
+
+// A deep shape only reaches its depth if it keeps choosing to nest, so
+// the ones drawn to be deep stop rolling for leaves on the way down.
+// Without this, a maxDepth of 200 produces a value about two deep and
+// the depth cap it was drawn for is never exercised.
+function leafChance(depth: number, shape: Shape): number {
+  if (shape.maxDepth <= 4) return 0.42;
+  return depth < shape.maxDepth - 1 ? 0.02 : 1;
+}
+
+function randomLeaf(random: () => number): JsonValue {
+  const roll = random();
+  if (roll < 0.3) return pick(random, EDGE_NUMBERS);
+  if (roll < 0.6) return pick(random, EDGE_STRINGS);
+  if (roll < 0.75) return randomNumber(random);
+  if (roll < 0.85) return null;
+  return random() < 0.5;
 }
 
 function randomKey(random: () => number): string {

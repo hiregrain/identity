@@ -4,7 +4,7 @@
 // An implementation joins the harness as a subprocess speaking
 // line-delimited JSON: one request object per line on stdin, one
 // response object per line on stdout, in order, one response per
-// request. The kernel joins the same way when trust-kernel/01 lands; the
+// request. The kernel speaks it from core/cmd/kernel-adapter; the
 // harness knows nothing about either side beyond this protocol, which is
 // what keeps it from being written to one implementation's shape.
 //
@@ -16,13 +16,23 @@
 //
 // Response:
 //   {"ok":true,"out":"<lowercase hex of the produced bytes>"}
-//   {"ok":false,"error":"<free text>"}
+//   {"ok":false,"refused":<bool>,"error":"<free text>"}
 //
-// Only `ok` and `out` are compared. `error` is free text because
-// implementations must agree on *whether* an input is rejected, never on
-// how they word it; a harness that compared messages would report a
-// divergence on every wording difference and teach its readers to ignore
-// it.
+// Only `ok`, `out` and `refused` are compared. `error` is free text
+// because implementations must agree on *whether* an input is rejected,
+// never on how they word it; a harness that compared messages would
+// report a divergence on every wording difference and teach its readers
+// to ignore it.
+//
+// `refused` separates the two ways a response can be `ok:false`. True
+// means the implementation decided the contract says no to this input.
+// False means it fell over. Both are failures and only the first is
+// agreement: a reference `RangeError` and a kernel panic on the same
+// input are two defects that look identical through a boolean, and a
+// harness that scores them as a match goes quiet exactly when both sides
+// are broken. An adapter that omits the field is read by the heuristic
+// in differential.ts, which is the best a harness can do about an
+// implementation whose source it does not control.
 //
 // Every `out` is hex so that a comparison is a string comparison over
 // bytes, with no encoding of the harness's own interposed. `sign` and
@@ -39,6 +49,7 @@
 import { createInterface } from "node:readline";
 import {
   CONTRACT_RULES,
+  Refusal,
   canonicalizeWith,
   type CanonicalRules,
   type JsonValue,
@@ -51,7 +62,8 @@ export type Request =
   | { op: "verify"; envelope: string; publicKeyHex: string }
   | { op: "publicKey"; seedHex: string };
 
-export type Response = { ok: true; out: string } | { ok: false; error: string };
+export type Response =
+  { ok: true; out: string } | { ok: false; refused: boolean; error: string };
 
 /**
  * JSON text for a request or a response, with one repair.
@@ -109,10 +121,18 @@ export function respond(request: Request, rules: CanonicalRules): Response {
       case "publicKey":
         return ascii(publicHexFromSeedHex(request.seedHex));
       default:
-        return { ok: false, error: `unknown op` };
+        return { ok: false, refused: true, error: "unknown op" };
     }
   } catch (cause) {
-    return { ok: false, error: String(cause) };
+    // `Refusal` and nothing else marks a rejection this model meant to
+    // make, so anything else reaching here is this model falling over
+    // and is reported as such rather than being laundered into a
+    // rejection the harness would score as agreement.
+    return {
+      ok: false,
+      refused: cause instanceof Refusal,
+      error: String(cause),
+    };
   }
 }
 
@@ -133,7 +153,13 @@ export async function serve(rules: CanonicalRules): Promise<void> {
     try {
       response = respond(JSON.parse(line) as Request, rules);
     } catch (cause) {
-      response = { ok: false, error: `unreadable request: ${String(cause)}` };
+      // An unreadable line is the harness at fault, not the input, so it
+      // is never a refusal.
+      response = {
+        ok: false,
+        refused: false,
+        error: `unreadable request: ${String(cause)}`,
+      };
     }
     process.stdout.write(encodeLine(response));
   }
