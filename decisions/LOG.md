@@ -4505,3 +4505,86 @@ Departure is a lifecycle event, not a finding.
 task will be written against when the layer goes `ready`. Anomaly alerting on
 operator sessions, which §4.4 prescribes for parties, is not ruled here either
 way.
+
+## 084 — The ledger takes its own domain; six origins, and the handle keeps its prefix (2026-08-21)
+
+Discharges the item entry 035 left open, that "a dedicated identity domain is
+recorded as a possible pre-launch requirement". Supersedes 035 on the address
+line and on nothing else in that entry.
+
+**The record moves off `hiregrain.com`, and the reason is neutrality rather than
+branding.** `design/00-design-brief.md` records that hiregrain.com is the
+hospitality product, a distinct product line built on this infrastructure.
+Hosting a worker's portable record at the address of one of the verticals that
+reads it is the wrong signal, and CLAUDE.md's own product test asks whether the
+thing survives being held by a company that also operates verticals on the
+record. `design/12-platform-seam.md` already wrote `app.grainidentity.com` while
+every other document said `hiregrain.com/u/<handle>`; this closes that split.
+
+**The origins.**
+
+- `grainidentity.com`, everything unauthenticated, with marketing and legal at
+  root.
+- `app.grainidentity.com`, the worker's own interface, signed in. The PWA and the
+  deep-link target.
+- `partners.grainidentity.com`, the party console: registration, key setup, the
+  sandbox, and a party's own issuance feed. Named for who uses it rather than for
+  what we call them internally.
+- `ops.grainidentity.com`, the operator console.
+- `api.grainidentity.com` and `docs.grainidentity.com`.
+
+**Under the apex**: `/u/<handle>` a person's public page; `/party/<slug>` a
+party's status history, plain and guessable as `party-registry` requires and
+carrying prior names; `/g/<token>` a grant as its named recipient reads it;
+`/a/<token>` an attester invitation, which decision 038 put on the web;
+`/m/<id>` mark resolution, since the portable core carries mark-resolution links
+onto surfaces we do not control; `/.well-known/` for the association files.
+
+**The handle keeps its prefix.** A bare handle at root reads better aloud and is
+the consumer precedent, and it was refused on two grounds. It consumes the whole
+root namespace, so every future page competes with a handle somebody may already
+hold and a growing reserved-word list has to be maintained forever. And Universal
+Links and App Links match on path patterns: `grainidentity.com/u/*` claims exactly
+the handle space, where `grainidentity.com/*` claims everything and needs an
+exclusion for every non-handle path, with a mistake meaning the terms page opens
+the app. Two characters is a cheap price for a namespace that cannot collide.
+
+**There is no `verify.` host, and there will not be.** It was proposed to carry
+verification and disclosure, which are two unrelated things and neither is
+verification: the grant recipient's view is somebody reading a record, and the
+Article 15 disclosure of who has read your record is a screen inside the worker's
+own app. More importantly a hostname reading `verify.` asserts verification in the
+one place a link is most often seen stripped of context, pasted into a message or
+an application. Entry 027 makes the mark a pointer saying "this person has a
+record you can inspect", never "this person is verified", and permanently
+prohibits every rendering that collapses the graded claim into a yes. A hostname
+is a badge that cannot be restyled, cannot carry the count 027 requires on
+third-party surfaces, and cannot be made graded. `console.` is also left unused,
+so the ambiguity that prompted this cannot return through it.
+
+**The two consoles take separate origins because they are already separate
+everything.** Decision 083 put party principals and operators in different schemas
+with no database role able to read both. One origin would give them one cookie
+jar and one session boundary, leaving the separation at the database and never
+reaching the browser.
+
+**The operator console is public, behind the same CDN and WAF as everything
+else.** Putting it on a private network was proposed and withdrawn:
+`security-infra` §8 ranks the controls that are non-negotiable at a million
+identities, it is not a cautious list, and network isolation of the operator
+console is not on it. The nearest item prescribes CDN and WAF fronting with
+enumeration-proof endpoints, which is a rule for public endpoints. The lock is
+decision 083's passkey with user verification, which is phishing-resistant by
+construction and has no shared secret to steal. Network isolation earns its place
+when operators outnumber the founders, or when a pre-auth vulnerability class
+appears in whatever the console is built on. Neither is now.
+
+**Why the origins are worth naming before anything is built.** 035 recorded that
+the never-reissue rule makes a later 301 free. That is true of the public page and
+false of anything holding passkeys: a WebAuthn credential binds to the origin that
+created it, so moving `partners.` or `ops.` later invalidates every credential on
+it and forces a re-enrolment. Decision 083's authentication task is unwritten,
+which makes this the cheap moment and not a tidy-up.
+
+**Cookies are host-only, per origin, never scoped to `.grainidentity.com`**, or
+the separation above is decoration.
