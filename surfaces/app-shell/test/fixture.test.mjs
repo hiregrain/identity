@@ -36,6 +36,18 @@ test("the fixture carries the vertex count the spike is for", () => {
 });
 
 test("the declared vertex count is the one the path data actually contains", () => {
+  // Counting command letters is exact only because imprint.py emits absolute
+  // M and C and a trailing Z, and never L, relative commands, or the shorthand
+  // (S/T/A). This guards that assumption so the count cannot silently drift if
+  // the generator's emission changes: any command letter outside MCZ fails.
+  for (const [index, d] of fixture.paths.entries()) {
+    const foreign = d.match(/[A-Za-z]/g)?.filter((c) => !"MCZ".includes(c));
+    assert.equal(
+      foreign?.length ?? 0,
+      0,
+      `thread ${index} carries a command outside M/C/Z: ${foreign?.join("")}`,
+    );
+  }
   const counted = fixture.paths.reduce(
     (total, d) => total + (d.match(/[MLC]/g) ?? []).length,
     0,

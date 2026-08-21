@@ -13,6 +13,7 @@
 
 import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
+import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import test from "node:test";
@@ -61,4 +62,38 @@ test("the declared dependency on each ratified package is an exact pin", () => {
       `${name} is declared as "${declared}"; a range lets the ratified stack drift`,
     );
   }
+});
+
+// The renderer, and the rest of the native stack, are pinned to what Expo SDK
+// 57 itself bundles rather than to the latest published version. This reads
+// `expo/bundledNativeModules.json`, the SDK's own contract between the managed
+// native runtime and the JS package, and asserts our pin against it. Without
+// this the comment above is an unchecked claim; with it, a Skia bump away from
+// what SDK 57 links fails here rather than at runtime on a device.
+//
+// bundledNativeModules pins some entries exactly (react, react-native, Skia)
+// and others as a `~` range (expo-router). An exact bundled value must equal
+// our pin; a `~x.y.z` range must have our pin as its base, which is the
+// minimum it accepts. expo itself is not in the file: it is the SDK version.
+test("each ratified pin matches Expo SDK 57's bundledNativeModules.json", () => {
+  const require = createRequire(join(PACKAGE_ROOT, "package.json"));
+  const bundled = JSON.parse(
+    readFileSync(require.resolve("expo/bundledNativeModules.json"), "utf8"),
+  );
+  let asserted = 0;
+  for (const [name, pin] of Object.entries(RATIFIED)) {
+    const spec = bundled[name];
+    if (spec === undefined) continue; // expo is the SDK, not a bundled module
+    const base = spec.replace(/^[~^]/, "");
+    assert.equal(
+      base,
+      pin,
+      `${name} is pinned to ${pin} but SDK 57 bundles ${spec}`,
+    );
+    asserted += 1;
+  }
+  assert.ok(
+    asserted >= 3,
+    `expected at least react, react-native and Skia in bundledNativeModules; asserted ${asserted}`,
+  );
 });

@@ -54,6 +54,10 @@ def path_data(svg):
 def main():
     svg = imprint.render(CASES[CASE], size=SIZE, dpr=DPR)
     paths = path_data(svg)
+    # Char-counting the command letters is exact only because imprint.py emits
+    # absolute M and C (and a trailing Z), never L, relative commands, or the
+    # shorthand. test/fixture.test.mjs asserts no path carries a letter outside
+    # M/C/Z, which is what keeps this count and that one in agreement.
     vertices = sum(d.count("C") + d.count("L") + d.count("M") for d in paths)
     fixture = {
         "case": CASE,
