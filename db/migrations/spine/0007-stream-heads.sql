@@ -10,7 +10,7 @@
 -- What a stream is. Every governing event this ledger records belongs to
 -- one or more append-only chains, and a chain is identified by a stream
 -- type and a stream key. Decision 019 widened the streams past
--- attestations for two reasons that are not stylistic: D3's anchored
+-- attestations for reasons that are not stylistic: D3's anchored
 -- contents are broader than the attestation record, and D4's dispositive
 -- argument depends on registry manipulation being visible in the log,
 -- which is false if registry events are unchained. An
@@ -57,8 +57,13 @@
 -- Append-only, with one exemption, named here and enumerated in
 -- test/append-only.test.mjs. stream_link grants nothing and exempts
 -- nothing: identity_app holds SELECT and INSERT from migration 0002 and
--- that is all an append needs. stream_heads is a projection whose rows
--- move, so identity_app holds UPDATE on that table BY NAME. Decision 017
+-- that is all an append needs (enforced by the streams acceptance
+-- suite's TestServingRoleCannotRewriteLinks, which fails if the serving
+-- role can UPDATE or DELETE a link or DELETE a head, and by
+-- test/append-only.test.mjs, which fails if the grant set on either
+-- table diverges from its enumerated exemption list). stream_heads is a
+-- projection whose rows move, so identity_app holds UPDATE on that
+-- table BY NAME. Decision 017
 -- dropped foundation/03's blanket derived/cache clause, so this table is
 -- licensed as a named, role-scoped exemption with its rationale at the
 -- site (decision 019), never as a member of a general category. The

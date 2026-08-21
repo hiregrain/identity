@@ -6,7 +6,7 @@
 // for verification, and how a merge resolves several chains into one
 // history without moving a row between them.
 //
-// Three claims this package exists to make true:
+// The claims this package exists to make true:
 //
 //	Every governing event chains, not only attestations (decision 019).
 //	D4's dispositive argument depends on registry manipulation being
@@ -100,9 +100,10 @@ var Types = []Type{
 // Errors. Each names a rule a caller can fix and none carries record
 // content.
 var (
-	ErrUnknownType = errors.New("streams: stream type is outside the closed vocabulary")
-	ErrInvalidKey  = errors.New("streams: stream key is not a lowercase uuid")
-	ErrNoHead      = errors.New("streams: no head was read for a stream being appended to")
+	ErrUnknownType     = errors.New("streams: stream type is outside the closed vocabulary")
+	ErrInvalidKey      = errors.New("streams: stream key is not a lowercase uuid")
+	ErrNoHead          = errors.New("streams: no head was read for a stream being appended to")
+	ErrDuplicateStream = errors.New("streams: one record names the same stream twice")
 )
 
 // keyShape pins the id posture decision 075 set: a lowercase UUIDv4,
@@ -221,14 +222,31 @@ type Record struct {
 // the (stream_type, stream_key, link_position) primary key is what
 // makes two transactions racing one stream a conflict rather than a
 // double-recording.
+//
+// One record naming the same (Type, Key) twice is refused, not
+// deduplicated. Staging both would write two consecutive links for one
+// record into one chain, inflating link_position, the countable and
+// unforgeable per-stream event count the chain exists to make true,
+// with a link the walk cannot tell from real history. Refusing surfaces
+// the caller bug; deduplicating would hide it.
 func Stage(tx *transport.Transaction, record Record, heads map[Stream]Head) error {
 	if !keyShape.MatchString(record.ID) {
 		return fmt.Errorf("%w: record id %q", ErrInvalidKey, record.ID)
 	}
+	// A pre-pass validates every stream and rejects a duplicate before a
+	// single statement is added, so a record naming one stream twice
+	// stages nothing rather than one link and then an abort.
+	seen := make(map[Stream]bool, len(record.Streams))
 	for _, s := range record.Streams {
 		if err := s.validate(); err != nil {
 			return err
 		}
+		if seen[s] {
+			return fmt.Errorf("%w: %s", ErrDuplicateStream, s)
+		}
+		seen[s] = true
+	}
+	for _, s := range record.Streams {
 		head, ok := heads[s]
 		if !ok {
 			return fmt.Errorf("%w: %s", ErrNoHead, s)

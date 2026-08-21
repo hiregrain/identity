@@ -7,6 +7,7 @@ package streams_test
 // streams_db_test.go.
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/hiregrain/identity/core/streams"
@@ -110,6 +111,23 @@ func TestStageRefusesARecordIdThatIsNotAUuid(t *testing.T) {
 	}, map[streams.Stream]streams.Head{s: streams.EmptyHead()})
 	if err == nil {
 		t.Fatal("staged a record with a malformed id")
+	}
+}
+
+func TestStageRefusesADuplicateStreamInOneRecord(t *testing.T) {
+	// One record naming the same (Type, Key) twice is refused before any
+	// statement is added, so a nil transaction never gets touched: the
+	// duplicate is caught in the pre-pass. Staging both would write two
+	// consecutive links for one record into one chain and inflate
+	// link_position with a link the walk cannot tell from real history.
+	s := streams.Stream{Type: streams.TypeWorkerRecord, Key: idA}
+	err := streams.Stage(nil, streams.Record{
+		ID:      idB,
+		Body:    []byte(`{"n":1}`),
+		Streams: []streams.Stream{s, s},
+	}, map[streams.Stream]streams.Head{s: streams.EmptyHead()})
+	if !errors.Is(err, streams.ErrDuplicateStream) {
+		t.Fatalf("a record naming one stream twice returned %v, want ErrDuplicateStream", err)
 	}
 }
 

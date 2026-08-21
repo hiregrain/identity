@@ -486,6 +486,35 @@ func TestServingRoleCannotRewriteLinks(t *testing.T) {
 	}
 }
 
+// TestOneRecordChainsOncePerStream is the database-side proof of the
+// duplicate refusal: a record naming the same stream twice stages
+// nothing, so the chain holds exactly zero links for it, not two. The
+// unit test TestStageRefusesADuplicateStreamInOneRecord proves the
+// error; this proves no link reached the table on the way to it.
+func TestOneRecordChainsOncePerStream(t *testing.T) {
+	s := streams.Stream{Type: streams.TypeSubjectAttestation, Key: newID(t)}
+	heads, err := streams.Heads(streams.Plane, streams.ServingRole, []streams.Stream{s})
+	if err != nil {
+		t.Fatalf("heads: %v", err)
+	}
+	id, body := writeProbeRecord(t, 0)
+	err = transport.Tx(streams.Plane, streams.ServingRole,
+		func(tx *transport.Transaction) error {
+			return streams.Stage(tx, streams.Record{
+				ID: id, Body: body, Streams: []streams.Stream{s, s}}, heads)
+		})
+	if err == nil {
+		t.Fatal("a record naming one stream twice was staged without error")
+	}
+	entries, err := streams.Entries(streams.Plane, streams.ServingRole, s)
+	if err != nil {
+		t.Fatalf("entries: %v", err)
+	}
+	if len(entries) != 0 {
+		t.Fatalf("the chain holds %d links for a rejected duplicate, want 0", len(entries))
+	}
+}
+
 // TestAPositionIsWrittenOnce: two appends racing one stream conflict
 // rather than double-recording, which is what the primary key is for.
 func TestAPositionIsWrittenOnce(t *testing.T) {
