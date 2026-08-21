@@ -18,7 +18,11 @@ evidence:
   - "test:make check, make check-red and make check-red-db @ 639adc2 (green locally under a no-ports compose override)"
   - "log:github.com/hiregrain/identity/actions/runs/32509674273 (every stage green at 639adc2)"
   - "review:log/2026-08-21-person-identity-01-reverification.md (clean-context reverification at 639adc2, pass)"
-verified_by: clean-context-reverifier@2026-08-21
+  - "diff:PR #14 @ 93a16e623c2d1c264730c348ca64d492dc91bd76 (null-safe assurance CHECK, the reverification's finding)"
+  - "test:make check, make check-red and make check-red-db @ 93a16e6 (green at the verified head under a no-ports compose override)"
+  - "log:github.com/hiregrain/identity/actions/runs/32512932660 (every stage green at 93a16e6)"
+  - "review:log/2026-08-21-person-identity-01-post-fix-verification.md (clean-context verification at 93a16e6, pass)"
+verified_by: clean-context-post-fix-verifier@2026-08-21
 ---
 
 # Signup and ID issuance
