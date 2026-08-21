@@ -124,7 +124,7 @@ Owner is who draws it. Mechanism is what it resolves to on each platform.
 | Status bar glyph colour | Grain sets, system draws | Dark content on paper | Light-theme system bar icons |
 | Top bar container | System | Toolbar, no background, hard scroll edge effect | Top app bar behind the status bar, opaque paper container |
 | Top bar contents | Grain | Two marks, sharing and account | Two marks, sharing and account |
-| Bar contents on a pushed screen | Split | Back, with the previous screen's title | Back, with the previous screen's title |
+| Bar contents on a pushed screen | Split | Wordmark, divider, then back with the previous screen's title (076) | Wordmark, divider, then back with the previous screen's title (076) |
 | Scroll physics and indicators | System | Scroll view | Scroll container |
 | Pull to refresh | Neither, refused | Record is push-updated | Record is push-updated |
 | Back | System | Interactive pop, left edge | Predictive back, `OnBackPressedDispatcher` |
@@ -283,6 +283,12 @@ styling. Inside Grain's own surfaces there is no red to clash with it.
 
 ## What is not settled
 
+**Whether the lockup belongs in the bar on the record** is untouched by
+decision 076, which rules only on the pushed bar. On the record the wordmark
+would point at the screen the worker is already on, so the native bar still
+shows it only at depth while the web masthead carries it throughout. That
+asymmetry is recorded rather than resolved.
+
 **Where the two marks sit** is the one thing still open on the bar: split across
 the edges, which is what the prototype does, or sharing moved to a bottom
 toolbar. The cost of the second is decision 048's arithmetic, which it does not
@@ -324,6 +330,71 @@ from `design/08` §3.
 
 **Right to left, and Devanagari.** Neither is touched here. `DESIGN.md` gap 7
 remains launch-blocking for Hindi and no companion face is chosen.
+
+## The seam in a browser
+
+Everything above is an argument about what an operating system hands over. A
+browser hands over almost none of it, so the seam does not shift on the web, it
+inverts. `app.grainidentity.com` is the same record from the same codebase
+(decision 037 keeps the PWA first class), and it is drawn in
+[`design/14-web-app`](14-web-app/).
+
+The test does not change. Grain keeps a control only where the platform's
+version is worse. What changes is that on most rows there is no platform
+version at all, and an absent control is worse than a bad one.
+
+| Behaviour | Native owner | On the web |
+|---|---|---|
+| Top bar container | System | **Grain.** No system toolbar exists. Paper, with the hard scroll edge drawn by hand |
+| Back | System | **Grain, twice.** A drawn control on every pushed surface, and every push is a history entry so the browser's own back does the same thing. The wordmark returns to the record from any depth (076), which a browser needs more than a phone does: a phone hands back an edge gesture, a browser hands back nothing inside the page |
+| Sheets | System | **Grain.** A bottom sheet on a phone, a centred dialog on a desk |
+| Destructive confirmation | System | **Grain.** `window.confirm` cannot be styled and cannot carry the ink warning block |
+| Month selection | System presentation | **Grain.** `input type=month` is a different control in every browser |
+| Share out | System | **Grain fallback.** `navigator.share` is absent on most desktop browsers, so copy to clipboard is the desktop path rather than an edge case |
+| Pull to refresh | Refused | **Grain suppresses it.** Android Chrome fires its own on a record the seam already ruled is push updated |
+| Haptics | Grain names, system plays | **Gone.** iOS Safari has no vibration API. Every beat that leaned on feel is now visual only |
+| Safe areas, edge to edge | System | Browser chrome owns the edges. The mobile address bar collapses on scroll, so no fixed offset under it is safe |
+| Deep links | Universal links, App Links | A URL, which is the one row the web is better at |
+| The record: rows, marks, imprint | **Grain** | Unchanged, and imported rather than redrawn |
+
+### Three things the inversion forces
+
+**A bottom sheet is not a dialog with different coordinates.** A phone sheet
+cancels from a bar along its top, because the top of a sheet is where a thumb is
+not. A dialog cancels beside the thing it is cancelling. The first draft here
+moved the box and kept the bar, which is how a design tells you only its
+geometry was considered.
+
+**The offline promise becomes conditional, and the condition is installation.**
+Decision 039 records it plainly: WebKit clears the caches after seven days
+without a visit and exempts installed apps, so "installation is the storage
+model, not a distribution preference". In a browser tab the app may not repeat
+the native promise that the record reads offline. It says what is true instead,
+and offers the install that makes it true.
+
+**Unlock changes what it proves.** Native unlocks with the device passcode or a
+biometric, and decision 038's reason was shared handsets. A browser has a
+passkey, which proves the account rather than the person holding the device.
+That is a weaker claim than the native one and the surface says so rather than
+reusing the native copy.
+
+### What the desk is for
+
+The record keeps one measure at every width. The desktop does not get a second
+column of record, which would be the one place the web and the native app
+visibly disagreed. It gets the ground the record sits on, marked off by the
+plate that §9 already reserves for the record and nothing else, and the chapter
+index that on Android had to be a 40px strip inside a 200dp budget shared with
+every other window (037) and here can simply be visible. Nothing depends on it,
+exactly as 037 required: it scrolls a record that is already one scroll.
+
+### Not settled here
+
+Dark mode is not drawn on the web either, and waits on the same palette.
+Right to left and Devanagari are untouched. Whether the trailing cluster's
+open question resolves the same way at both widths is assumed rather than
+argued: the prototype gives sharing a word on the desk and a glyph on the
+phone, which is option D on one viewport and the current bar on the other.
 
 ## Sources
 

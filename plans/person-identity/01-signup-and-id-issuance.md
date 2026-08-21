@@ -3,7 +3,7 @@ id: person-identity/01
 type: task
 layer: person-identity
 satisfies: []
-status: ready
+status: in_progress
 depends_on: [foundation/04, foundation/07]
 migrations: [0010-person-core]
 binds: [decisions/LOG.md#013, decisions/LOG.md#017]
@@ -20,8 +20,8 @@ an opaque permanent `ledger_person_id` out.
 
 ## Scope
 
-- `0010-person-core` (spine): `person` with opaque UUIDv7 id (hot-range-safe
-  layout, rationale documented at the schema site), `created_at`,
+- `0010-person-core` (spine): `person` with opaque random UUIDv4 id
+  (decision 075; rationale documented at the schema site), `created_at`,
   lifecycle state as write-once + transition rows (never an editable
   column, Dispatch's proven correction), tombstone marker.
 - Payload-side person row: contact channels with verified-at and

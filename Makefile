@@ -13,7 +13,7 @@ DUMP_SPINE := $(COMPOSE) exec -T spine pg_dump --schema-only --restrict-key=dump
 DUMP_PAYLOAD := $(COMPOSE) exec -T payload pg_dump --schema-only --restrict-key=dump -U identity payload
 
 # The golden vectors both language runners read (trust-kernel/01).
-# Absolute, so the red path below can point both runners at a mutated copy
+# Absolute, so the red paths below can point both runners at a mutated copy
 # in a temp directory without either one's own working directory mattering.
 VECTORS ?= $(CURDIR)/contract/vectors
 
@@ -268,7 +268,9 @@ check-red:
 	! node checks/deletion-copy.mjs test/fixtures/redpath/deletion-copy/copy.md test/fixtures/redpath/deletion-copy/policy.json
 	@echo "red path 14: an em dash, a spaced en dash, curly quotes, a heading emoji, a JSON-escaped em dash, and both tell words each fail the unslop check (no database)"
 	! node checks/unslop.mjs test/fixtures/redpath/unslop
-	@echo "red path 15: a mutated golden vector fails BOTH language runners (no database)"
+	@echo "red path 15: a hand-rolled psql invocation outside core/transport fails the transport-seam check (no database)"
+	! node checks/transport-seam.mjs test/fixtures/redpath/transport
+	@echo "red path 16: a mutated golden vector fails BOTH language runners (no database)"
 	@dir="$$(mktemp -d)"; \
 	cp "$(VECTORS)/canonicalization.json" "$(VECTORS)/sign-verify.json" "$$dir/" && \
 	node -e 'const fs=require("fs");const f=process.argv[1];const v=JSON.parse(fs.readFileSync(f,"utf8"));const c=v.cases.find(c=>c.canonical!==undefined);c.canonical=c.canonical+" ";fs.writeFileSync(f,JSON.stringify(v,null,2)+"\n");' "$$dir/canonicalization.json" && \
@@ -276,13 +278,13 @@ check-red:
 	( cd contract/runner && ! node src/check.ts "$$dir" ) && \
 	rm -rf "$$dir" && \
 	echo "flagged by the go kernel and by the typescript runner"
-	@echo "red path 16: a frozen core over its line budget fails the budget check (no database)"
+	@echo "red path 17: a frozen core over its line budget fails the budget check (no database)"
 	! node checks/kernel-budget.mjs core/kernel 10
-	@echo "red path 17: signing with a caller-supplied key does not compile (decision 019)"
+	@echo "red path 18: signing with a caller-supplied key does not compile (decision 019)"
 	@cd test/fixtures/redpath/kernel-sign && \
 	if go build ./... 2>/dev/null; then echo "the fixture compiled; the signing path takes a key"; exit 1; fi; \
 	echo "flagged: kernel.Sign has no parameter another party's key could travel in"
-	@echo "red path 18: a vector file edited without regenerating fails the freshness check, even when the edit is one both runners tolerate (no database)"
+	@echo "red path 19: a vector file edited without regenerating fails the freshness check, even when the edit is one both runners tolerate (no database)"
 	@dir="$$(mktemp -d)"; \
 	cp "$(VECTORS)/canonicalization.json" "$(VECTORS)/sign-verify.json" "$$dir/" && \
 	node -e 'const fs=require("fs");const f=process.argv[1];fs.writeFileSync(f,fs.readFileSync(f,"utf8").replace("\"empty array\"","\"empty array (hand edited)\""));' "$$dir/canonicalization.json" && \
@@ -291,7 +293,7 @@ check-red:
 	! node checks/vector-freshness.mjs "$$dir" && \
 	rm -rf "$$dir" && \
 	echo "flagged: both runners passed the edited file and the freshness check did not"
-	@echo "red path 19: a host rule short of two approvals with code-owner review fails the governance check, and either host mechanism satisfies it (no database)"
+	@echo "red path 20: a host rule short of two approvals with code-owner review fails the governance check, and either host mechanism satisfies it (no database)"
 	! node checks/kernel-governance.mjs hiregrain/identity test/fixtures/redpath/kernel-governance/one-approval
 	! node checks/kernel-governance.mjs hiregrain/identity test/fixtures/redpath/kernel-governance/no-code-owner
 	! node checks/kernel-governance.mjs hiregrain/identity test/fixtures/redpath/kernel-governance/nothing

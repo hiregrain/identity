@@ -35,6 +35,7 @@ const METADATA = [
   "cross-plane-constructs",
   "deletion-copy",
   "unslop",
+  "transport-seam",
   // The frozen core's line budget (trust-kernel/01, decision 019).
   // File-only, so it runs before any database with the rest of this group.
   "kernel-budget",

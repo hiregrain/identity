@@ -5,8 +5,9 @@ import (
 	"fmt"
 	"regexp"
 	"sort"
-	"strconv"
 	"strings"
+
+	"github.com/hiregrain/identity/core/transport"
 )
 
 // Instruction is the payload-apply instruction an outbox entry carries:
@@ -66,7 +67,11 @@ func (in Instruction) validate() error {
 
 // ApplySQL renders the idempotent INSERT for one entry. Columns are
 // emitted in sorted order so the same instruction always renders the
-// same statement.
+// same statement. Values are rendered through core/transport's typed
+// Arg literals (trust-kernel/08, decision 065): this is the one
+// legitimate caller that must pre-render a full statement, because an
+// instruction's row shape is arbitrary and external, not a fixed
+// $n-placeholder query.
 func (in Instruction) ApplySQL(entryID string) (string, error) {
 	if err := validUUID(entryID); err != nil {
 		return "", err
@@ -81,41 +86,41 @@ func (in Instruction) ApplySQL(entryID string) (string, error) {
 	sort.Strings(columns)
 	values := make([]string, 0, len(columns))
 	for _, column := range columns {
-		literal, err := sqlLiteral(in.Row[column])
+		arg, err := argFor(in.Row[column])
+		if err != nil {
+			return "", fmt.Errorf("instruction: column %q: %w", column, err)
+		}
+		literal, err := transport.Literal(arg)
 		if err != nil {
 			return "", fmt.Errorf("instruction: column %q: %w", column, err)
 		}
 		values = append(values, literal)
 	}
+	entryLiteral, err := transport.Literal(transport.String(entryID))
+	if err != nil {
+		return "", err
+	}
 	return fmt.Sprintf(
-		"INSERT INTO %s (outbox_entry_id, %s)\nVALUES ('%s', %s)\nON CONFLICT (outbox_entry_id) DO NOTHING;",
-		in.Table, strings.Join(columns, ", "), entryID, strings.Join(values, ", "),
+		"INSERT INTO %s (outbox_entry_id, %s)\nVALUES (%s, %s)\nON CONFLICT (outbox_entry_id) DO NOTHING;",
+		in.Table, strings.Join(columns, ", "), entryLiteral, strings.Join(values, ", "),
 	), nil
 }
 
-// sqlLiteral renders one JSON value as a SQL literal. Strings are
-// single-quoted with quotes doubled; numbers and booleans render
-// bare; null renders NULL. Nested objects and arrays are rejected.
-// An instruction is one flat row.
-func sqlLiteral(value any) (string, error) {
+// argFor maps one JSON value to a transport.Arg. Nested objects and
+// arrays are rejected: an instruction is one flat row.
+func argFor(value any) (transport.Arg, error) {
 	switch v := value.(type) {
 	case nil:
-		return "NULL", nil
+		return transport.Null, nil
 	case string:
-		return "'" + quoteText(v) + "'", nil
+		return transport.String(v), nil
 	case bool:
-		return strconv.FormatBool(v), nil
+		return transport.Bool(v), nil
 	case float64:
-		return strconv.FormatFloat(v, 'g', -1, 64), nil
+		return transport.Float(v), nil
 	default:
-		return "", fmt.Errorf("unsupported value type %T", value)
+		return nil, fmt.Errorf("unsupported value type %T", value)
 	}
-}
-
-// quoteText doubles single quotes for a standard-conforming string
-// literal.
-func quoteText(s string) string {
-	return strings.ReplaceAll(s, "'", "''")
 }
 
 // validUUID gates every entry id interpolated into SQL.

@@ -2,7 +2,7 @@
 id: worker-surface/03
 type: task
 layer: worker-surface
-satisfies: [1, 5, 6, 7, 8]
+satisfies: [1, 2, 5, 6, 7, 8]
 status: draft
 depends_on: [worker-surface/01]
 binds:
@@ -10,6 +10,7 @@ binds:
   - decisions/LOG.md#039
   - decisions/LOG.md#041
   - decisions/LOG.md#062
+  - decisions/LOG.md#074
   - model/record-schema.md
   - design/13-platform-screens
 evidence: []
@@ -23,7 +24,16 @@ verified_by: null
 The moment of value creation. If a worker cannot get their work in, the
 record stays empty and every other surface is moot.
 
-Surfaces implemented: A9, A10, A11, C1, C2, C3, C4.
+Surfaces implemented: A9, A10, A11, A11a, A11b, C1, C2, C3, C4, C5, E2-1,
+E2-2, E2-3.
+
+**Widened by decisions 062 and 074.** E2 is education and certificates, which
+062 made record objects and which no surface had ever carried, so criterion 1's
+"every fact about the person is reachable" was failing on a third of the
+ratified schema. C5 is the countable step and A11a/A11b are the two import
+outcomes the layer's own defect list named. A11 now confirms each proposed party
+match on the screen rather than applying it silently, which is the schema's rule
+that a name match is not an identity, made visible.
 
 ## Scope
 
@@ -42,16 +52,16 @@ Surfaces implemented: A9, A10, A11, C1, C2, C3, C4.
 
 ## Acceptance
 
-- AC (mechanical): selecting the free-text fallback writes no `party_ref`,
+1. **Typing a business Grain does not know attaches no party to it.** (mechanical) selecting the free-text fallback writes no `party_ref`,
   asserted on the resulting draft record.
-- AC (mechanical): a committed chapter rejects every edit outside the minor
+2. **A committed chapter refuses every edit outside the minor set.** (mechanical) a committed chapter rejects every edit outside the minor
   set, proven by attempting a party change and asserting refusal.
-- AC (mechanical): no date field in this flow accepts or stores a day
+3. **No date in this flow carries a day.** (mechanical) no date field in this flow accepts or stores a day
   component.
-- AC (mechanical): nothing entered in the import review reaches the record
+4. **An abandoned import leaves the record untouched.** (mechanical) nothing entered in the import review reaches the record
   until the commit action, proven by abandoning the flow and asserting the
   record is unchanged.
-- AC (adjudicated): the permanence surface states what cannot be changed
+5. **The permanence screen says what cannot be undone, without apologising for it.** (adjudicated) the permanence surface states what cannot be changed
   without either burying it or apologising for it. A verifier reading only
   that screen can say correctly what happens to an attested chapter.
 
