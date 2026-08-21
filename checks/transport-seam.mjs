@@ -6,17 +6,25 @@
 // change one file (plans/ORDER.md's decision gates) instead of every
 // call site's own quoting and row-parsing copy.
 //
-// This is a lexical lint over every Go file in the repo, core/transport
-// itself and generated code (core/gen/) excluded. There is no
-// test-file exemption: a test that shells out to docker or psql
-// duplicates the seam exactly as much as production code would, and
-// decision 065 named "envelope's db test drops its duplicate renderer"
-// as part of the same discipline. What it catches: `exec.Command`
-// whose first argument is the literal "docker" or "psql" (the shape
-// every prior hand-rolled copy took), and an import of "database/sql"
-// or a known Postgres driver module. What it cannot catch: a
-// dynamically constructed command name. That gap is accepted the same
-// way checks/serving-credentials.mjs accepts its own: the loud, early
+// This is a lexical lint over every Go file in the repo (there is no
+// other language a database invocation could hide in today), walked
+// from the repo root, core/transport itself and generated code
+// (core/gen/) excluded by path, not by directory name, so an unrelated
+// directory that happened to be named "transport" or "gen" elsewhere
+// in the tree would still be scanned. test/ is pruned wherever it
+// appears, the same exclusion every check's red-path fixtures get, so
+// a deliberately planted violation fixture does not fail the check
+// that exists to catch planted violations. There is no exemption for a
+// real Go test file living where production code lives (core/, not
+// test/): a _test.go that shells out to docker or psql duplicates the
+// seam exactly as much as production code would, and decision 065
+// named "envelope's db test drops its duplicate renderer" as part of
+// the same discipline. What it catches: `exec.Command` whose first
+// argument is the literal "docker" or "psql" (the shape every prior
+// hand-rolled copy took), and an import of "database/sql" or a known Postgres
+// driver module. What it cannot catch: a dynamically constructed
+// command name. That gap is accepted the same way
+// checks/serving-credentials.mjs accepts its own: the loud, early
 // failure on the ordinary case, not the only enforcement layer.
 //
 // Usage: node checks/transport-seam.mjs [rootDir]
@@ -24,11 +32,22 @@
 //   test/fixtures/redpath/transport, a synthetic Go tree.
 
 import { readdirSync, readFileSync, existsSync, statSync } from "node:fs";
-import { join } from "node:path";
+import { join, relative, sep } from "node:path";
 
 const root = process.argv[2] ?? ".";
-const SCAN_TREES = ["core"];
-const EXEMPT_DIRS = new Set(["transport", "gen"]);
+
+// Paths (repo-relative, posix-separated) excluded from the scan: the
+// transport package itself and its generated code.
+const EXEMPT_PATHS = new Set(["core/transport", "core/gen"]);
+
+// Directory names excluded at any depth: version control, dependency
+// trees no Go source lives in, and test/, which holds this check's own
+// red-path fixture (a deliberately planted violation) alongside every
+// other check's, the same exclusion counts.mjs makes for the same
+// reason. The red-path invocation passes a path inside test/ directly
+// as rootDir, which is scanned normally: this exemption only prunes
+// test/ when it is encountered as a descendant of the scan root.
+const EXEMPT_NAMES = new Set([".git", "node_modules", "test"]);
 
 const EXEC_PATTERNS = [
   {
@@ -50,10 +69,8 @@ const IMPORT_PATTERNS = [
 let filesScanned = 0;
 let violations = 0;
 
-for (const tree of SCAN_TREES) {
-  const dir = join(root, tree);
-  if (!existsSync(dir) || !statSync(dir).isDirectory()) continue;
-  walk(dir, true);
+if (existsSync(root) && statSync(root).isDirectory()) {
+  walk(root);
 }
 
 if (violations > 0) {
@@ -68,13 +85,14 @@ console.log(
   `transport-seam: ${filesScanned} Go file(s) scanned, no database invocation outside core/transport`,
 );
 
-function walk(dir, atTreeRoot) {
+function walk(dir) {
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
-    if (entry.name.startsWith(".")) continue;
-    if (atTreeRoot && EXEMPT_DIRS.has(entry.name)) continue;
+    if (EXEMPT_NAMES.has(entry.name)) continue;
     const path = join(dir, entry.name);
+    const relPath = relative(root, path).split(sep).join("/");
+    if (EXEMPT_PATHS.has(relPath)) continue;
     if (entry.isDirectory()) {
-      walk(path, false);
+      walk(path);
       continue;
     }
     if (!entry.isFile() || !entry.name.endsWith(".go")) continue;

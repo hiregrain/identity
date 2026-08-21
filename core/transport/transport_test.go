@@ -105,6 +105,55 @@ func TestByteaRendersOnlyThroughTheWrapper(t *testing.T) {
 	// same shape (proven above) renders as plain text, never hex.
 }
 
+// TestRenderDoesNotRescanSubstitutedLiterals is the multi-argument
+// render red path (trust-kernel/08 verification finding): a repeated
+// whole-string ReplaceAll substitution rescans literals it already
+// inserted, so a String argument containing the text "$1" is
+// reinterpreted as a placeholder on a later substitution pass and
+// replaced again, breaking a quoted literal open. This plants exactly
+// that shape, a $k-shaped payload at $2 alongside an injection payload
+// at $1, and asserts the SQL Postgres would receive keeps the payload
+// as data inside one quoted literal, never as a second statement.
+func TestRenderDoesNotRescanSubstitutedLiterals(t *testing.T) {
+	injection := "; CREATE TABLE verifier_injected(x int); --"
+	rendered, err := render("SELECT $1, $2", []Arg{String(injection), String("$1")})
+	if err != nil {
+		t.Fatalf("render: %v", err)
+	}
+	// The only correct single-pass rendering: each placeholder is
+	// substituted exactly once, at its own position, from the
+	// UNMODIFIED source text, so $2's literal is never re-scanned for
+	// the $1 it happens to contain.
+	want := "SELECT '; CREATE TABLE verifier_injected(x int); --', '$1'"
+	if rendered != want {
+		t.Fatalf("render rescanned a substituted literal:\n got:  %q\nwant: %q", rendered, want)
+	}
+	// The payload never appears unquoted: every byte of it sits inside
+	// exactly one pair of single quotes, so Postgres reads it as one
+	// text literal, not a second statement.
+	quoted := "'" + injection + "'"
+	if !strings.Contains(rendered, quoted) {
+		t.Fatalf("injection payload is not enclosed in a single quoted literal: %q", rendered)
+	}
+	if strings.Count(rendered, "''") != 0 {
+		t.Fatalf("an empty-string literal artifact ('') appeared, the signature of the rescan bug: %q", rendered)
+	}
+
+	// A second shape: the injection payload itself sits at the HIGHER
+	// index ($2), so a highest-index-first substitution pass writes it
+	// into the statement before the $1 pass runs, and a naive
+	// whole-string rescan on that later pass would find and replace
+	// the "$1" text embedded inside the already-inserted payload.
+	rendered2, err := render("SELECT $1, $2", []Arg{String("$1"), String(injection)})
+	if err != nil {
+		t.Fatalf("render: %v", err)
+	}
+	want2 := "SELECT '$1', '; CREATE TABLE verifier_injected(x int); --'"
+	if rendered2 != want2 {
+		t.Fatalf("render rescanned a substituted literal:\n got:  %q\nwant: %q", rendered2, want2)
+	}
+}
+
 func TestSplitRowIsBoundedWithLastFieldUnbounded(t *testing.T) {
 	// A detail field containing the separator is not corrupted: the
 	// bounded split keeps trailing tabs inside the last column.

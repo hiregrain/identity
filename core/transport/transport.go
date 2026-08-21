@@ -30,6 +30,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"regexp"
 	"strconv"
 	"strings"
 )
@@ -108,18 +109,48 @@ func (b Bytea) sqlLiteral() (string, error) {
 // else, pass Args to Query or Tx and let $n substitution do this.
 func Literal(a Arg) (string, error) { return a.sqlLiteral() }
 
-// render substitutes $n placeholders with rendered literals, highest
-// index first so $10 could never be clobbered by $1.
+// placeholderPattern finds every $n token in a statement. A single
+// left-to-right scan of the ORIGINAL sql, below, is what makes
+// substitution safe: repeated whole-string ReplaceAll passes (the
+// prior implementation) rescan literals already inserted, so a String
+// argument containing the text "$1" is reinterpreted as a placeholder
+// on a later pass and replaced again, breaking the statement out from
+// under its own escaping. This scan never revisits substituted text.
+var placeholderPattern = regexp.MustCompile(`\$(\d+)`)
+
+// render substitutes $n placeholders with rendered literals in one
+// pass over sql, emitting each literal into its position rather than
+// scanning the growing output. An argument's rendered text, including
+// one that itself contains "$1", "$$", or any other $n-shaped
+// substring, reaches the statement verbatim: it is written once, at
+// its match position, and never looked at again for further $n
+// matches.
 func render(sql string, args []Arg) (string, error) {
-	rendered := sql
-	for i := len(args); i >= 1; i-- {
-		lit, err := args[i-1].sqlLiteral()
+	literals := make([]string, len(args))
+	for i, a := range args {
+		lit, err := a.sqlLiteral()
 		if err != nil {
-			return "", fmt.Errorf("transport: arg %d: %w", i, err)
+			return "", fmt.Errorf("transport: arg %d: %w", i+1, err)
 		}
-		rendered = strings.ReplaceAll(rendered, fmt.Sprintf("$%d", i), lit)
+		literals[i] = lit
 	}
-	return rendered, nil
+	var out strings.Builder
+	last := 0
+	for _, m := range placeholderPattern.FindAllStringSubmatchIndex(sql, -1) {
+		start, end := m[0], m[1]
+		n, err := strconv.Atoi(sql[m[2]:m[3]])
+		if err != nil {
+			return "", fmt.Errorf("transport: malformed placeholder %q", sql[start:end])
+		}
+		if n < 1 || n > len(literals) {
+			return "", fmt.Errorf("transport: placeholder $%d has no matching argument (%d given)", n, len(literals))
+		}
+		out.WriteString(sql[last:start])
+		out.WriteString(literals[n-1])
+		last = end
+	}
+	out.WriteString(sql[last:])
+	return out.String(), nil
 }
 
 // SplitRow splits one tab-separated result line into exactly columns

@@ -19,7 +19,8 @@ evidence:
     "test:node test/append-only.test.mjs -- 18 assertions passed on both planes",
     "test:node test/two-plane-split.test.mjs -- 8 assertions passed",
     "test:node checks/run.mjs -- metadata and schema groups green",
-    "diff:PR #13 @ 1f6ca2400ed78652c6caffcd23f2a391c1a21719",
+    "test:cd core && go test ./transport/... -run TestRenderDoesNotRescan -v -- multi-arg injection red path (post-verification fix) passes",
+    "diff:PR #13 @ PLACEHOLDER_SHA",
   ]
 verified_by: null
 ---
@@ -124,13 +125,18 @@ symbols.
 
 - Criterion 1: `checks/transport-seam.mjs` is the grep-class check,
   wired into `checks/run.mjs`'s metadata group and `make check`. It
-  scans every `.go` file under `core/` (test files included, no
-  exemption) for `exec.Command` reaching `"docker"` or `"psql"`, and
-  for a `database/sql` or known driver import, outside
-  `core/transport`. Red path 15 in the Makefile points it at
-  `test/fixtures/redpath/transport`, a planted `exec.Command("docker",
-  ...)` outside `core/transport`, and asserts exit 1; the real tree
-  scans 18 Go files and finds none.
+  walks the whole repo (there is no other language a database
+  invocation could hide in today), `test/` pruned wherever it appears
+  (the same exclusion every check's red-path fixtures get; without it
+  the check's own planted violation fixture would fail the green
+  path), `core/transport` and `core/gen` excluded by path. It flags
+  `exec.Command` reaching `"docker"` or `"psql"`, and a `database/sql`
+  or known driver import, outside `core/transport`. Red path 15 in the
+  Makefile points it at `test/fixtures/redpath/transport`, a planted
+  `exec.Command("docker", ...)` outside `core/transport`, and asserts
+  exit 1; the real tree scans 18 Go files (all of them under `core/`,
+  which is where every `.go` file in the repo happens to live today)
+  and finds none.
 - Criterion 2: `quoteText`, `sqlLiteral`, `quoteLiteral`, and
   `isHexLiteral` no longer exist anywhere in the repo; every psql
   invocation lives in `core/transport/transport.go`. Grepping the
@@ -163,6 +169,22 @@ symbols.
   `SplitN` the outbox always used; `TestSplitRowIsBoundedWithLastFieldUnbounded`
   in `transport_test.go` proves a tab or pipe inside the last field
   survives intact.
+
+A verification finding, fixed on this branch after the first review:
+`render`'s original implementation substituted `$n` placeholders with
+repeated whole-statement `strings.ReplaceAll` passes, highest index
+first. Each pass rescanned literals a prior pass had already inserted,
+so a `String` argument containing text shaped like `$1` was
+reinterpreted as a placeholder on a later pass and replaced again,
+breaking a quoted literal open into two statements. `render` now does
+one left-to-right scan over the ORIGINAL statement text
+(`placeholderPattern.FindAllStringSubmatchIndex`), emitting each
+literal into its match position exactly once; a substituted literal is
+never looked at again. `TestRenderDoesNotRescanSubstitutedLiterals` in
+`transport_test.go` reproduces the finding's exact shape (an injection
+payload and a `$1`-shaped string across two arguments, in both index
+orders) and asserts the rendered statement keeps the payload inside
+one quoted literal.
 
 One environmental note, not a code defect: `make check`'s
 `migrate-verify` step (a `docker compose down && up` cycle, unrelated
