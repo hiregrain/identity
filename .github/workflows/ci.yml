@@ -22,15 +22,41 @@ on:
   pull_request:
 
 jobs:
+  # Go is here for one check in this group: checks/vector-freshness.mjs
+  # runs the vector generator and compares bytes. It lives in the metadata
+  # group rather than beside the Go tests because the Go test cache does
+  # not track files outside the module, so a cached pass over an edited
+  # vector file is exactly the window this closes.
   metadata:
     name: repo metadata (before any database)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5.6.0
+        with:
+          go-version-file: core/go.mod
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 24
+      - run: make metadata
+
+  # The two-approval rule on the frozen core (trust-kernel/01, decision
+  # 019). Its own job, and in the all-green fan-in below, so it blocks a
+  # merge. CODEOWNERS requests reviewers and a host rule requires them, and
+  # only a query to the host can tell which is in force, which is why this
+  # cannot be a file check. The rules-in-force endpoint answers for an
+  # ordinary read token, so GITHUB_TOKEN is enough.
+  kernel-governance:
+    name: two approvals required on the frozen core
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 24
-      - run: make metadata
+      - run: make kernel-governance
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   red-paths:
     name: red-path fixtures (database stage disabled)
@@ -219,7 +245,19 @@ jobs:
   all-green:
     name: all stages green
     if: always()
-    needs: [metadata, red-paths, lint, db-migrate, go, ts, envelope, outbox, deletion]
+    needs:
+      [
+        metadata,
+        kernel-governance,
+        red-paths,
+        lint,
+        db-migrate,
+        go,
+        ts,
+        envelope,
+        outbox,
+        deletion,
+      ]
     runs-on: ubuntu-latest
     steps:
       - run: |

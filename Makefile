@@ -169,10 +169,12 @@ db-down:
 	$(COMPOSE) down
 
 # The golden vectors (trust-kernel/01). `vectors` regenerates them from
-# core/cmd/vectors and is what a change to the generator is followed by;
-# the regeneration is deterministic, and go-check fails if the committed
-# files differ from a fresh generation, so a forgotten `make vectors` is
-# caught rather than merged.
+# core/cmd/vectors and is what a change to the generator is followed by.
+# A forgotten regeneration is caught by checks/vector-freshness.mjs in the
+# metadata group, which runs the generator and compares bytes on every
+# run. The Go test that compares them too is a fast developer signal and
+# not the enforcement: it can be served from the test cache, because the
+# vectors live outside the `core` module.
 vectors:
 	cd core && go run ./cmd/vectors generate $(VECTORS)
 
@@ -191,13 +193,15 @@ kernel-budget:
 	node checks/kernel-budget.mjs
 
 # The two-approval rule on the frozen core (trust-kernel/01, decision
-# 019). NOT part of `check` and not a CI job: reading branch protection
-# needs repository-admin credentials that neither CI's token nor this
-# repo's tooling carries, so wiring it into the blocking pipeline would
-# fail every pull request for a reason no pull request can fix. Run by
-# whoever holds admin on the repository. It currently exits 1, which is
-# the honest answer: the host rule does not exist yet, and creating it is
-# a founder act (the raise recorded on plans/trust-kernel/01).
+# 019). This is the local entry point; the enforcement is CI's
+# kernel-governance job, which is in the all-green fan-in and therefore
+# blocks a merge. It is not part of `check` because every other target in
+# this file runs against local containers with no credentials, and a host
+# query here would fail for any developer who has not authenticated.
+#
+# It exits 1 today, which is the criterion working: no rule exists on the
+# host and creating one is a repository-admin act (the raise recorded on
+# plans/trust-kernel/01 and in the verification record).
 kernel-governance:
 	node checks/kernel-governance.mjs
 
@@ -278,6 +282,21 @@ check-red:
 	@cd test/fixtures/redpath/kernel-sign && \
 	if go build ./... 2>/dev/null; then echo "the fixture compiled; the signing path takes a key"; exit 1; fi; \
 	echo "flagged: kernel.Sign has no parameter another party's key could travel in"
+	@echo "red path 18: a vector file edited without regenerating fails the freshness check, even when the edit is one both runners tolerate (no database)"
+	@dir="$$(mktemp -d)"; \
+	cp "$(VECTORS)/canonicalization.json" "$(VECTORS)/sign-verify.json" "$$dir/" && \
+	node -e 'const fs=require("fs");const f=process.argv[1];fs.writeFileSync(f,fs.readFileSync(f,"utf8").replace("\"empty array\"","\"empty array (hand edited)\""));' "$$dir/canonicalization.json" && \
+	( cd core && go run ./cmd/vectors check "$$dir" ) && \
+	( cd contract/runner && node src/check.ts "$$dir" ) && \
+	! node checks/vector-freshness.mjs "$$dir" && \
+	rm -rf "$$dir" && \
+	echo "flagged: both runners passed the edited file and the freshness check did not"
+	@echo "red path 19: a host rule short of two approvals with code-owner review fails the governance check, and either host mechanism satisfies it (no database)"
+	! node checks/kernel-governance.mjs hiregrain/identity test/fixtures/redpath/kernel-governance/one-approval
+	! node checks/kernel-governance.mjs hiregrain/identity test/fixtures/redpath/kernel-governance/no-code-owner
+	! node checks/kernel-governance.mjs hiregrain/identity test/fixtures/redpath/kernel-governance/nothing
+	node checks/kernel-governance.mjs hiregrain/identity test/fixtures/greenpath/kernel-governance/ruleset
+	node checks/kernel-governance.mjs hiregrain/identity test/fixtures/greenpath/kernel-governance/classic
 	@echo "check-red: all red paths fail as required"
 
 # Database-dependent red path: a schema edit without regenerated types

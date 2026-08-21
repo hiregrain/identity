@@ -1,0 +1,12 @@
+[
+  {
+    "type": "pull_request",
+    "ruleset_source_type": "Repository",
+    "ruleset_source": "hiregrain/identity",
+    "ruleset_id": 1,
+    "parameters": {
+      "required_approving_review_count": 2,
+      "require_code_owner_review": false
+    }
+  }
+]

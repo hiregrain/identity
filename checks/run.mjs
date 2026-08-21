@@ -38,6 +38,13 @@ const METADATA = [
   // The frozen core's line budget (trust-kernel/01, decision 019).
   // File-only, so it runs before any database with the rest of this group.
   "kernel-budget",
+  // The committed golden vectors against a fresh generation
+  // (trust-kernel/01). Needs the Go toolchain and no database, which is
+  // why this group's CI job installs Go. It lives here rather than beside
+  // the Go tests because the test cache does not track files outside the
+  // module, and a cached pass over an edited vector file is exactly what
+  // this is for.
+  "vector-freshness",
 ];
 const SCHEMA = ["spine-schema", "payload-residency", "scored-columns"];
 

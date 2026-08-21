@@ -21,6 +21,13 @@ func TestKernelPassesTheCommittedVectors(t *testing.T) {
 
 // Regeneration is byte-identical, which is what makes the committed files
 // reviewable: a reviewer regenerates and diffs rather than reading base64.
+//
+// This is a fast developer signal and NOT the enforcement. The vectors
+// live outside this module, so the test cache does not track them and a
+// warm cache can serve a pass over an edited file. The enforcement is
+// checks/vector-freshness.mjs in the metadata group, which runs the
+// generator and compares bytes every time, and red path 18 in the
+// Makefile, which plants exactly the edit both language runners tolerate.
 func TestRegenerationIsByteIdentical(t *testing.T) {
 	fresh := t.TempDir()
 	if err := generate(fresh); err != nil {
