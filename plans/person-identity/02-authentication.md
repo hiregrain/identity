@@ -3,7 +3,7 @@ id: person-identity/02
 type: task
 layer: person-identity
 satisfies: []
-status: ready
+status: in_progress
 depends_on: [person-identity/01]
 binds: [decisions/LOG.md#013, decisions/LOG.md#020]
 evidence: []
@@ -28,16 +28,12 @@ by device class.
   append-only.
 - Rate limiting and lockout on code paths; abuse signals feed the same
   risk scoring as signup.
-- **Step-up: sensitive operations require a session whose assurance matches
-  the account's derived level** (decision 020). Without this, recovery
-  hardening is bypassed through ordinary login. An attacker does not need
-  recovery if a code session reaches everything. The closed sensitive set:
-  adding or removing credentials, changing contact channels, creating or
-  revoking grants, requesting a packet, and initiating deletion. Credential
-  enrollment is on the list deliberately: it is the takeover primitive,
-  since it converts a temporary session into permanent access.
-- A code session on a document-verified account reads and acts routinely
-  without friction; only the sensitive set demands step-up.
+- **Step-up is cut from this task** (decision 086): its criterion required
+  a document-verified account, and decision 071 rules those cannot exist in
+  first-product, so the criterion was unreachable. Step-up, the sensitive
+  set, and session-assurance derivation return with the verification
+  layer, whose task 04 owns the ladder. Decision 020's comparison rule is
+  unchanged and waits there.
 
 ## Acceptance
 
@@ -46,14 +42,13 @@ by device class.
 - AC (mechanical): code endpoints resist enumeration (uniform responses
   and timing for existing vs. non-existent channels).
 - AC: a device with no passkey support completes login start-to-finish.
-- AC (mechanical): from a code session on a document-verified account, each
-  operation in the sensitive set is refused without step-up, one case per
-  operation, credential enrollment included.
-- AC (mechanical): non-sensitive operations from a code session are never
-  blocked.
+- AC (mechanical): routine operations from a code session are never
+  blocked; the code path is a first-class equal path (decision 013).
+  (The step-up refusal criterion is cut by decision 086 and returns with
+  the verification layer.)
 
 ## Outside check
 
-Verifier authenticates via both paths, attempts every sensitive operation
-from a code session on a verified account, confirms routine operations stay
-unblocked, revokes a session mid-flight, and runs the enumeration probes.
+Verifier authenticates via both paths, confirms routine operations stay
+unblocked from a code session, revokes a session mid-flight, and runs the
+enumeration probes.
