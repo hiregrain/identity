@@ -63,6 +63,12 @@ var canonicalizationInputs = []struct {
 	{name: "rejected: bytes after the document", input: `{"a":1} {"b":2}`, rejected: true},
 	{name: "rejected: truncated document", input: `{"a":`, rejected: true},
 	{name: "rejected: not json at all", input: `grain`, rejected: true},
+	// Decision 082's rule 1 amendment, cross-language: a document with an
+	// unpaired surrogate is refused, never altered and never escaped. The
+	// escape is written literally here (a backtick string), so the input is
+	// the six characters of a JSON \uXXXX escape, not a Go string that
+	// already tried to hold a lone surrogate.
+	{name: "rejected: unpaired surrogate escape", input: `{"a":"\ud800"}`, rejected: true},
 }
 
 // signInputs are the payloads signed, without a key identifier: the
@@ -72,6 +78,7 @@ var signInputs = []struct {
 	name        string
 	signerKeyID string
 	payload     string
+	rejected    bool
 }{
 	{name: "minimal payload", signerKeyID: fixture.KeyID1, payload: `{"subject":"person-1"}`},
 	{
@@ -83,6 +90,13 @@ var signInputs = []struct {
 	// because the identifier is inside them, which is the property the
 	// tampered cases below turn into a failure.
 	{name: "minimal payload under the second key", signerKeyID: fixture.KeyID2, payload: `{"subject":"person-1"}`},
+	// Signing canonicalizes the raw payload first, so it refuses whatever
+	// canonicalization refuses before it embeds a key. A duplicate member
+	// and an over-range number are the two a naive JSON.parse would sign
+	// over silently: parse keeps the last of the duplicate, and turns the
+	// number into Infinity. Both implementations must refuse to sign.
+	{name: "rejected: duplicate member name in the payload", signerKeyID: fixture.KeyID1, payload: `{"a":1,"a":2}`, rejected: true},
+	{name: "rejected: over-range number in the payload", signerKeyID: fixture.KeyID1, payload: `{"z":1e400}`, rejected: true},
 }
 
 func build() (CanonicalizationVectors, SignVerifyVectors, error) {
@@ -109,12 +123,20 @@ func build() (CanonicalizationVectors, SignVerifyVectors, error) {
 	if err != nil {
 		return canonicalization, SignVerifyVectors{}, err
 	}
+	// The true verdict is generated from a Verdict deliberately carrying a
+	// key identifier and payload, so the pin proves those never reach the
+	// wire: the bytes must still be exactly {"valid":true} (decision 082).
+	trueVerdict, err := json.Marshal(kernel.Verdict{Valid: true, KeyID: "leak", Payload: json.RawMessage(`"leak"`)})
+	if err != nil {
+		return canonicalization, SignVerifyVectors{}, err
+	}
 	signVerify := SignVerifyVectors{
 		Contract:        "contract/CONTRACT.md rules 3 and 4",
 		Generator:       "core/cmd/vectors",
 		ProtectedHeader: kernel.ProtectedHeader,
 		KeyIDField:      kernel.KeyIDField,
 		FalseVerdict:    string(falseVerdict),
+		TrueVerdict:     string(trueVerdict),
 	}
 
 	signers := map[string]*fixture.Signer{}
@@ -130,6 +152,18 @@ func build() (CanonicalizationVectors, SignVerifyVectors, error) {
 	genuine := map[string]string{}
 	for _, input := range signInputs {
 		compact, err := kernel.Sign([]byte(input.payload), signers[input.signerKeyID])
+		if input.rejected {
+			if err == nil {
+				return canonicalization, signVerify, fmt.Errorf("case %q is marked rejected and was signed", input.name)
+			}
+			signVerify.Sign = append(signVerify.Sign, SignCase{
+				Name:        input.name,
+				SignerKeyID: input.signerKeyID,
+				Payload:     input.payload,
+				Rejected:    true,
+			})
+			continue
+		}
 		if err != nil {
 			return canonicalization, signVerify, fmt.Errorf("case %q: %w", input.name, err)
 		}
@@ -171,8 +205,33 @@ func build() (CanonicalizationVectors, SignVerifyVectors, error) {
 		},
 		{Name: "protected header names another algorithm", Compact: reheader(base, `{"alg":"none"}`), Valid: false},
 		{Name: "segment missing", Compact: strings.Join(strings.Split(base, ".")[:2], "."), Valid: false},
+		// Decision 082's base64url rule, cross-language: the signature bytes
+		// are unchanged, but the segment carries a nonzero slack bit in its
+		// final character, so it decodes to the same signature and does not
+		// survive a decode/re-encode round trip. A lenient verifier accepts
+		// it; a strict one refuses it before the signature is even checked.
+		{Name: "non-canonical base64url in the signature segment", Compact: slackSignatureSegment(base), Valid: false},
 	}
 	return canonicalization, signVerify, nil
+}
+
+// slackSignatureSegment re-spells the signature segment with a nonzero
+// slack bit so it decodes to identical bytes but is not its own canonical
+// base64url form. A 64-byte signature encodes to 86 characters whose last
+// character holds two significant bits and four slack bits that the
+// canonical spelling leaves zero; setting them changes the character
+// without changing the decoded signature.
+func slackSignatureSegment(compact string) string {
+	parts := strings.Split(compact, ".")
+	segment := parts[2]
+	const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"
+	last := segment[len(segment)-1]
+	idx := strings.IndexByte(alphabet, last)
+	// The final character of a 64-byte encoding carries four slack bits;
+	// the canonical spelling leaves them zero, so setting them is guaranteed
+	// to name a different character that decodes to the same bytes.
+	parts[2] = segment[:len(segment)-1] + string(alphabet[idx|0x0f])
+	return strings.Join(parts, ".")
 }
 
 // repayload rewrites the payload segment and leaves the signature alone,

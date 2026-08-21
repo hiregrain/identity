@@ -53,6 +53,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"unicode/utf16"
 
 	"github.com/hiregrain/identity/core/kernel"
 )
@@ -100,7 +101,20 @@ func main() {
 	}
 }
 
-func answer(line []byte) response {
+// answer converts a request line into a response, and a panic into a
+// failure response rather than a crash. The harness feeds every request
+// before draining, so one adapter process dying mid-stream desynchronizes
+// the entire run; a catchable panic must not do that. A stack overflow is
+// fatal and recover cannot catch it, which is why the kernel bounds nesting
+// with MaxDepth rather than relying on this: the deep-input case returns an
+// ordinary error and never reaches a panic here.
+func answer(line []byte) (result response) {
+	defer func() {
+		if r := recover(); r != nil {
+			result = failure(fmt.Errorf("panic: %v", r))
+		}
+	}()
+
 	var req request
 	if err := json.Unmarshal(line, &req); err != nil {
 		return failure(fmt.Errorf("unreadable request: %w", err))
@@ -212,20 +226,17 @@ func encodeLine(value any) string {
 			line.WriteRune(r)
 			continue
 		}
-		for _, unit := range utf16Units(r) {
-			fmt.Fprintf(&line, `\u%04x`, unit)
+		// The protocol's \uXXXX escapes are UTF-16 code units, so a
+		// supplementary-plane rune becomes its surrogate pair rather than a
+		// five-digit escape no JSON reader accepts. utf16.EncodeRune returns
+		// one BMP rune as (U+FFFD, U+FFFD), so a BMP code point is written
+		// directly and only a supplementary one is split.
+		if r <= 0xffff {
+			fmt.Fprintf(&line, `\u%04x`, uint16(r))
+			continue
 		}
+		high, low := utf16.EncodeRune(r)
+		fmt.Fprintf(&line, `\u%04x\u%04x`, uint16(high), uint16(low))
 	}
 	return line.String()
-}
-
-// utf16Units is what the protocol's \uXXXX escapes are units of, so a
-// supplementary-plane rune in an error message becomes its surrogate pair
-// rather than a five-digit escape no JSON reader accepts.
-func utf16Units(r rune) []uint16 {
-	if r < 0x10000 {
-		return []uint16{uint16(r)}
-	}
-	r -= 0x10000
-	return []uint16{uint16(0xd800 + (r >> 10)), uint16(0xdc00 + (r & 0x3ff))}
 }

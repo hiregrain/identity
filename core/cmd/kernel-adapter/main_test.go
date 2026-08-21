@@ -109,6 +109,19 @@ func TestUnknownOpAndUnreadableLineAreRejectedNotFatal(t *testing.T) {
 	}
 }
 
+// A deeply nested request returns a failure response rather than crashing
+// the process. The kernel bounds nesting, so the deep case never reaches
+// the fatal stack overflow that would desync the harness; the answer's
+// recover is the backstop for any other panic. Depth past MaxDepth is
+// enough to prove the bound fires.
+func TestDeeplyNestedRequestFailsWithoutCrashing(t *testing.T) {
+	deep := strings.Repeat("[", kernel.MaxDepth+50) + strings.Repeat("]", kernel.MaxDepth+50)
+	line := `{"op":"canonicalize","value":` + deep + `}`
+	if response := answer([]byte(line)); response.OK {
+		t.Fatal("a request nested past the limit was accepted")
+	}
+}
+
 // Every byte the adapter writes is printable ASCII. Node's readline splits
 // a stream on U+2028 and U+2029 as well as on newline, and rule 1's corpus
 // carries both, so an unescaped one would desynchronize the whole run.

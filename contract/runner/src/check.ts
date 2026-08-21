@@ -23,6 +23,7 @@ import {
   sign,
   signerFromHex,
   verify,
+  wireVerdict,
 } from "./jws.ts";
 
 type CanonicalizationCase = {
@@ -36,8 +37,9 @@ type SignCase = {
   name: string;
   signerKeyId: string;
   payload: string;
-  signedPayload: string;
-  compact: string;
+  rejected?: boolean;
+  signedPayload?: string;
+  compact?: string;
 };
 type VerifyCase = {
   name: string;
@@ -85,6 +87,7 @@ const signVerifyVectors = readVectors<{
   protectedHeader: string;
   keyIdField: string;
   falseVerdict: string;
+  trueVerdict: string;
   keys: VectorKey[];
   sign: SignCase[];
   verify: VerifyCase[];
@@ -100,9 +103,18 @@ if (signVerifyVectors.keyIdField !== KEY_ID_FIELD) {
     `key identifier field: runner has ${KEY_ID_FIELD}, vector has ${signVerifyVectors.keyIdField}`,
   );
 }
-if (JSON.stringify(invalidVerdict()) !== signVerifyVectors.falseVerdict) {
+if (wireVerdict(invalidVerdict()) !== signVerifyVectors.falseVerdict) {
   failures.push(
-    `false verdict: runner serializes ${JSON.stringify(invalidVerdict())}, vector has ${signVerifyVectors.falseVerdict}`,
+    `false verdict: runner serializes ${wireVerdict(invalidVerdict())}, vector has ${signVerifyVectors.falseVerdict}`,
+  );
+}
+// The true verdict is pinned from a verdict deliberately carrying kid and
+// payload, so the pin proves neither reaches the wire: it must still be
+// exactly {"valid":true} (decision 082).
+const trueWire = wireVerdict({ valid: true, kid: "leak", payload: "leak" });
+if (trueWire !== signVerifyVectors.trueVerdict) {
+  failures.push(
+    `true verdict: runner serializes ${trueWire}, vector has ${signVerifyVectors.trueVerdict}`,
   );
 }
 
@@ -120,27 +132,35 @@ for (const testCase of signVerifyVectors.sign) {
     );
     continue;
   }
+  let compact: string;
   try {
-    const compact = sign(
+    compact = sign(
       testCase.payload,
       signerFromHex(key.id, key.privateHex, key.publicHex),
     );
-    if (compact !== testCase.compact) {
-      failures.push(
-        `sign/${testCase.name}: got ${compact}, want ${testCase.compact}`,
-      );
-      continue;
-    }
-    const signed = Buffer.from(compact.split(".")[1], "base64url").toString(
-      "utf8",
-    );
-    if (signed !== testCase.signedPayload) {
-      failures.push(
-        `sign/${testCase.name}: signed payload is ${signed}, want ${testCase.signedPayload}`,
-      );
-    }
   } catch (error) {
-    failures.push(`sign/${testCase.name}: ${String(error)}`);
+    if (!testCase.rejected) {
+      failures.push(`sign/${testCase.name}: ${String(error)}`);
+    }
+    continue;
+  }
+  if (testCase.rejected) {
+    failures.push(`sign/${testCase.name}: signed a payload the vector rejects`);
+    continue;
+  }
+  if (compact !== testCase.compact) {
+    failures.push(
+      `sign/${testCase.name}: got ${compact}, want ${testCase.compact}`,
+    );
+    continue;
+  }
+  const signed = Buffer.from(compact.split(".")[1], "base64url").toString(
+    "utf8",
+  );
+  if (signed !== testCase.signedPayload) {
+    failures.push(
+      `sign/${testCase.name}: signed payload is ${signed}, want ${testCase.signedPayload}`,
+    );
   }
 }
 

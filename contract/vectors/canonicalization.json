@@ -81,6 +81,11 @@
       "name": "rejected: not json at all",
       "input": "grain",
       "rejected": true
+    },
+    {
+      "name": "rejected: unpaired surrogate escape",
+      "input": "{\"a\":\"\\ud800\"}",
+      "rejected": true
     }
   ]
 }

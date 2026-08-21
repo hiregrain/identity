@@ -29,6 +29,16 @@ export function invalidVerdict(): Verdict {
   return { valid: false };
 }
 
+// wireVerdict is the exact bytes a verdict takes on the wire: {"valid":...}
+// and nothing else, which contract rule 3 requires of both verdicts
+// (decision 082 fixed the true one). kid and payload stay on the Verdict for
+// a caller that verified and wants them, never on the wire, mirroring the Go
+// kernel's json:"-" fields. The vectors pin both serialized forms so the two
+// languages are held to the same bytes.
+export function wireVerdict(verdict: Verdict): string {
+  return JSON.stringify({ valid: verdict.valid });
+}
+
 // Signer holds one key and reports which. Sign takes no key parameter,
 // which is decision 019: the wrong key is unexpressible rather than
 // rejected.
@@ -56,6 +66,15 @@ export function signerFromHex(
 // the result, and returns the compact serialization.
 export function sign(payload: string, signer: Signer): string {
   const keyId = signer.currentKeyId();
+
+  // Canonicalize the RAW payload bytes first, exactly as the Go kernel's
+  // withKeyID does, so this refuses every document Go refuses before it
+  // inserts anything: a duplicate member name, an over-range number, an
+  // unpaired surrogate. Parsing first would produce a valid signature over
+  // bytes the caller never wrote, because JSON.parse silently keeps the last
+  // of a duplicate key and turns an over-range number into Infinity.
+  canonicalize(payload);
+
   const members = JSON.parse(payload) as Record<string, unknown>;
   if (
     members === null ||

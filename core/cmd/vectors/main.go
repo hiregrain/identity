@@ -62,6 +62,7 @@ type SignVerifyVectors struct {
 	ProtectedHeader string       `json:"protectedHeader"`
 	KeyIDField      string       `json:"keyIdField"`
 	FalseVerdict    string       `json:"falseVerdict"`
+	TrueVerdict     string       `json:"trueVerdict"`
 	Keys            []VectorKey  `json:"keys"`
 	Sign            []SignCase   `json:"sign"`
 	Verify          []VerifyCase `json:"verify"`
@@ -75,17 +76,22 @@ type VectorKey struct {
 }
 
 // SignCase states what signing one payload with one key must produce, down
-// to the compact serialization's bytes.
+// to the compact serialization's bytes. A rejected case is the opposite
+// claim: both implementations must refuse to sign the payload, so a runner
+// that signs bytes the caller never wrote fails the case.
 type SignCase struct {
 	Name string `json:"name"`
 	// SignerKeyID is the key the signer holds, never a parameter to
 	// signing (decision 019).
 	SignerKeyID string `json:"signerKeyId"`
 	Payload     string `json:"payload"`
+	// Rejected marks a payload both implementations must refuse to sign.
+	// SignedPayload and Compact are empty for a rejected case.
+	Rejected bool `json:"rejected,omitempty"`
 	// SignedPayload is the canonical payload the signature actually
 	// covers, key identifier included.
-	SignedPayload string `json:"signedPayload"`
-	Compact       string `json:"compact"`
+	SignedPayload string `json:"signedPayload,omitempty"`
+	Compact       string `json:"compact,omitempty"`
 }
 
 // VerifyCase states a verdict for one compact serialization. The tampered
@@ -210,6 +216,12 @@ func runSignVerify(vectors SignVerifyVectors) []string {
 	if encoded, err := json.Marshal(kernel.Invalid()); err != nil || string(encoded) != vectors.FalseVerdict {
 		failures = append(failures, fmt.Sprintf("false verdict: kernel serializes %s, vector has %s", encoded, vectors.FalseVerdict))
 	}
+	// The true verdict is pinned the same way the false one is (decision
+	// 082 rule 3): its serialized form must be exactly {"valid":true} and
+	// carry nothing the kernel returns alongside it for a Go caller.
+	if encoded, err := json.Marshal(kernel.Verdict{Valid: true, KeyID: "leak", Payload: json.RawMessage(`"leak"`)}); err != nil || string(encoded) != vectors.TrueVerdict {
+		failures = append(failures, fmt.Sprintf("true verdict: kernel serializes %s, vector has %s", encoded, vectors.TrueVerdict))
+	}
 
 	byID := map[string]VectorKey{}
 	for _, key := range vectors.Keys {
@@ -232,6 +244,12 @@ func runSignVerify(vectors SignVerifyVectors) []string {
 			continue
 		}
 		compact, err := kernel.Sign([]byte(testCase.Payload), signer)
+		if testCase.Rejected {
+			if err == nil {
+				failures = append(failures, fmt.Sprintf("sign/%s: signed a payload the vector rejects", testCase.Name))
+			}
+			continue
+		}
 		if err != nil {
 			failures = append(failures, fmt.Sprintf("sign/%s: %v", testCase.Name, err))
 			continue

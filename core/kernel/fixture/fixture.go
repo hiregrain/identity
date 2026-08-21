@@ -18,7 +18,6 @@ import (
 	"crypto/ed25519"
 	"crypto/sha256"
 	"encoding/hex"
-	"errors"
 
 	"github.com/hiregrain/identity/core/kernel"
 )
@@ -82,10 +81,6 @@ func (s *Signer) CurrentKeyID() (string, error) { return s.keyID, nil }
 func (s *Signer) Sign(signingInput []byte) ([]byte, string, error) {
 	return ed25519.Sign(s.private, signingInput), s.keyID, nil
 }
-
-// ErrUnknownKey is what a resolver reports through its found result; it
-// exists so a caller can say why a lookup failed in a message.
-var ErrUnknownKey = errors.New("fixture: no such key identifier")
 
 // Resolver is a kernel.Resolver over a fixed key set, standing in for the
 // party-registry lookup until that layer lands.

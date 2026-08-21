@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"slices"
 	"strings"
 	"unicode/utf16"
 	"unicode/utf8"
@@ -18,7 +19,23 @@ var (
 	ErrDuplicateKey  = errors.New("kernel: object has a duplicate member name")
 	ErrTrailingBytes = errors.New("kernel: input carries bytes after the JSON document")
 	ErrNotWellFormed = errors.New("kernel: input is not well-formed Unicode")
+	ErrTooDeep       = errors.New("kernel: JSON nesting exceeds the depth limit")
 )
+
+// MaxDepth bounds JSON nesting. parseFrom recurses once per open bracket,
+// so a document of a few million open brackets would exhaust the goroutine
+// stack, and a stack overflow in Go is a fatal runtime error that recover()
+// cannot catch: it kills the process, which for the streaming
+// kernel-adapter means a crash mid-differential-run rather than one bad
+// answer. The limit converts that into a normal error.
+//
+// 256 is far above any real record. A grain attestation is a flat object of
+// a dozen members with at most a small array of measures; nothing the
+// product writes nests past single digits. The bound exists for hostile
+// input, not for depth the product would ever reach, so it is set where no
+// legitimate document is near it and a malicious one stops well short of
+// the stack.
+const MaxDepth = 256
 
 // checkWellFormed refuses the two inputs Go's JSON decoder would repair
 // into something else: invalid UTF-8 bytes, and an unpaired surrogate
@@ -92,16 +109,13 @@ func lowerHex(c byte) byte {
 // duplicate members and reorder nothing reproducibly.
 //
 // A document carrying an unpaired surrogate, or a byte sequence that is not
-// valid UTF-8, is REFUSED rather than repaired. Go's JSON decoder would
-// substitute U+FFFD for either, and substitution is a normalization, which
-// rule 1 forbids in as many words: the input would come out as a different
-// string and canonicalization would report success on a document it had
-// altered. Refusing is not a reading of what such a document canonicalizes
-// to. The contract does not say, the reference model raised it as ambiguity
-// A3 and read it the other way, preserving the surrogate as an escape, and
-// the two answers are still open. Refusal is what is defensible until one
-// is ruled, because it is the only behaviour that never returns bytes that
-// are not the input's.
+// valid UTF-8, is REFUSED rather than repaired. Decision 082 ruled rule 1's
+// silence this way: input containing an unpaired surrogate is refused, never
+// altered and never escaped. Go's JSON decoder would substitute U+FFFD for
+// either, and substitution is a normalization, which rule 1 forbids, so
+// canonicalization would otherwise report success on a document it had
+// altered. Enforced by checkWellFormed below, and covered cross-language by
+// the rejected surrogate vector in contract/vectors.
 func Canonicalize(document []byte) ([]byte, error) {
 	if err := checkWellFormed(document); err != nil {
 		return nil, err
@@ -109,7 +123,7 @@ func Canonicalize(document []byte) ([]byte, error) {
 	decoder := json.NewDecoder(bytes.NewReader(document))
 	decoder.UseNumber()
 
-	value, err := parseValue(decoder)
+	value, err := parseValue(decoder, 0)
 	if err != nil {
 		return nil, err
 	}
@@ -131,18 +145,24 @@ type member struct {
 	value any
 }
 
-func parseValue(decoder *json.Decoder) (any, error) {
+func parseValue(decoder *json.Decoder, depth int) (any, error) {
 	token, err := decoder.Token()
 	if err != nil {
 		return nil, fmt.Errorf("%w: %v", ErrNotJSON, err)
 	}
-	return parseFrom(decoder, token)
+	return parseFrom(decoder, token, depth)
 }
 
-func parseFrom(decoder *json.Decoder, token json.Token) (any, error) {
+// parseFrom recurses once per open bracket. depth is checked before
+// descending, so a document deeper than MaxDepth returns ErrTooDeep rather
+// than overflowing the stack (a fatal error recover() cannot catch).
+func parseFrom(decoder *json.Decoder, token json.Token, depth int) (any, error) {
 	delim, isDelim := token.(json.Delim)
 	if !isDelim {
 		return token, nil
+	}
+	if depth >= MaxDepth {
+		return nil, fmt.Errorf("%w: deeper than %d", ErrTooDeep, MaxDepth)
 	}
 
 	switch delim {
@@ -165,7 +185,7 @@ func parseFrom(decoder *json.Decoder, token json.Token) (any, error) {
 				return nil, fmt.Errorf("%w: %q", ErrDuplicateKey, name)
 			}
 			seen[name] = true
-			value, err := parseValue(decoder)
+			value, err := parseValue(decoder, depth+1)
 			if err != nil {
 				return nil, err
 			}
@@ -181,7 +201,7 @@ func parseFrom(decoder *json.Decoder, token json.Token) (any, error) {
 			if closing, ok := token.(json.Delim); ok && closing == ']' {
 				return elements, nil
 			}
-			element, err := parseFrom(decoder, token)
+			element, err := parseFrom(decoder, token, depth+1)
 			if err != nil {
 				return nil, err
 			}
@@ -248,29 +268,77 @@ func writeValue(out *strings.Builder, value any) error {
 }
 
 // sortMembers orders member names by UTF-16 code unit, contract rule 2's
-// second half. Insertion sort because objects here are small and the
-// comparison, not the algorithm, is what the rule is about. Sorting by
-// UTF-8 bytes instead would pass every test that stays inside the basic
-// multilingual plane and diverge on the supplementary planes, where a
-// surrogate pair's leading unit (0xD800) sorts below U+E000 and its UTF-8
-// bytes sort above.
+// second half. slices.SortFunc is n log n; the comparator allocates
+// nothing, so a large or reverse-ordered object costs n log n comparisons
+// rather than the n^2 an insertion sort charged. Member names in one object
+// are unique (duplicates are refused), so the sort's lack of stability
+// changes nothing. Sorting by UTF-8 bytes instead would pass every test
+// inside the basic multilingual plane and diverge on the supplementary
+// planes, where a surrogate pair's leading unit (0xd800) sorts below U+E000
+// and its UTF-8 bytes sort above.
 func sortMembers(members []member) {
-	for i := 1; i < len(members); i++ {
-		for j := i; j > 0 && lessUTF16(members[j].name, members[j-1].name); j-- {
-			members[j], members[j-1] = members[j-1], members[j]
+	slices.SortFunc(members, func(a, b member) int {
+		return compareUTF16(a.name, b.name)
+	})
+}
+
+// compareUTF16 orders two strings by their UTF-16 code units without
+// allocating, walking each with a cursor that yields one code unit at a
+// time. It returns the same order lessUTF16 did (a []uint16 comparison),
+// which the existing member-ordering tests and the large-object test hold.
+func compareUTF16(a, b string) int {
+	ca, cb := utf16Cursor{s: a}, utf16Cursor{s: b}
+	for {
+		ua, oka := ca.next()
+		ub, okb := cb.next()
+		if !oka || !okb {
+			switch {
+			case oka == okb:
+				return 0
+			case !oka:
+				return -1
+			default:
+				return 1
+			}
+		}
+		if ua != ub {
+			if ua < ub {
+				return -1
+			}
+			return 1
 		}
 	}
 }
 
-func lessUTF16(a, b string) bool {
-	left := utf16.Encode([]rune(a))
-	right := utf16.Encode([]rune(b))
-	for i := 0; i < len(left) && i < len(right); i++ {
-		if left[i] != right[i] {
-			return left[i] < right[i]
-		}
+// utf16Cursor walks a UTF-8 string yielding UTF-16 code units. A
+// supplementary code point yields its two surrogate units across two calls,
+// which is why the low unit is held pending rather than returned with the
+// high one. The string is already well-formed (checkWellFormed refused
+// invalid UTF-8 and unpaired surrogates), so DecodeRuneInString never
+// returns a substitution here.
+type utf16Cursor struct {
+	s       string
+	i       int
+	low     uint16
+	pending bool
+}
+
+func (c *utf16Cursor) next() (uint16, bool) {
+	if c.pending {
+		c.pending = false
+		return c.low, true
 	}
-	return len(left) < len(right)
+	if c.i >= len(c.s) {
+		return 0, false
+	}
+	r, size := utf8.DecodeRuneInString(c.s[c.i:])
+	c.i += size
+	if r > 0xffff {
+		high, low := utf16.EncodeRune(r)
+		c.low, c.pending = uint16(low), true
+		return uint16(high), true
+	}
+	return uint16(r), true
 }
 
 const hexDigits = "0123456789abcdef"

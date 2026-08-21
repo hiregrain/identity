@@ -121,6 +121,12 @@ func withKeyID(payload []byte, keyID string) ([]byte, error) {
 	if err := json.Unmarshal(payload, &members); err != nil {
 		return nil, fmt.Errorf("%w: %v", ErrPayloadNotObject, err)
 	}
+	// `null` unmarshals into a nil map with no error, so the guard above
+	// misses it; a nil map is not an object and assigning to it panics.
+	// A JSON array unmarshals into a map with an error and is caught above.
+	if members == nil {
+		return nil, fmt.Errorf("%w: payload is null, not an object", ErrPayloadNotObject)
+	}
 	if _, present := members[KeyIDField]; present {
 		return nil, ErrKeyIDPresent
 	}
@@ -134,14 +140,19 @@ func withKeyID(payload []byte, keyID string) ([]byte, error) {
 	return json.Marshal(members)
 }
 
-// Verdict is the outcome of verification. A false verdict serializes to
-// exactly {"valid":false} with no other member, which is contract rule 3;
-// the omitempty tags are what make that true, and the vector runners
-// compare the serialized form rather than the struct.
+// Verdict is the outcome of verification. It serializes to exactly
+// {"valid":true} or {"valid":false} and nothing else, which contract rule 3
+// requires of both (decision 082 fixed the true verdict's shape; the false
+// one was already fixed and never says why). The `json:"-"` on the other two
+// fields is what makes that true: KeyID and Payload are carried for a Go
+// caller that verified and now wants them, never onto the wire, where an
+// extra member would break the byte-exact verdict. The vector runners
+// compare the serialized form, so this is held by the true- and
+// false-verdict pins in contract/vectors.
 type Verdict struct {
 	Valid   bool            `json:"valid"`
-	KeyID   string          `json:"kid,omitempty"`
-	Payload json.RawMessage `json:"payload,omitempty"`
+	KeyID   string          `json:"-"`
+	Payload json.RawMessage `json:"-"`
 }
 
 // Invalid is the single false verdict.
@@ -165,6 +176,11 @@ func Verify(compact string, resolver Resolver) Verdict {
 	}
 	publicKey, found := resolver.PublicKey(keyID)
 	if !found {
+		return Invalid()
+	}
+	// ed25519.Verify panics on a wrong-length key, so a resolver that hands
+	// back a malformed one must fail the verdict, not the process.
+	if len(publicKey) != ed25519.PublicKeySize {
 		return Invalid()
 	}
 	if !ed25519.Verify(publicKey, signingInput, signature) {
@@ -196,6 +212,11 @@ func VerifyEnvelope(compact string, publicKey ed25519.PublicKey) bool {
 func VerifyWithKey(compact string, publicKey ed25519.PublicKey, keyID string) Verdict {
 	payload, embeddedKeyID, signingInput, signature, ok := split(compact)
 	if !ok || embeddedKeyID != keyID {
+		return Invalid()
+	}
+	// ed25519.Verify panics on a wrong-length key; a malformed one is a
+	// false verdict, never a crash.
+	if len(publicKey) != ed25519.PublicKeySize {
 		return Invalid()
 	}
 	if !ed25519.Verify(publicKey, signingInput, signature) {
@@ -236,12 +257,11 @@ func splitEnvelope(compact string) (payload json.RawMessage, signingInput, signa
 // bits of a final character, so without this one envelope has several
 // spellings, and rule 3's whole posture on the header is that it has one.
 //
-// The contract does not rule on the segments themselves, only on the
-// header bytes they carry, which is an ambiguity the reference model
-// raised as A3 in reference/README.md and nobody has ruled on. The strict
-// reading is taken here because it is what the TypeScript runner already
-// does and two implementations in this repo disagreeing is worse than
-// either reading.
+// Decision 082 ruled this (the reference model's ambiguity A2, base64url):
+// a segment that does not survive a decode and re-encode round trip,
+// including one with padding or slack final-character bits, does not verify.
+// One envelope has one spelling. Covered cross-language by the
+// non-canonical-segment verify vector in contract/vectors.
 func decodeSegment(segment string) ([]byte, bool) {
 	decoded, err := base64.RawURLEncoding.DecodeString(segment)
 	if err != nil {

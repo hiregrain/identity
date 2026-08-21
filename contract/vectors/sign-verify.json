@@ -4,6 +4,7 @@
   "protectedHeader": "{\"alg\":\"EdDSA\"}",
   "keyIdField": "kid",
   "falseVerdict": "{\"valid\":false}",
+  "trueVerdict": "{\"valid\":true}",
   "keys": [
     {
       "id": "fixture-key-1",
@@ -37,6 +38,18 @@
       "payload": "{\"subject\":\"person-1\"}",
       "signedPayload": "{\"kid\":\"fixture-key-2\",\"subject\":\"person-1\"}",
       "compact": "eyJhbGciOiJFZERTQSJ9.eyJraWQiOiJmaXh0dXJlLWtleS0yIiwic3ViamVjdCI6InBlcnNvbi0xIn0.UAsRN8DnqaIykFTZwrNqUu1h6Vq2Zakh_zPj8DPX5Xgpn0uQxO3BIeIs64CuEzHQ-0Gpd3oMJ6I6CPgQWf-HDA"
+    },
+    {
+      "name": "rejected: duplicate member name in the payload",
+      "signerKeyId": "fixture-key-1",
+      "payload": "{\"a\":1,\"a\":2}",
+      "rejected": true
+    },
+    {
+      "name": "rejected: over-range number in the payload",
+      "signerKeyId": "fixture-key-1",
+      "payload": "{\"z\":1e400}",
+      "rejected": true
     }
   ],
   "verify": [
@@ -85,6 +98,11 @@
     {
       "name": "segment missing",
       "compact": "eyJhbGciOiJFZERTQSJ9.eyJraWQiOiJmaXh0dXJlLWtleS0xIiwic3ViamVjdCI6InBlcnNvbi0xIn0",
+      "valid": false
+    },
+    {
+      "name": "non-canonical base64url in the signature segment",
+      "compact": "eyJhbGciOiJFZERTQSJ9.eyJraWQiOiJmaXh0dXJlLWtleS0xIiwic3ViamVjdCI6InBlcnNvbi0xIn0.Af1BF2Ai9gVflEbh6w_7XDaCuvXdyq0trv_Kt6FVq6ye8lMpguzAxL1_ri61aisCkf9Gx-H4m36O2WOO0a1JDP",
       "valid": false
     }
   ]
