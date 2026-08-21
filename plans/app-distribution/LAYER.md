@@ -26,7 +26,8 @@ screen behaves correctly on a device. `app-shell` owns the runtime; this owns
 reach.
 
 Scope: **deep links**: universal links on iOS and App Links on Android for
-`hiregrain.com/u/<handle>`, with the hosted association files, and the rule that
+`grainidentity.com/u/<handle>` (decision 084), with the hosted association files,
+and the rule that
 a link opens the app when installed and the reduced public page when not
 (decision 037); **push**: the three events `plans/worker-surface/LAYER.md`
 names, their written content, and the moment permission is asked; **launch
@@ -51,7 +52,7 @@ real rather than cosmetic.
 
 Acceptance:
 1. **A shared link opens the app if it is installed, and the page if it is
-   not.** A `hiregrain.com/u/<handle>` link resolves both ways on real iOS and
+   not.** A `grainidentity.com/u/<handle>` link resolves both ways on real iOS and
    Android hardware, with the association files served and validated by each
    platform's own checker.
 2. **Every notification names the fact and never the content.** Each of the
