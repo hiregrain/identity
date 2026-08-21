@@ -24,9 +24,10 @@ evidence:
     "test:node checks/transport-seam.mjs test/fixtures/redpath/transport -- both exec.Command and exec.CommandContext caught (code-review finding 1)",
     "test:cd core && go test ./transport/... -run TestEnvelopeRowsRejectsMultiColumnRows -v -- multi-column guard (code-review finding 2) passes",
     "test:cd core && go test ./transport/... -run TestNumericsRoundTripTyped -v -- Float covers whole numbers now that Int is removed (code-review finding 5)",
-    "diff:PR #13 @ beee7b01e15416c64d6d438c9d39885cc1b1a766",
+    "review:log/2026-08-21-trust-kernel-08-reverification.md",
+    "diff:PR #13 @ 556c22c5683ec969f7e7e2f7c81886c0f8daee5b",
   ]
-verified_by: clean-context-verifier@2026-08-21
+verified_by: head-reverifier@2026-08-21
 ---
 
 # Database transport: one seam for every SQL path
