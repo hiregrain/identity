@@ -4355,3 +4355,330 @@ to stay in a tab is the one whose connectivity makes offline matter most.
 
 **`app-shell` goes `ready`.** It depends only on `foundation`, which is `done`,
 so its tasks are the first workable work in the repo.
+
+## 082 — The contract gains four sentences: surrogates refused, verdicts exact, spellings canonical (2026-08-21)
+
+Founder rulings on the four ambiguities `reference/README.md` recorded
+when trust-kernel/06 read the contract cold, sharpened by the first
+differential run: 18075 of 20096 requests agreed byte for byte, and
+every one of the 2021 divergences was the lone-surrogate silence.
+
+**A3, lone surrogates: the document is refused.** Rule 1 pins JCS, JCS
+assumes well-formed Unicode, and the contract now says so: input
+containing an unpaired surrogate is refused, never altered and never
+escaped. The kernel's prior behaviour, Go's silent U+FFFD substitution,
+returned bytes that were not the input's and called it success, which
+rule 1's no-normalization posture forbids outright. The alternative
+reading, JSON.stringify's preserve-and-escape, would have required a
+hand-written JSON string decoder inside the frozen core; refusal costs a
+few lines in the reference model instead.
+
+**A1, the true verdict: exactly `{"valid":true}`**, the only shape that
+invents nothing.
+
+**A2, base64url: strict.** A segment must be the canonical spelling of
+its bytes, surviving a decode and re-encode round trip. The differential
+run caught Go lenient about a final character's slack bits; strict was
+taken and is now normative. One envelope has one spelling, which is what
+rule 3's byte-exact header already claims.
+
+**A4, failure says nothing.** The false verdict stays exactly
+`{"valid":false}`, reason included in "no extra fields": distinguishable
+failure reasons are a side channel on the signature check. Debugging
+detail lives in logs, never in the verdict.
+
+The amendment lands as its own `docs(contract):` commit, per the rule
+that a contract change never rides an implementation diff. The reference
+model (PR #12) moves from preserve-and-escape to refusal; the kernel and
+TS runner (PR #15) already refuse, so `make differential` is expected
+green once both land.
+
+## 083 — Operator sign-in ruled: a third account kind, its own authentication, and verification on every act that appends (2026-08-21)
+
+Founder grilling, held because the console's every screen assumed an operator
+identity that nothing anywhere specified. `security-infra` §4 covers worker and
+party authentication and has no section for internal staff; no decision, layer or
+task covered it either.
+
+**Operators are a third kind of account, in their own schema.** `operator_users`,
+modelled on `party_users` and inheriting its invariant whole: no foreign key to a
+person, no shared identifier, and no database role holding SELECT on both it and
+the person tables, enforced by the declared-incompatible-pair lint from
+foundation/03 rather than by intent. A staff flag on a person record was refused
+outright, because a person is a subject of the record and entry 007 admits no
+third entity type. Reusing `party_users` was refused for a subtler reason: being a
+principal of the Grain party means administering Grain's keys, and adjudicating a
+merge is a different power that would have ridden in on the same account.
+
+**Own authentication, and no external identity provider on the console path.** If
+a third-party tenant mints operator sessions then compromising that tenant is
+compromising merge authority and party activation, which is the reasoning D4 used
+to refuse holding partner keys, pointed inward at ourselves. `security-infra` §4.4
+already prescribes named individual accounts with no shared logins for the *party*
+console, and operators must not sit below the bar of the partners they vet. Where
+convenience matters, the split is single sign-on for reading and console
+authentication for anything that appends.
+
+**Passkeys, synced ones permitted, with user verification required on every act
+that appends an event.** The closed set: approving a merge, activating a party,
+granting or revoking a capability, and recording a signed slip.
+
+The first draft of this ruling said hardware-bound WebAuthn, carried over from
+§4.4's party bar without asking whether the party threat model transfers. It does
+not. What the rule protects is that a person was present at the moment of the act,
+which user verification delivers and a security key does not improve; an
+unattended unlocked laptop cannot produce a verified assertion either way.
+Refusing synced credentials would buy resistance to credential export and to a
+compromised sync account, and would cost far more: losing a laptop becomes a
+recovery event, and §4.3 already establishes that recovery rather than login is
+the attack surface worth designing around. That reasoning was written for workers
+and applies unchanged here.
+
+**This narrows decision 077's recorded limitation without closing it.** 077 said
+two approvals produce one signature from one organisational key with two names as
+payload attributes, unfalsifiable to an outsider. A verified assertion per
+approval moves "two operators approved" from a value anyone with database access
+could write to an artefact requiring two people at two authenticators. It is still
+not a registry-grade signature and 077's per-operator-keys hardening stands as the
+answer if an outsider ever contests a merge.
+
+**Reads ride the session, including the escalation to a full record.** Opening
+queues, opening cases and reading the evidence extract need no step-up, and
+neither does opening both records in full. **The consequence is recorded rather
+than buried:** a worker asking who has read their record can be told an operator
+opened it, and that operator will not have had to prove they were present when it
+happened. The alternative was argued and the founder ruled for the session.
+
+**Creating an operator is a two-admin governance event, appended and anchored.**
+Not because it stops a determined insider, which `security-infra` §3.5 is right
+that nothing at this company size does, but because a one-person path to minting a
+second operator makes `person-identity/06`'s mechanical criterion *false* rather
+than merely unenforced. A rule a check asserts may not have a documented bypass
+one screen away.
+
+**Bootstrap is an infrastructure act, outside the console, and it is anchored.**
+At genesis whoever holds deploy access can create any account regardless of what
+the console permits, so gating the first admins behind a console screen adds a
+screen and no security. Seeding the first admins is therefore an ordinary
+out-of-band act whose only requirement is that it lands in the chained and
+anchored governing-event stream, so the unavoidable bypass leaves the same
+indelible evidence everything else does. A one-time setup path inside the console
+was refused as the same thing wearing a screen, with a permanently open door if
+the close ever failed.
+
+**One person may hold both admin and operator.** Separate accounts per role were
+refused: a switch performed many times a day becomes muscle memory and stops being
+a moment of thought, which buys the appearance of separation rather than the
+substance. Separate people were refused as unaffordable at this size, and a rule
+violated in its first week is worse than no rule. What binds instead is the
+per-case rule from 077: an admin who acted on a case may not be an approving
+operator on that same case, and the two approvals on a merge must be distinct
+natural persons.
+
+**Recusal is self-declared, and unenforceable by construction.** The unlinkability
+invariant above means the ledger cannot tell whether an operator is also a worker,
+knows a subject, or once worked for a party. Enforcement would require the linkage
+entry 007 forbids. So an operator declares a recusal, the declaration is an
+appended event, and the trade is recorded as knowingly made: a declaration that
+leaves a record is worth something later, and a policy with no artifact is worth
+nothing.
+
+**Sessions end on idle.** An idle timeout measured in hours rather than days;
+every session listed and individually revocable, as `person-identity/02` already
+does for workers; any admin may revoke any session immediately; every
+authentication event appended. Offboarding revokes sessions first, before
+anything else, because the erasure pattern below governs the record and not a live
+browser tab.
+
+**Departure takes `party-registry/04`'s pattern unchanged**, by reference rather
+than reinvented. An operator is a natural person with erasure rights whose
+adjudications must stay attributable forever, which is the identical tension that
+task already resolved: actions carry an opaque `actor_id` that outlives the
+principal record, erasure removes the principal row and its identifying columns,
+and the audit keeps every row and the fact that one actor did these things.
+**Revoking an operator is not retroactive.** Approvals they gave stand, for the
+same reason suspending a party never reaches back into what it already signed.
+Departure is a lifecycle event, not a finding.
+
+**What this does not settle.** No task file exists for any of it;
+`operator-console` is still `draft`, and this ruling is what its authentication
+task will be written against when the layer goes `ready`. Anomaly alerting on
+operator sessions, which §4.4 prescribes for parties, is not ruled here either
+way.
+
+## 084 — The ledger takes its own domain; six origins, and the handle keeps its prefix (2026-08-21)
+
+Discharges the item entry 035 left open, that "a dedicated identity domain is
+recorded as a possible pre-launch requirement". Supersedes 035 on the address
+line and on nothing else in that entry.
+
+**The record moves off `hiregrain.com`, and the reason is neutrality rather than
+branding.** `design/00-design-brief.md` records that hiregrain.com is the
+hospitality product, a distinct product line built on this infrastructure.
+Hosting a worker's portable record at the address of one of the verticals that
+reads it is the wrong signal, and CLAUDE.md's own product test asks whether the
+thing survives being held by a company that also operates verticals on the
+record. `design/12-platform-seam.md` already wrote `app.grainidentity.com` while
+every other document said `hiregrain.com/u/<handle>`; this closes that split.
+
+**The origins.**
+
+- `grainidentity.com`, everything unauthenticated, with marketing and legal at
+  root.
+- `app.grainidentity.com`, the worker's own interface, signed in. The PWA and the
+  deep-link target.
+- `partners.grainidentity.com`, the party console: registration, key setup, the
+  sandbox, and a party's own issuance feed. Named for who uses it rather than for
+  what we call them internally.
+- `ops.grainidentity.com`, the operator console.
+- `api.grainidentity.com` and `docs.grainidentity.com`.
+
+**Under the apex**: `/u/<handle>` a person's public page; `/party/<slug>` a
+party's status history, plain and guessable as `party-registry` requires and
+carrying prior names; `/g/<token>` a grant as its named recipient reads it;
+`/a/<token>` an attester invitation, which decision 038 put on the web;
+`/m/<id>` mark resolution, since the portable core carries mark-resolution links
+onto surfaces we do not control; `/.well-known/` for the association files.
+
+**The handle keeps its prefix.** A bare handle at root reads better aloud and is
+the consumer precedent, and it was refused on two grounds. It consumes the whole
+root namespace, so every future page competes with a handle somebody may already
+hold and a growing reserved-word list has to be maintained forever. And Universal
+Links and App Links match on path patterns: `grainidentity.com/u/*` claims exactly
+the handle space, where `grainidentity.com/*` claims everything and needs an
+exclusion for every non-handle path, with a mistake meaning the terms page opens
+the app. Two characters is a cheap price for a namespace that cannot collide.
+
+**There is no `verify.` host, and there will not be.** It was proposed to carry
+verification and disclosure, which are two unrelated things and neither is
+verification: the grant recipient's view is somebody reading a record, and the
+Article 15 disclosure of who has read your record is a screen inside the worker's
+own app. More importantly a hostname reading `verify.` asserts verification in the
+one place a link is most often seen stripped of context, pasted into a message or
+an application. Entry 027 makes the mark a pointer saying "this person has a
+record you can inspect", never "this person is verified", and permanently
+prohibits every rendering that collapses the graded claim into a yes. A hostname
+is a badge that cannot be restyled, cannot carry the count 027 requires on
+third-party surfaces, and cannot be made graded. `console.` is also left unused,
+so the ambiguity that prompted this cannot return through it.
+
+**The two consoles take separate origins because they are already separate
+everything.** Decision 083 put party principals and operators in different schemas
+with no database role able to read both. One origin would give them one cookie
+jar and one session boundary, leaving the separation at the database and never
+reaching the browser.
+
+**The operator console is public, behind the same CDN and WAF as everything
+else.** Putting it on a private network was proposed and withdrawn:
+`security-infra` §8 ranks the controls that are non-negotiable at a million
+identities, it is not a cautious list, and network isolation of the operator
+console is not on it. The nearest item prescribes CDN and WAF fronting with
+enumeration-proof endpoints, which is a rule for public endpoints. The lock is
+decision 083's passkey with user verification, which is phishing-resistant by
+construction and has no shared secret to steal. Network isolation earns its place
+when operators outnumber the founders, or when a pre-auth vulnerability class
+appears in whatever the console is built on. Neither is now.
+
+**Why the origins are worth naming before anything is built.** 035 recorded that
+the never-reissue rule makes a later 301 free. That is true of the public page and
+false of anything holding passkeys: a WebAuthn credential binds to the origin that
+created it, so moving `partners.` or `ops.` later invalidates every credential on
+it and forces a re-enrolment. Decision 083's authentication task is unwritten,
+which makes this the cheap moment and not a tidy-up.
+
+**Cookies are host-only, per origin, never scoped to `.grainidentity.com`**, or
+the separation above is decoration.
+
+## 085 — The device spike runs on the founder's own handsets; the low-end-Android evidence is waived (2026-08-21)
+
+Founder rulings on app-shell/00's raises, 2026-08-21.
+
+**The Redmi-class requirement is cut.** Criteria asking for a Xiaomi
+Redmi 9C-class device (PowerVR GE8320, MediaTek Helio G35), the 20
+cold-start crash measurement, the frame-time trace with its 33 ms p95
+and 100 ms max budgets, and the dpr-1 daylight photograph are removed
+from app-shell/00 and from the layer's criterion 7. The spike tests on
+the founder's personal iPhone and Pixel, and the founder's words are
+recorded as given: "cut the requirement. this isn't that sensitive."
+
+**What this accepts, stated so nobody rediscovers it as a surprise:**
+design/09 §6 records a SIGSEGV crash-loop in the ratified renderer's own
+tracker on exactly the GE8320 hardware, Shopify ships precompiled
+binaries an app cannot patch, and the target population carries
+sub-$120 handsets. A clean run on an iPhone and a Pixel is evidence the
+stack builds and renders, not evidence it survives that GPU. The risk
+moves from "to be retired by measurement" to "accepted, open in
+design/09 §6". The frame-budget revision window is mooted with the
+criteria that carried it.
+
+**The spike's package path is `surfaces/`** and the harness is the seed
+of the client app, entering the pnpm workspace rather than a throwaway.
+
+**Spike findings land on `main`** as their own `docs(design):` commit in
+design/09 §6, never inside the implementation diff; the PR carries only
+the harness code.
+
+## 086 — Step-up leaves person-identity; it returns with the verification layer (2026-08-21)
+
+Founder ruling on person-identity/02's raise. The task's step-up
+criterion required a code session on a document-verified account to be
+refused sensitive operations, and decision 071 rules that
+document-verified accounts cannot exist in first-product: every account
+derives channel, so the criterion was unreachable code wearing a test.
+Decision 071 corrected the same premise in person-identity/03's scope
+and did not reach 02's, or 03's first acceptance criterion. This entry
+finishes the job.
+
+**Step-up is cut from person-identity/02 and the downgrade-proof
+criterion from person-identity/03.** Both return with the verification
+layer, whose task 04 owns the assurance ladder; the sensitive-set
+definition and decision 020's comparison rule are unchanged and wait
+there. 02 keeps what is real now: OTP login and passkeys as equal paths
+(decision 013), sessions and revocation, enumeration resistance, rate
+limiting, and append-only auth events, including the assertion that a
+code session is never blocked from routine operations.
+
+**How a session derives its own assurance is deferred with it.** The
+founder chose against method-based session assurance (code below
+passkey) because it demotes the code path, which decision 013 forbids.
+The derivation question lands in verification/04's lap alongside the
+ladder it grades against.
+
+**Migrations bookkeeping, same entry.** Tasks 02 and 03 carry no
+migrations claim; auth needs schema on both planes. Claims are amended
+on main after the files land, the foundation/08 precedent now applied
+three times.
+
+## 087 — Kernel governance matches the team that exists; the two-human host rule becomes a trigger (2026-08-21)
+
+Founder ruling superseding decision 019's enforcement mechanism, not its
+intent. 019 gave the frozen core the expensive treatment, two-human
+review among it, and trust-kernel/01 made that a host-enforced
+branch-protection criterion. The loop then established the fact on the
+ground: every PR in this repository is authored under the founder's own
+account, and the host forbids approving one's own pull request, so any
+required-approval rule, two or one, is unsatisfiable by the only human
+here. A rule bypassed on every merge enforces nothing and claims
+otherwise, which is worse than its absence.
+
+**What the host now enforces, and the governance check asserts:** a
+ruleset on `main` blocking force pushes and branch deletion (in force,
+ruleset 21162777, verified 2026-08-21). Force-push protection is the
+rule with teeth here: the decisions log is append-only and every
+verification record cites SHAs, so a rewritten `main` is the one git
+operation that silently invalidates the repo's own evidence.
+CODEOWNERS stays as the reviewer-request seed on the kernel paths.
+
+**What enforces kernel review now:** the loop's own gates. A kernel
+change reaches `main` only through clean-context verification, a code
+review pass, and the founder's own read at merge, which is decision
+019's intent carried by the process that actually runs rather than by a
+setting that would be theatre.
+
+**The two-human host rule is dormant, with its trigger written:** the
+day a second maintainer holds write access, required approvals return to
+the host settings and `checks/kernel-governance.mjs` reverts to
+asserting them. Until then the check asserts what is true.
+
+Direct pushes of binding prose to `main` continue unaffected; neither
+rule in force touches a normal push.

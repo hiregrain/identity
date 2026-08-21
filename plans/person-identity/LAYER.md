@@ -4,6 +4,7 @@ type: layer
 status: ready
 milestone: first-product
 depends_on: [foundation]
+gated_criteria: [4, 5, 6, 7]
 binds:
   - design/ledger-design-0.1.md#1
   - research/03-person-id-and-merge.md
@@ -13,6 +14,7 @@ binds:
   - decisions/LOG.md#017
   - decisions/LOG.md#019
   - decisions/LOG.md#020
+  - decisions/LOG.md#078
 evidence: []
 verified_by: null
 ---
@@ -57,5 +59,11 @@ Acceptance:
    the marker is inert on every path.
 7. **A prior merge in the history leaks nothing on re-signup.** (mechanical) a **prior merge** in the history does not leak
    across a deletion; the alias closure is destroyed with the person.
+**Why 4, 5, 6 and 7 are gated.** Their sole satisfier is task 07, which depends
+on `consent-and-deletion/01` and `party-registry/01`. `consent-and-deletion` is
+still `draft`, so this layer cannot reach `done` on every criterion inside
+`first-product` and says so rather than leaving it to be discovered (decision 042
+and 073's machinery; the undeclared case is the one that drifts).
+
 8. **A merge appends to both chains, and neither can be quietly dropped.** (mechanical) a merge appends to **both** subject chains, and a
    deletion of a merged person destroys every DEK in the alias closure.

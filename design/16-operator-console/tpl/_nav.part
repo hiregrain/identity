@@ -1,0 +1,23 @@
+  <aside class="rail" data-active="{{tab}}">
+    <div class="railhead">
+      <svg width="127" height="22" viewBox="0 0 150 26" aria-label="Grain">@@LOCKUP@@</svg>
+      <span class="t-serial" style="display:block;padding-top:7px;color:var(--secondary)">Operator console</span>
+    </div>
+
+    <nav aria-label="Queues">
+      <span class="t-micro navgrp">Decide</span>
+      <button type="button" class="nav" data-tab="merges" aria-current="{{acMerges}}">Merges<span class="navsp"></span><i class="work {{wMerges}}"></i></button>
+      <button type="button" class="nav" data-tab="parties" aria-current="{{acParties}}">Parties<span class="navsp"></span><i class="work {{wParties}}"></i></button>
+      <button type="button" class="nav" data-tab="markers" aria-current="{{acMarkers}}">Markers<span class="navsp"></span><svg class="lock" width="11" height="12" viewBox="0 0 11 12" aria-hidden="true"><rect x="0.75" y="5.25" width="9.5" height="6"></rect><path d="M2.9 5.25 V3.2 A2.6 2.6 0 0 1 8.1 3.2 V5.25"></path></svg></button>
+
+      <span class="t-micro navgrp" style="padding-top:var(--sp9)">Watch</span>
+      <button type="button" class="nav" data-tab="disputes" aria-current="{{acDisputes}}">Disputes<span class="navsp"></span><i class="work {{wDisputes}}"></i></button>
+      <button type="button" class="nav" data-tab="deletions" aria-current="{{acDeletions}}">Deletions<span class="navsp"></span></button>
+    </nav>
+
+    <span class="railsp"></span>
+    <div class="railfoot">
+      <span class="t-meta" style="display:block;color:var(--secondary)">Signed in as</span>
+      <span class="t-rec" style="display:block;padding-top:2px">D. Okafor</span>
+    </div>
+  </aside>

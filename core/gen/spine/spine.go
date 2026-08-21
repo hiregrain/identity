@@ -32,6 +32,19 @@ type DeletionJournalRow struct {
 	RecordedAt     time.Time
 }
 
+// PersonRow is one row of spine.person.
+type PersonRow struct {
+	PersonId  string
+	CreatedAt time.Time
+}
+
+// PersonLifecycleTransitionRow is one row of spine.person_lifecycle_transition.
+type PersonLifecycleTransitionRow struct {
+	PersonId   string
+	State      string
+	RecordedAt time.Time
+}
+
 // SchemaMigrationsRow is one row of spine.schema_migrations.
 type SchemaMigrationsRow struct {
 	Number    int32

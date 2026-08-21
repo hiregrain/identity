@@ -1,0 +1,216 @@
+{
+  "pages": [
+    {
+      "id": "page-1",
+      "name": "Merges"
+    },
+    {
+      "id": "page-2",
+      "name": "Parties"
+    },
+    {
+      "id": "page-3",
+      "name": "Markers"
+    },
+    {
+      "id": "page-4",
+      "name": "Disputes"
+    }
+  ],
+  "artboards": [
+    {
+      "file": "Queue.dc.html",
+      "title": "Merges, the queue",
+      "page": "page-1",
+      "x": 0,
+      "y": 0,
+      "w": 1120,
+      "h": 556
+    },
+    {
+      "file": "Empty.dc.html",
+      "title": "Merges, nothing waiting",
+      "page": "page-1",
+      "x": 0,
+      "y": 696,
+      "w": 1120,
+      "h": 520
+    },
+    {
+      "file": "Main.dc.html",
+      "title": "Merges, a case",
+      "page": "page-1",
+      "x": 1220,
+      "y": 0,
+      "w": 1120,
+      "h": 1164
+    },
+    {
+      "file": "Approved.dc.html",
+      "title": "Merges, first approval recorded",
+      "page": "page-1",
+      "x": 2440,
+      "y": 0,
+      "w": 1120,
+      "h": 604
+    },
+    {
+      "file": "Record.dc.html",
+      "title": "Merges, the escalation",
+      "page": "page-1",
+      "x": 3660,
+      "y": 0,
+      "w": 1120,
+      "h": 776
+    },
+    {
+      "file": "Parties.dc.html",
+      "title": "Parties, the queue",
+      "page": "page-2",
+      "x": 0,
+      "y": 0,
+      "w": 1120,
+      "h": 600
+    },
+    {
+      "file": "Party.dc.html",
+      "title": "A frozen party",
+      "page": "page-2",
+      "x": 1220,
+      "y": 0,
+      "w": 1120,
+      "h": 1000
+    },
+    {
+      "file": "Activate.dc.html",
+      "title": "A party at its activation gates",
+      "page": "page-2",
+      "x": 2440,
+      "y": 0,
+      "w": 1120,
+      "h": 948
+    },
+    {
+      "file": "Capabilities.dc.html",
+      "title": "What a party may do",
+      "page": "page-2",
+      "x": 3660,
+      "y": 0,
+      "w": 1120,
+      "h": 924
+    },
+    {
+      "file": "Sync.dc.html",
+      "title": "Keys, traffic and agreement",
+      "page": "page-2",
+      "x": 4880,
+      "y": 0,
+      "w": 1120,
+      "h": 1024
+    },
+    {
+      "file": "Marker.dc.html",
+      "title": "Markers, a match",
+      "page": "page-3",
+      "x": 0,
+      "y": 0,
+      "w": 1120,
+      "h": 920
+    },
+    {
+      "file": "Disputes.dc.html",
+      "title": "Disputes, a state view",
+      "page": "page-4",
+      "x": 0,
+      "y": 0,
+      "w": 1120,
+      "h": 620
+    }
+  ],
+  "annotations": [
+    {
+      "id": "depth-ladder",
+      "page": "page-1",
+      "x": 0,
+      "y": -300,
+      "w": 1120,
+      "text": "Four screens, one queue, read left to right as depth.\n\nThe rail never leaves, and it answers one question: which queue you are in. The case bar answers a different one, how deep you are. That is the whole navigation model, and putting the two on separate axes is what fixed the first round, where three horizontal bars stacked and none said which was which.\n\nBelow the queue is the same screen with nothing waiting, which is the state operators see most and the one nothing had drawn."
+    },
+    {
+      "id": "stage-note",
+      "page": "page-1",
+      "x": 1220,
+      "y": -300,
+      "w": 1120,
+      "text": "One case, three approval stages, on the tweak above the artboard.\n\nDrawing the flow surfaced something the brief had missed: the primary button cannot carry both meanings. For the first operator it does not merge anything, it records an approval and returns the case to the queue. For the second it executes. Same control, opposite consequence, so the label and the sentence above it both change."
+    },
+    {
+      "id": "approved-note",
+      "page": "page-1",
+      "x": 2440,
+      "y": -300,
+      "w": 1120,
+      "text": "What the first operator sees, and the reason this screen exists.\n\nThe risk in a two-operator rule is an operator believing they finished. So the confirmation leads with what did not happen, names who can complete it, and says both records are untouched until someone does. An approval that has not executed can still be withdrawn, and the withdrawal appends too."
+    },
+    {
+      "id": "escalation-note",
+      "page": "page-1",
+      "x": 3660,
+      "y": -300,
+      "w": 1120,
+      "text": "One level deeper, and the only place a full record opens.\n\nLogged as a read of both records and disclosable to either worker on request, which is why it is a deliberate step rather than the default. It carries no decision at all: the case screen behind it is where the choice is made."
+    },
+    {
+      "id": "parties-note",
+      "page": "page-2",
+      "x": 0,
+      "y": -300,
+      "w": 1120,
+      "text": "Five screens, one party, and the pathway runs left to right.\n\nNothing here creates a party. Registration, logins, key generation, the sandbox and the conformance run are all self-serve on the partner's side, because the integration layer's own success measure is that the second partner never talks to us. What an operator holds is the middle: the tier, the grants, and the gate.\n\nThere is also no access to hand out. The party generates its keypair in its own environment and proves possession before anything registers, so the console only ever holds a public half. What an operator grants is a capability, one at a time, revocably, and a party can never grant itself one."
+    },
+    {
+      "id": "marker-note",
+      "page": "page-3",
+      "x": 0,
+      "y": -270,
+      "w": 1120,
+      "text": "The surface where evidence before action is impossible, and says so.\n\nThe marker row holds a keyed hash, a filing party, a category and a pair of dates. Nothing else exists to show, so the ink block says that outright and sends the question to the filing party rather than letting an operator fill the gap themselves. The outcomes decide identity and nothing about the person, and none of them can close the account.\n\nThe lock on the rail is the separate grant. Operators without it do not see the queue."
+    },
+    {
+      "id": "disputes-note",
+      "page": "page-4",
+      "x": 0,
+      "y": -270,
+      "w": 1120,
+      "text": "Monitoring, drawn as the opposite of a queue.\n\nDeadlines fire on their own, so the only section an operator acts on is the exception at the top. Everything below states a fact and therefore carries no chevron and no hover, which is the chassis rule that a fact dressed as a control lies about what can be changed. The clocks use the closing band, for the one case where the length is genuinely known."
+    },
+    {
+      "id": "activation-note",
+      "page": "page-2",
+      "x": 2440,
+      "y": -300,
+      "w": 1120,
+      "text": "Both gates are asked live, and neither can be ticked.\n\nThe witnessed-log limb queries the kernel every time this screen loads, because a stored answer is one write away from being changed by whoever is under the most pressure to change it. The legal limb validates the instrument field by field rather than pointing at it, since a reference with no conditions is satisfied by garbage.\n\nActivation is genuinely closed here, drawn with the chassis's dashed disabled treatment rather than a greyed button. Going ahead anyway is possible and takes a signed governance event, and parking the party in pending is not a way around it: the clock keeps running and the screen keeps saying so."
+    },
+    {
+      "id": "caps-note",
+      "page": "page-2",
+      "x": 3660,
+      "y": -300,
+      "w": 1120,
+      "text": "Grants, not credentials.\n\nEach capability stands alone. Tier grants nothing, being active grants nothing, and the party cannot grant itself any of them. Filing a safety marker is the heaviest and its control is closed rather than merely unused, because it needs a signed addendum on file that puts the party into joint controllership and routes worker challenges to them.\n\nThe history below is append-only, including a revocation that was reversed the same day. Both events stay."
+    },
+    {
+      "id": "sync-note",
+      "page": "page-2",
+      "x": 4880,
+      "y": -300,
+      "w": 1120,
+      "text": "What an operator can see about a live connection, and the line it stops at.\n\nKey validity, rotation health, traffic against the declared cap, the conformance run, and whether the party's own monthly countersignature agrees with the root we hold. The ingestion halt is read off key validity rather than set by anyone, so nobody has to notice a lapse and nobody can forget to lift it.\n\nWhat is deliberately absent is which people the party wrote about. Records reach a party under a pseudonym that is theirs alone, so two parties writing about the same person hold values that cannot be lined up, and no console view undoes that. The block at the foot tells an operator where to go instead."
+    }
+  ],
+  "launch": {
+    "view": "canvas",
+    "page": "page-2"
+  }
+}

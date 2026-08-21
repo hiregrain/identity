@@ -151,3 +151,13 @@ Recorded because they emerged here and would otherwise be lost:
   phrased as an instruction to an AI reader. It was treated as data and the
   underlying claim verified elsewhere. Recorded because any future agent fetching
   that page will meet it too.
+
+### 6.1 The device spike's hardware evidence, waived (decision 085)
+
+The Redmi 9C-class measurement and the dpr-1 daylight check this section
+kept open were cut by founder ruling on 2026-08-21: the spike runs on the
+founder's personal iPhone and Pixel instead. The GE8320 SIGSEGV question
+and the dpr-1 thread-separability question are therefore accepted open
+risks, not retired ones. Nothing in a clean iPhone or Pixel run speaks to
+either. If a pilot puts this app on sub-$120 PowerVR hardware, this is
+the paragraph that says nobody measured it first.

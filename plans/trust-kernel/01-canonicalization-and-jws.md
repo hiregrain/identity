@@ -50,17 +50,17 @@ cleanup; `contract/CONTRACT.md` preserves the normative rules).
   sign/verify incl. tampered cases) committed to `contract/vectors/`,
   plus a TS vector-runner so both languages exercise identical bytes in
   CI from day one.
-- Kernel governance seed: CODEOWNERS on `core/kernel/`, **plus the host
-  branch-protection rule that actually enforces two approvals**.
+- Kernel governance seed: CODEOWNERS on `core/kernel/`, plus the host
+  ruleset decision 087 names: force pushes and branch deletion blocked
+  on `main`. The two-approval host rule is dormant with its trigger
+  written in 087 (it returns when a second maintainer holds write
+  access); kernel review is enforced by the loop's own gates. The
+  acceptance below checks the host policy, not just the file.
 - A kernel-side adapter speaking `reference/`'s differential harness
   protocol, so `make differential KERNEL_ADAPTER=...` runs the kernel
   against the reference model (founder ruling 2026-08-21, resolving the
   trust-kernel/06 raise: the adapter belongs to the task that owns the
   kernel, not to the harness).
-  CODEOWNERS alone requests reviewers, it does not require them, and a
-  synthetic PR in local CI cannot prove a rule that lives in the repo
-  host's settings. The acceptance below checks the host policy, not just
-  the file.
 - **Line-budget check (<3k) scoped to the frozen core only** (decision
   019): canonicalization, sign/verify, chain append/verify, tree
   construction and proofs. Schedulers, publishers, reconciliation, and
@@ -77,9 +77,10 @@ cleanup; `contract/CONTRACT.md` preserves the normative rules).
   by its type signature, so passing another party's key is not expressible.
 - AC (mechanical): the key identifier is inside the signed bytes; altering
   it invalidates the signature (vector case).
-- AC (mechanical): CI blocks any budget overrun, and the **host
-  branch-protection policy** requiring two approvals on `core/kernel/` is
-  asserted by querying the host, not inferred from CODEOWNERS.
+- AC (mechanical): CI blocks any budget overrun, and the **host policy
+  decision 087 names** (force pushes and branch deletion blocked on
+  `main`, CODEOWNERS present on the kernel paths) is asserted by
+  querying the host, not inferred from the file.
 
 ## Outside check
 
@@ -87,4 +88,5 @@ Verifier regenerates vectors from the generator, diffs against committed
 files (byte-identical), runs both language runners, attempts to sign with a
 non-operator key and confirms it does not compile, tampers with the payload
 key identifier and confirms verification fails, and confirms the host
-branch-protection rule is present rather than only the CODEOWNERS file.
+ruleset decision 087 names is in force rather than only the CODEOWNERS
+file.

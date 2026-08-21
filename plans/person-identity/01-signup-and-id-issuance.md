@@ -3,12 +3,26 @@ id: person-identity/01
 type: task
 layer: person-identity
 satisfies: []
-status: in_progress
+status: done
 depends_on: [foundation/04, foundation/07]
-migrations: [0010-person-core]
+migrations: [0010-person-core, 0036-person-record-and-channels]
 binds: [decisions/LOG.md#013, decisions/LOG.md#017]
-evidence: []
-verified_by: null
+evidence:
+  - "test:make person-test @ 9944b3e (core/person acceptance suite, both planes live)"
+  - "test:make check @ 9944b3e and make check-red-db @ a15253c (green locally, run under a no-ports compose override)"
+  - "log:github.com/hiregrain/identity/actions/runs/32501436217 (every stage green at a15253c)"
+  - "diff:PR #14 @ a15253cb792edc3854dfa1872bbd1fdf7abdf616"
+  - "review:log/2026-08-21-person-identity-01-verification.md (clean-context verification at 85ab176, pass)"
+  - "diff:PR #14 @ 53dc9ec36766201aa3986346b64a59a8f41b0148 (code-review rework: transport seam, payload renumbered 0036)"
+  - "diff:PR #14 @ 639adc292c748881376693ce28a648c2c69c4462 (reworked head)"
+  - "test:make check, make check-red and make check-red-db @ 639adc2 (green locally under a no-ports compose override)"
+  - "log:github.com/hiregrain/identity/actions/runs/32509674273 (every stage green at 639adc2)"
+  - "review:log/2026-08-21-person-identity-01-reverification.md (clean-context reverification at 639adc2, pass)"
+  - "diff:PR #14 @ 93a16e623c2d1c264730c348ca64d492dc91bd76 (null-safe assurance CHECK, the reverification's finding)"
+  - "test:make check, make check-red and make check-red-db @ 93a16e6 (green at the verified head under a no-ports compose override)"
+  - "log:github.com/hiregrain/identity/actions/runs/32512932660 (every stage green at 93a16e6)"
+  - "review:log/2026-08-21-person-identity-01-post-fix-verification.md (clean-context verification at 93a16e6, pass)"
+verified_by: clean-context-post-fix-verifier@2026-08-21
 ---
 
 # Signup and ID issuance

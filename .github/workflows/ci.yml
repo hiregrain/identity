@@ -215,6 +215,28 @@ jobs:
       - run: make db-down
 
 
+  # The signup and id-issuance acceptance suite (person-identity/01).
+  # Boots its own Postgres pair, because it drives both planes: the spine
+  # transaction that issues an id, the outbox worker that carries the
+  # payload half, and the per-person key underneath both.
+  # `needs: [db-migrate]` is ordering only, as above.
+  person:
+    name: signup and id issuance
+    needs: [db-migrate]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5.6.0
+        with:
+          go-version-file: core/go.mod
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 24
+      - run: make db-up
+      - run: make migrate
+      - run: make person-test
+      - run: make db-down
+
   # The deletion-mechanics acceptance suite (foundation/08). Boots its
   # own Postgres pair. Per this file's header, no job can reach
   # db-migrate's, because the suite needs Go, Node (the backup/restore
@@ -256,6 +278,7 @@ jobs:
         ts,
         envelope,
         outbox,
+        person,
         deletion,
       ]
     runs-on: ubuntu-latest

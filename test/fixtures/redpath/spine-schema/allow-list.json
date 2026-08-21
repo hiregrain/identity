@@ -37,6 +37,12 @@
       "migration": "0001-migration-infrastructure"
     },
     {
+      "table": "person_lifecycle_transition",
+      "column": "state",
+      "type": "text",
+      "migration": "0010-person-core"
+    },
+    {
       "table": "cross_plane_outbox",
       "column": "target_plane",
       "type": "text",

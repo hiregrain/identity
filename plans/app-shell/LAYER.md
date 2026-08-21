@@ -2,7 +2,7 @@
 id: app-shell
 type: layer
 status: ready
-milestone: v1
+milestone: first-product
 depends_on: [foundation]
 soft_depends_on: [worker-surface, public-web]
 binds:
@@ -133,19 +133,19 @@ seen this layer before. Where a check genuinely needs a phone, it says so.
    distribution preference. On Android the app must claim persistent storage,
    because eviction is least-recently-used under disk pressure.
 
-7. **The ratified renderer survives the hardware this product is for.** Two
-   things need a real device and nothing in the code can stand in for them:
-   whether the imprint's threads survive a dpr-1 panel in daylight, and whether
-   Skia crashes on the PowerVR and MediaTek hardware this population carries.
-   Both are open in `design/09` §6 and neither has been run. `design/09` records
-   that the adversarial auditor argued nothing should be ratified before they
-   did, and that it was right about the evidence. **Owned by `app-shell/00`,
-   which every other task in this layer depends on**, because building a shell
-   on an untested renderer is how a week of device time becomes a pilot
-   failure.
+7. **The ratified stack builds and the renderer survives the founder's
+   handsets.** Amended by decision 085: the low-end-Android evidence (dpr-1
+   daylight separability, the PowerVR/MediaTek crash question) is waived,
+   the risk accepted and left open in `design/09` §6 rather than retired by
+   measurement. What remains checkable: the ratified stack resolves and
+   builds on both platforms, and the imprint renders through a scribe and a
+   pinch on the founder's personal iPhone and Pixel without a crash.
+   **Owned by `app-shell/00`, which every other task in this layer depends
+   on.**
 
-**Outside check.** On a gesture-navigation Android under 3 GB of RAM, in
-daylight: the shell boots, the record renders from cache with the network off,
+**Outside check.** On the founder's Pixel (decision 085 waived the
+low-end-Android condition): the shell boots, the record renders from cache
+with the network off,
 the system text size at its largest does not clip a row, dark mode holds its
 contrast, and no swipe from either edge reaches a destination that has no other
 route to it.

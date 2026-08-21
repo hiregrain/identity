@@ -346,7 +346,7 @@ the design record never specifies which haptic. iOS `UIImpactFeedbackGenerator`
 has three weights, Android `VibrationEffect` has predefined effects. **The seat's
 haptic needs naming per platform or it will be picked by an engineer.**
 
-**Deep links.** `hiregrain.com/u/<handle>` must open the app when installed and
+**Deep links.** `grainidentity.com/u/<handle>` (decision 084) must open the app when installed and
 the web page when not, universal links on iOS, App Links on Android, both
 requiring a hosted association file. This also decides what a viewer without the
 app sees, which ties to G4.

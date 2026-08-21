@@ -3,7 +3,7 @@ id: person-identity/04
 type: task
 layer: person-identity
 satisfies: []
-status: ready
+status: in_progress
 depends_on: [person-identity/01]
 migrations: [0011-names]
 binds: [decisions/LOG.md#013, decisions/LOG.md#020, research/13-name-standards.md]

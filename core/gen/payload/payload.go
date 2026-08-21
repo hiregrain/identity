@@ -24,6 +24,30 @@ type DekRegistryRow struct {
 	ResidencyRegion string
 }
 
+// PersonContactChannelRow is one row of payload.person_contact_channel.
+type PersonContactChannelRow struct {
+	OutboxEntryId     string
+	PersonId          string
+	ChannelKind       string
+	AddressCiphertext []byte
+	VerifiedAt        time.Time
+	LineType          string
+	LineCountry       *string
+	CarrierReputation string
+	VelocityObserved  int32
+	VelocityThreshold int32
+	Assurance         string
+	ResidencyRegion   string
+}
+
+// PersonRecordRow is one row of payload.person_record.
+type PersonRecordRow struct {
+	OutboxEntryId         string
+	PersonId              string
+	DisplayNameCiphertext *[]byte
+	ResidencyRegion       string
+}
+
 // PurgeAuditRow is one row of payload.purge_audit.
 type PurgeAuditRow struct {
 	RunId           string
