@@ -33,25 +33,24 @@
 // operational duty, exactly as the reconciler's alert is an exit code
 // (core/outbox).
 //
-// Database access goes through `docker compose exec psql`, matching
-// core/outbox and db/connections.json's posture: journal, gate and
-// registry statements run as identity_app (SELECT+INSERT only), the
-// purge transaction as identity_purge. No owner or migration credential
-// appears here (checks/serving-credentials.mjs).
+// Database access goes through core/transport (trust-kernel/08,
+// decision 065), the one seam every SQL path in the repo crosses:
+// journal, gate and registry statements run as identity_app
+// (SELECT+INSERT only), the purge transaction as identity_purge. No
+// owner or migration credential appears here (checks/serving-credentials.mjs).
 package deletion
 
 import (
 	"context"
 	"crypto/rand"
-	"encoding/hex"
 	"fmt"
 	"os"
-	"os/exec"
 	"regexp"
 	"strings"
 
 	"github.com/hiregrain/identity/core/envelope"
 	"github.com/hiregrain/identity/core/keys"
+	"github.com/hiregrain/identity/core/transport"
 )
 
 // RequesterClasses is the closed vocabulary of who a destruction is
@@ -87,10 +86,11 @@ func Destroy(ctx context.Context, env *envelope.Envelope, closure []string, requ
 		}
 	}
 	for _, person := range closure {
-		if err := script("spine", fmt.Sprintf(`
+		if _, err := transport.Query("spine", "identity_app", `
 			INSERT INTO deletion_journal (person_id, requester_class)
-			VALUES ('%s', '%s')
-			ON CONFLICT (person_id) DO NOTHING;`, person, requester)); err != nil {
+			VALUES ($1, $2)
+			ON CONFLICT (person_id) DO NOTHING;`,
+			transport.String(person), transport.String(requester)); err != nil {
 			return fmt.Errorf("deletion: journal %s: %w", person, err)
 		}
 	}
@@ -108,7 +108,8 @@ func Destroy(ctx context.Context, env *envelope.Envelope, closure []string, requ
 // never-restored system it is a harmless no-op that re-destroys
 // already-destroyed people.
 func Replay(ctx context.Context, env *envelope.Envelope) (replayed int, err error) {
-	people, err := rows("spine", "SELECT person_id FROM deletion_journal ORDER BY recorded_at, person_id")
+	people, err := transport.Query("spine", "identity_app",
+		"SELECT person_id FROM deletion_journal ORDER BY recorded_at, person_id")
 	if err != nil {
 		return 0, fmt.Errorf("deletion: replay: reading the journal: %w", err)
 	}
@@ -126,10 +127,11 @@ func Replay(ctx context.Context, env *envelope.Envelope) (replayed int, err erro
 		return replayed, err
 	}
 	for _, restoreID := range open {
-		if err := script("payload", fmt.Sprintf(`
+		if _, err := transport.Query("payload", "identity_app", `
 			INSERT INTO restore_gate (restore_id, event, residency_region)
-			SELECT '%s', 'replayed', residency_region FROM database_residency
-			ON CONFLICT (restore_id, event) DO NOTHING;`, restoreID)); err != nil {
+			SELECT $1, 'replayed', residency_region FROM database_residency
+			ON CONFLICT (restore_id, event) DO NOTHING;`,
+			transport.String(restoreID)); err != nil {
 			return replayed, fmt.Errorf("deletion: replay: balancing restore %s: %w", restoreID, err)
 		}
 		fmt.Printf("replay: restore %s balanced, the payload plane serves again\n", restoreID)
@@ -162,22 +164,24 @@ func Purge(initiatedBy string) (PurgeResult, error) {
 	if err != nil {
 		return PurgeResult{}, err
 	}
-	if err := scriptAs("payload", "identity_purge", fmt.Sprintf(`
-		BEGIN;
-		WITH removed AS (
-		  DELETE FROM dek_registry
-		   WHERE event = 'created' AND dek_destroyed(person_id)
-		   RETURNING 1)
-		INSERT INTO purge_audit
-		  (run_id, purged_table, rows_deleted, initiated_by, executed_as, residency_region)
-		SELECT '%s', 'dek_registry', count(*), '%s', session_user,
-		       (SELECT residency_region FROM database_residency)
-		  FROM removed;
-		COMMIT;`, runID, initiatedBy)); err != nil {
+	if err := transport.Tx("payload", "identity_purge", func(tx *transport.Transaction) error {
+		return tx.Exec(`
+			WITH removed AS (
+			  DELETE FROM dek_registry
+			   WHERE event = 'created' AND dek_destroyed(person_id)
+			   RETURNING 1)
+			INSERT INTO purge_audit
+			  (run_id, purged_table, rows_deleted, initiated_by, executed_as, residency_region)
+			SELECT $1, 'dek_registry', count(*), $2, session_user,
+			       (SELECT residency_region FROM database_residency)
+			  FROM removed;`,
+			transport.String(runID), transport.String(initiatedBy))
+	}); err != nil {
 		return PurgeResult{}, fmt.Errorf("deletion: purge run %s: %w", runID, err)
 	}
-	counted, err := rows("payload", fmt.Sprintf(
-		"SELECT rows_deleted FROM purge_audit WHERE run_id = '%s' AND purged_table = 'dek_registry'", runID))
+	counted, err := transport.Query("payload", "identity_app",
+		"SELECT rows_deleted FROM purge_audit WHERE run_id = $1 AND purged_table = 'dek_registry'",
+		transport.String(runID))
 	if err != nil || len(counted) != 1 {
 		return PurgeResult{}, fmt.Errorf("deletion: purge run %s committed but its audit row is unreadable: %w", runID, err)
 	}
@@ -196,7 +200,7 @@ func Purge(initiatedBy string) (PurgeResult, error) {
 func OpenRestores() ([]string, error) { return openRestores() }
 
 func openRestores() ([]string, error) {
-	ids, err := rows("payload", `
+	ids, err := transport.Query("payload", "identity_app", `
 		SELECT r.restore_id FROM restore_gate r
 		 WHERE r.event = 'restored'
 		   AND NOT EXISTS (
@@ -214,6 +218,9 @@ func openRestores() ([]string, error) {
 // NewEnvelope builds the destroy primitive over the payload plane as
 // identity_app, under the configured key provider (GRAIN_KEY_PROVIDER,
 // default software, the same configuration seam as everywhere else).
+// The Querier is transport's production implementation of envelope's
+// interface, wired at composition (decision 065): envelope's own
+// package stays transport-free.
 func NewEnvelope() (*envelope.Envelope, error) {
 	name := os.Getenv("GRAIN_KEY_PROVIDER")
 	if name == "" {
@@ -223,113 +230,7 @@ func NewEnvelope() (*envelope.Envelope, error) {
 	if err != nil {
 		return nil, fmt.Errorf("deletion: key provider: %w", err)
 	}
-	return envelope.New(psqlQuerier{}, provider), nil
-}
-
-// psqlQuerier implements envelope.Querier on the payload plane as
-// identity_app, per the contract documented on the interface: every arg
-// this package's callers reach it with is shape-validated before any
-// SQL (uuid, hex bytea, provider name), args are substituted as exact
-// literals, and the substitution refuses a quote, backslash or NUL
-// outside the one hex shape regardless.
-type psqlQuerier struct{}
-
-func (psqlQuerier) Query(_ context.Context, sql string, args ...string) ([][]string, error) {
-	// Highest index first so $10 could never be clobbered by $1.
-	for i := len(args); i >= 1; i-- {
-		arg := args[i-1]
-		if strings.ContainsAny(arg, "'\\\x00") && !isHexLiteral(arg) {
-			return nil, fmt.Errorf("deletion querier: arg %d contains characters the literal substitution refuses", i)
-		}
-		sql = strings.ReplaceAll(sql, fmt.Sprintf("$%d", i), quoteLiteral(arg))
-	}
-	out, err := psql("payload", "identity_app", []string{"-c", sql}, "")
-	if err != nil {
-		return nil, err
-	}
-	var result [][]string
-	for _, line := range strings.Split(strings.TrimRight(out, "\n"), "\n") {
-		if line == "" {
-			continue
-		}
-		result = append(result, strings.Split(line, "|"))
-	}
-	return result, nil
-}
-
-// isHexLiteral admits the one backslash-bearing arg shape (bytea hex).
-func isHexLiteral(s string) bool {
-	if !strings.HasPrefix(s, `\x`) {
-		return false
-	}
-	_, err := hex.DecodeString(s[2:])
-	return err == nil
-}
-
-// quoteLiteral renders a validated arg as a SQL literal; hex bytea args
-// use the E-prefixed escape-string form so the backslash survives.
-func quoteLiteral(s string) string {
-	if isHexLiteral(s) {
-		return `E'\\x` + s[2:] + `'`
-	}
-	return "'" + s + "'"
-}
-
-// --- psql plumbing (compose exec, like core/outbox) --------------------
-
-func psql(plane, role string, args []string, stdin string) (string, error) {
-	base := []string{
-		"compose", "exec", "-T", plane,
-		"psql", "-v", "ON_ERROR_STOP=1", "-Atq", "-U", role, "-d", plane,
-	}
-	cmd := exec.Command("docker", append(base, args...)...)
-	if stdin != "" {
-		cmd.Stdin = strings.NewReader(stdin)
-	}
-	var out, errOut strings.Builder
-	cmd.Stdout = &out
-	cmd.Stderr = &errOut
-	if err := cmd.Run(); err != nil {
-		return out.String(), fmt.Errorf("psql(%s as %s): %s: %w", plane, role, firstLine(errOut.String()), err)
-	}
-	return out.String(), nil
-}
-
-// script feeds a multi-statement SQL script to psql as identity_app.
-func script(plane, sql string) error {
-	_, err := psql(plane, "identity_app", []string{"-f", "-"}, sql)
-	return err
-}
-
-// scriptAs feeds a script as an explicit role (the purge transaction).
-func scriptAs(plane, role, sql string) error {
-	_, err := psql(plane, role, []string{"-f", "-"}, sql)
-	return err
-}
-
-// rows runs a query as identity_app, returning tuples-only lines.
-func rows(plane, query string) ([]string, error) {
-	out, err := psql(plane, "identity_app", []string{"-c", query}, "")
-	if err != nil {
-		return nil, err
-	}
-	trimmed := strings.TrimSpace(out)
-	if trimmed == "" {
-		return nil, nil
-	}
-	return strings.Split(trimmed, "\n"), nil
-}
-
-func firstLine(s string) string {
-	line := strings.TrimSpace(s)
-	if i := strings.IndexByte(line, '\n'); i >= 0 {
-		line = line[:i]
-	}
-	const maxLen = 200
-	if len(line) > maxLen {
-		line = line[:maxLen]
-	}
-	return line
+	return envelope.New(transport.EnvelopeQuerier{Plane: "payload", Role: "identity_app"}, provider), nil
 }
 
 // --- validation --------------------------------------------------------

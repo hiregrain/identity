@@ -7,7 +7,19 @@ status: in_progress
 depends_on: []
 migrations: []
 binds: [decisions/LOG.md#065]
-evidence: []
+evidence:
+  [
+    "test:node checks/transport-seam.mjs -- 18 Go files scanned; 0 outside core/transport",
+    "test:make check-red -- red path 15 (test/fixtures/redpath/transport) fails as required",
+    "test:cd core && go test ./... -- includes transport's renderer red-path suite",
+    "test:cd core && GRAIN_KEY_PROVIDER=software go test -tags db -count=1 ./envelope/... -- pass",
+    "test:cd core && GRAIN_KEY_PROVIDER=stub-kms go test -tags db -count=1 ./envelope/... -- pass",
+    "test:cd core && GRAIN_KEY_PROVIDER=software go test -tags db -count=1 ./deletion/... -- pass",
+    "test:node test/cross-plane-outbox.test.mjs -- 45 assertions passed; crash-point protocol intact",
+    "test:node test/append-only.test.mjs -- 18 assertions passed on both planes",
+    "test:node test/two-plane-split.test.mjs -- 8 assertions passed",
+    "test:node checks/run.mjs -- metadata and schema groups green",
+  ]
 verified_by: null
 ---
 
@@ -106,3 +118,58 @@ clone, runs the red-path renderer suite, confirms the four call sites
 (deletion, outbox, envelope production wiring, envelope db test) reach
 the planes only through `core/transport`, and greps for the removed
 symbols.
+
+## Evidence
+
+- Criterion 1: `checks/transport-seam.mjs` is the grep-class check,
+  wired into `checks/run.mjs`'s metadata group and `make check`. It
+  scans every `.go` file under `core/` (test files included, no
+  exemption) for `exec.Command` reaching `"docker"` or `"psql"`, and
+  for a `database/sql` or known driver import, outside
+  `core/transport`. Red path 15 in the Makefile points it at
+  `test/fixtures/redpath/transport`, a planted `exec.Command("docker",
+  ...)` outside `core/transport`, and asserts exit 1; the real tree
+  scans 18 Go files and finds none.
+- Criterion 2: `quoteText`, `sqlLiteral`, `quoteLiteral`, and
+  `isHexLiteral` no longer exist anywhere in the repo; every psql
+  invocation lives in `core/transport/transport.go`. Grepping the
+  removed names confirms no renamed copy survives, and criterion 1's
+  check would fail any renamed copy anyway (it would still need
+  `exec.Command` to psql).
+- Criterion 3: the four acceptance suites run unchanged: envelope under
+  both `GRAIN_KEY_PROVIDER=software` and `=stub-kms`, cross-plane
+  outbox (45 assertions, all seven scenarios including every crash
+  point), deletion (`TestRestoreReplayGateEndToEnd`,
+  `TestOnlyPurgeRoleHoldsDeleteOnPayloadTables`,
+  `TestPurgeRemovesShreddedRowsAndAudits`,
+  `TestDeletionJournalCarriesNothingIdentifying`,
+  `TestDestroyValidation`), append-only (18 assertions on both planes),
+  two-plane-split (8 assertions). No assertion text changed; only the
+  test-side plumbing (`ownerSQL`, `roleSQL`, `newEnv`, `fullDump`) now
+  calls `core/transport` instead of a duplicate `exec.Command`.
+- Criterion 4: `core/transport/transport_test.go` is the renderer's
+  red-path suite: an injection-shaped string round-trips
+  byte-identical, a NUL byte is refused, `Null` renders the keyword
+  `NULL` not the text `'NULL'`, `Bool`/`Int`/`Float` round-trip typed
+  and unquoted, a `\x`-shaped string renders as plain quoted text (not
+  hex), and `Bytea` is the only path to the hex literal form.
+- Criterion 5: preserved by construction, not just by unchanged
+  assertions. `core/outbox/instruction.go`'s `ApplySQL` still renders
+  free-text values through quote-doubling (`transport.String`), so an
+  apostrophe or backslash in a failure detail is stored, not refused,
+  exactly as `TestApplySQLQuotesStrings` already proved. `Reconcile`
+  reads rows via `transport.SplitRow(line, 4)`, the same bounded
+  `SplitN` the outbox always used; `TestSplitRowIsBoundedWithLastFieldUnbounded`
+  in `transport_test.go` proves a tab or pipe inside the last field
+  survives intact.
+
+One environmental note, not a code defect: `make check`'s
+`migrate-verify` step (a `docker compose down && up` cycle, unrelated
+to this task's diff) intermittently hit "the database system is in
+recovery mode" against this worktree's Postgres containers, twice,
+apparently from host resource contention with other concurrent agent
+sessions on the same machine. `metadata`, `lint`, `go-check`,
+`check-red`, and every acceptance suite listed above ran clean in
+isolation; `migrate-verify` and the full `make check` aggregate were
+not obtained as one green run in this session. `db/migrate.mjs` and
+the migration files are untouched by this task's diff.

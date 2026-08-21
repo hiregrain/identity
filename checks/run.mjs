@@ -35,6 +35,7 @@ const METADATA = [
   "cross-plane-constructs",
   "deletion-copy",
   "unslop",
+  "transport-seam",
 ];
 const SCHEMA = ["spine-schema", "payload-residency", "scored-columns"];
 
