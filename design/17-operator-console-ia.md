@@ -48,6 +48,12 @@ operator feel measured teaches them to agree with the matcher. Presence is a
 filled square in the state grammar. Queue depth and latency are real and live on
 an operations surface.
 
+**It answers at `ops.grainidentity.com`** (decision 084), its own origin, not
+shared with `partners.grainidentity.com`. Decision 083 put party principals and
+operators in separate schemas that no database role may read together, and a
+shared origin would give them one cookie jar, leaving that separation somewhere
+the browser never sees it.
+
 **No left indicator bar.** `01-banned-patterns` names that device twice and
 calls a left rail the laziest hierarchy device available. The active item takes
 the paper of the pane beside it and cuts through the rail's own border, so it

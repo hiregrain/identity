@@ -223,7 +223,11 @@ The console is not worker-facing, and support tooling reading from it is one pas
 away from being so. Anything a support agent can copy must survive being read by
 the worker.
 
-**It runs in a browser on managed devices.** Decision 038 already sent the
+**It runs at `ops.grainidentity.com`** (decision 084), on its own origin rather
+than sharing one with the party console: the two hold different account kinds in
+different schemas, and one origin would leave that separation at the database
+without it ever reaching the browser. Public, behind the same CDN and WAF as
+everything else, with decision 083's passkey as the lock. Decision 038 already sent the
 attester flow to the web, and a native console would owe `app-shell` work that
 buys nothing here.
 
