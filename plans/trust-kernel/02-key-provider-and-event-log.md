@@ -3,13 +3,13 @@ id: trust-kernel/02
 type: task
 layer: trust-kernel
 satisfies: [5]
-status: in_progress
+status: done
 depends_on: [trust-kernel/01, foundation/03, trust-kernel/08]
 migrations: [0006-key-event-log]
 binds: [design/stack-litigation/d3-verdict.md, decisions/LOG.md#011]
 evidence:
   [
-    "test:cd core && go test ./kernel -run TestSignatureValidAcrossTheRuleBoundaries -- 20 boundary cases pass",
+    "test:cd core && go test ./kernel -run TestSignatureValidAcrossTheRuleBoundaries -- the boundary table passes",
     "test:cd core && go test ./kernel -run 'TestABackdatedCompromiseClaimInvalidatesNothing|TestTheRuleIsIndependentOfEventOrder|TestARepeatedEventKindTakesTheEarliest|TestValidKeyEventKind' -- pass",
     "test:make signing-test -- the operatorkey suite green under GRAIN_KEY_PROVIDER=software and =stub-kms",
     "test:cd core && go test -tags db -count=1 ./kernel/keylog/... -- every test passes against the live spine",
@@ -18,8 +18,9 @@ evidence:
     "test:make check -- check: green at 1cd626b0",
     "test:make check-red-db -- planted violations fail as required; databases left as found",
     "diff:1cd626b0",
+    "review:log/2026-08-21-trust-kernel-02-verification.md",
   ]
-verified_by: null
+verified_by: clean-context-verifier@2026-08-21
 ---
 
 # Key provider and the key-event log
