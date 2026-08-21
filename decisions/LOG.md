@@ -4588,3 +4588,32 @@ which makes this the cheap moment and not a tidy-up.
 
 **Cookies are host-only, per origin, never scoped to `.grainidentity.com`**, or
 the separation above is decoration.
+
+## 085 — The device spike runs on the founder's own handsets; the low-end-Android evidence is waived (2026-08-21)
+
+Founder rulings on app-shell/00's raises, 2026-08-21.
+
+**The Redmi-class requirement is cut.** Criteria asking for a Xiaomi
+Redmi 9C-class device (PowerVR GE8320, MediaTek Helio G35), the 20
+cold-start crash measurement, the frame-time trace with its 33 ms p95
+and 100 ms max budgets, and the dpr-1 daylight photograph are removed
+from app-shell/00 and from the layer's criterion 7. The spike tests on
+the founder's personal iPhone and Pixel, and the founder's words are
+recorded as given: "cut the requirement. this isn't that sensitive."
+
+**What this accepts, stated so nobody rediscovers it as a surprise:**
+design/09 §6 records a SIGSEGV crash-loop in the ratified renderer's own
+tracker on exactly the GE8320 hardware, Shopify ships precompiled
+binaries an app cannot patch, and the target population carries
+sub-$120 handsets. A clean run on an iPhone and a Pixel is evidence the
+stack builds and renders, not evidence it survives that GPU. The risk
+moves from "to be retired by measurement" to "accepted, open in
+design/09 §6". The frame-budget revision window is mooted with the
+criteria that carried it.
+
+**The spike's package path is `surfaces/`** and the harness is the seed
+of the client app, entering the pnpm workspace rather than a throwaway.
+
+**Spike findings land on `main`** as their own `docs(design):` commit in
+design/09 §6, never inside the implementation diff; the PR carries only
+the harness code.
