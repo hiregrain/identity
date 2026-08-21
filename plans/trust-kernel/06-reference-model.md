@@ -3,7 +3,7 @@ id: trust-kernel/06
 type: task
 layer: trust-kernel
 satisfies: [7]
-status: in_progress
+status: done
 depends_on: [foundation/01]
 migrations: []
 binds: [contract/CONTRACT.md, decisions/LOG.md#019]
@@ -11,8 +11,9 @@ evidence:
   - "test:make differential"
   - "test:make differential-red"
   - "test:make reference-test"
+  - "review:log/2026-08-21-trust-kernel-06-verification.md"
   - "diff:PR #12 @ dc58543"
-verified_by: null
+verified_by: clean-context-verifier@2026-08-21
 ---
 
 # Independent reference model and differential harness
