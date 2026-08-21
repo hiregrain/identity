@@ -26,38 +26,37 @@ import (
 	"github.com/hiregrain/identity/core/deletion"
 	"github.com/hiregrain/identity/core/envelope"
 	"github.com/hiregrain/identity/core/keys"
+	"github.com/hiregrain/identity/core/transport"
 )
 
 const repoRoot = "../.."
 
-// --- plumbing (mirrors core/envelope's test harness) -------------------
-
-func composePsql(plane, role, sql string) (string, error) {
-	cmd := exec.Command("docker", "compose", "exec", "-T", plane,
-		"psql", "-U", role, "-d", plane, "-Atq", "-v", "ON_ERROR_STOP=1", "-c", sql)
-	cmd.Dir = repoRoot
-	out, err := cmd.CombinedOutput()
-	if err != nil {
-		return "", fmt.Errorf("psql (%s as %s): %v: %s", plane, role, err, out)
-	}
-	return string(out), nil
-}
+// --- plumbing ------------------------------------------------------------
+//
+// Every database invocation goes through core/transport (trust-kernel/08,
+// decision 065), the one seam every SQL path in the repo crosses. node
+// (the operator scripts, db/backup.mjs and db/restore.mjs) is not a
+// database invocation and stays a direct exec.Command.
 
 // ownerSQL runs a statement as the owner role, harness setup and
 // out-of-band inspection only, never the path under test.
 func ownerSQL(t *testing.T, plane, sql string) string {
 	t.Helper()
-	out, err := composePsql(plane, "identity", sql)
+	lines, err := transport.Query(plane, "identity", sql)
 	if err != nil {
 		t.Fatalf("owner sql failed: %v", err)
 	}
-	return strings.TrimRight(out, "\n")
+	return strings.Join(lines, "\n")
 }
 
 // roleSQL runs a raw statement as the given role, returning the error
 // for red-path assertions.
 func roleSQL(plane, role, sql string) (string, error) {
-	return composePsql(plane, role, sql)
+	lines, err := transport.Query(plane, role, sql)
+	if err != nil {
+		return "", err
+	}
+	return strings.Join(lines, "\n"), nil
 }
 
 // node runs one of the operator scripts (db/backup.mjs, db/restore.mjs)
@@ -76,52 +75,11 @@ func node(t *testing.T, args ...string) string {
 // fullDump returns a complete schema+data pg_dump of a plane.
 func fullDump(t *testing.T, plane string) string {
 	t.Helper()
-	cmd := exec.Command("docker", "compose", "exec", "-T", plane,
-		"pg_dump", "-U", "identity", plane)
-	cmd.Dir = repoRoot
-	out, err := cmd.CombinedOutput()
+	out, err := transport.Dump(plane)
 	if err != nil {
-		t.Fatalf("pg_dump(%s): %v: %s", plane, err, out)
+		t.Fatalf("pg_dump(%s): %v", plane, err)
 	}
-	return string(out)
-}
-
-// psqlQuerier implements envelope.Querier as identity_app on the
-// payload plane (the same shape as core/envelope's test querier).
-type psqlQuerier struct{}
-
-func (psqlQuerier) Query(_ context.Context, sql string, args ...string) ([][]string, error) {
-	for i := len(args); i >= 1; i-- {
-		arg := args[i-1]
-		if strings.ContainsAny(arg, "'\\\x00") && !isHex(arg) {
-			return nil, fmt.Errorf("querier: arg %d refused", i)
-		}
-		lit := "'" + arg + "'"
-		if isHex(arg) {
-			lit = `E'\\x` + arg[2:] + `'`
-		}
-		sql = strings.ReplaceAll(sql, fmt.Sprintf("$%d", i), lit)
-	}
-	out, err := composePsql("payload", "identity_app", sql)
-	if err != nil {
-		return nil, err
-	}
-	var rows [][]string
-	for _, line := range strings.Split(strings.TrimRight(out, "\n"), "\n") {
-		if line == "" {
-			continue
-		}
-		rows = append(rows, strings.Split(line, "|"))
-	}
-	return rows, nil
-}
-
-func isHex(s string) bool {
-	if !strings.HasPrefix(s, `\x`) {
-		return false
-	}
-	_, err := hex.DecodeString(s[2:])
-	return err == nil
+	return out
 }
 
 func newEnv(t *testing.T) (*envelope.Envelope, keys.Provider) {
@@ -134,7 +92,7 @@ func newEnv(t *testing.T) (*envelope.Envelope, keys.Provider) {
 	if err != nil {
 		t.Fatalf("provider config: %v", err)
 	}
-	return envelope.New(psqlQuerier{}, p), p
+	return envelope.New(transport.EnvelopeQuerier{Plane: "payload", Role: "identity_app"}, p), p
 }
 
 func newPersonID(t *testing.T) string {
@@ -154,7 +112,7 @@ func contentTable(t *testing.T) string {
         body bytea NOT NULL,
         residency_region residency_region NOT NULL DEFAULT 'us')`)
 	t.Cleanup(func() {
-		_, _ = composePsql("payload", "identity", "DROP TABLE IF EXISTS "+name)
+		_, _ = transport.Query("payload", "identity", "DROP TABLE IF EXISTS "+name)
 	})
 	return name
 }

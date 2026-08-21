@@ -3804,3 +3804,591 @@ files leave binds lists, the evidence tier working as written; the
 live-flip verifier reads harness evidence rather than holding vendor
 credentials; and the staging store holds proposals and the text layer,
 never the artifact bytes, resolving the import task's contradiction.
+
+## 074 — Title is progression evidence; countable facts enter, scales do not (2026-08-20)
+
+Founder rulings raised by drawing the web app, where the add flow's gaps
+became visible. Both rulings are the same argument twice: Grain says what is
+known and how well, and refusing to carry a real signal understates what is
+known exactly as collapsing a graded one overstates it.
+
+**The schema's title paragraph was never ruled, and it misreads the thesis.**
+`model/record-schema.md` §2 carries "Not present, deliberately. No job title as
+a first-class comparable field. Titles are administrative acts and `THESIS.md`
+rejects them as a progression signal." No entry in this log ever ruled on job
+titles. Decision 062 ratified "the chapter, position and envelope sections of
+0.1 as they stand" in a grilling about education and credentials, which swept
+the paragraph in rather than arguing it.
+
+The appeal does not survive reading the thesis. `THESIS.md` "On proxies,
+honestly" says the first analytics product "uses signals from the same families
+it criticises: seniority, tenure, described responsibility", and that "the
+difference is not that Grain avoids proxies; it is that every proxy here
+carries its provenance class and resolves to the evidence underneath it". "A
+title with nothing beneath it reads as a title with nothing beneath it" is the
+pointer rule (027) applied to titles, not a refusal to carry one. Decision 022's
+input set already names seniority and described responsibility, and its slope
+failure modes name promotions as a modelled event.
+
+The incoherence sits inside one document. §3 opens "`position`: a promotion or
+role change inside a chapter" and gives it `title_asserted`, one section after
+saying titles carry no progression signal. Both cannot be true.
+
+**Title is evidence of progression and is carried as such.** It stays on
+`position`; the structure was never the problem. It enters analytics as a
+provenance-weighted input like every other signal under 022. A sequence of
+positions inside one chapter, attested by the employing party, is trajectory
+evidence and is among the strongest this record will hold.
+
+**What stays refused is cross-party title ranking without normalisation.**
+"VP" at a twelve-person business and "VP" at a bank are not one unit, and
+ranking them as though they were is the credential logic this product exists to
+replace. Same shape as 022's ruling that party quality scores are
+"incomparable by construction".
+
+**A quantity with a unit may be collected. A position on a scale may not.**
+Decision 054 stopped the seven measures because "no level definitions exist for
+any of the seven" and nobody had checked whether two managers scoring the same
+work produce the same numbers. That is an argument against ladders with
+undefined rungs, and it was strong enough to stop attesting parties supplying
+them. It is not an argument against counts: six people is six people, two
+describers agree, and the employing party can confirm or contradict it.
+
+`chapter.volume` (`{unit, count}`) already carried this shape and no surface
+ever collected it. **Headcount directed enters on `position`**, for the reason
+`title_asserted` is there: it changes with the role rather than with the
+relationship. `volume` stays on `chapter` as ratified.
+
+**Money controlled is deferred rather than refused.** Budget sits close enough
+to salary, which §2 bans by name, that the two need separating in writing
+before either is collected. It arrives with the entry that separates them, or
+not at all.
+
+**Decision 054 is untouched.** Discretion, Consequence Held, Ambiguity Handled,
+Autonomy and the rest stay collected and not rendered; the divergence between
+the two sets of seven stays open at its `plans/ORDER.md` gate; nothing here
+draws a level, a lobe depth or a rung.
+
+**The add-chapter screen was failing the schema before any of this.** It
+collected an employer and two dates. §2 requires `party_country` "whenever
+`party_ref` is null", which is the common case in the target population, and
+decision 039 asked for country and city at minimum. `relationship_kind` and
+`positions[]` were uncollected too, so the flow could not produce a valid
+chapter and committed one that never said what the worker did.
+
+**Progressive, never one form.** The population that abandons onboarding is the
+population this product exists for, which is why 038 shipped telemetry at all.
+The countable step is optional, skippable, and addable later, and an unattested
+count renders with the self-asserted mark like every other unattested claim.
+
+**A gate, not something to design around.** `work_kind` binds to "the ledger's
+own vocabulary", which does not exist yet. No surface may ask for it until it
+does, and `relationship_kind` is not a substitute for it.
+
+**Consequences.** §2's "Not present, deliberately" paragraph is superseded on
+titles and on countable facts, and a successor `model/record-schema.md` needs
+founder ratification; the last ratified version stays in force until then.
+Decision 022's input set gains title by name. `design/10`, `design/13` and
+`design/14` gain the fields.
+
+## 075 — Person ids are random UUIDv4; the v7 plan wording is superseded (2026-08-21)
+
+Founder ruling on the raise from person-identity/01. Two in-repo sources
+answered the id scheme incompatibly: the shipped foundation/04
+justification block on `spine_object_id` ("ids must be random (UUIDv4 by
+convention)", because a time-ordered id leaks enrollment order and
+volume), and the person-identity plans, which required an "opaque UUIDv7
+id (hot-range-safe layout)", with trust-kernel/03 assuming UUIDv7
+bucketing. Hash-prefixing answers the performance objection only; the v7
+timestamp stays readable in the value, so the leak survives it. Both
+schemes type as `uuid`, so no check would have caught a quiet choice, and
+the scheme is not retrofittable once ids circulate.
+
+The ruling: random UUIDv4 plus a `created_at` column, accepting the loss
+of insert locality. This confirms the shipped foundation/04 checklist as
+it stands; no migration or allow-list amendment is needed. The UUIDv7
+wording in `plans/person-identity/LAYER.md`, task `person-identity/01`,
+and trust-kernel/03's bucketing assumption is superseded and amended to
+cite this entry. The hot-range warning stays documented at the schema
+site as the reason locality was given up, never as a license to
+reintroduce ordering.
+
+## 076 — The desk lists the chapters; the wordmark is the way home (2026-08-21)
+
+Two founder rulings from the web-app drawing. Both were raised as divergences
+rather than taken quietly, because each reinterprets something already written.
+
+**Decision 074's two open questions are answered as drafted.** Title enters
+decision 022's input set by name rather than staying folded inside "seniority
+and described responsibility", so nothing has to rediscover what those words are
+partly made of. And the refusal 074 keeps is the right line: title is compared
+within a chapter, where a promotion sequence is attested by the party that
+employed the worker, and never ranked across parties. That is the same shape as
+022's ruling that party quality scores are "incomparable by construction".
+
+**The record repeats its chapter list on a desk, and not on a phone.**
+`design/13-platform-screens` records that the record does not list its chapters
+under the figure, because a worker read the same five employers three times on
+one screen. That count was a 390px count: the figure, the rows, and the
+outstanding-verification prompts stacked in one column. On a desk the list
+appears once, in the record column, beside a figure that carries no names, and
+the prompts are below the fold rather than beside it. The rule is therefore
+**scoped to the single-column case** rather than withdrawn, and it binds
+unchanged on mobile web and on both native platforms.
+
+What this buys is the reason it was raised at all. Moving the figure into a
+second column left the record column holding a name and two prompts, which is
+the emptiness a desk makes visible and a phone hides. The list is the content
+that fills the width, and it carries the provenance marks, which a column of
+chapter names could not.
+
+**The wordmark is a home control on every pushed screen.** From inside a pushed
+surface the record and the account were reachable only by walking the entire
+back chain, one level per tap, with nothing on screen saying how far it went.
+`design/12`'s seam table is amended on one row: a pushed bar carries the
+wordmark, a divider, then back with the previous screen's title. Decision 048 is
+untouched, because this is not navigation between destinations and it is not a
+bar of its own; it is one control in a bar that already exists.
+
+The browser makes the case sharper and it is why this surfaced there. A phone
+hands back an edge gesture; a browser hands back nothing in the page, so a web
+app that does not draw a way home does not have one.
+
+**Two consequences, stated rather than left to be found.** The wordmark appears
+in the native bar only at depth, because on the record it would point at the
+screen the worker is already on. That leaves `design/12`'s standing question of
+whether the lockup belongs in the bar at all untouched and still open; this
+ruling covers the pushed bar only. And on the web the wordmark is in the
+masthead at every depth, because the web masthead already carries it.
+
+## 077 — Operator console grilled: the layer moves to first-product, and every steward surface becomes one console (2026-08-21)
+
+Founder grilling of `design/15-operator-console-brief.md`, held before any
+console screen was drawn. Rulings below; the brief carries the reasoning at
+length.
+
+**The layer moves to `first-product`, and excluding it was a mistake.** A
+product that can be sold cannot ship a steward queue with no steward.
+`person-identity/05` writes candidate duplicate pairs and `person-identity/06`
+requires steward approval, both `ready` and both in `first-product`, while the
+surface a steward acts on sat in `v1`. At the organic duplicate rate
+`research/03` predicts, that queue is non-empty in the first week.
+
+Expressed as one layer at `milestone: first-product` with
+`depends_on: [person-identity]`, dropping `ingestion` from the hard edge so
+merge review starts when person identity lands rather than waiting for the
+attestation path. The surfaces that cannot fire until later layers arrive are
+declared as `gated_criteria` under decision 073's rule that a layer is `done`
+when every non-gated criterion is met. Declaring it is the point; the
+undeclared case is the one that drifts. Splitting the work into two layers was
+rejected for the same reason the scope ruling below absorbs rather than
+delegates: two layers is two consoles.
+
+**The console absorbs every steward surface, including two the layer did not
+scope.** `person-identity/06` carries a mechanical AC requiring merge-window
+attestations to surface in a re-assignment queue on unmerge, and
+`person-identity/07` plus decision 014 require review on a safety-marker match.
+Neither had an owner. Both are steward surfaces with steward actions and they
+belong here, because anywhere else builds a second console.
+
+**Two roles, admin and operator; `steward` survives as the name of the act.**
+Admin administers the console: access, configuration, role grants. Operator
+works the queues. Renaming `steward` repo-wide was rejected: the word is
+load-bearing in this log at decision 013 and in a mechanical AC at
+`person-identity/06`, and the act it names, a judgment about someone's record,
+is a different thing from operating a queue. Decision 013's two-steward rule
+therefore reads as two operators, and no ratified prose or acceptance criterion
+changes wording. Two rules are mechanical rather than policy: the approvals on a
+merge must be distinct natural persons, and an admin who acted on a case may not
+be an approving operator on that same case.
+
+**Operators are Grain employees, permanently.** Not a hiring preference. Operator
+decisions feed the matcher as labels, so a contracted reviewer's error rate
+compounds into the matcher and does not wash out. If volume later forces a pool,
+that is an entry reopening this one with its cost stated, rather than a default
+drifted into. The cost of refusing it now is recorded: `plans/ORDER.md` names the
+human queues as the real scaling wall and its stated trigger, a queue's latency
+becoming worker-visible, is a lagging indicator that fires after workers are
+affected.
+
+**An operator sees an evidence extract, not two records.** The default view
+carries the matched signals with their per-signal contributions, name variants,
+chapter shapes and date ranges. A full-record view is a reasoned, logged
+escalation. `person-identity/05` marks IP and device signals as triage evidence
+only and never identity proof, and an operator reading two full life histories
+weights narrative similarity over the signals the matcher scored, which is the
+mixed-file failure arriving through the human instead of the algorithm.
+
+**The read-log collision is resolved: extract views are operator events,
+escalations are record reads.** `design/ledger-design-0.1.md` §7.1 and §8.1 hold
+that the operator's raw-record access is logged like any read and that the person
+sees the full read log. Decision 035 §B4, reaffirmed by decision 060, holds that
+full-record reads are never surfaced to the worker. The repo asserted both. The
+ruling: an escalation is disclosable on an Article 15(1)(c) request through the
+route the app inventory's H5 already builds, and never appears as a feed. 035
+§B4's reasoning was about an employer reading a worker mid-application and does
+not transfer to Grain's own staff, which is why the disclosure route stays open
+and the feed stays closed. §7.1 and §8.1 are superseded on this point.
+
+**A safety-marker review can only decide the match, never the finding.**
+`person-identity/07` limits a marker row to a keyed document hash, the filing
+party, a category from a closed enum, and two dates, with an AC asserting no
+schema path exists to store finding details, performance content, or a cause
+narrative. An operator therefore cannot review the finding and must never appear
+to. The available outcomes are **same person**, **not the same person**, and
+**cannot determine**; the screen states on its face that no finding details exist
+by schema; nothing on it is phrased as a judgment about the person; and the
+surface sits behind its own access tier. Offering approve and reject over a
+person flagged for a finding nobody on the surface can see invites the operator to
+supply the missing judgment, which is the shape the AEPD fined Goldcar over, a
+flag that "does not refer with certainty to a fraud committed by the claimant".
+Decision 014 spent an entry avoiding it and two button labels can reintroduce it.
+
+**No throughput on any adjudication surface, and the reason is not workload.**
+No cleared count, no time per case, no agreement rate, nothing per-operator
+anywhere including for management. Operator decisions are matcher training
+labels, so an operator who learns to agree with the matcher degrades the matcher
+permanently, and a visible agreement statistic teaches exactly that. Queue depth
+and latency are real operational facts and live on an operations surface, never on
+the screen where a decision is made. The staffing-economics form of this argument,
+carried by the brief's first draft, is withdrawn: it died with the employees-only
+ruling and it was never the load-bearing half.
+
+**No number prints on a queue row.** The duplicate-match total drives sort order
+and appears only on the case screen beside the per-signal contributions it derives
+from. A number in a row is a verdict an operator can act on without opening the
+case, which defeats the structure the surface exists to impose. This is the
+duplicate-match score of `person-identity/05` and nothing else; it is not a trust
+score, and the console renders no composite about a person or a party.
+
+**The two-operator rule is an internal control, not an external proof.** Decision
+015 gives the operator a single registry self-entry, `custody_model: ledger_kms`,
+enforced unique by a partial index, and forbids any code path invoking a
+registry-grade key other than that one. There is therefore no per-operator signing
+key: two operators approving a merge produces one signature from one
+organisational key with two names as payload attributes. Internally that is
+auditable, and decision 019 already put privileged operator actions into the
+chained and anchored set. Externally nothing cryptographic distinguishes two
+operators approving from one operator writing two names. Per-operator keys held
+outside the registry path are the named hardening if a partner or a regulator ever
+contests a merge, and they are cheap because they never touch the path 015's
+invariant protects. Not built now, recorded now.
+
+**The console is an internal tool and never travels.** The human-queues product
+line is Grain-operated review as a service, not licensed software, so the console
+stays in `DESIGN.md` §11's internal-system tier. If a second operator of a ledger
+ever exists that is a new interface negotiation, which is the move
+`design/ledger-design-0.1.md` §9 already makes for organization identities.
+Designing now for a hypothetical licensee is how the plate ends up on a queue.
+
+**It runs in a browser on managed devices.** Decision 038 already sent the
+attester flow to the web, and a native console would owe `app-shell` work that
+buys nothing here.
+
+**Two corrections to the brief's first draft, recorded because both were wrong
+rather than incomplete.** A merge is reversible: `design/ledger-design-0.1.md`
+§1.4 and `person-identity/06` append an unmerge event, mutate neither stream, and
+every signature still verifies. The friction a merge deserves is bought by the
+manual re-assignment residue, not by permanence. And whether an irreversible merge
+needs a second approver was put as an open question when decision 013 had already
+ruled it and `person-identity/06` already enforced it mechanically; the live design
+input is the gradient, two approvals where both records carry verified
+attestations and one otherwise, which the queue must render because it is the
+difference between a case an operator can finish and one they cannot.
+
+## 078 — first-product absorbs the layers with authored plans; the verification exclusion is withdrawn (2026-08-21)
+
+Raised inside the operator console grilling (entry 077) and ruled there, but it
+reaches well past that layer, so it is recorded on its own.
+
+**The ruling.** Layers that have been grilled, reviewed and had their task files
+authored belong in `first-product`. Applied to the layers at `status: ready` or
+`done` today, that moves `party-registry`, `ingestion` and `verification` in,
+alongside `operator-console` under entry 077.
+
+**What is withdrawn.** `plans/ORDER.md` recorded that `first-product`
+"deliberately excludes `verification`, so the first thing sold runs on unverified
+self-asserted history", framed as "a boundary rather than a sentence" and tied to
+`THESIS.md` §5. That exclusion is withdrawn. The framing was doing real work and
+is not being dismissed: it fixed what the first sale would be evidence of. It is
+overturned because a milestone defined to exclude a layer whose plan is already
+written is a milestone shaped by sequencing rather than by what a buyer needs.
+
+**The exit test does not survive unchanged, and no replacement is ruled here.**
+ORDER.md's second-read test was premised on shipping two individually weak levels,
+a self-asserted record and a read over it. With verification in scope that premise
+is gone. Whether `first-product` still owes an exit test, and what it is, is open
+and is not closed by this entry. Recording the gap is the point; a milestone whose
+exit test quietly evaporated is worse than one with none declared.
+
+**What this entry does not close.** The ruling was stated as layers with authored
+plans, and every layer in `plans/` has a `LAYER.md`. The reading applied here is
+`status: ready` or `done`, which is the line between a plan that survived a
+grilling and an engineering review and one that has not. `operator-console` is the
+sole declared exception, moved by entry 077 while still `draft`. The layers at
+`draft` are therefore not moved by this entry, including `consent-and-deletion`
+and `worker-surface`, and two of those raise questions this entry deliberately
+leaves open: whether anything can be sold without the worker's deletion right in
+force, given founder ruling R2, and what worker-facing surface exists at
+`first-product` when `worker-surface` is `draft`. Both predate this entry.
+
+**`plans/ORDER.md` stops listing the layers in the milestone definition.** The
+list there was already stale, omitting `extraction`, which has been
+`milestone: first-product` since it was authored. ORDER.md's own principle, that
+the file does not carry a second copy of what frontmatter already holds, applies
+to milestone membership exactly as it applies to the layer list.
+
+## 079 — worker-surface engineering review: nine rulings, and the layer splits (2026-08-21)
+
+The review decision 042 makes mandatory before a layer may go `ready`. Ten
+findings from the review sections, sixteen from the outside voice, and the
+rulings below. The layer does **not** go `ready` in this entry: five gates are
+recorded rather than closed, and two of the rulings need work before the
+criteria they touch can be graded.
+
+**The invariant-chrome ruling is made, and criterion 4 stops being gated.**
+Trust-bearing worker flows render in Grain's own chrome on the ledger's own
+origin: no vertical's branding, no theming beyond light and dark. This is the
+neutrality guarantee that `CLAUDE.md`'s product test turns on, given Grain both
+holds the record and operates verticals on it (024). Criterion 4 leaves
+`gated_criteria` and is assigned to task 01, which already owns the chassis.
+**Recorded as owed:** "origin" is a web concept and the primary target is
+native, so what it means inside an app (which hosts, which webviews, which
+control plane) is not settled by this entry and is booked as a gate.
+
+**Criterion 4 had no discharge path and would have deadlocked v1.** It was
+declared gated, and `plans/ORDER.md` says gated criteria discharge through their
+declared draft tasks; no task claimed criterion 4, so there was no task and no
+door, and ORDER.md warns that a milestone containing such a layer deadlocks.
+Ratifying the ruling removes the gate rather than routing around it.
+
+**Criterion 5 excludes surfaces the register declares blocked.** It covered every
+surface with no exception while two are blocked on gates nobody may close by
+building, so the layer could never be `done` and deadlocked by a second route.
+The exclusion is bounded by an existing check: `checks/artboards.mjs` already
+enforces that a blocked surface carries its own notice, so this cannot quietly
+widen to cover work someone merely did not do.
+
+**Criteria are graded by the layer that builds the artifact.** Three criteria
+graded things this layer does not produce. The push-payload rule moves to
+`app-distribution`, which owns push (recorded in `app-shell` at the 2026-08-19
+review); worker-surface keeps the notification *copy*, which is what the register
+gives it. The document-image rule moves with identity. Criterion 1's raw-record
+API assumption is booked as a gate, since no `ready` layer builds that API.
+
+**The layer renders self-asserted-record's objects and did not depend on it.**
+`depends_on` named only `person-identity` and `consent-and-deletion` while the
+layer draws chapters, positions, education, credentials and verification
+requests, every one of which `self-asserted-record` defines, and one task is
+named after it. The edge is added. It also brings the outbound request payload
+into reach, so task 04's criterion stands unreworded.
+
+**Provenance is graded wherever it renders.** Criterion 2 says "every rendering
+site" and only task 01 claimed it, so a verifier would have signed off two
+surfaces for a criterion whose own wording says all of them. Tasks 03, 04 and 06
+render marks and now claim it too.
+
+**Task criteria are numbered and written in plain words.** The `AC` prefix is
+removed everywhere. A task criterion now reads as the layer's do: a number, the
+claim in bold, then `(mechanical)` or `(adjudicated)` and the detail. This is not
+a replacement vocabulary, which `CLAUDE.md` forbids; it is the removal of one,
+and it is what makes evidence citable to a criterion rather than to a task.
+
+**The dispute flow is reinstated, in the only shape 028 permits.** Decision 035
+B5 removed the in-app flow, but the layer's scope still promised "dispute filing
+and tracking" and task 08 still notified about dispute deadlines, so the layer
+contradicted itself and a task implemented the withdrawn thing. Rather than cut
+the stragglers, the flow comes back **bounded by 028's line**: Grain adjudicates
+**authenticity**, whether an attestation was genuinely signed by that party and
+whether it is a duplicate or spam, and **never substance**, because FCRA 611's
+reasonable-reinvestigation duty is a defining CRA duty and cuts against R1
+(003). On substance the worker attaches a counter-statement, shown beside the
+claim and never replacing it, which 028 already required. Surfaces are undrawn,
+so the mockup gate blocks building until they exist.
+
+**Task 07 invented two grace-period rules and both are struck.** Decisions 036
+and 038 say only that signing in during the grace period resets the request. The
+task added that cancelling "restores every unexpired grant", a custody rule
+nobody ruled, under which a recipient whose access stopped regains it silently;
+and it revoked the worker's own read access on filing without explaining how
+they then sign in to cancel. Both clauses are removed and both questions are
+booked as gates.
+
+**Identity leaves the layer.** The outside voice argued the layer is several
+layers wearing one name, and the argument survives: the reviewer who wrote the
+decomposition is not a neutral judge of it. Identity verification splits out. It
+is the clean seam, vendor-bound and gated on the Persona DPA and counsel rather
+than on engineering, and it shares only the chassis with the record, so it was
+the corner most likely to hold the whole layer hostage on a timetable nobody
+here controls.
+
+**Gates recorded rather than closed**, each joining `plans/ORDER.md`: what
+"ledger origin" means on native; the raw-record API criterion 1 assumes; what
+happens to grants during and after the deletion grace period, and how a worker
+with revoked access signs in to cancel; a network profile and time budget for
+criterion 3, whose "slow connection" is unmeasurable as written and is the
+criterion that guards the population this product exists for; an on-device
+imprint render budget on a named low-end handset, since the figure is computed
+on the phone (037) and nothing bounds what that costs; whether the five-states
+rule is overbroad, since permission-denied is meaningless on most surfaces and
+declaring it anyway is compliance theatre; and whether criterion 4's demand that
+the coworker route not read as "lesser" asks copy to deny what the marks
+themselves communicate.
+
+## 080 — Four rulings closing the worker-surface review's founder gates (2026-08-21)
+
+The gates decision 079 booked, four of which were founder calls. Three are
+ruled here and the fourth moves a milestone.
+
+**Cancelling a deletion restores every unexpired grant.** A worker files
+deletion, access stops and grants stop resolving; signing in during the grace
+period cancels the request and every unexpired grant resumes. The defect
+decision 079 struck was that this had reached a task file without being ruled,
+not that it was the wrong answer. It is the answer.
+
+**The cost is recorded rather than mitigated.** A recipient regains access
+without the worker performing any act naming that recipient. Against that: a
+worker who cancels has withdrawn the deletion, and a grant is a standing
+permission with its own expiry that the deletion suspended rather than revoked.
+The suspend-and-resume reading is the one that makes cancellation mean what the
+word means. A worker who wants a grant gone still revokes it, which is a
+different act with a different surface, and revocation during the grace period
+is not undone by cancelling.
+
+**The coworker criterion asks for no disparagement, not for parity.** Task 04's
+adjudicated criterion demanded that the coworker route not read as "a lesser
+option". That asks copy to deny what the system states: 055 gives every
+provenance class its own mark precisely so a reader can tell them apart, and a
+single coworker is not a registered party. The criterion now reads: no surface
+describes the coworker route as lesser, weaker or a fallback, and no surface
+orders the routes by strength. It still catches the defect it was written for,
+which is copy that makes a worker with informal employment history feel
+second-class, and it stops asking a verifier to grade a claim that is not true.
+
+**"The ledger's own origin" means Grain's own code on native, with contracted
+identity vendors as the only exception.** A trust-bearing flow is drawn by
+Grain against Grain's API: no vertical's webview, no vendor-themed component,
+no SDK-rendered screen inside the flow. The exception is the identity vendor,
+and it is not a carve-out this entry invents: decision 040 §C records that
+neither Persona nor Sumsub permits an app to host their capture step, so the
+handoff is forced. It is bounded by what 036 already requires, that the vendor
+is named on the screen before it opens rather than after, so the worker is
+never handed to a stranger mid-flow without being told. On the web the
+criterion keeps its literal origin meaning.
+
+**`worker-surface` moves to `first-product`.** Decision 078 ruled that layers
+grilled, reviewed and carrying authored task files belong there, and completing
+the review in entry 079 makes this layer meet that test. Recorded consequence,
+since 078 left its own exit test open: `first-product` now contains the worker
+app end to end, so the first thing sold is no longer a record and a read over
+it. What `first-product` owes as an exit test was already open under 078 and
+this widens the question rather than answering it.
+
+## 081 — app-shell engineering review: the untested renderer gets an owner (2026-08-21)
+
+The review decision 042 requires, run on `app-shell` after its tasks were
+authored. It was grilled in entry 037. Three findings from the review sections
+and twenty from the outside voice.
+
+**The layer's own scope named two things needing a real device, and no task or
+gate owned either.** Whether the imprint's threads survive a dpr-1 panel, and
+whether Skia crashes on the PowerVR and MediaTek hardware this population
+carries. `design/09` §6 records a `SIGSEGV` crash-loop on a Xiaomi Redmi 9C,
+PowerVR GE8320, MediaTek Helio G35 that took three and a half months to close,
+and that Shopify ships precompiled binaries an app cannot patch. It also records
+that the adversarial auditor argued nothing should be ratified before these ran,
+"because it was right about the evidence even though the decision went ahead".
+Decision 040 ratified the stack anyway. **`app-shell/00` now owns both, every
+other task depends on it, and criterion 7 makes its result gradeable.**
+
+**The dependency was performative until this entry.** The layer said every task
+depended on the spike; the spike said a bad result blocked nothing. Both were
+written in the same session and they contradicted each other. Each outcome now
+names what it stops: a crash or a missed frame budget reopens 040's renderer
+choice and returns the layer to `draft`, while tasks 01, 02, 03 and 05 continue
+because insets, palette, type and storage do not depend on the renderer; a
+dpr-1 legibility failure changes 044's pitch rule and stops nothing; a stack
+that does not resolve stops everything.
+
+**The spike is specified rather than gestured at.** The exact chipset pairing
+`design/09` records the crash against, 20 consecutive cold starts, p95 frame
+time at or below 33 ms with no frame over 100 ms, and a trace file rather than a
+description. Budgets may be revised once in writing before a task depends on
+them, and never after a run to make a result pass. The vendor SDK smoke test and
+the APK size delta left this spike: they are identity and distribution concerns
+and belong to those layers.
+
+**Four criteria graded surfaces this layer does not own**, which is the same
+defect entry 079 found three times in `worker-surface` and which recurred in
+work written minutes after that review. Dark mode named the five provenance
+classes; text scaling named row primitives; haptics asserted a ceremony call
+site; offline asserted every product write affordance. Each now grades what
+`app-shell` owns, the tokens, the primitives, the exported haptic and the
+storage contract, and each names the `worker-surface` criterion that owns the
+rest. **The layer does own the shared row primitives**, stated explicitly
+because the boundary was hand-waved.
+
+**Two criteria were grep theatre and are now bounded.** "No meaning-bearing
+fixed pixel" excluded nothing, though hairlines, icon boxes, hit-target minimums
+and device-pixel values are legitimately fixed; the exclusions are named in the
+check. "Nothing else vibrates" asserted the absence of call sites across a
+codebase; it now requires one exported primitive and forbids a second door,
+which is a rule a check can hold.
+
+**Requesting persistent storage is not being granted it.** Browsers deny it. The
+criterion now requires refusal to be a handled state that reports the storage as
+evictable, rather than a request whose result is merely recorded.
+
+**The layer's outside check tested a product it does not build.** It asked a
+stranger to open a link, create an account, add a chapter and find who could
+read their record. `app-shell` owns no account flow, no chapter flow, no deep
+links and no permissions surface. That walkthrough moves to `worker-surface`;
+this layer's check is the shell booting, reading from cache offline, holding at
+the largest text size, holding contrast in dark, and not stealing an edge swipe.
+
+**One gate is booked rather than closed**: when a worker in a browser tab is
+invited to install, and what the prompt says. 037 makes an arriving link the
+most common first session and forbids requiring an install; 039 makes
+installation the storage model. The app reports which mode it is in, so nothing
+ships dishonest, but nothing moves anyone across, and the population most likely
+to stay in a tab is the one whose connectivity makes offline matter most.
+
+**`app-shell` goes `ready`.** It depends only on `foundation`, which is `done`,
+so its tasks are the first workable work in the repo.
+
+## 082 — The contract gains four sentences: surrogates refused, verdicts exact, spellings canonical (2026-08-21)
+
+Founder rulings on the four ambiguities `reference/README.md` recorded
+when trust-kernel/06 read the contract cold, sharpened by the first
+differential run: 18075 of 20096 requests agreed byte for byte, and
+every one of the 2021 divergences was the lone-surrogate silence.
+
+**A3, lone surrogates: the document is refused.** Rule 1 pins JCS, JCS
+assumes well-formed Unicode, and the contract now says so: input
+containing an unpaired surrogate is refused, never altered and never
+escaped. The kernel's prior behaviour, Go's silent U+FFFD substitution,
+returned bytes that were not the input's and called it success, which
+rule 1's no-normalization posture forbids outright. The alternative
+reading, JSON.stringify's preserve-and-escape, would have required a
+hand-written JSON string decoder inside the frozen core; refusal costs a
+few lines in the reference model instead.
+
+**A1, the true verdict: exactly `{"valid":true}`**, the only shape that
+invents nothing.
+
+**A2, base64url: strict.** A segment must be the canonical spelling of
+its bytes, surviving a decode and re-encode round trip. The differential
+run caught Go lenient about a final character's slack bits; strict was
+taken and is now normative. One envelope has one spelling, which is what
+rule 3's byte-exact header already claims.
+
+**A4, failure says nothing.** The false verdict stays exactly
+`{"valid":false}`, reason included in "no extra fields": distinguishable
+failure reasons are a side channel on the signature check. Debugging
+detail lives in logs, never in the verdict.
+
+The amendment lands as its own `docs(contract):` commit, per the rule
+that a contract change never rides an implementation diff. The reference
+model (PR #12) moves from preserve-and-escape to refusal; the kernel and
+TS runner (PR #15) already refuse, so `make differential` is expected
+green once both land.

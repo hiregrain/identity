@@ -1,9 +1,4 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Grain record, platform prototype</title>
+<title>Grain, the web app</title>
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap');
     /* Grain, per DESIGN.md §5 colour, §6 type, §7 spacing/radius/depth */
@@ -285,100 +280,6 @@
           border-bottom:1px solid var(--hairline)}
     .dk{flex:0 0 108px;padding-top:2px}
 
-/* ===================================================================
-   The worker app built as a system rather than as one screen. Surfaces
-   are declared in a registry, chrome is a platform switch, and the type
-   scale is a control, so the rest of the app is additions to SURFACES
-   rather than new plumbing.
-
-   Device metrics are MEASURED off a booted iPhone 17 on iOS 26.5, not
-   remembered: 402 x 874 pt at 3x, Dynamic Island 125.3 x 36.7 with its
-   top at 14.0 and equal 138.3 margins, safe area 59 top and 34 bottom.
-   Android is the common 360 x 800 dp box, 24 dp status, 24 dp gesture.
-   =================================================================== */
-html,body{height:100%}
-body{background:var(--page);display:flex;flex-direction:column;align-items:center;
-     justify-content:flex-start;gap:16px;padding:0 12px 24px;min-height:100vh}
-
-.stage{--w:402px;--h:874px;--top:59px;--bot:34px;--rad:55px;--bez:14px;--frame:68px}
-.stage.android{--w:360px;--h:800px;--top:24px;--bot:24px;--rad:28px;--bez:12px;--frame:38px}
-
-.dev{position:relative;width:calc(var(--w) + var(--bez)*2);height:calc(var(--h) + var(--bez)*2);
-     border-radius:var(--frame);background:#0C0F14;flex:0 0 auto;
-     box-shadow:0 0 0 1px #5A6474, 0 20px 44px rgba(27,42,68,.22)}
-.scr{position:absolute;left:var(--bez);top:var(--bez);width:var(--w);height:var(--h);
-     border-radius:var(--rad);overflow:hidden;background:var(--paper)}
-
-/* ---------- system chrome ---------- */
-.sysfont{font-family:-apple-system,'SF Pro Text','Helvetica Neue',sans-serif;
-         -webkit-font-smoothing:antialiased}
-.island{position:absolute;top:14px;left:50%;transform:translateX(-50%);width:125px;
-        height:37px;border-radius:19px;background:#0C0F14;z-index:24}
-.punch{position:absolute;top:7px;left:50%;transform:translateX(-50%);width:11px;height:11px;
-       border-radius:50%;background:#0C0F14;z-index:24}
-.status{position:absolute;top:0;left:0;right:0;z-index:23;pointer-events:none;
-        transition:color 260ms linear}
-.clock{position:absolute;left:0;width:138px;top:21px;text-align:center;font-size:16px;
-       font-weight:600;letter-spacing:-0.01em}
-.statr{position:absolute;right:20px;top:23px;display:flex;align-items:center;gap:6px}
-.android .clock{left:14px;width:auto;top:4px;text-align:left;font-size:12px}
-.android .statr{right:12px;top:5px;gap:4px}
-.homebar{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:139px;
-         height:5px;border-radius:3px;background:currentColor;opacity:.85;z-index:24}
-.android .homebar{bottom:7px;width:108px;height:3px;border-radius:2px}
-/* iOS recedes the presenting view behind a sheet, which puts black behind the
-   status bar, so the glyphs flip to light. That is the founder's rule: a dark
-   surface reaching the status band flips the appearance. */
-.chrome{color:var(--ink)}
-.chrome.onblack{color:var(--paper)}
-
-/* ---------- navigation layers ---------- */
-.layer{position:absolute;inset:0;background:var(--paper);
-       transition:transform 420ms cubic-bezier(0.32,0.72,0,1),opacity 260ms linear}
-.layer.dragging{transition:none}
-.layer::after{content:'';position:absolute;inset:0;background:var(--ink);opacity:0;
-              pointer-events:none;z-index:5;transition:opacity 420ms cubic-bezier(0.32,0.72,0,1)}
-.layer.behind::after{opacity:.12}
-.base.behind{transform:translateX(-24%)}
-.pushl{transform:translateX(100%);z-index:3;box-shadow:-1px 0 0 var(--hairline)}
-.pushl.open{transform:translateX(0)}
-/* Android is a fade-through with a short rise, not a slide. */
-.android .base.behind{transform:none;opacity:.5}
-.android .pushl{transform:translateY(16px);opacity:0}
-.android .pushl.open{transform:translateY(0);opacity:1}
-.edgegrab{position:absolute;left:0;top:0;bottom:0;width:24px;z-index:9;touch-action:none}
-
-/* The sheet makes the presenting view recede. Nothing floats: the background
-   retreats, which is what iOS actually does. */
-.scr.recede{background:#0C0F14}
-.scr.recede .base{transform:scale(.925) translateY(-14px);border-radius:14px;overflow:hidden}
-
-/* ---------- the bar ---------- */
-.barbg{position:absolute;top:0;left:0;right:0;height:calc(var(--top) + 44px);z-index:10;
-       background:var(--page);border-bottom:1px solid var(--hairline);opacity:0;
-       pointer-events:none;transition:opacity 200ms linear}
-.barbg.on{opacity:1;transition:none}
-.barbg.screen{background:transparent;backdrop-filter:contrast(0.34) brightness(1.07) saturate(0);
-              -webkit-backdrop-filter:contrast(0.34) brightness(1.07) saturate(0);
-              border-bottom:1px solid var(--rule)}
-.bar{position:absolute;top:var(--top);left:0;right:0;height:44px;z-index:11;display:flex;
-     align-items:center;justify-content:space-between;padding:0 7.5px;gap:6px}
-.barslot{display:flex;align-items:center;min-width:0}
-.backbtn{display:flex;align-items:center;gap:2px;min-height:44px;padding:0 6px 0 2px}
-.homebtn{display:flex;align-items:center;min-height:44px;padding:0 6px 0 2px}
-.bardiv{flex:0 0 1px;height:16px;background:var(--hairline);margin:0 3px}
-.android .bar{padding:0 4px}
-
-/* ---------- documents ---------- */
-.doc{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;
-     padding:calc(var(--top) + 56px) 20px calc(var(--bot) + 24px);
-     -webkit-overflow-scrolling:touch;scrollbar-width:none;z-index:1}
-.doc::-webkit-scrollbar{width:0}
-.plate{position:absolute;inset:0;pointer-events:none;z-index:12}
-.grat{position:absolute;inset:0;pointer-events:none;opacity:.07;z-index:0}
-.grat svg{width:100%;height:100%;display:block}
-
-/* ---------- identity hero ---------- */
 .idhero{display:flex;align-items:center;gap:16px}
 .photo{flex:0 0 64px;position:relative;display:block;min-width:64px;min-height:64px}
 .photoframe{position:relative;display:block;width:64px;height:64px;background:var(--page);
@@ -511,43 +412,248 @@ body{background:var(--page);display:flex;flex-direction:column;align-items:cente
   .prov:focus-visible .tip,.prov:focus .tip{opacity:1;pointer-events:auto}
 }
 
-/* ---------- the console, outside the phone ---------- */
+
+
+/* ================= the browser, which is not a device =================
+
+   design/13 drew the record inside two operating systems that hand over a
+   toolbar, a back gesture, a sheet, an alert and a month picker. A browser
+   hands over none of them, so every one is drawn here. The only thing the
+   browser adds that a device did not is the origin, and the origin is the
+   one piece of chrome in this product that carries a trust claim, so it is
+   drawn rather than cropped away. */
+.stagewrap{display:flex;justify-content:center;padding:0 16px 40px}
+.stage{transform-origin:top center}
+.browser{background:#DCD8D1;border:1px solid var(--rule);border-radius:10px 10px 0 0;
+         overflow:hidden;box-shadow:0 1px 0 var(--rule)}
+.mobile .browser{border-radius:26px;padding:0;border-width:1px}
+
+/* The origin bar. On desktop it is a window chrome; on mobile it is the one
+   piece of screen the browser keeps and the app never gets, and it collapses
+   on scroll, which is why the masthead may not assume a fixed offset. */
+.urlbar{display:flex;align-items:center;gap:10px;padding:0 12px;height:42px;
+        background:#DCD8D1;border-bottom:1px solid var(--rule)}
+.mobile .urlbar{height:44px;transition:height 180ms cubic-bezier(0.2,0,0,1)}
+.mobile.scrolled .urlbar{height:30px}
+.navbtns{display:flex;gap:2px;flex:0 0 auto}
+.navbtn{width:28px;height:28px;display:flex;align-items:center;justify-content:center;
+        border-radius:3px}
+.navbtn svg{stroke:var(--ink);stroke-width:1.5;fill:none}
+.navbtn[disabled]{opacity:.3;cursor:default}
+.navbtn:not([disabled]):hover{background:rgba(27,42,68,.08)}
+.origin{flex:1;min-width:0;display:flex;align-items:center;gap:7px;height:28px;
+        background:var(--paper);border:1px solid var(--hairline);border-radius:4px;
+        padding:0 10px;overflow:hidden}
+.origin .t-data{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lockicon{flex:0 0 11px}
+
+/* The page itself. Fixed height because the frame is a viewport, not a window;
+   the real app scrolls the document. */
+/* The page ground. DESIGN.md 9 already defines a chart ground and the record
+   column already sits on one; this is that same primitive at the page's own
+   scale, so the width carries the instrument's paper rather than a colour
+   field. No new object, no new colour, and the record stays marked by the
+   plate, which is what 9 says marks it. Desktop only: a phone has no margin
+   to give it. */
+.pageground{display:none}
+.desktop .pageground{display:block;position:absolute;inset:0;z-index:0;
+                     pointer-events:none;opacity:.05}
+.desktop .pageground svg{width:100%;height:100%;display:block}
+.app{position:relative;z-index:1}
+.desktop .app,.desktop .mast,.desktop .col{background:transparent}
+.desktop .installbar{background:var(--ink)}
+
+/* One ground on every platform and every viewport: paper. The desk was a
+   --page field either side of the record column, and it only ever meant
+   anything on the record home, where the plate marked the record off against
+   it. Everywhere else it was a margin with a metaphor attached, and a screen
+   with a third of its width greyed out for no stated reason reads as unfinished
+   rather than composed. What marks the record is the plate (DESIGN.md 9), which
+   is what 9 says marks it. Nothing else needs to. */
+.vp{position:relative;overflow:hidden;background:var(--paper)}
+
+/* ================= the app inside it ================= */
+.app{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--paper)}
+
+/* The masthead. design/12 argued at length that iOS does not want a toolbar
+   background, and that argument was about Liquid Glass floating over a
+   scrolling record. There is no glass here and no system bar underneath, so
+   the masthead is paper, and the hairline arrives on scroll: the hard scroll
+   edge effect, drawn by hand because nothing else will draw it. */
+.mast{flex:0 0 auto;position:relative;z-index:12;background:var(--paper);
+      display:flex;align-items:center;gap:8px;height:56px;padding:0 20px;
+      border-bottom:1px solid transparent}
+.mast.edged{border-bottom-color:var(--hairline)}
+.desktop .mast{height:60px;padding:0 32px}
+.mastslot{display:flex;align-items:center;gap:4px;min-width:0}
+.mastslot.grow{flex:1;min-width:0}
+.backbtn{display:flex;align-items:center;gap:4px;min-height:44px;padding:0 8px 0 4px}
+.homebtn{display:flex;align-items:center;min-height:44px;padding:0 8px 0 2px;border-radius:3px}
+.homebtn:hover{background:rgba(27,42,68,.06)}
+.bardiv{flex:0 0 1px;height:18px;background:var(--hairline)}
+.wordbtn{display:flex;align-items:center;gap:8px;min-height:44px;padding:0 10px;
+         border-radius:3px}
+.wordbtn:hover{background:rgba(27,42,68,.06)}
+.iconbtn:hover{background:rgba(27,42,68,.06);border-radius:3px}
+
+/* ================= desk, rail and column =================
+
+   The record keeps one measure at every width. What the desktop earns with its
+   extra room is not a second column of record, which would be the one place
+   the web and the native app visibly disagreed; it is the desk the record sits
+   on, and the index that on Android had to be a 40px gesture strip inside a
+   200dp budget (037) and here can simply be visible. */
+/* Two columns on a desk, and the width is spent rather than left as margin.
+   The figure leaves the scroll because it is the record's index rather than an
+   illustration above it (design/12), and an index that scrolls away stops
+   being one the moment you are reading the rows it indexes. The record column
+   then carries the chapter list, which on a phone lives one push away inside
+   the imprint because 390px cannot hold both.
+
+   DIVERGENCE, for a founder ruling rather than a quiet call: design/13 states
+   that the record does not repeat the chapter list underneath the figure,
+   because a worker read the same five employers three times on one screen.
+   That count was a 390px count. Here the list appears once, beside a figure
+   that carries no names, so the repeat the rule was written against does not
+   occur. The rule itself is untouched on mobile.
+
+   The left rail is gone with the same reasoning. A column of chapter names
+   next to a column of chapter rows is the duplication the rule forbids, and
+   the rows are the better index: they carry the provenance marks. */
+.frame{flex:1;min-height:0;display:flex;justify-content:center;gap:40px;position:relative}
+.rail{display:none}
+.aside{display:none}
+/* Only the record home has a second column. Every pushed screen empties the
+   aside, and an empty flex item still holds its 360px, which pushed those
+   screens 180px off centre with dead ground beside them. :empty collapses it,
+   so the record home is two columns and everything else is one, centred. */
+.desktop .aside:not(:empty){display:block;flex:0 0 360px;padding:26px 0 0;
+                            align-self:flex-start;position:sticky;top:0}
+.aside .bigwrap{margin-top:0}
+.aside::-webkit-scrollbar{width:0}
+.colwrap{flex:0 1 auto;min-width:0;display:flex;justify-content:center;position:relative}
+.col{position:relative;width:100%;background:var(--paper)}
+.desktop .col{width:640px;flex:0 0 640px}
+.mobile .colwrap{width:100%}
+
+/* ================= layers =================
+   A pushed screen replaces the column rather than sliding a whole display,
+   because on the web the column IS the app and the desk around it never moves.
+   The slide direction stays the platform's on mobile and becomes a short rise
+   on desktop, where a horizontal push reads as a carousel. */
+.layer{position:absolute;inset:0;background:var(--paper);
+       transition:transform 420ms cubic-bezier(0.32,0.72,0,1),opacity 260ms linear}
+.layer::after{content:'';position:absolute;inset:0;background:var(--ink);opacity:0;
+              pointer-events:none;transition:opacity 420ms linear}
+.layer.behind::after{opacity:.10}
+.pushl{z-index:3}
+.mobile .pushl{transform:translateX(100%)}
+.mobile .pushl.open{transform:translateX(0)}
+.mobile .base.behind{transform:translateX(-22%)}
+.desktop .pushl{transform:translateY(14px);opacity:0}
+.desktop .pushl.open{transform:translateY(0);opacity:1}
+.doc{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:20px 20px 0;
+     /* Android Chrome fires its own pull to refresh on a record the seam
+        already refused to make refreshable (design/12: the record is push
+        updated). The browser does it anyway unless it is told not to. */
+     overscroll-behavior-y:contain}
+.desktop .doc{padding:26px 32px 0}
+.doc::-webkit-scrollbar{width:0}
+.plate{position:absolute;inset:0;pointer-events:none;z-index:11}
+.grat{position:absolute;inset:0;pointer-events:none;opacity:.07;z-index:0}
+.grat svg{width:100%;height:100%;display:block}
+
+/* ================= the sheet, and what it becomes on a desk =================
+   On both native platforms the sheet is the system's, with the system's
+   detents and grabber. Here it is ours. On a phone it keeps the shape people
+   already know. On a desktop a bottom sheet is a phone idiom stranded on a
+   1280px window, so it becomes a centred dialog, and the grabber goes: nobody
+   drags a dialog down with a mouse. */
+.scrim{position:absolute;inset:0;background:rgba(12,15,20,.28);z-index:14;opacity:0;
+       pointer-events:none;transition:opacity 260ms linear}
+.scrim.on{opacity:1;pointer-events:auto}
+.sheet{position:absolute;z-index:15;background:var(--paper);
+       transition:transform 380ms cubic-bezier(0.32,0.72,0,1),opacity 200ms linear}
+.mobile .sheet{left:0;right:0;bottom:0;border-radius:14px 14px 0 0;padding:0 20px 28px;
+               transform:translateY(101%);box-shadow:0 -1px 0 var(--hairline)}
+.mobile .sheet.on{transform:translateY(0)}
+.mobile .sheet.dragging{transition:none}
+/* The imported content CSS carries design/13's own .sheet, which pins a phone
+   sheet to left:0 right:0 bottom:0. Those edges have to be released by name,
+   not merely overridden where they happen to collide: left alone, the dialog
+   stretched to the floor of the viewport and rendered 180px of empty paper
+   under its own button. */
+.desktop .sheet{left:50%;top:50%;right:auto;bottom:auto;width:520px;
+                transform:translate(-50%,-46%);opacity:0;border-radius:0;
+                max-height:calc(100% - 96px);overflow-y:auto;
+                padding:0 28px 28px;border:1px solid var(--ink);pointer-events:none}
+.desktop .sheet.on{transform:translate(-50%,-50%);opacity:1;pointer-events:auto}
+.grabber{width:36px;height:5px;border-radius:3px;background:var(--rule);opacity:.6;margin:8px auto 0}
+.desktop .grabber{display:none}
+.sheethead{padding:10px 0 0;cursor:grab;touch-action:none}
+.desktop .sheethead{cursor:default;padding:16px 0 0}
+.sheetbar{display:flex;align-items:center;justify-content:space-between;gap:8px;
+          padding:4px 0 2px}
+.barbtn{flex:0 0 56px;min-height:44px;font-weight:400;font-size:15px;color:var(--ink);text-align:left}
+.barbtn:active{opacity:.4}
+.listrow{display:flex;align-items:center;gap:12px;padding:14px 0;
+         border-bottom:1px solid var(--hairline);width:100%;min-height:44px;text-align:left}
+/* A sheet and a dialog are not the same object wearing different geometry.
+   The phone sheet cancels from a bar at the top, because the top bar is where
+   a thumb is not. A dialog cancels beside the thing it is cancelling. Drawing
+   the dialog with the sheet's bar was the tell that only the box had moved. */
+.deskonly{display:none}
+.desktop .deskonly{display:block}
+.desktop .sheetbar{display:none}
+.desktop .sheethead{padding:20px 0 0}
+.actionrow{display:flex;align-items:center;gap:12px;margin-top:26px}
+.actionrow .btn-primary{flex:1}
+.desktop .actionrow{justify-content:flex-end}
+.desktop .actionrow .btn-primary{flex:0 0 auto;width:auto;padding-left:26px;padding-right:26px}
+.desktop .js-cancel{order:-1}
+
+/* ================= what only the web needs ================= */
+/* The install prompt. Decision 039 records that the offline promise holds only
+   for an installed home-screen app, because WebKit deletes the caches after
+   seven idle days and exempts installed apps: "Installation is the storage
+   model, not a distribution preference." So this is not an upsell banner, it
+   is the storage model asking to be turned on, and it says which. */
+.installbar{display:flex;align-items:center;gap:12px;background:var(--ink);color:var(--paper);
+            padding:10px 20px;flex:0 0 auto;position:relative;z-index:11}
+.desktop .installbar{padding:10px 32px}
+.installbar .t-data,.installbar .t-meta{color:var(--paper)}
+.installbar button{flex:0 0 auto;min-height:44px;padding:0 12px;color:var(--paper);
+                   text-decoration:underline;text-underline-offset:3px}
+.mobile .installdetail{display:none}
+.mobile .vlong{display:none}
+.vshort{display:none}
+.mobile .vshort{display:inline}
+.copied{display:flex;align-items:center;gap:8px;padding:10px 0 0}
+.copied svg{flex:0 0 16px;stroke:var(--ink);stroke-width:1.5;fill:none}
+
+/* ================= the console ================= */
 .gates{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center;justify-content:center;
-       max-width:560px;position:sticky;top:0;z-index:40;background:var(--page);
-       padding:10px 8px;border-bottom:1px solid var(--hairline)}
+       padding:12px 16px;max-width:1000px;margin:0 auto}
 .gate{display:flex;align-items:center;gap:7px}
 .seg{display:flex;border:1px solid var(--rule);border-radius:3px;overflow:hidden}
 .seg button{padding:6px 9px;font-weight:500;font-size:12px;min-height:34px;
-            border-right:1px solid var(--rule)}
+            border-right:1px solid var(--rule);background:var(--paper);color:var(--ink)}
 .seg button:last-child{border-right:0}
 .seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
 .gate select{min-height:34px;border:1px solid var(--rule);border-radius:3px;background:var(--paper);
-             font:inherit;font-weight:500;font-size:12px;color:var(--ink);padding:4px 6px}
-
-/* The console is never hidden. It used to vanish under 560px so the device
-   could go full bleed, which meant that in any narrow panel the Screen control
-   disappeared and the record was the only surface reachable at all. */
-@media (max-width:640px){
-  body{padding:0;gap:0;justify-content:flex-start;background:var(--paper)}
-  /* .stage shrink-wraps its content, and the device's own children are
-     absolutely positioned, so width:100% resolved against a zero-width parent
-     and the whole screen collapsed. The stage carries the width; the device
-     takes the viewport minus the console for its height. */
-  .stage{width:100%}
-  .dev{width:100%;height:calc(100dvh - 56px);flex:0 0 auto;border-radius:0;
-       box-shadow:none;background:var(--paper)}
-  .scr{left:0;top:0;width:100%;height:100%;border-radius:0}
-  .island,.punch,.homebar{display:none}
-  .gates{flex:0 0 auto;height:56px;max-width:none;width:100%;align-items:center;
-         justify-content:flex-start;gap:6px 12px;padding:0 10px;background:var(--page);
-         border-bottom:1px solid var(--rule);border-top:0;overflow-x:auto;flex-wrap:nowrap}
-  .gate{flex:0 0 auto}
+             color:var(--ink);font:inherit;font-size:12px;padding:0 8px}
+@media (max-width:700px){
+  .gates{justify-content:flex-start}
 }
 </style>
-</head>
-<body>
+
 
 <div class="gates">
+  <span class="gate"><span class="t-micro" style="color:var(--secondary)">Viewport</span>
+    <span class="seg" id="g-vp">
+      <button data-v="desktop" aria-pressed="true">Desktop 1280</button>
+      <button data-v="mobile" aria-pressed="false">Mobile 390</button>
+    </span></span>
   <span class="gate"><span class="t-micro" style="color:var(--secondary)">Screen</span>
     <select id="g-screen" aria-label="Screen"></select></span>
   <span class="gate"><span class="t-micro" style="color:var(--secondary)">State</span>
@@ -559,10 +665,10 @@ body{background:var(--page);display:flex;flex-direction:column;align-items:cente
       <option value="offline">Offline</option>
       <option value="denied">Permission denied</option>
     </select></span>
-  <span class="gate"><span class="t-micro" style="color:var(--secondary)">Platform</span>
-    <span class="seg" id="g-platform">
-      <button data-v="ios" aria-pressed="true">iOS</button>
-      <button data-v="android" aria-pressed="false">Android</button>
+  <span class="gate"><span class="t-micro" style="color:var(--secondary)">Storage</span>
+    <span class="seg" id="g-installed">
+      <button data-v="tab" aria-pressed="true">Browser tab</button>
+      <button data-v="installed" aria-pressed="false">Installed</button>
     </span></span>
   <span class="gate"><span class="t-micro" style="color:var(--secondary)">Text</span>
     <span class="seg" id="g-scale">
@@ -575,74 +681,96 @@ body{background:var(--page);display:flex;flex-direction:column;align-items:cente
       <button data-v="full" aria-pressed="true">Five chapters</button>
       <button data-v="empty" aria-pressed="false">New worker</button>
     </span></span>
-  <span class="gate"><span class="t-micro" style="color:var(--secondary)">Bar</span>
-    <span class="seg" id="g-bar">
-      <button data-v="hard" aria-pressed="true">Hard edge</button>
-      <button data-v="screen" aria-pressed="false">Screened</button>
-    </span></span>
   <span class="gate"><span class="t-micro" style="color:var(--secondary)">Ceremony</span>
     <span class="seg" id="g-seat"><button data-v="seat" aria-pressed="false">Attestation landing</button></span></span>
-  <span class="gate"><span class="t-micro" style="color:var(--secondary)">Lockup</span>
-    <span class="seg" id="g-lockup">
-      <button data-v="none" aria-pressed="true">Off record</button>
-      <button data-v="bar" aria-pressed="false">In bar</button>
-    </span></span>
 </div>
 
-<div class="stage" id="stage">
-<div class="dev">
-  <div class="scr" id="scr">
+<div class="stagewrap">
+<div class="stage desktop" id="stage">
+  <div class="browser" id="browser">
 
-    <div class="layer base" id="base">
-      <span class="grat" aria-hidden="true">
-        <svg aria-hidden="true" viewBox="0 0 402 874" preserveAspectRatio="none" fill="none"
-             stroke="var(--rule)" stroke-width="0.5"><path d='M0 28 L402 28'></path><path d='M0 56 L402 56'></path><path d='M0 84 L402 84'></path><path d='M0 112 L402 112'></path><path d='M0 140 L402 140'></path><path d='M0 168 L402 168'></path><path d='M0 196 L402 196'></path><path d='M0 224 L402 224'></path><path d='M0 252 L402 252'></path><path d='M0 280 L402 280'></path><path d='M0 308 L402 308'></path><path d='M0 336 L402 336'></path><path d='M0 364 L402 364'></path><path d='M0 392 L402 392'></path><path d='M0 420 L402 420'></path><path d='M0 448 L402 448'></path><path d='M0 476 L402 476'></path><path d='M0 504 L402 504'></path><path d='M0 532 L402 532'></path><path d='M0 560 L402 560'></path><path d='M0 588 L402 588'></path><path d='M0 616 L402 616'></path><path d='M0 644 L402 644'></path><path d='M0 672 L402 672'></path><path d='M0 700 L402 700'></path><path d='M0 728 L402 728'></path><path d='M0 756 L402 756'></path><path d='M0 784 L402 784'></path><path d='M0 812 L402 812'></path><path d='M0 840 L402 840'></path><path d='M0 868 L402 868'></path><path d='M28.0 0 Q22.0 437.0 28.0 874'></path><path d='M56.0 0 Q51.0 437.0 56.0 874'></path><path d='M84.0 0 Q79.9 437.0 84.0 874'></path><path d='M112.0 0 Q108.9 437.0 112.0 874'></path><path d='M140.0 0 Q137.9 437.0 140.0 874'></path><path d='M168.0 0 Q166.9 437.0 168.0 874'></path><path d='M196.0 0 Q195.8 437.0 196.0 874'></path><path d='M224.0 0 Q224.8 437.0 224.0 874'></path><path d='M252.0 0 Q253.8 437.0 252.0 874'></path><path d='M280.0 0 Q282.8 437.0 280.0 874'></path><path d='M308.0 0 Q311.7 437.0 308.0 874'></path><path d='M336.0 0 Q340.7 437.0 336.0 874'></path><path d='M364.0 0 Q369.7 437.0 364.0 874'></path><path d='M392.0 0 Q398.7 437.0 392.0 874'></path></svg>
+    <div class="urlbar">
+      <span class="navbtns">
+        <button class="navbtn" id="bback" aria-label="Browser back" disabled>
+          <svg width="16" height="16" viewBox="0 0 24 24"><use href="#i-back"></use></svg>
+        </button>
+        <button class="navbtn" id="bfwd" aria-label="Browser forward" disabled style="transform:scaleX(-1)">
+          <svg width="16" height="16" viewBox="0 0 24 24"><use href="#i-back"></use></svg>
+        </button>
       </span>
-      <div class="doc" id="rec"></div>
+      <span class="origin">
+        <svg class="lockicon" width="11" height="11" viewBox="0 0 24 24" aria-hidden="true"
+             stroke="var(--secondary)" stroke-width="2" fill="none">
+          <rect x="4" y="10" width="16" height="11"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path>
+        </svg>
+        <span class="t-data" style="color:var(--secondary)">app.grainidentity.com</span>
+      </span>
     </div>
 
-    <div class="plate" aria-hidden="true" id="plate"></div>
-    <div class="barbg" id="barbg"></div>
-    <div class="bar">
-      <span class="barslot" id="lead"></span>
-      <span class="barslot" id="trail"></span>
-    </div>
+    <div class="vp" id="vp">
+      <span class="pageground" aria-hidden="true">
+        <svg viewBox="0 0 1280 820" preserveAspectRatio="none" fill="none"
+             stroke="var(--rule)" stroke-width="0.6"><path d='M0 40 L1280 40'></path><path d='M0 80 L1280 80'></path><path d='M0 120 L1280 120'></path><path d='M0 160 L1280 160'></path><path d='M0 200 L1280 200'></path><path d='M0 240 L1280 240'></path><path d='M0 280 L1280 280'></path><path d='M0 320 L1280 320'></path><path d='M0 360 L1280 360'></path><path d='M0 400 L1280 400'></path><path d='M0 440 L1280 440'></path><path d='M0 480 L1280 480'></path><path d='M0 520 L1280 520'></path><path d='M0 560 L1280 560'></path><path d='M0 600 L1280 600'></path><path d='M0 640 L1280 640'></path><path d='M0 680 L1280 680'></path><path d='M0 720 L1280 720'></path><path d='M0 760 L1280 760'></path><path d='M0 800 L1280 800'></path><path d='M40.0 0 Q33.4 410.0 40.0 820'></path><path d='M80.0 0 Q73.9 410.0 80.0 820'></path><path d='M120.0 0 Q114.3 410.0 120.0 820'></path><path d='M160.0 0 Q154.8 410.0 160.0 820'></path><path d='M200.0 0 Q195.2 410.0 200.0 820'></path><path d='M240.0 0 Q235.6 410.0 240.0 820'></path><path d='M280.0 0 Q276.1 410.0 280.0 820'></path><path d='M320.0 0 Q316.5 410.0 320.0 820'></path><path d='M360.0 0 Q356.9 410.0 360.0 820'></path><path d='M400.0 0 Q397.4 410.0 400.0 820'></path><path d='M440.0 0 Q437.8 410.0 440.0 820'></path><path d='M480.0 0 Q478.2 410.0 480.0 820'></path><path d='M520.0 0 Q518.7 410.0 520.0 820'></path><path d='M560.0 0 Q559.1 410.0 560.0 820'></path><path d='M600.0 0 Q599.6 410.0 600.0 820'></path><path d='M640.0 0 Q640.0 410.0 640.0 820'></path><path d='M680.0 0 Q680.4 410.0 680.0 820'></path><path d='M720.0 0 Q720.9 410.0 720.0 820'></path><path d='M760.0 0 Q761.3 410.0 760.0 820'></path><path d='M800.0 0 Q801.8 410.0 800.0 820'></path><path d='M840.0 0 Q842.2 410.0 840.0 820'></path><path d='M880.0 0 Q882.6 410.0 880.0 820'></path><path d='M920.0 0 Q923.1 410.0 920.0 820'></path><path d='M960.0 0 Q963.5 410.0 960.0 820'></path><path d='M1000.0 0 Q1003.9 410.0 1000.0 820'></path><path d='M1040.0 0 Q1044.4 410.0 1040.0 820'></path><path d='M1080.0 0 Q1084.8 410.0 1080.0 820'></path><path d='M1120.0 0 Q1125.2 410.0 1120.0 820'></path><path d='M1160.0 0 Q1165.7 410.0 1160.0 820'></path><path d='M1200.0 0 Q1206.1 410.0 1200.0 820'></path><path d='M1240.0 0 Q1246.6 410.0 1240.0 820'></path></svg>
+      </span>
+      <div class="app" id="app">
 
-    <div class="scrim" id="scrim"></div>
-    <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheettitle">
-      <div class="sheethead" id="grab">
-        <div class="grabber"></div>
-        <div class="sheetbar">
-          <button class="barbtn" id="sheetcancel">Cancel</button>
-          <span class="t-micro" style="color:var(--secondary)" id="sheetkicker"></span>
-          <span style="flex:0 0 56px"></span>
+        <header class="mast" id="mast">
+          <span class="mastslot grow" id="lead"></span>
+          <span class="mastslot" id="trail"></span>
+        </header>
+
+        <div class="installbar" id="installbar">
+          <span style="flex:1;min-width:0">
+            <span class="t-data" style="display:block"><span class="vlong">Your record reads offline only once this is installed.</span><span class="vshort">Reads offline once installed.</span></span>
+            <span class="t-meta installdetail" style="display:block;opacity:.8">In a browser tab the copy is cleared after seven days without a visit.</span>
+          </span>
+          <button class="press" id="installgo"><span class="vlong">Add to home screen</span><span class="vshort">Install</span></button>
+        </div>
+
+        <div class="frame">
+          <nav class="rail" id="rail" aria-label="Chapters"></nav>
+          <div class="colwrap">
+            <div class="col" id="scr">
+              <div class="layer base" id="base">
+                <span class="grat" aria-hidden="true">
+                  <svg viewBox="0 0 640 760" preserveAspectRatio="none" fill="none"
+                       stroke="var(--rule)" stroke-width="0.5"><path d='M0 32 L640 32'></path><path d='M0 64 L640 64'></path><path d='M0 96 L640 96'></path><path d='M0 128 L640 128'></path><path d='M0 160 L640 160'></path><path d='M0 192 L640 192'></path><path d='M0 224 L640 224'></path><path d='M0 256 L640 256'></path><path d='M0 288 L640 288'></path><path d='M0 320 L640 320'></path><path d='M0 352 L640 352'></path><path d='M0 384 L640 384'></path><path d='M0 416 L640 416'></path><path d='M0 448 L640 448'></path><path d='M0 480 L640 480'></path><path d='M0 512 L640 512'></path><path d='M0 544 L640 544'></path><path d='M0 576 L640 576'></path><path d='M0 608 L640 608'></path><path d='M0 640 L640 640'></path><path d='M0 672 L640 672'></path><path d='M0 704 L640 704'></path><path d='M0 736 L640 736'></path><path d='M32.0 0 Q25.7 380.0 32.0 760'></path><path d='M64.0 0 Q58.4 380.0 64.0 760'></path><path d='M96.0 0 Q91.1 380.0 96.0 760'></path><path d='M128.0 0 Q123.8 380.0 128.0 760'></path><path d='M160.0 0 Q156.5 380.0 160.0 760'></path><path d='M192.0 0 Q189.2 380.0 192.0 760'></path><path d='M224.0 0 Q221.9 380.0 224.0 760'></path><path d='M256.0 0 Q254.6 380.0 256.0 760'></path><path d='M288.0 0 Q287.3 380.0 288.0 760'></path><path d='M320.0 0 Q320.0 380.0 320.0 760'></path><path d='M352.0 0 Q352.7 380.0 352.0 760'></path><path d='M384.0 0 Q385.4 380.0 384.0 760'></path><path d='M416.0 0 Q418.1 380.0 416.0 760'></path><path d='M448.0 0 Q450.8 380.0 448.0 760'></path><path d='M480.0 0 Q483.5 380.0 480.0 760'></path><path d='M512.0 0 Q516.2 380.0 512.0 760'></path><path d='M544.0 0 Q548.9 380.0 544.0 760'></path><path d='M576.0 0 Q581.6 380.0 576.0 760'></path><path d='M608.0 0 Q614.3 380.0 608.0 760'></path></svg>
+                </span>
+                <div class="doc" id="rec"></div>
+              </div>
+              <div class="plate" aria-hidden="true" id="plate"></div>
+            </div>
+          </div>
+          <aside class="aside" id="aside" aria-label="Imprint"></aside>
         </div>
       </div>
-      <div style="padding-top:2px">
-        <h3 class="t-lead" style="margin:16px 0 8px" id="sheettitle"></h3>
-        <p class="t-body" style="margin:0 0 22px;color:var(--secondary);text-wrap:pretty" id="sheetbody-p"></p>
-        <div id="sheetslot"></div>
-        <button class="btn-primary press" id="sheetcta"></button>
-      </div>
-    </div>
 
-    <div class="chrome" id="chrome">
-      <div class="status sysfont">
-        <div class="clock">9:41</div>
-        <div class="statr"><svg width="18" height="12" viewBox="0 0 18 12" fill="var(--ink)" aria-hidden="true"><rect x="0" y="8" width="3" height="4" rx="1"></rect><rect x="5" y="6" width="3" height="6" rx="1"></rect><rect x="10" y="3" width="3" height="9" rx="1"></rect><rect x="15" y="0" width="3" height="12" rx="1"></rect></svg>
-          <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="var(--ink)" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M1.2 4.1 C4.2 1.4 11.8 1.4 14.8 4.1"></path><path d="M3.9 6.9 C6.1 5.0 9.9 5.0 12.1 6.9"></path><path d="M6.6 9.6 C7.4 8.9 8.6 8.9 9.4 9.6"></path></svg>
-          <svg width="27" height="13" viewBox="0 0 27 13" aria-hidden="true"><rect x="0.5" y="0.5" width="23" height="12" rx="3.5" fill="none" stroke="var(--ink)" stroke-opacity="0.4"></rect><rect x="2" y="2" width="15" height="9" rx="2" fill="var(--ink)"></rect><path d="M25.2 4.4 C26.4 4.9 26.4 8.1 25.2 8.6 Z" fill="var(--ink)" fill-opacity="0.4"></path></svg>
-</div>
+      <div class="scrim" id="scrim"></div>
+      <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheettitle">
+        <div class="sheethead" id="grab">
+          <div class="grabber"></div>
+          <div class="sheetbar">
+            <button class="barbtn" id="sheetcancel">Cancel</button>
+            <span class="t-micro" style="color:var(--secondary)" id="sheetkicker"></span>
+            <span style="flex:0 0 56px"></span>
+          </div>
+        </div>
+        <div style="padding-top:2px">
+          <span class="t-micro deskonly" style="display:block;color:var(--secondary)" id="sheetkicker2"></span>
+          <h3 class="t-lead" style="margin:10px 0 8px" id="sheettitle"></h3>
+          <p class="t-body" style="margin:0 0 22px;color:var(--secondary);text-wrap:pretty" id="sheetbody-p"></p>
+          <div id="sheetslot"></div>
+          <div class="actionrow">
+            <button class="barbtn press js-cancel deskonly" style="flex:0 0 auto">Cancel</button>
+            <button class="btn-primary press" id="sheetcta"></button>
+          </div>
+        </div>
       </div>
-      <div class="island" id="island"></div>
-      <div class="punch" id="punchhole" style="display:none"></div>
-      <div class="homebar"></div>
     </div>
 
   </div>
 </div>
 </div>
-
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
   <!-- §8's set: 24px grid, 1.5px hairline, square terminals, never filled.
@@ -702,7 +830,10 @@ body{background:var(--page);display:flex;flex-direction:column;align-items:cente
 <template id="t-empty"><circle cx='300' cy='300' r='280' fill='none' stroke='#727C8A' stroke-width='1' stroke-dasharray='3.5 6'></circle></template>
 
 <script>
-"use strict";
+/* The record's own surfaces are imported from design/13 by build.py. They are
+   not redrawn here: 047 keeps the record Grain's on every platform, so the
+   record is the one thing a change of platform may not change. What follows
+   the import is this directory's own, and all of it is chrome. */
 var T = function(id){ return document.getElementById(id).innerHTML; };
 var $ = function(id){ return document.getElementById(id); };
 var esc = function(s){ return String(s).replace(/[&<>"]/g, function(c){
@@ -2410,101 +2541,283 @@ var SURFACES = {
   account: {title:'Account', body:accountBody}
 };
 
-function paintBar(){
-  var lead = '', trail = '', n = S.stack.length;
-  if(n){
-    var prev = n > 1 ? SURFACES[S.stack[n-2].kind].title : 'Record';
-    /* Decision 075. The wordmark is the way home from any depth. It is absent
-       on the record itself because that is where it would take you, and its
-       standing question in design/12 (whether the lockup lives in the bar at
-       all) is untouched: this is the pushed bar only. */
-    lead = '<button class="homebtn press js-home" aria-label="Back to your record">' +
-        '<svg viewBox="0 0 160 26" width="72" height="12" aria-hidden="true">' + LOCKUP + '</svg></button>' +
-      '<span class="bardiv" aria-hidden="true"></span>' +
-      '<button class="backbtn press js-back" aria-label="Back to ' + esc(prev) + '">' +
-      '<svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" class="icon"><use href="#i-back"></use></svg>' +
-      (S.platform === 'ios' ? '<span class="t-rec">' + esc(prev) + '</span>' : '') + '</button>';
-  } else {
-    if(S.lockup === 'bar'){
-      lead = '<span style="padding-left:12px"><svg viewBox="0 0 160 26" width="132" height="21" role="img" aria-label="Grain">' + LOCKUP + '</svg></span>';
-    }
-    lead += '<button class="iconbtn press js-acc" aria-label="Account and settings">' + ACC + '</button>';
-    trail = '<button class="iconbtn press js-share" aria-label="Sharing. Two parties hold a grant, public page off">' + SHARE + '</button>';
-  }
-  $('lead').innerHTML = lead;
-  $('trail').innerHTML = trail;
+
+/* ---------------- web state on top of the imported state ---------------- */
+/* GRAT2 is a free reference inside the imported record body: design/13
+   declares it in its own chassis and boot() aliases it to the graticule. The
+   slice therefore does not stand alone, and this is where that is paid. */
+var GRAT2;
+S.platform = 'web';
+S.vp = 'desktop';
+S.installed = false;
+S.hist = [];
+
+var VPS = {desktop:{w:1280, h:800}, mobile:{w:390, h:844}};
+
+/* ---------------- surfaces the browser makes necessary ----------------
+
+   Four surfaces exist here that have no native counterpart, and each one is a
+   place where the browser is worse than the platform rather than merely
+   different, which is design/12's test for who draws a thing. */
+
+function installBody(){
+  return '<div class="statewrap">' +
+    '<h1 class="t-head" style="margin:0">Keep the record when there is no signal</h1>' +
+    '<p class="t-body" style="margin:10px 0 0;color:var(--secondary);text-wrap:pretty">' +
+      'Added to your home screen, Grain keeps a copy of the record on this device and opens ' +
+      'without a connection. The copy is read only. Nothing you do offline is queued to send later.</p>' +
+    '<div style="margin-top:22px">' + rows([
+      ['In a browser tab', 'The copy is cleared after seven days without a visit. That is the browser rule and Grain cannot change it.'],
+      ['Added to the home screen', 'The copy stays until you sign out or remove it.'],
+      ['Either way', 'The record is on Grain servers. Losing the copy loses nothing.']
+    ]) + '</div>' +
+    '<div style="margin-top:26px"><button class="btn-primary press" id="installdo">Add to home screen</button></div>' +
+    '<p class="t-meta" style="margin:22px 0 0;color:var(--secondary);text-wrap:pretty">' +
+      'Your browser asks first. Grain cannot add anything to your home screen on its own.</p>' +
+    '</div>';
 }
 
-function paintPlate(){
-  var t = S.platform === 'ios' ? 109 : 74, b = S.platform === 'ios' ? 41 : 31;
-  $('plate').innerHTML =
-    '<span class="reg" style="top:' + t + 'px;left:7px;border-top-width:1px;border-left-width:1px"></span>' +
-    '<span class="reg" style="top:' + t + 'px;right:7px;border-top-width:1px;border-right-width:1px"></span>' +
-    '<span class="reg" style="bottom:' + b + 'px;left:7px;border-bottom-width:1px;border-left-width:1px"></span>' +
-    '<span class="reg" style="bottom:' + b + 'px;right:7px;border-bottom-width:1px;border-right-width:1px"></span>';
+/* Native unlocks with the device passcode or a biometric (038). A browser has
+   neither. What it has is a passkey, which is a different promise: it proves
+   the account, not the person holding the phone. Saying so is the whole
+   surface, because 038's reason was shared handsets. */
+function unlockWebBody(){
+  return msg({
+    kicker:'Signing in',
+    title:'Unlock with a passkey',
+    body:'On the web Grain unlocks with a passkey held by this browser, or by your phone. There is no device passcode to fall back on here.',
+    rows:[
+      ['What a passkey proves','That this is your Grain account.'],
+      ['What it does not prove','That it is you holding the device. On a shared handset, sign out rather than relying on this.'],
+      ['If the passkey is gone','Signing in by phone or email still works, and takes a code.']
+    ],
+    cta:'Unlock', ctaId:'js-home', ctaId:'js-home'
+  });
 }
+
+/* Native shows "update required" because a store version can fall behind the
+   API. A web app cannot: the served version is always current. What it can do
+   is hold an old copy in a service worker, so the honest surface is a reload
+   offer, not a block. */
+function updateWebBody(){
+  return msg({
+    kicker:'This tab',
+    title:'A newer version is ready',
+    body:'This tab has been open a while and is running an older copy. Reloading takes a second and loses nothing you have typed.',
+    rows:[['Nothing is blocked','The record you are reading is current. Only the page around it is old.']],
+    cta:'Reload', ctaId:'js-home'
+  });
+}
+
+/* Sharing out. navigator.share exists on most phone browsers and on almost no
+   desktop ones, so the fallback is not an edge case, it is the desktop path.
+   Drawn rather than assumed, because an invisible fallback is how a share
+   button becomes a dead button on the platform most partners read on. */
+function shareOutBody(){
+  return '<div class="statewrap">' +
+    '<span class="t-serial" style="color:var(--secondary)">Send the record</span>' +
+    '<h1 class="t-head" style="margin:10px 0 12px">A link to what you chose</h1>' +
+    '<p class="t-body" style="margin:0 0 20px;color:var(--secondary);text-wrap:pretty">' +
+      'This browser cannot hand the link to another app, so Grain copies it instead. ' +
+      'The link is a grant to the person you named, and it expires.</p>' +
+    '<div class="ruled" style="margin-bottom:6px"><input id="grantlink" value="grain.id/g/7Q2M-4KX9" readonly aria-label="Grant link"></div>' +
+    '<button class="btn-primary press" id="copygo" style="margin-top:16px">Copy the link</button>' +
+    '<div id="copiedslot"></div></div>';
+}
+
+SURFACES.install = {title:'Offline', body:installBody};
+SURFACES.shareout = {title:'Send', body:shareOutBody};
+/* Replacements, not additions. A route that reaches `unlock` from the account
+   list has to land on the passkey copy in a browser, not on the device-passcode
+   copy that is false there. Same for the store update, which a web app cannot
+   have. Parallel surfaces would have left the native copy reachable. */
+SURFACES.unlock = {title:'Unlock', body:unlockWebBody};
+SURFACES.updaterequired = {title:'This tab', body:updateWebBody};
+
+/* ---------------- painting ---------------- */
 
 function render(kind, d){
   if(S.five) return stateBody(S.five, SURFACES[kind] ? SURFACES[kind].title : 'Your record');
   return kind === 'record' ? recordBody() : SURFACES[kind].body(d);
 }
-function paintRecord(){ $('rec').innerHTML = render('record'); }
+function paintRecord(){ $('rec').innerHTML = render('record'); layoutDesk(); }
+
+/* The desk arrangement, done by moving nodes rather than drawing a second
+   record. The imprint surface already holds both halves the desk wants, the
+   figure at full size and the chapter list with its provenance marks, so the
+   desk renders that one surface and splits it across the two columns. Nothing
+   here is a copy of design/13's markup, which is what keeps the record
+   single-sourced. */
+function layoutDesk(){
+  var aside = $('aside'), rec = $('rec');
+  if(!aside || !rec) return;
+  var prev = rec.querySelector('[data-desk="list"]');
+  if(prev) prev.parentNode.removeChild(prev);
+  aside.innerHTML = '';
+  var fw = rec.querySelector('.figwrap'), fo = rec.querySelector('.figopen');
+  /* An empty record draws a figure too, the fixed empty canvas that makes the
+     age-proxy refusal visible. It is not an index of anything, so the desk
+     leaves it in the record beside the sentence it belongs to. */
+  var desk = S.vp === 'desktop' && !S.stack.length && !S.five &&
+             !figureHidden() && chapters().length > 0;
+  if(!desk){
+    if(fw) fw.style.display = '';
+    if(fo) fo.style.display = '';
+    return;
+  }
+  if(!fw) return;                       // an empty record has no figure to move
+  fw.style.display = 'none';
+  if(fo) fo.style.display = 'none';
+
+  var tmp = document.createElement('div');
+  tmp.innerHTML = render('imprint', {kind:'imprint'});
+  var inner = tmp.firstElementChild;
+  var big = inner.querySelector('.bigwrap');
+  if(big){
+    var lead = big.nextElementSibling;
+    aside.appendChild(big);
+    // the sentence that explains the rings belongs under the rings
+    if(lead && lead.tagName === 'P') aside.appendChild(lead);
+  }
+  var wrap = document.createElement('div');
+  wrap.setAttribute('data-desk', 'list');
+  while(inner.firstChild) wrap.appendChild(inner.firstChild);
+  var anchor = fo || fw;
+  anchor.parentNode.insertBefore(wrap, anchor.nextSibling);
+}
+
 function repaintStack(){
   S.stack.forEach(function(d){ d.el.querySelector('.doc').innerHTML = render(d.kind, d); });
 }
 
-function applyPlatform(){
-  $('stage').classList.toggle('android', S.platform === 'android');
-  $('island').style.display = S.platform === 'ios' ? '' : 'none';
-  $('punchhole').style.display = S.platform === 'ios' ? 'none' : '';
-  paintPlate(); paintBar();
-}
-function applyScale(){
-  $('scr').style.fontSize = (S.scale * 100) + '%';
-  paintRecord(); repaintStack();
+/* The masthead. On a phone the trailing pair are the two glyphs the native bar
+   carries. On a desktop, sharing becomes a word: design/12 left that open as
+   option D and its stated cost was width, which is the one thing a desktop
+   masthead has. Account stays a glyph, because it is the only thing in the bar
+   that is a place rather than an act. */
+function paintBar(){
+  var lead = '', trail = '', n = S.stack.length;
+  if(n){
+    var prev = n > 1 ? SURFACES[S.stack[n-2].kind].title : 'Record';
+    /* The wordmark is the way home from any depth. Without it the record and
+       the account were only reachable by walking the whole back chain, and a
+       browser gives no back gesture to walk it with. It keeps the leading slot
+       it has on the record, so it never moves. */
+    lead = '<button class="homebtn press js-home" aria-label="Back to your record">' +
+        '<svg viewBox="0 0 160 26" width="86" height="14" aria-hidden="true">' + LOCKUP + '</svg></button>' +
+      '<span class="bardiv" aria-hidden="true"></span>' +
+      '<button class="backbtn press js-back" aria-label="Back to ' + esc(prev) + '">' +
+      '<svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" class="icon"><use href="#i-back"></use></svg>' +
+      '<span class="t-rec">' + esc(prev) + '</span></button>';
+  } else {
+    lead = '<span style="display:flex;align-items:center;padding-left:2px">' +
+      '<svg viewBox="0 0 160 26" width="120" height="19" role="img" aria-label="Grain">' + LOCKUP + '</svg></span>';
+  }
+  if(S.vp === 'desktop'){
+    trail = '<button class="wordbtn press js-share" aria-label="Sharing. Two parties hold a grant, public page off">' +
+        SHARE + '<span class="t-rec">Sharing</span>' +
+        '<span class="t-data" style="color:var(--secondary)">2</span></button>' +
+      '<button class="iconbtn press js-acc" aria-label="Account and settings">' + ACC + '</button>';
+  } else {
+    trail = '<button class="iconbtn press js-share" aria-label="Sharing. Two parties hold a grant, public page off">' + SHARE + '</button>' +
+      '<button class="iconbtn press js-acc" aria-label="Account and settings">' + ACC + '</button>';
+  }
+  $('lead').innerHTML = lead;
+  $('trail').innerHTML = trail;
 }
 
+/* The plate marks the record and nothing else (design/10's chassis comment).
+   On a desk that is load-bearing rather than decorative: it is what says the
+   640px column is the record and the ground either side of it is not. */
+function paintPlate(){
+  var on = S.vp === 'desktop' && !S.stack.length;
+  $('plate').innerHTML = !on ? '' :
+    '<span class="reg" style="top:8px;left:8px;border-top-width:1px;border-left-width:1px"></span>' +
+    '<span class="reg" style="top:8px;right:8px;border-top-width:1px;border-right-width:1px"></span>' +
+    '<span class="reg" style="bottom:8px;left:8px;border-bottom-width:1px;border-left-width:1px"></span>' +
+    '<span class="reg" style="bottom:8px;right:8px;border-bottom-width:1px;border-right-width:1px"></span>';
+}
+
+/* The index. On Android this had to be a 40px edge strip inside a 200dp budget
+   shared with every other window (037), and was demoted to an accelerator so
+   that nothing depended on hitting it. Nothing depends on it here either: it
+   scrolls the record it is already showing. It is visible because a desktop
+   has the room, not because the record needs it. */
+function paintRail(){ $('rail').innerHTML = ''; }
+
+/* ---------------- the scroll edge, drawn by hand ---------------- */
 function topLayer(){ return S.stack.length ? S.stack[S.stack.length-1].el : $('base'); }
 function topDoc(){ return topLayer().querySelector('.doc') || $('rec'); }
+
+function syncEdge(){
+  var y = topDoc().scrollTop;
+  $('mast').classList.toggle('edged', y > 2);
+  /* The mobile browser takes back its own address bar as you scroll, and the
+     masthead has to survive the viewport growing under it. Drawn so the
+     reviewer can see the app move, because a fixed offset assumed here is a
+     bug that only appears on a real phone. */
+  $('stage').classList.toggle('scrolled', S.vp === 'mobile' && y > 8);
+}
+
+/* ---------------- navigation, and the browser's back button ----------------
+
+   Every push is a history entry, so the browser's back does what the drawn
+   back does. Without that, back leaves the app from a sheet, which is the
+   single most common way a web app loses somebody. pushState throws on an
+   opaque origin, so the internal stack is authoritative and the real history
+   is best effort on top of it. */
+function pushHist(kind){
+  S.hist.push(kind);
+  try{ history.pushState({k:kind}, '', '#' + kind); }catch(e){}
+  paintNavBtns();
+}
+function popHist(){
+  S.hist.pop();
+  try{ history.back(); }catch(e){}
+  paintNavBtns();
+}
+function paintNavBtns(){
+  $('bback').disabled = !(S.stack.length || S.sheetOpen);
+}
 
 function push(d){
   var below = topLayer();
   var el = document.createElement('div');
   el.className = 'layer pushl';
-  el.innerHTML = '<div class="edgegrab"></div><div class="doc"></div>';
+  el.innerHTML = '<div class="doc"></div>';
   el.querySelector('.doc').innerHTML = render(d.kind, d);
   $('scr').insertBefore(el, $('plate'));
   d.el = el; S.stack.push(d);
-  wireEdge(el);
   el.querySelector('.doc').addEventListener('scroll', syncEdge, {passive:true});
   el.getBoundingClientRect();
+  pushHist(d.kind);
   requestAnimationFrame(function(){
     el.classList.add('open'); below.classList.add('behind');
-    paintBar(); syncEdge();
+    paintBar(); paintRail(); paintPlate(); layoutDesk(); syncEdge();
   });
 }
-function pop(){
+function pop(silent){
   if(!S.stack.length) return;
   var d = S.stack.pop(), el = d.el, below = topLayer();
   el.classList.remove('open'); below.classList.remove('behind');
-  paintBar(); syncEdge();
-  setTimeout(function(){ if(el.parentNode) el.parentNode.removeChild(el); }, 460);
+  if(!silent) popHist();
+  paintBar(); paintRail(); paintPlate(); syncEdge();
+  setTimeout(layoutDesk, 0);
+  setTimeout(function(){ if(el.parentNode) el.parentNode.removeChild(el); }, 440);
 }
 
+/* ---------------- the sheet, ours on both viewports ---------------- */
 function openSheet(o){
   var c = CH[o.i];
   $('sheetkicker').textContent = o.kicker;
+  $('sheetkicker2').textContent = o.kicker;
   $('sheettitle').textContent = c.party;
   $('sheetbody-p').textContent = o.body;
   $('sheetcta').textContent = o.cta;
   $('sheetslot').innerHTML = '';
   S.sheetOpen = true; S.sheetKind = 'request';
   requestAnimationFrame(function(){
-    $('sheet').classList.add('on'); $('scrim').classList.add('on');
-    if(S.platform === 'ios'){
-      $('scr').classList.add('recede');
-      $('chrome').classList.add('onblack');
-    }
+    $('sheet').classList.add('on'); $('scrim').classList.add('on'); paintNavBtns();
   });
 }
 var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -2519,15 +2832,15 @@ function monthSheetHTML(){
 }
 function openMonth(field){
   pick.field = field; pick.month = null;
-  $('sheetkicker').textContent = field.toLowerCase().indexOf('from') > -1 ? 'Started' : 'Ended';
+  $('sheetkicker').textContent = field === 'from' ? 'Started' : 'Ended';
+  $('sheetkicker2').textContent = field === 'from' ? 'Started' : 'Ended';
   $('sheettitle').textContent = 'Pick a month';
   $('sheetbody-p').textContent = '';
   $('sheetslot').innerHTML = monthSheetHTML();
   $('sheetcta').textContent = 'Set';
   S.sheetOpen = true; S.sheetKind = 'month';
   requestAnimationFrame(function(){
-    $('sheet').classList.add('on'); $('scrim').classList.add('on');
-    if(S.platform === 'ios'){ $('scr').classList.add('recede'); $('chrome').classList.add('onblack'); }
+    $('sheet').classList.add('on'); $('scrim').classList.add('on'); paintNavBtns();
   });
 }
 function openConfirm(kind){
@@ -2543,7 +2856,6 @@ function openConfirm(kind){
   requestAnimationFrame(function(){
     $('sheet').classList.add('on'); $('scrim').classList.add('on');
     if(typeof paintNavBtns === 'function') paintNavBtns();
-    if(S.platform === 'ios'){ $('scr').classList.add('recede'); $('chrome').classList.add('onblack'); }
   });
 }
 function openAsk(i){
@@ -2560,37 +2872,48 @@ function openAsk(i){
   requestAnimationFrame(function(){
     $('sheet').classList.add('on'); $('scrim').classList.add('on');
     if(typeof paintNavBtns === 'function') paintNavBtns();
-    if(S.platform === 'ios'){ $('scr').classList.add('recede'); $('chrome').classList.add('onblack'); }
   });
 }
 function closeSheet(){
   $('sheetcta').style.display = '';
+  if(!S.sheetOpen) return;
   S.sheetOpen = false;
   $('sheet').classList.remove('on'); $('scrim').classList.remove('on');
-  $('scr').classList.remove('recede'); $('chrome').classList.remove('onblack');
+  paintNavBtns();
 }
 
-function syncEdge(){ $('barbg').classList.toggle('on', topDoc().scrollTop > 2); }
-
-function wireEdge(el){
-  var g = el.querySelector('.edgegrab'), x0 = 0, dx = 0, t0 = 0, live = false;
-  function move(e){ if(!live) return; dx = Math.max(0, e.clientX - x0);
-    el.style.transform = 'translateX(' + dx + 'px)'; }
-  function up(){
-    if(!live) return; live = false;
-    el.classList.remove('dragging'); el.style.transform = '';
-    window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up);
-    if(dx > 134 || (Date.now() - t0 < 260 && dx > 60)) pop();
-  }
-  g.addEventListener('pointerdown', function(e){
-    if(topLayer() !== el || S.platform !== 'ios') return;
-    live = true; x0 = e.clientX; dx = 0; t0 = Date.now();
-    el.classList.add('dragging');
-    window.addEventListener('pointermove', move); window.addEventListener('pointerup', up);
-  });
+/* ---------------- viewport, scale, storage ---------------- */
+function applyVp(){
+  var v = VPS[S.vp];
+  $('stage').classList.toggle('desktop', S.vp === 'desktop');
+  $('stage').classList.toggle('mobile', S.vp === 'mobile');
+  $('browser').style.width = v.w + 'px';
+  $('vp').style.height = v.h + 'px';
+  fit();
+  paintBar(); paintRail(); paintPlate(); layoutDesk(); syncEdge();
+}
+/* The frame is a viewport at true pixel size, scaled to whatever room the
+   page has. Scaling the frame rather than reflowing it is the point: a 1280
+   layout has to be judged at 1280. */
+function fit(){
+  var avail = document.querySelector('.stagewrap').clientWidth - 32;
+  var k = Math.min(1, avail / VPS[S.vp].w);
+  $('stage').style.transform = 'scale(' + k + ')';
+  $('stage').style.height = (VPS[S.vp].h + 43) * k + 'px';
+}
+function applyScale(){
+  $('app').style.fontSize = (S.scale * 100) + '%';
+  paintRecord(); repaintStack();
+}
+function applyInstalled(){
+  $('installbar').style.display = S.installed ? 'none' : '';
+  paintRecord(); repaintStack();
 }
 
-// §10's attestation landing, one of the two ceremonies the system reserves.
+/* §10's attestation landing. On native this beat carried a haptic. A browser
+   has none to carry it: iOS Safari has no vibration API at all. The beat is
+   therefore entirely visual, and the row's seat plus the figure's re-scribe
+   have to do the work the taptic engine was doing. */
 function playSeat(){
   var run = function(){
     push({kind:'imprint'});
@@ -2600,7 +2923,6 @@ function playSeat(){
       CH[4].attested = true;
       setTimeout(function(){
         row.classList.remove('proud'); row.classList.add('seating');
-        if(navigator.vibrate) navigator.vibrate(12);
         setTimeout(function(){
           row.classList.remove('seating');
           var big = topLayer().querySelector('.bigfig');
@@ -2609,12 +2931,10 @@ function playSeat(){
       }, 420);
     }, 80);
   };
-  if(S.stack.length){ while(S.stack.length) pop(); setTimeout(run, 480); } else { run(); }
+  if(S.stack.length){ while(S.stack.length) pop(true); setTimeout(run, 460); } else { run(); }
 }
 
-var GRAT2;
-// The menu is generated from the registry and grouped by design/08's own
-// sections, so adding a surface is one registry entry and nothing else.
+/* ---------------- the menu ---------------- */
 var NAV = [
   ['First run', ['launch','lander','identifier','code','welcome','name','consent','handle']],
   ['The record', ['record','imprint','permanence']],
@@ -2622,10 +2942,10 @@ var NAV = [
   ['Education and certificates', ['education','credential']],
   ['Getting verified', ['reqattest','askmanager','askcoworker','requestsent']],
   ['Identity', ['idwhy','doctype','capture','idchecking','idresult','idliveness','idfailed','permcamera']],
-  ['Sharing', ['sharing','publicpage','sendrecord','grantdetail']],
+  ['Sharing', ['sharing','publicpage','sendrecord','shareout','grantdetail']],
   ['Disputes and deletion', ['dispute','disputesent','gracesignin']],
   ['Account', ['account','ledger','notifprefs','permnotify','language','exportrec','disclosure','support','deleterec','deletepending','unlock','signout']],
-  ['System', ['notfound','updaterequired','signedout','pushcontent','legal','appicon']]
+  ['The browser', ['install','updaterequired','notfound','signedout','legal']]
 ];
 var NAVNAME = {
   record:'The record', launch:'Launch', lander:'Signed-out lander', identifier:'Identifier',
@@ -2639,13 +2959,14 @@ var NAVNAME = {
   idwhy:'Why check identity', doctype:'Document type', capture:'Capture the document',
   idchecking:'Checking', idresult:'Result', idliveness:'Liveness', idfailed:'Could not check',
   permcamera:'Camera permission', sharing:'Sharing', publicpage:'Public page',
-  sendrecord:'Send the record', grantdetail:'Grant detail', account:'Account', ledger:'The ledger',
+  sendrecord:'Send the record', shareout:'Share, no share sheet', grantdetail:'Grant detail',
+  account:'Account', ledger:'The ledger',
   notifprefs:'Notification preferences', permnotify:'Notification permission', language:'Language',
   exportrec:'Export', disclosure:'Who can read it', support:'Support', deleterec:'Delete everything',
   deletepending:'Deletion requested', gracesignin:'Deletion filed, the way back',
-  dispute:'Dispute an attestation', disputesent:'Dispute filed', unlock:'Unlock', signout:'Sign out',
-  appicon:'App icon (provisional)', notfound:'Address not found', updaterequired:'Update required', signedout:'Signed out',
-  pushcontent:'Notification content', legal:'How this works'
+  dispute:'Dispute an attestation', disputesent:'Dispute filed', unlock:'Unlock, by passkey', signout:'Sign out',
+  install:'Install, and offline', updaterequired:'A newer version',
+  notfound:'Address not found', signedout:'Signed out', legal:'How this works'
 };
 function buildNav(){
   var sel = $('g-screen'), html = '';
@@ -2673,8 +2994,13 @@ function boot(){
   GRAT = deco(T('t-graticule')); GRAT2 = GRAT; PORTRAIT = deco(T('t-portrait'));
   MARK56 = deco(T('t-mark56')); EMPTYFIG = T('t-empty'); MARKSOLID = deco(T('t-marksolid'));
   buildNav();
-  paintRecord(); applyPlatform();
+  paintRecord(); applyVp(); applyInstalled();
   $('rec').addEventListener('scroll', syncEdge, {passive:true});
+  window.addEventListener('resize', fit);
+  window.addEventListener('popstate', function(){
+    if(S.sheetOpen) return closeSheet();
+    if(S.stack.length) pop(true);
+  });
 }
 boot();
 
@@ -2715,9 +3041,40 @@ function syncFocus(){
 
 document.addEventListener('click', function(e){
   var t = e.target; if(!t || !t.closest) return;
+
+  if(t.closest('#bback')){
+    if(S.sheetOpen) return closeSheet();
+    if(S.stack.length) return pop();
+    return;
+  }
+  if(t.closest('#installgo')) return push({kind:'install'});
+  if(t.closest('#installdo')){
+    S.installed = true;
+    $('g-installed').querySelectorAll('button').forEach(function(x){
+      x.setAttribute('aria-pressed', String(x.getAttribute('data-v') === 'installed')); });
+    applyInstalled();
+    return pop();
+  }
+  if(t.closest('#copygo')){
+    var slot = document.getElementById('copiedslot');
+    if(slot) slot.innerHTML = '<div class="copied"><svg width="16" height="16" viewBox="0 0 24 24">' +
+      '<use href="#i-done"></use></svg><span class="t-data">Copied. It expires in 14 days.</span></div>';
+    return;
+  }
+
+  var jump = t.closest('[data-jump]');
+  if(jump){
+    var i = +jump.getAttribute('data-jump');
+    var row = $('rec').querySelector('[data-row="' + i + '"]');
+    if(row) row.scrollIntoView({behavior:'smooth', block:'center'});
+    $('rail').querySelectorAll('.railitem').forEach(function(x){ x.classList.remove('on'); });
+    jump.classList.add('on');
+    return;
+  }
+
   if(t.closest('.js-imprint')) return push({kind:'imprint'});
-  var row = t.closest('[data-out]');
-  if(row) return openAsk(OUT[+row.getAttribute('data-out')].i);
+  var row2 = t.closest('[data-out]');
+  if(row2) return openAsk(OUT[+row2.getAttribute('data-out')].i);
   var disc = t.closest('[data-open]');
   if(disc){
     disc.parentNode.classList.toggle('on');
@@ -2747,7 +3104,7 @@ document.addEventListener('click', function(e){
       if(was === 'delete') push({kind:'deletepending'});
     }, 180);
   }
-  if(t.closest('#sheetcancel') || t.closest('#sheetcta') || t.closest('#scrim')) return closeSheet();
+  if(t.closest('#sheetcancel') || t.closest('.js-cancel') || t.closest('#sheetcta') || t.closest('#scrim')) return closeSheet();
   var yr = t.closest('[data-yr]');
   if(yr){ pick.year += parseInt(yr.getAttribute('data-yr'), 10); $('sheetslot').innerHTML = monthSheetHTML(); return; }
   var mo = t.closest('[data-mon]');
@@ -2755,16 +3112,13 @@ document.addEventListener('click', function(e){
   var mf = t.closest('[data-month]');
   if(mf) return openMonth(mf.getAttribute('data-month'));
   var dc = t.closest('[data-country]');
-  if(dc){
-    idf.country = (idf.country + 1) % COUNTRIES.length;
-    paintRecord(); repaintStack(); return;
-  }
+  if(dc){ idf.country = (idf.country + 1) % COUNTRIES.length; paintRecord(); repaintStack(); return; }
   var im = t.closest('[data-idmode]');
   if(im){ idf.mode = im.getAttribute('data-idmode'); repaintStack(); return; }
   var dd = t.closest('[data-doc]');
   if(dd){ docPick = parseInt(dd.getAttribute('data-doc'), 10); repaintStack(); return; }
   var df = t.closest('[data-found]');
-  if(df){ var i = parseInt(df.getAttribute('data-found'), 10); FOUND[i].on = !FOUND[i].on; repaintStack(); return; }
+  if(df){ var k = parseInt(df.getAttribute('data-found'), 10); FOUND[k].on = !FOUND[k].on; repaintStack(); return; }
   var pp = t.closest('[data-party]');
   if(pp){
     draft.party = pp.getAttribute('data-party') || null;
@@ -2800,7 +3154,7 @@ document.addEventListener('click', function(e){
   var sd = t.closest('.js-said');
   if(sd){
     var host = sd.parentNode, kind = S.stack.length ? S.stack[S.stack.length-1].kind : '';
-    host.innerHTML = '<div class="said"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24">' +
+    host.innerHTML = '<div class="said"><svg width="16" height="16" viewBox="0 0 24 24">' +
       '<use href="#i-done"></use></svg><span class="t-data">' + esc(SAID[kind] || 'Done.') + '</span></div>';
     return;
   }
@@ -2865,11 +3219,23 @@ document.addEventListener('click', function(e){
   }
   var rq = t.closest('[data-req]');
   if(rq){ return push({kind:'requestsent'}); }
-  if(t.closest('.js-sendgrant')) return push({kind:'requestsent'});
+  /* On the web the send ends in the copy-link fallback rather than a share
+     sheet, because navigator.share is absent on most desktop browsers. */
+  if(t.closest('.js-sendgrant')) return push({kind:'shareout'});
   var sw = t.closest('.js-sw');
   if(sw) sw.setAttribute('aria-checked', sw.getAttribute('aria-checked') === 'true' ? 'false' : 'true');
 });
 
+/* Escape closes the dialog. On a desk that is the expected gesture and there
+   is no drag to substitute for it. */
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Escape'){
+    if(S.sheetOpen) return closeSheet();
+    if(S.stack.length) return pop();
+  }
+});
+
+/* The grabber, mobile only. A dialog on a desk is not dragged. */
 (function(){
   var g = $('grab'), sheet = $('sheet'), y0 = 0, dy = 0, live = false;
   function move(e){ if(!live) return; dy = Math.max(0, e.clientY - y0);
@@ -2881,7 +3247,7 @@ document.addEventListener('click', function(e){
     if(dy > 90) closeSheet();
   }
   g.addEventListener('pointerdown', function(e){
-    if(!S.sheetOpen) return;
+    if(!S.sheetOpen || S.vp !== 'mobile') return;
     live = true; y0 = e.clientY; dy = 0; sheet.classList.add('dragging');
     window.addEventListener('pointermove', move); window.addEventListener('pointerup', up);
   });
@@ -2932,14 +3298,14 @@ document.addEventListener('input', function(e){
 document.addEventListener('change', function(e){
   if(e.target.id === 'g-screen'){
     var v = e.target.value;
-    while(S.stack.length) pop();
+    while(S.stack.length) pop(true);
     if(v !== 'record') setTimeout(function(){ push({kind:v}); }, 30);
-    else setTimeout(paintRecord, 30);
+    else setTimeout(function(){ paintRecord(); paintRail(); paintPlate(); }, 30);
     return;
   }
   if(e.target.id === 'g-five'){
     S.five = e.target.value || null;
-    paintRecord(); repaintStack();
+    paintRecord(); repaintStack(); paintRail();
   }
 });
 
@@ -2948,20 +3314,13 @@ document.querySelectorAll('.seg').forEach(function(seg){
     var b = e.target.closest('button'); if(!b) return;
     var v = b.getAttribute('data-v');
     if(seg.id === 'g-seat') return playSeat();
-    if(seg.id === 'g-screen'){
-      while(S.stack.length) pop();
-      if(v !== 'record') setTimeout(function(){ push({kind:v}); }, S.stack.length ? 460 : 20);
-      return;
-    }
     seg.querySelectorAll('button').forEach(function(x){
       x.setAttribute('aria-pressed', String(x === b)); });
-    if(seg.id === 'g-lockup'){ S.lockup = v; paintBar(); }
-    else if(seg.id === 'g-bar'){ S.bar = v; $('barbg').classList.toggle('screen', v === 'screen'); }
-    else if(seg.id === 'g-platform'){ while(S.stack.length) pop(); S.platform = v; applyPlatform(); }
+    if(seg.id === 'g-vp'){ closeSheet(); while(S.stack.length) pop(true); S.vp = v; applyVp(); }
     else if(seg.id === 'g-scale'){ S.scale = parseFloat(v); applyScale(); }
-    else if(seg.id === 'g-state'){ S.state = v; while(S.stack.length) pop(); paintRecord(); }
+    else if(seg.id === 'g-installed'){ S.installed = v === 'installed'; applyInstalled(); }
+    else if(seg.id === 'g-state'){ S.state = v; while(S.stack.length) pop(true);
+      paintRecord(); paintRail(); paintPlate(); }
   });
 });
 </script>
-</body>
-</html>

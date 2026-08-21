@@ -49,18 +49,24 @@ Surfaces implemented: H1, H1a, H2, H3, H4, H5, H6, H7, H7a, H7b, I7.
 
 ## Acceptance
 
-- AC (mechanical): filing a deletion request revokes the worker's own read
+1. **Filing a deletion stops access and executes nothing.** (mechanical) filing a deletion request revokes the worker's own read
   access immediately, and executes nothing, proven by advancing the clock past
   the grace period with no further action and confirming the record survives
   until support acts.
-- AC (mechanical): signing in during the grace period cancels the request and
-  restores every unexpired grant.
-- AC (mechanical): the disclosure record renders every privileged-operator
+2. **Cancelling restores the worker and every unexpired grant.** (mechanical) signing in during the grace period cancels the request and
+  restores every unexpired grant (decision 080; the worker must still file a
+  new request to continue deleting, per 036 and 038). A grant revoked during
+  the grace period stays revoked, because revocation is a separate act.
+3. **A worker who filed can still reach the sign-in that cancels it.** (mechanical) a worker whose read access was revoked by filing can still
+  reach the sign-in that cancels the request, proven by driving it from the
+  filed state. **The surface this needs is a gate in `plans/ORDER.md`**; the
+  criterion is written so it fails until that surface exists.
+4. **The disclosure record shows every operator read and no grantee read.** (mechanical) the disclosure record renders every privileged-operator
   read with its recorded reason, and no grantee read, asserted against the
   kernel's event chain.
-- AC (mechanical): no ledger entry can be mutated or deleted through any path
+5. **Nothing this task exposes can rewrite the ledger.** (mechanical) no ledger entry can be mutated or deleted through any path
   this task exposes.
-- AC (adjudicated): the deletion surface states that attestations other
+6. **The deletion screen says which attestations are not the worker's to delete.** (adjudicated) the deletion surface states that attestations other
   parties made are erased too and cannot be recovered by them either.
 
 ## Outside check

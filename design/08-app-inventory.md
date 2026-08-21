@@ -7,6 +7,27 @@ and what is blocked. Companion to
 [`07-worker-app-design-review.md`](07-worker-app-design-review.md) (the defects
 found in round 1).
 
+**Where the surfaces are.** `design/13-platform-screens` is the native
+prototype and governs; `design/14-web-app` is the browser one and imports the
+record's own surfaces from it rather than redrawing them, so the two cannot
+drift on anything the record draws. `design/10-worker-app-screens` is the prior
+canvas, kept as the record of how the system got here.
+
+**How a row maps to a surface.** Most rows name a surface the prototype's screen
+picker lists under the same words. The ones that do not are named in the row
+itself, and there are only a few kinds: a row that is a *section* of the record
+rather than a screen (D1 outstanding verification, G1 sharing, E2-3 education and
+certificates on the record), a row that is a *disclosure* inside another surface
+(B2 chapter detail), a row that is a *ceremony* rather than a destination (B4),
+and the five states, which every surface carries through a shell renderer rather
+than as separately drawn screens. An implementer who cannot find a row in the
+picker should expect one of those five, not a missing surface.
+
+**`BUILT` is about the drawing, never about the plan.** A row can be BUILT and
+still have no task that implements it, which is what happened to section H2 and
+was caught in decision 081. The register is the design's record; `plans/` is the
+build's. Neither is evidence for the other.
+
 **Status key.** `BUILT` means an artboard exists and has survived review round 1.
 `TO BUILD` means specified here, not drawn. `BLOCKED` means needs a ruling or a gap
 closed first, named inline.
@@ -91,7 +112,9 @@ figure column has `white-space:nowrap`.
 | A8 | Empty record | BUILT |
 | A9 | First chapter, add by hand, or import a résumé | BUILT, the same screen as C1, reached from the empty record |
 | A10 | Résumé upload and parse progress | BUILT |
-| A11 | Imported chapters, review before commit | BUILT |
+| A11 | Imported chapters, review before commit. Each proposed party match is confirmed on the screen, never applied silently | BUILT |
+| A11a | The file could not be read, and the route into typing it | BUILT |
+| A11b | Content Grain does not keep, dropped before anything is saved | BUILT |
 | A12 | Claim the address | BUILT |
 
 ### B · The record
@@ -99,7 +122,7 @@ figure column has `white-space:nowrap`.
 | | Screen | Status |
 |---|---|---|
 | B1 | Core screen | BUILT |
-| B2 | **Chapter detail**, every raw fact, every attestation, superseded versions | BUILT |
+| B2 | **Chapter detail**, every raw fact, every attestation, superseded versions. **Not a screen.** `design/12` rules there is no chapter screen, because four facts is not a destination; it is a disclosure inside the imprint's own list, where the row also lights its ring | BUILT, as a disclosure |
 | B3 | Imprint, expanded. A chapter walker and a legend for what the figure encodes; measures no longer render (054) | BUILT |
 | B4 | Attestation landing ceremony | BUILT |
 
@@ -111,6 +134,7 @@ figure column has `white-space:nowrap`.
 | C2 | Add a position inside a chapter | BUILT |
 | C3 | Minor edits (028: only minor edits after commit) | BUILT |
 | C4 | Why a chapter cannot be removed | BUILT |
+| C5 | What you counted: `chapter.volume`, optional and skippable (074) | BUILT |
 
 ### D · Getting work verified
 
@@ -121,6 +145,8 @@ figure column has `white-space:nowrap`.
 | D3 | Ask a manager, invite, work-email path | BUILT |
 | D4 | Ask a coworker | BUILT |
 | D5 | Request sent, and its state afterwards | BUILT |
+| D6 | Requests you have made, outstanding and their state. Reachable from the record and from Account | BUILT |
+| D7 | The route chooser: which of D2, D3, D4 is available for a chapter, decided by whether the party is registered | BUILT |
 
 ### E · The attester's side, moved to the web (decision 038)
 
@@ -136,7 +162,26 @@ attester · work-email confirmation for the manager tier, which also verifies
 their own chapter · the seven-measure form · submitted · their own empty record.
 **None of them are app screens.**
 
+### E2 · Education and certificates
+
+Decision 062 made both record objects and neither had been drawn, so a third of
+the ratified schema was unreachable in the app. `model/record-schema.md` §8 and
+§9 govern every field, including the two refusals: no grade, no GPA, no thesis
+title.
+
+| | Screen | Status |
+|---|---|---|
+| E2-1 | Add a qualification. Institution proposed against the registry and confirmed by the worker, country required when unresolved, level from the closed set, completion as a state rather than a defect | BUILT |
+| E2-2 | Add a certificate. Issuer matched propose-and-confirm against the party registry, raw when unmatched, optional document held in the payload plane | BUILT |
+| E2-3 | Education and certificates on the record itself, with provenance marks and no ring on the figure | BUILT |
+
 ### F · Identity verification
+
+Owned by [`plans/worker-identity-surface`](../plans/worker-identity-surface/LAYER.md)
+since decision 079, not by `worker-surface`. It is gated on the Persona DPA,
+India DPDP residency and counsel, none of which an engineer clears, so leaving
+it inside the worker app would have held the record, sharing and deletion
+hostage to a legal timetable.
 
 | | Screen | Status |
 |---|---|---|
@@ -147,6 +192,17 @@ their own chapter · the seven-measure form · submitted · their own empty reco
 | F5 | Result, and what a partner now sees | BUILT |
 | F6 | Liveness, separate, declinable, after the document passes | BUILT |
 | F7 | Could not verify, what to do next | BUILT |
+
+### B2 · Disputes
+
+Reinstated by decision 079 and bounded by 028: Grain adjudicates authenticity,
+never substance. Decision 035 §B5 had removed the flow while the layer's scope
+still promised it.
+
+| | Screen | Status |
+|---|---|---|
+| B2-1 | Dispute an attestation. Authenticity grounds Grain will decide, and a counter-statement on substance it will not, split on the screen rather than blurred | BUILT |
+| B2-2 | Filed, and what happens next. Different copy for an authenticity dispute and a bare statement, because the two promise different things | BUILT |
 
 ### G · Sharing
 
@@ -174,7 +230,21 @@ their own chapter · the seven-measure form · submitted · their own empty reco
 | H7 | Ask us to delete everything, **files the request, never executes it** (038) | BUILT |
 | H7a | Deletion requested, the grace-period state, and what resets it | BUILT |
 | H7b | Unlock, biometrics or device passcode, declinable, default on (038) | BUILT |
+| H7c | Deletion filed: the only surface an account reaches while a request is running, and the way to cancel it. Filing revokes the worker's own read access (079/080), so cancelling cannot sit behind the record | BUILT |
 | H8 | Sign out | BUILT |
+
+### H2 · The browser
+
+The PWA is the same codebase (decision 037) and the seam falls somewhere else
+entirely: see [`12-platform-seam.md`](12-platform-seam.md) "The seam in a
+browser". Drawn in [`14-web-app`](14-web-app/) rather than here.
+
+| | Screen | Status |
+|---|---|---|
+| H2-1 | Install, and what offline actually promises in a tab (decision 039's seven-day rule) | BUILT |
+| H2-2 | Unlock by passkey, which proves the account and not the person holding the device | BUILT |
+| H2-3 | A newer version is ready, which is a reload rather than a store update | BUILT |
+| H2-4 | Send with no share sheet: the copy-link path, which is the desktop path rather than a fallback | BUILT |
 
 ### I · System and platform
 

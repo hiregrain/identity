@@ -44,15 +44,15 @@ Surfaces implemented: A1, A2, A3, A4, A5, A7, A8, A12.
 
 ## Acceptance
 
-- AC (mechanical): the code field is a single input carrying the platform's
+1. **The code is one field the platform can autofill.** (mechanical) the code field is a single input carrying the platform's
   one-time-code autofill hint, asserted from the rendered attributes on both
   platforms. More than one code input fails.
-- AC (mechanical): the identifier field renders its country and dialling code
+2. **The identifier always shows which country it is for.** (mechanical) the identifier field renders its country and dialling code
   at all times, including while empty.
-- AC (mechanical): every surface in this task renders all five states, proven
+3. **Every surface here carries all five of its states.** (mechanical) every surface in this task renders all five states, proven
   by driving the state control across each and asserting a non-empty distinct
   render for each pairing.
-- AC (adjudicated): given the criterion and the diff, a verifier finds no
+4. **Nothing here asks for what the record does not need.** (adjudicated) given the criterion and the diff, a verifier finds no
   surface in this flow that asks for information the record does not need, and
   no screen that implies the record is public by default.
 

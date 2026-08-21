@@ -44,20 +44,30 @@ registered party reads a prior packet under grant and writes an
 attestation back; the record renders with correct marks; the D1/D3 launch
 obligations (decision 005) are in force.
 
-**Milestone `first-product`** = the shortest path to something sold:
-`foundation`, `trust-kernel`, `person-identity`, `self-asserted-record`,
-`analytics`. A worker signs up, imports a resume, and a partner buys a read on
-their history and trajectory. It deliberately excludes `verification`, so the
-first thing sold runs on unverified self-asserted history plus whatever
-references have arrived, which is what `THESIS.md` §5 says, stated as a
-boundary rather than a sentence. `v1` remains the attestation round trip.
+**Milestone `first-product`** = the shortest path to something sold. A worker
+signs up, imports a resume, and a partner buys a read on their history and
+trajectory. **Membership is the `milestone` field in each layer's own
+frontmatter and is not listed here.** The list that stood in this paragraph was
+stale within days, omitting `extraction`, which is the failure this file's own
+opening records. `v1` remains the attestation round trip.
 
-**Its exit test is a second read.** The milestone ships two individually weak
-levels: a self-asserted record, and a read over it that `THESIS.md` §5
-concedes may return insufficient data. One purchase does not establish that
-either level holds value on its own. The same partner returning to the same
-record does. Until that happens `first-product` has produced a demonstration
-rather than a product, and declaring the test in advance is the point.
+**The verification exclusion is withdrawn** (decision 078). This paragraph
+previously recorded that `first-product` deliberately excluded `verification`,
+so the first thing sold ran on unverified self-asserted history, framed as a
+boundary rather than a sentence. Layers whose plans have been grilled, reviewed
+and authored belong in the milestone, and sequencing is not what a milestone is
+for.
+
+**Its exit test is open, and that is a declared gap rather than an omission.**
+The test recorded here was a second read: the milestone shipped two individually
+weak levels, a self-asserted record and a read over it that `THESIS.md` §5
+concedes may return insufficient data, and one purchase established neither, so
+the same partner returning to the same record was the bar. Decision 078 removed
+that premise by bringing `verification` in. **No replacement test is ruled**, and
+until one is, `first-product` has no declared condition for having produced a
+product rather than a demonstration. A milestone whose exit test quietly
+evaporated is worse than one with none declared, which is why this paragraph
+says so instead of being deleted.
 
 ## Frontmatter, and what each field is for
 
@@ -284,6 +294,11 @@ rather than one discovery at a time.
 | **Mark open items**: lobe count, break angle, largest/smallest silhouette agreement (`DESIGN.md` gap 1) | `app-distribution` going `ready`; the app icon and every store asset (decision 039) | open |
 | **Persona DPA, subprocessor scope** (decision 040 §C): 16 US subprocessors incl. Anthropic, OpenAI and Groq processing identity documents; plus India DPDP residency, unproven for both vendors | live verification in `verification`; sandbox work ungated | open; founder ruling on the vendor terms backed by an internal research memo, before contracting (decision 070) |
 | **Imprint patent re-read** (decision 040 §F): `imprint/README.md` §8's non-interactivity limb no longer holds now the expanded imprint responds to touch | nothing in the build; a disclosure correction to counsel | open, counsel |
+| **The raw-record API criterion 1 assumes** (decision 079). Criterion 1 grades the app against "a raw API dump"; no `ready` layer builds that API | `worker-surface` criterion 1 being gradeable | open |
+| **Confirm criterion 3's time budgets against real hardware** (decisions 079, 080). The profile is fixed at Slow 3G, 400 kbps and 400 ms, which is reproducible. The budgets of 15 s, 8 s and 15 s are provisional until first measurement | nothing; the criterion is gradeable now and the numbers tighten later | open, a measurement |
+| **Confirm the imprint render budget against a real handset** (decisions 079, 080). Task 01 now carries 2.5 s cold and 1 s warm at or below the Android Go class, plus a progressive-paint rule that the rows never wait for the figure. The budgets are provisional; the paint rule is not | nothing; the criterion is gradeable now | open, a measurement |
+| **Whether the five-states rule is overbroad** (decision 079, outside voice). Permission-denied is meaningless on most surfaces and declaring it anyway is compliance theatre. Task 08 criterion 1 already requires each surface to *declare* which states it carries, which softens this but does not answer it | nothing; it would simplify criterion 5 rather than unblock it | open, founder |
+| **When a worker in a browser tab is invited to install, and what the prompt says** (decision 081). 037 makes an arriving link the most common first session and forbids requiring an install; 039 makes installation the storage model, so the offline read only holds once installed. The app reports which mode it is in (`app-shell` task 05), so nothing ships dishonest, but no plan moves anyone across. The population most likely to stay in a tab is the one whose connectivity makes offline matter most | nothing; `app-shell` is `ready` without it | open, founder, product sequencing |
 | PR merges (merge gate 3) | every task's completion | standing |
 | Witnessed-log witness contract | nothing until the registry deadline nears (D3); listed so it is not discovered late | open, deferred |
 
