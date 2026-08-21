@@ -3,7 +3,7 @@ id: person-identity/04
 type: task
 layer: person-identity
 satisfies: []
-status: in_progress
+status: done
 depends_on: [person-identity/01]
 migrations: [0011-names]
 binds: [decisions/LOG.md#013, decisions/LOG.md#020, research/13-name-standards.md]
@@ -11,7 +11,13 @@ evidence:
   - "test:make person-test @ a5cc923 (core/person acceptance suite, both planes live, includes person-identity/01's own tests)"
   - "test:make check @ a5cc923 (green, run under a no-ports compose override)"
   - "diff:PR #16 @ a5cc923e81517212178d5d1ef8281e4d92b9b6a1"
-verified_by: null
+  - "review:log/2026-08-21-person-identity-04-verification.md (clean-context verification at a5cc923, fail on criterion 3)"
+  - "diff:PR #16 @ eca55e3 (end-dating rework, write-time supersession pointer)"
+  - "review:log/2026-08-21-person-identity-04-verification-2.md (clean-context verification, fail on criterion 3, end-dating held only on the drained path)"
+  - "diff:PR #16 @ ae3abf345a2f18c416e1a44c173f2253434211bd (end-dating derived at read time, supersedes column dropped)"
+  - "test:make check @ ae3abf3 (green, run under a private compose project with host ports removed)"
+  - "review:log/2026-08-21-person-identity-04-verification-3.md (clean-context verification at ae3abf3, pass)"
+verified_by: clean-context-verifier@2026-08-21
 ---
 
 # The name model
