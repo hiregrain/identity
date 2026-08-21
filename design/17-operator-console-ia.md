@@ -243,6 +243,8 @@ the console cannot drift from `_shared.css`.
 | The escalation's reason capture | not drawn |
 | Deletions, both levels | blocked, see below |
 | Loading, and error with a retry | not drawn |
+| Sign-in, and the verified assertion on an appending act | not drawn, ruled by 083 |
+| Creating an operator, as a two-admin act | not drawn, ruled by 083 |
 
 **Deletions is the one destination in the rail that goes nowhere**, and it is
 blocked rather than skipped: `consent-and-deletion` is `draft` with no authored
@@ -283,11 +285,19 @@ reconstruct the correlation pairwise pseudonyms exist to prevent. The Keys view
 currently sends an operator to ask the party instead, which is an answer that
 works and has never been ruled.
 
-**Operator authentication is unwritten.** Decision 077 settled that the console
-runs in a browser on managed devices and that approval identities are payload
-attributes under the single operator key. How an operator signs in, and what
-happens to a case when the acting operator is a party to it, are not settled
-anywhere.
+**Operator authentication is ruled** (decision 083) and undrawn. Operators are a
+third kind of account in their own schema, unlinkable to persons by the same
+invariant `party_users` uses. Authentication is Grain's own, with no external
+identity provider on the console path. Passkeys, synced ones permitted, with user
+verification required on every act that appends: approving a merge, activating a
+party, granting or revoking a capability, recording a signed slip. Reads ride the
+session, the escalation to a full record included.
+
+Two consequences the surfaces have to carry. **Recusal is self-declared and
+unenforceable by construction**, so wherever an operator can step away from a case
+there is a declaration to capture rather than a check to pass. And **creating an
+operator is a two-admin act**, which is a console surface nothing has drawn and
+which sits behind the admin role rather than the operator one.
 
 **Deletions and marker review cannot be drawn against a settled plan yet.** Both
 are gated on `consent-and-deletion`, which has a `LAYER.md` and no authored
