@@ -4728,3 +4728,17 @@ binary formats inside identity crypto is where in-house implementations
 go wrong. The zero-dependency posture was a fact, not a rule; this
 entry is what licenses the exception, and the next dependency needs its
 own entry.
+
+## 090 — The handset attestation is deferred until the app is usable (2026-08-21)
+
+Founder ruling on app-shell/00's criterion 6: on-device runs on the
+founder's iPhone and Pixel are postponed until the app is done enough
+to be worth holding. The criterion is deferred, not cut: the release
+APK and the device-build instructions stay recorded in the task and its
+build log, and the attestation lands as an addendum to the task's
+verification record when it happens. The trigger is written here so it
+is not rediscovered late: **the attestation must be recorded before
+`app-distribution` goes `ready`**, since shipping to a store without
+the founder ever having held the figure on a phone would discharge the
+spike's purpose on paper only. Criteria 4 and 5 stand as the task's
+done-condition in the meantime.
