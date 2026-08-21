@@ -2,7 +2,7 @@
 id: trust-kernel/04
 type: task
 layer: trust-kernel
-satisfies: [2]
+satisfies: [2, 7]
 status: ready
 depends_on: [trust-kernel/02, trust-kernel/03, trust-kernel/08]
 migrations: [0008-checkpoint-log]
