@@ -20,7 +20,7 @@ evidence:
     "test:node test/two-plane-split.test.mjs -- 8 assertions passed",
     "test:node checks/run.mjs -- metadata and schema groups green",
     "test:cd core && go test ./transport/... -run TestRenderDoesNotRescan -v -- multi-arg injection red path (post-verification fix) passes",
-    "diff:PR #13 @ PLACEHOLDER_SHA",
+    "diff:PR #13 @ e52399ed05aaa1419c82a5833ec03a91e3a4f7d4",
   ]
 verified_by: null
 ---
