@@ -3,7 +3,7 @@ id: trust-kernel/08
 type: task
 layer: trust-kernel
 satisfies: []
-status: in_progress
+status: done
 depends_on: []
 migrations: []
 binds: [decisions/LOG.md#065]
@@ -20,9 +20,10 @@ evidence:
     "test:node test/two-plane-split.test.mjs -- 8 assertions passed",
     "test:node checks/run.mjs -- metadata and schema groups green",
     "test:cd core && go test ./transport/... -run TestRenderDoesNotRescan -v -- multi-arg injection red path (post-verification fix) passes",
-    "diff:PR #13 @ e52399ed05aaa1419c82a5833ec03a91e3a4f7d4",
+    "diff:PR #13 @ 286a1af81cab5322684500fb8f16849bae7f986b",
+    "log:log/2026-08-21-trust-kernel-08-verification.md",
   ]
-verified_by: null
+verified_by: clean-context-verifier@2026-08-21
 ---
 
 # Database transport: one seam for every SQL path
