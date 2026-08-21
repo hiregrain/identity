@@ -14,8 +14,19 @@ import (
 // one row for one payload table. The worker adds the idempotency key.
 // Every outbox-written payload table carries an
 // `outbox_entry_id spine_object_id` column with a UNIQUE constraint,
-// and the apply is INSERT ... ON CONFLICT (outbox_entry_id) DO NOTHING,
-// so idempotency is the database's unique index, not worker memory.
+// and the apply is INSERT ... ON CONFLICT DO NOTHING, so idempotency is
+// the database's unique index, not worker memory. The conflict target is
+// left unspecified rather than pinned to outbox_entry_id, because a
+// table may also need idempotency on its OWN logical key: a re-drained
+// entry always retries with a fresh outbox_entry_id (person-identity/04,
+// core/person.WriteIndex generates a new one per call), so
+// outbox_entry_id alone cannot dedupe a second call's rows against the
+// first's. name_index_entry is the first user, with its own UNIQUE on
+// (person_id, source_table, source_outbox_entry_id, token_kind,
+// generator_version); an unspecified conflict target catches either
+// constraint with one clause, and every existing table still has only
+// outbox_entry_id to conflict on, so this is not a behavior change for
+// them.
 //
 // The payload plane has no product content tables yet (foundation/05
 // owns the DEK registry; later layers own content), so instruction
@@ -118,7 +129,7 @@ func (in Instruction) ApplySQL(entryID string) (string, error) {
 		return "", err
 	}
 	return fmt.Sprintf(
-		"INSERT INTO %s (outbox_entry_id, %s)\nVALUES (%s, %s)\nON CONFLICT (outbox_entry_id) DO NOTHING;",
+		"INSERT INTO %s (outbox_entry_id, %s)\nVALUES (%s, %s)\nON CONFLICT DO NOTHING;",
 		in.Table, strings.Join(columns, ", "), entryLiteral, strings.Join(values, ", "),
 	), nil
 }

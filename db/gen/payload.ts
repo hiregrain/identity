@@ -47,6 +47,7 @@ export interface NameIndexEntryRow {
   person_id: string;
   source_table: string;
   source_outbox_entry_id: string;
+  source_field: string;
   token_kind: string;
   generator_version: number;
   token_ciphertext: Uint8Array;

@@ -11,6 +11,7 @@ package person_test
 
 import (
 	"context"
+	"fmt"
 	"sort"
 	"testing"
 	"time"
@@ -205,7 +206,7 @@ func assertSameTokenSet(t *testing.T, label string, a, b []person.DerivedToken) 
 }
 
 func tokenKey(t person.DerivedToken) string {
-	return t.SourceTable + "|" + t.SourceOutboxEntryID + "|" + t.Kind + "|" + t.Value
+	return t.SourceTable + "|" + t.SourceOutboxEntryID + "|" + t.SourceField + "|" + t.Kind + "|" + t.Value
 }
 
 // TestNameChangeAppendsAndEndDatesWithoutMutation: a name change is a
@@ -380,5 +381,209 @@ func TestOverLengthNameTextIsRejectedLoudlyAtTheServiceBoundary(t *testing.T) {
 	}
 	if len(names) != 0 {
 		t.Fatalf("a rejected name reached storage anyway: %+v", names)
+	}
+}
+
+// TestFutureStoredEndStaysCurrentUntilItPasses is decision 091's window
+// semantics, probed shape 1: a name carrying an explicit period_end in
+// the future is current, not excluded the instant any period_end is
+// stored. Before decision 091, "period_end IS NULL" alone excluded this
+// row from CurrentNames the moment it was stored, leaving a solitary
+// row with a live, future-dated validity window absent from its own
+// employer render.
+func TestFutureStoredEndStaysCurrentUntilItPasses(t *testing.T) {
+	ctx := context.Background()
+	id, nm := freshPersonAndNames(t)
+
+	start := time.Now().UTC().Add(-time.Hour)
+	end := time.Now().UTC().Add(time.Hour)
+	if err := nm.Append(ctx, id, person.Name{
+		Text: "Alex Rivera", Use: person.UseTemp, Representation: person.RepresentationRomanized,
+		PeriodStart: &start, PeriodEnd: &end,
+	}); err != nil {
+		t.Fatalf("append: %v", err)
+	}
+	if _, _, err := outbox.Drain(""); err != nil {
+		t.Fatalf("drain: %v", err)
+	}
+
+	current, err := nm.CurrentNames(ctx, id)
+	if err != nil || len(current) != 1 || current[0].Text != "Alex Rivera" {
+		t.Fatalf("current names: %+v, %v, want the future-ended row present", current, err)
+	}
+	if current[0].PeriodEnd == nil || !current[0].PeriodEnd.Equal(end) {
+		t.Fatalf("period_end: got %v, want %v", current[0].PeriodEnd, end)
+	}
+}
+
+// TestPastEndBesideALiveRowLeavesExactlyOneCurrent is decision 091's
+// window semantics, probed shape 2: a row whose own explicit period_end
+// has already passed does not drag a genuinely live successor down with
+// it, and the key never shows zero current rows while an unsuperseded,
+// still-open row exists. Row 1 carries an explicit period_end already
+// in the past (an expired temp name); row 2, appended immediately after
+// with no stored period of its own, is the live row nothing has
+// superseded. Both rows' effective periods are computed independently
+// (person_name_effective is per-row), so row 1's own expiry cannot
+// affect row 2's derivation.
+func TestPastEndBesideALiveRowLeavesExactlyOneCurrent(t *testing.T) {
+	ctx := context.Background()
+	id, nm := freshPersonAndNames(t)
+
+	longAgoStart := time.Now().UTC().Add(-48 * time.Hour)
+	longAgoEnd := time.Now().UTC().Add(-24 * time.Hour)
+	if err := nm.Append(ctx, id, person.Name{
+		Text: "Sam Okafor (temp)", Use: person.UseTemp, Representation: person.RepresentationRomanized,
+		PeriodStart: &longAgoStart, PeriodEnd: &longAgoEnd,
+	}); err != nil {
+		t.Fatalf("append the expired row: %v", err)
+	}
+	if err := nm.Append(ctx, id, person.Name{
+		Text: "Sam Okafor", Use: person.UseTemp, Representation: person.RepresentationRomanized,
+	}); err != nil {
+		t.Fatalf("append the live row: %v", err)
+	}
+	if _, _, err := outbox.Drain(""); err != nil {
+		t.Fatalf("drain: %v", err)
+	}
+
+	current, err := nm.CurrentNames(ctx, id)
+	if err != nil {
+		t.Fatalf("current names: %v", err)
+	}
+	if len(current) != 1 {
+		t.Fatalf("current names: %+v, want exactly one row, not zero", current)
+	}
+	if current[0].Text != "Sam Okafor" {
+		t.Fatalf("the wrong row is current: %+v", current[0])
+	}
+	if current[0].PeriodEnd != nil {
+		t.Fatalf("the live row carries an effective period_end: %v", current[0].PeriodEnd)
+	}
+}
+
+// TestNoOverlapInversion is decision 091's window semantics, probed
+// shape 3: two rows whose EXPLICIT validity windows are inverted
+// relative to assertion order (the row asserted second claims the
+// EARLIER real-world period, as backfilled historical data might), and
+// both windows have already closed. Each row's effective period_end is
+// its own stated end, evaluated independently against now, never
+// inferred from the other row's period or from which was asserted
+// first; the derivation does not get confused by the inversion, and an
+// unsuperseded key with nothing open is correctly zero current rows,
+// which decision 091 states outright ("a temporary or document-bounded
+// name expires on schedule"), not the zero-current-rows defect the
+// ruling fixes (that defect was a live window wrongly excluded, not a
+// genuinely closed one).
+func TestNoOverlapInversion(t *testing.T) {
+	ctx := context.Background()
+	id, nm := freshPersonAndNames(t)
+
+	recentStart := time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)
+	recentEnd := time.Date(2024, 6, 1, 0, 0, 0, 0, time.UTC)
+	olderStart := time.Date(2020, 1, 1, 0, 0, 0, 0, time.UTC)
+	olderEnd := time.Date(2020, 6, 1, 0, 0, 0, 0, time.UTC)
+
+	if err := nm.Append(ctx, id, person.Name{
+		Text: "Priya Nair (2024 record)", Use: person.UseOld, Representation: person.RepresentationRomanized,
+		PeriodStart: &recentStart, PeriodEnd: &recentEnd,
+	}); err != nil {
+		t.Fatalf("append the first-asserted, later-period row: %v", err)
+	}
+	if err := nm.Append(ctx, id, person.Name{
+		Text: "Priya Nair (2020 record)", Use: person.UseOld, Representation: person.RepresentationRomanized,
+		PeriodStart: &olderStart, PeriodEnd: &olderEnd,
+	}); err != nil {
+		t.Fatalf("append the second-asserted, earlier-period row: %v", err)
+	}
+	if _, _, err := outbox.Drain(""); err != nil {
+		t.Fatalf("drain: %v", err)
+	}
+
+	all, err := nm.AllNames(ctx, id)
+	if err != nil || len(all) != 2 {
+		t.Fatalf("all names: %+v, %v, want both rows", all, err)
+	}
+	for _, n := range all {
+		switch n.Text {
+		case "Priya Nair (2024 record)":
+			if n.PeriodEnd == nil || !n.PeriodEnd.Equal(recentEnd) {
+				t.Fatalf("2024 row's own period was not preserved: %+v", n)
+			}
+		case "Priya Nair (2020 record)":
+			if n.PeriodEnd == nil || !n.PeriodEnd.Equal(olderEnd) {
+				t.Fatalf("2020 row's own period was not preserved: %+v", n)
+			}
+		default:
+			t.Fatalf("unexpected row: %+v", n)
+		}
+	}
+
+	current, err := nm.CurrentNames(ctx, id)
+	if err != nil {
+		t.Fatalf("current names: %v", err)
+	}
+	if len(current) != 0 {
+		t.Fatalf("current names: %+v, want zero: both windows have closed and neither was superseded", current)
+	}
+}
+
+// TestWriteIndexTwiceLeavesTheStoredSetUnchanged is code review finding
+// 3 on person-identity/04's third verification pass: WriteIndex
+// generates a fresh outbox_entry_id per row on every call, so
+// outbox_entry_id alone cannot dedupe a second call's rows against the
+// first's. name_index_entry's own UNIQUE constraint on (person_id,
+// source_table, source_outbox_entry_id, token_kind, generator_version)
+// is the real idempotency key, caught by core/outbox's unspecified-
+// target ON CONFLICT DO NOTHING.
+func TestWriteIndexTwiceLeavesTheStoredSetUnchanged(t *testing.T) {
+	ctx := context.Background()
+	id, nm := freshPersonAndNames(t)
+
+	if err := nm.Append(ctx, id, person.Name{
+		Text: "Idempotent Iris", Use: person.UseUsual, Representation: person.RepresentationRomanized,
+	}); err != nil {
+		t.Fatalf("append: %v", err)
+	}
+	if _, _, err := outbox.Drain(""); err != nil {
+		t.Fatalf("drain: %v", err)
+	}
+
+	if err := nm.WriteIndex(ctx, id); err != nil {
+		t.Fatalf("write index (first): %v", err)
+	}
+	if _, _, err := outbox.Drain(""); err != nil {
+		t.Fatalf("drain: %v", err)
+	}
+	first, err := nm.StoredIndexTokens(ctx, id)
+	if err != nil {
+		t.Fatalf("stored index tokens (first): %v", err)
+	}
+	if len(first) == 0 {
+		t.Fatal("no tokens were written")
+	}
+	for _, tok := range first {
+		if tok.GeneratorVersion != person.IndexGeneratorVersion {
+			t.Fatalf("stored generator_version: got %d, want %d", tok.GeneratorVersion, person.IndexGeneratorVersion)
+		}
+	}
+
+	if err := nm.WriteIndex(ctx, id); err != nil {
+		t.Fatalf("write index (second): %v", err)
+	}
+	if _, _, err := outbox.Drain(""); err != nil {
+		t.Fatalf("drain: %v", err)
+	}
+	second, err := nm.StoredIndexTokens(ctx, id)
+	if err != nil {
+		t.Fatalf("stored index tokens (second): %v", err)
+	}
+	assertSameTokenSet(t, "first WriteIndex vs second", first, second)
+
+	count := ownerSQL(t, "payload", `
+		SELECT count(*) FROM name_index_entry WHERE person_id = $1`,
+		transport.String(id))
+	if count != fmt.Sprint(len(first)) {
+		t.Fatalf("name_index_entry row count: got %s, want %d (a second WriteIndex must not duplicate rows)", count, len(first))
 	}
 }

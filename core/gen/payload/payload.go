@@ -45,6 +45,7 @@ type NameIndexEntryRow struct {
 	PersonId            string
 	SourceTable         string
 	SourceOutboxEntryId string
+	SourceField         string
 	TokenKind           string
 	GeneratorVersion    int32
 	TokenCiphertext     []byte

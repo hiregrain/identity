@@ -7,6 +7,7 @@ package person
 import (
 	"strings"
 	"testing"
+	"time"
 )
 
 // TestMononymMRZWithNoDoubleFillerIsNotSplit is the task's own named
@@ -305,5 +306,80 @@ func TestGenerateIndexTokensNeverPhoneticHashesNonLatinScript(t *testing.T) {
 func TestGenerateIndexTokensOnEmptyText(t *testing.T) {
 	if tokens := GenerateIndexTokens("   "); tokens != nil {
 		t.Fatalf("blank text produced tokens: %+v", tokens)
+	}
+}
+
+// Parts.Relation is a closed vocabulary sealed inside parts_ciphertext
+// (migration 0011-names), so no database CHECK constraint can enforce
+// it the way "use" and representation are enforced on person_name's own
+// columns; this is the whole of its enforcement (code review finding 2
+// on person-identity/04's third verification pass). Empty is legal:
+// most names carry no marriage-derived relation at all.
+func TestPartsRelationIsAClosedVocabulary(t *testing.T) {
+	for _, r := range []Relation{"", RelationOwn, RelationPartner} {
+		n := Name{
+			Text: "x", Parts: &Parts{Relation: r},
+			Use: UseUsual, Representation: RepresentationRomanized,
+		}
+		if err := n.validate(); err != nil {
+			t.Fatalf("relation %q: unexpected error: %v", r, err)
+		}
+	}
+	n := Name{
+		Text: "x", Parts: &Parts{Relation: "spouse"},
+		Use: UseUsual, Representation: RepresentationRomanized,
+	}
+	if err := n.validate(); err == nil || !strings.Contains(err.Error(), ErrNameRelation.Error()) {
+		t.Fatalf("got %v, want ErrNameRelation", err)
+	}
+}
+
+// A non-zero AssertedAt on the way in is refused, not silently dropped:
+// the column is DEFAULT now(), assigned by the database at INSERT time,
+// and backfilling one is unsupported until a decision rules on it (code
+// review finding 5 on person-identity/04's third verification pass).
+func TestAppendRefusesABackfilledAssertedAt(t *testing.T) {
+	n := Name{
+		Text: "x", Use: UseUsual, Representation: RepresentationRomanized,
+		AssertedAt: time.Now(),
+	}
+	if err := n.validate(); err == nil || !strings.Contains(err.Error(), ErrAssertedAtSet.Error()) {
+		t.Fatalf("got %v, want ErrAssertedAtSet", err)
+	}
+}
+
+// parseTimestamp is what queryNames and DocumentNames call on every
+// period_start, period_end, asserted_at, and captured_at value a query
+// returns (code review finding 4 on person-identity/04's third
+// verification pass: those four sites used to drop a parse error via
+// `if err == nil`, silently leaving a zero-valued field behind a
+// swallowed failure). This test drives it directly, with no database
+// needed, against both a value it must accept (sqlTimestamp's own
+// fixed shape) and a deliberately unparsable one.
+func TestParseTimestampHardErrorsOnAnUnparsableValue(t *testing.T) {
+	if _, err := parseTimestamp("not-a-timestamp"); err == nil {
+		t.Fatal("an unparsable value was accepted")
+	}
+	if _, err := parseTimestamp(""); err == nil {
+		t.Fatal("an empty value was accepted (callers must check for \"\" themselves; this function never treats it as absence)")
+	}
+	// The prior layout, "2006-01-02 15:04:05.999999-07", has no
+	// minutes-of-offset field at all, so it could never parse a
+	// minute-offset zone (finding 4's own wording). timeLayout
+	// (time.RFC3339Nano) is not that layout; sqlTimestamp never emits a
+	// non-UTC offset in practice (it always renders a literal "Z"), but
+	// the layout this function actually uses is not the one that had the
+	// gap.
+	if _, err := parseTimestamp("2026-08-21T20:12:03.539864+05:30"); err != nil {
+		t.Fatalf("a minute-offset zone was rejected: %v", err)
+	}
+
+	got, err := parseTimestamp("2026-08-21T20:12:03.539864Z")
+	if err != nil {
+		t.Fatalf("a value in sqlTimestamp's own shape was rejected: %v", err)
+	}
+	want := time.Date(2026, 8, 21, 20, 12, 3, 539864000, time.UTC)
+	if !got.Equal(want) {
+		t.Fatalf("parsed %v, want %v", got, want)
 	}
 }

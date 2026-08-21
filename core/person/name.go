@@ -37,6 +37,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 	"unicode/utf8"
@@ -53,6 +54,8 @@ var (
 	ErrTooManyGivenNames   = fmt.Errorf("name: given names exceed their stated bound")
 	ErrNameUse             = fmt.Errorf("name: use is outside the closed vocabulary")
 	ErrNameRepresentation  = fmt.Errorf("name: representation is outside the closed vocabulary")
+	ErrNameRelation        = fmt.Errorf("name: parts relation is outside the closed vocabulary")
+	ErrAssertedAtSet       = fmt.Errorf("name: asserted_at is a read-only, database-assigned value; backfilling one on Append is unsupported")
 	ErrNamePeriod          = fmt.Errorf("name: period end precedes period start")
 	ErrPartsNotInText      = fmt.Errorf("name: a decomposed part is absent from text")
 	ErrEmptyNameText       = fmt.Errorf("name: text is empty")
@@ -187,6 +190,16 @@ func (p *Parts) validate() error {
 			return ErrNamePartLength
 		}
 	}
+	// Relation is a closed vocabulary sealed inside parts_ciphertext
+	// (JSON, migration 0011-names), so no database CHECK constraint can
+	// enforce it the way "use" and representation are enforced on the
+	// column itself; this switch is the whole of its enforcement. Empty
+	// is legal: most names carry no marriage-derived relation at all.
+	switch p.Relation {
+	case "", RelationOwn, RelationPartner:
+	default:
+		return ErrNameRelation
+	}
 	return nil
 }
 
@@ -196,12 +209,19 @@ func (p *Parts) validate() error {
 // EFFECTIVE end date (person_name_effective, migration 0011-names): the
 // source's own stated end if it had one, else the asserted_at of the
 // next row in this row's own (person, use, representation) group
-// ordered by asserted_at, else nil (this name is current, nothing later
-// exists in its group yet). This is a pure read-time derivation over
-// asserted_at; the underlying period_end column a caller's own write
-// touched is never itself updated, and no write-time lookup decides it
-// either, so the derivation is correct regardless of how many
-// still-undrained appends for the same group exist at read time.
+// ordered by asserted_at, else nil when nothing later exists in its
+// group yet. This is a pure read-time derivation over asserted_at; the
+// underlying period_end column a caller's own write touched is never
+// itself updated, and no write-time lookup decides it either, so the
+// derivation is correct regardless of how many still-undrained appends
+// for the same group exist at read time.
+//
+// A non-nil PeriodEnd does not by itself mean the name is no longer
+// current: decision 091 rules FHIR's own window semantics, PeriodEnd
+// IS NULL OR PeriodEnd is after now, so a future-dated end (a
+// document's own stated expiry, say) still reads as current here until
+// that moment passes. CurrentNames applies exactly that predicate;
+// AllNames returns every row regardless.
 type Name struct {
 	ID             string
 	Text           string
@@ -218,6 +238,18 @@ type Name struct {
 // Rejection is loud; nothing here truncates or repairs silently
 // (decision 020).
 func (n Name) validate() error {
+	// AssertedAt is populated only on a read (queryNames); the column it
+	// comes from is DEFAULT now(), assigned by the database at INSERT
+	// time, and Append silently discarded a caller-supplied value here
+	// before this check existed. A non-zero AssertedAt on the way IN is
+	// refused rather than honored or dropped, since honoring it would be
+	// backfilling history no decision has ruled on, and dropping it
+	// silently is exactly what decision 020's reject-loudly posture
+	// exists to prevent, even for a field that never reaches the
+	// database.
+	if !n.AssertedAt.IsZero() {
+		return ErrAssertedAtSet
+	}
 	if n.Text == "" {
 		return ErrEmptyNameText
 	}
@@ -456,11 +488,27 @@ func GenerateIndexTokens(text string) []IndexToken {
 // from, the shape both DeriveIndexTokens (computed fresh from
 // person_name/document_name) and StoredIndexTokens (read back from
 // name_index_entry) return, so the two can be compared directly.
+// GeneratorVersion is IndexGeneratorVersion on a freshly derived token
+// and the persisted name_index_entry.generator_version on a stored one,
+// which is what lets a caller tell a row a prior generator version
+// produced apart from one the current version did.
 type DerivedToken struct {
 	SourceTable         string // "person_name" | "document_name"
 	SourceOutboxEntryID string
-	Kind                string
-	Value               string
+	// SourceField names which field of the source row produced this
+	// token: "text" for person_name (its only field), or one of
+	// "primary_identifier" | "secondary_identifier" |
+	// "native_script_name" | "latin_name_raw" for document_name, which
+	// has four. It is part of name_index_entry's UNIQUE constraint
+	// (migration 0011-names) because a document row's four fields share
+	// one source_outbox_entry_id: without SourceField distinguishing
+	// them, two different fields producing the same token_kind would
+	// collide on the same idempotency key, and WriteIndex's ON CONFLICT
+	// DO NOTHING would silently keep only the first and drop the rest.
+	SourceField      string
+	Kind             string
+	Value            string
+	GeneratorVersion int
 }
 
 // Cipher seals and opens content under a person's own DEK. Satisfied by
@@ -502,7 +550,8 @@ func NewNames(cipher Cipher) *Names { return &Names{cipher: cipher} }
 // A prior name is never deleted or edited, so it remains queryable for
 // matching (AllNames, which reads the effective view and carries every
 // row's derived period) while the query layer alone withholds it from
-// an employer-facing read (CurrentNames, effective period_end IS NULL).
+// an employer-facing read (CurrentNames, decision 091's window predicate:
+// effective period_end IS NULL OR in the future).
 func (nm *Names) Append(ctx context.Context, personID string, n Name) error {
 	if err := ValidID(personID); err != nil {
 		return err
@@ -616,15 +665,48 @@ func enqueueRow(personID, table string, row map[string]any) error {
 
 const namesPlane = "payload"
 
+// timeLayout is the fixed shape every timestamp this file reads back is
+// rendered in (sqlTimestamp) and parsed against. RFC3339Nano's
+// "Z07:00" element matches a literal "Z" as well as a numeric offset,
+// and sqlTimestamp always emits the literal, so parsing here never
+// depends on psql's session timezone: the value is normalized to UTC
+// and rendered as fixed text before it ever leaves the database.
+const timeLayout = time.RFC3339Nano
+
+// sqlTimestamp renders a timestamptz column as UTC, fixed-format text
+// (timeLayout) inside a SELECT list. AT TIME ZONE 'UTC' converts to UTC
+// wall-clock time regardless of the session's timezone setting, and the
+// literal "Z" in the format string (rather than a numeric offset
+// to_char would otherwise need a timezone-aware type to produce) is
+// what makes the output config-independent: two different sessions,
+// under two different `timezone` settings, render byte-identical text
+// for the same instant.
+func sqlTimestamp(column string) string {
+	return `to_char(` + column + ` AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.US"Z"')`
+}
+
+// parseTimestamp parses one sqlTimestamp-rendered value. Every caller in
+// this file hard-errors on its failure (decision 020's reject-loudly
+// posture): a timestamp this package cannot parse is a defect to
+// surface, never a field to leave at its zero value.
+func parseTimestamp(raw string) (time.Time, error) {
+	t, err := time.Parse(timeLayout, raw)
+	if err != nil {
+		return time.Time{}, fmt.Errorf("name: timestamp %q does not match the expected layout: %w", raw, err)
+	}
+	return t, nil
+}
+
 // CurrentNames reads the employer-safe view: one row per (person_id,
-// use, representation) triple, whichever row has no later row in its
-// own asserted_at ordering (person_name_current, effective period_end IS
-// NULL). A prior name never appears here, which is the query-layer
-// withholding the task requires (gender transition, marriage), enforced
-// by which view this function reads rather than by anything a caller
-// must remember, and correct at every point in time: a name's first
-// assertion is current the instant it drains, and stays current for as
-// long as nothing later in its group has drained too.
+// use, representation) triple, whichever row's effective period is
+// still open (person_name_current, decision 091: effective period_end
+// IS NULL or later than now). A prior name never appears here, which is
+// the query-layer withholding the task requires (gender transition,
+// marriage), enforced by which view this function reads rather than by
+// anything a caller must remember, and correct at every point in time:
+// a name's first assertion is current the instant it drains and stays
+// current for as long as nothing later in its group has drained too, a
+// stated future end has not yet passed, and it has not itself expired.
 func (nm *Names) CurrentNames(ctx context.Context, personID string) ([]Name, error) {
 	return nm.queryNames(ctx, personID, "person_name_current")
 }
@@ -665,9 +747,9 @@ func (nm *Names) queryNames(ctx context.Context, personID, table string) ([]Name
 		SELECT outbox_entry_id, encode(text_ciphertext, 'hex'),
 		       coalesce(encode(parts_ciphertext, 'hex'), ''),
 		       "use", representation,
-		       coalesce(period_start::text, ''), coalesce(period_end::text, ''),
-		       asserted_at
-		  FROM %s WHERE person_id = $1 ORDER BY asserted_at`, table),
+		       coalesce(%s, ''), coalesce(%s, ''), %s
+		  FROM %s WHERE person_id = $1 ORDER BY asserted_at`,
+		sqlTimestamp("period_start"), sqlTimestamp("period_end"), sqlTimestamp("asserted_at"), table),
 		transport.String(personID))
 	if err != nil {
 		return nil, err
@@ -699,20 +781,24 @@ func (nm *Names) queryNames(ctx context.Context, personID, table string) ([]Name
 			Representation: Representation(f[4]),
 		}
 		if f[5] != "" {
-			t, err := time.Parse("2006-01-02 15:04:05.999999-07", f[5])
-			if err == nil {
-				n.PeriodStart = &t
+			t, err := parseTimestamp(f[5])
+			if err != nil {
+				return nil, fmt.Errorf("name: period_start: %w", err)
 			}
+			n.PeriodStart = &t
 		}
 		if f[6] != "" {
-			t, err := time.Parse("2006-01-02 15:04:05.999999-07", f[6])
-			if err == nil {
-				n.PeriodEnd = &t
+			t, err := parseTimestamp(f[6])
+			if err != nil {
+				return nil, fmt.Errorf("name: period_end: %w", err)
 			}
+			n.PeriodEnd = &t
 		}
-		if t, err := time.Parse("2006-01-02 15:04:05.999999-07", f[7]); err == nil {
-			n.AssertedAt = t
+		t, err := parseTimestamp(f[7])
+		if err != nil {
+			return nil, fmt.Errorf("name: asserted_at: %w", err)
 		}
+		n.AssertedAt = t
 		names = append(names, n)
 	}
 	return names, nil
@@ -723,11 +809,12 @@ func (nm *Names) DocumentNames(ctx context.Context, personID string) ([]Document
 	if err := ValidID(personID); err != nil {
 		return nil, err
 	}
-	lines, err := transport.Query(namesPlane, servingRole, `
+	lines, err := transport.Query(namesPlane, servingRole, fmt.Sprintf(`
 		SELECT outbox_entry_id, document_type, issuing_country, script_code,
 		       source, is_mononym, possibly_truncated,
-		       encode(name_ciphertext, 'hex'), captured_at
+		       encode(name_ciphertext, 'hex'), %s
 		  FROM document_name WHERE person_id = $1 ORDER BY captured_at`,
+		sqlTimestamp("captured_at")),
 		transport.String(personID))
 	if err != nil {
 		return nil, err
@@ -758,9 +845,11 @@ func (nm *Names) DocumentNames(ctx context.Context, personID string) ([]Document
 			MRZLine1:            fields.MRZLine1,
 			MRZLine2:            fields.MRZLine2,
 		}
-		if t, err := time.Parse("2006-01-02 15:04:05.999999-07", f[8]); err == nil {
-			d.CapturedAt = t
+		t, err := parseTimestamp(f[8])
+		if err != nil {
+			return nil, fmt.Errorf("name: captured_at: %w", err)
 		}
+		d.CapturedAt = t
 		docs = append(docs, d)
 	}
 	return docs, nil
@@ -800,17 +889,35 @@ func (nm *Names) DeriveIndexTokens(ctx context.Context, personID string) ([]Deri
 	for _, n := range names {
 		for _, tok := range GenerateIndexTokens(n.Text) {
 			out = append(out, DerivedToken{
-				SourceTable: "person_name", SourceOutboxEntryID: n.ID,
-				Kind: tok.Kind, Value: tok.Value,
+				SourceTable: "person_name", SourceOutboxEntryID: n.ID, SourceField: "text",
+				Kind: tok.Kind, Value: tok.Value, GeneratorVersion: IndexGeneratorVersion,
 			})
 		}
 	}
+	// document_name's four identifier fields share one
+	// source_outbox_entry_id, so SourceField is what keeps each field's
+	// tokens a distinct row: without it, "NUÑEZ" (primary_identifier)
+	// and "MARÍA" (secondary_identifier) would both render as
+	// {document_name, this row's id, "original"}, the same idempotency
+	// key, and WriteIndex's ON CONFLICT DO NOTHING would keep only
+	// whichever landed first.
+	documentFields := []struct {
+		field string
+		value string
+	}{
+		{"primary_identifier", ""}, {"secondary_identifier", ""},
+		{"native_script_name", ""}, {"latin_name_raw", ""},
+	}
 	for _, d := range docs {
-		for _, field := range []string{d.PrimaryIdentifier, d.SecondaryIdentifier, d.NativeScriptName, d.LatinNameRaw} {
-			for _, tok := range GenerateIndexTokens(field) {
+		documentFields[0].value = d.PrimaryIdentifier
+		documentFields[1].value = d.SecondaryIdentifier
+		documentFields[2].value = d.NativeScriptName
+		documentFields[3].value = d.LatinNameRaw
+		for _, df := range documentFields {
+			for _, tok := range GenerateIndexTokens(df.value) {
 				out = append(out, DerivedToken{
-					SourceTable: "document_name", SourceOutboxEntryID: d.ID,
-					Kind: tok.Kind, Value: tok.Value,
+					SourceTable: "document_name", SourceOutboxEntryID: d.ID, SourceField: df.field,
+					Kind: tok.Kind, Value: tok.Value, GeneratorVersion: IndexGeneratorVersion,
 				})
 			}
 		}
@@ -820,10 +927,18 @@ func (nm *Names) DeriveIndexTokens(ctx context.Context, personID string) ([]Deri
 
 // WriteIndex derives the index fresh (DeriveIndexTokens) and persists
 // every token as its own name_index_entry row, sealed under the
-// person's own key. name_index_entry is append-only like every other
-// table this migration adds; nothing here deletes a prior generation's
-// rows; a caller comparing generator versions is how a future consumer
-// tells old rows from new ones apart.
+// person's own key. Idempotent by the database: name_index_entry's own
+// UNIQUE constraint on (person_id, source_table, source_outbox_entry_id,
+// token_kind, generator_version), migration 0011-names, is what
+// core/outbox's unspecified-target ON CONFLICT DO NOTHING catches, so
+// calling WriteIndex twice against unchanged source rows leaves the
+// stored set unchanged rather than duplicating every token: a fresh
+// outbox_entry_id is generated per row on each call (the pattern every
+// append in this package uses), so outbox_entry_id itself cannot be the
+// idempotency key here. name_index_entry is append-only like every
+// other table this migration adds; nothing here deletes a prior
+// generation's rows, and a caller comparing GeneratorVersion is how a
+// future consumer tells old rows from new ones apart.
 func (nm *Names) WriteIndex(ctx context.Context, personID string) error {
 	tokens, err := nm.DeriveIndexTokens(ctx, personID)
 	if err != nil {
@@ -838,8 +953,9 @@ func (nm *Names) WriteIndex(ctx context.Context, personID string) error {
 			"person_id":              personID,
 			"source_table":           tok.SourceTable,
 			"source_outbox_entry_id": tok.SourceOutboxEntryID,
+			"source_field":           tok.SourceField,
 			"token_kind":             tok.Kind,
-			"generator_version":      float64(IndexGeneratorVersion),
+			"generator_version":      float64(tok.GeneratorVersion),
 			"token_ciphertext":       hexLiteral(sealed),
 		}
 		if err := enqueueRow(personID, "name_index_entry", row); err != nil {
@@ -858,8 +974,8 @@ func (nm *Names) StoredIndexTokens(ctx context.Context, personID string) ([]Deri
 		return nil, err
 	}
 	lines, err := transport.Query(namesPlane, servingRole, `
-		SELECT source_table, source_outbox_entry_id, token_kind,
-		       encode(token_ciphertext, 'hex')
+		SELECT source_table, source_outbox_entry_id, source_field, token_kind,
+		       generator_version, encode(token_ciphertext, 'hex')
 		  FROM name_index_entry WHERE person_id = $1`,
 		transport.String(personID))
 	if err != nil {
@@ -867,13 +983,18 @@ func (nm *Names) StoredIndexTokens(ctx context.Context, personID string) ([]Deri
 	}
 	out := make([]DerivedToken, 0, len(lines))
 	for _, line := range lines {
-		f := transport.SplitRow(line, 4)
-		value, err := nm.openHex(ctx, personID, f[3])
+		f := transport.SplitRow(line, 6)
+		version, err := strconv.Atoi(f[4])
+		if err != nil {
+			return nil, fmt.Errorf("name: generator_version %q is not an integer: %w", f[4], err)
+		}
+		value, err := nm.openHex(ctx, personID, f[5])
 		if err != nil {
 			return nil, err
 		}
 		out = append(out, DerivedToken{
-			SourceTable: f[0], SourceOutboxEntryID: f[1], Kind: f[2], Value: string(value),
+			SourceTable: f[0], SourceOutboxEntryID: f[1], SourceField: f[2], Kind: f[3],
+			GeneratorVersion: version, Value: string(value),
 		})
 	}
 	return out, nil

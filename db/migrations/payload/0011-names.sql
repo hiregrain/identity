@@ -133,28 +133,43 @@ SELECT outbox_entry_id, person_id, text_ciphertext, parts_ciphertext,
   FROM person_name;
 
 -- The query-layer rule: the CURRENT name per (person_id, use,
--- representation) is whichever row's effective period_end is NULL, i.e.
--- nothing later exists in its partition. Representation is part of the
--- key, not just use, because a CJK person legitimately holds three
--- simultaneously current rows for one use (ideographic, romanized,
--- phonetic); collapsing on use alone would make two of the three vanish
--- from every "current" read the moment all three exist. This is what
--- makes a prior name "absent from an employer render" without deleting
--- or mutating it: an employer-facing read selects through this view, a
--- matching read selects person_name_effective (every row, prior ones
--- included, each carrying its own effective period), and the same rows
--- answer both questions at every point in time: before the second
--- append of a change drains, the first row is current, correctly,
--- because nothing later exists in the table yet; the instant the second
--- append drains, lead() sees it and the first row's effective
--- period_end flips from NULL to that append's asserted_at, with no
--- write against the first row at all.
+-- representation) is whichever row's effective period is still open, in
+-- FHIR HumanName's own reading, decision 091's ruling on this task's
+-- review: period_end IS NULL (nothing later exists in its partition and
+-- nothing was stated) OR period_end > now() (a stated window, whether
+-- derived from a successor or the row's own explicit end, that has not
+-- yet passed). As shipped before decision 091, this view read
+-- "period_end IS NULL" alone, which is a stricter test than the
+-- criterion: any stored period_end, future ones included, made a name
+-- not-current immediately, and a solitary row whose own stated end was
+-- still in the future had nothing else in its partition to be current
+-- instead, leaving the key with zero current rows. window semantics
+-- fixes both readings of the same defect: a future-dated end stays
+-- current until it passes, and a row nothing has superseded is excluded
+-- only once its own stated window, or a successor's asserted_at, has
+-- actually arrived, never merely because a period was stated at all.
+--
+-- Representation is part of the key, not just use, because a CJK person
+-- legitimately holds three simultaneously current rows for one use
+-- (ideographic, romanized, phonetic); collapsing on use alone would
+-- make two of the three vanish from every "current" read the moment all
+-- three exist. This is what makes a prior name "absent from an employer
+-- render" without deleting or mutating it: an employer-facing read
+-- selects through this view, a matching read selects
+-- person_name_effective (every row, prior ones included, each carrying
+-- its own effective period), and the same rows answer both questions at
+-- every point in time: before the second append of a change drains, the
+-- first row is current, correctly, because nothing later exists in the
+-- table yet; the instant the second append drains, lead() sees it and
+-- the first row's effective period_end flips from NULL to that append's
+-- asserted_at (already in the past the moment it exists), with no write
+-- against the first row at all.
 CREATE VIEW person_name_current AS
 SELECT outbox_entry_id, person_id, text_ciphertext, parts_ciphertext,
        "use", representation, period_start, period_end, asserted_at,
        residency_region
   FROM person_name_effective
- WHERE period_end IS NULL;
+ WHERE period_end IS NULL OR period_end > now();
 
 -- document_name: one row per verified document, immutable, in ICAO
 -- Doc 9303's own vocabulary (primary/secondary identifier, never
@@ -226,16 +241,49 @@ CREATE INDEX document_name_by_person ON document_name (person_id);
 -- diacritics the fold table knows mapped to their base letter, kept
 -- ALONGSIDE the original, never replacing it, per the task's own rule).
 -- No phonetic hashing of non-Latin input, per the same rule.
+-- source_field names which field of the source row produced a token.
+-- document_name has FOUR name fields (primary/secondary identifier,
+-- native script, Latin raw) sharing one source_outbox_entry_id, so
+-- source_outbox_entry_id and token_kind alone are not enough to identify
+-- which field's token a row is: "NUÑEZ" (primary_identifier) and "MARÍA"
+-- (secondary_identifier) both produce a 'original' token against the
+-- same document row. person_name has one field (text) and always
+-- carries 'text' here.
+--
+-- The UNIQUE constraint below is WriteIndex's idempotency key. It is not
+-- outbox_entry_id: a re-run of WriteIndex generates a fresh
+-- outbox_entry_id per row (core/person, NewID per instruction, the same
+-- pattern every append in this package uses), so outbox_entry_id alone
+-- cannot tell a second WriteIndex call's rows from the first's. The
+-- logical key a token actually occupies is which source and field
+-- produced it, which kind of token it is, and which generator version
+-- produced it; token_ciphertext is deliberately excluded, since sealing
+-- is non-deterministic (a fresh nonce per call, core/envelope) and two
+-- seals of the identical plaintext are never byte-equal, so it could
+-- never participate in a conflict target anyway. core/outbox's apply
+-- path issues INSERT ... ON CONFLICT DO NOTHING with no target named
+-- (core/outbox/instruction.go), which is what lets this constraint's
+-- violation silently no-op exactly like outbox_entry_id's does. Without
+-- source_field in this constraint, two different fields of one document
+-- producing the same token_kind would collide on the same key, and the
+-- second field's token would be silently dropped rather than stored,
+-- which is exactly the defect an earlier version of this migration
+-- shipped with.
 CREATE TABLE name_index_entry (
     outbox_entry_id spine_object_id PRIMARY KEY,
     person_id spine_object_id NOT NULL,
     source_table text NOT NULL CHECK (source_table IN ('person_name', 'document_name')),
     source_outbox_entry_id spine_object_id NOT NULL,
+    source_field text NOT NULL CHECK (source_field IN (
+        'text', 'primary_identifier', 'secondary_identifier',
+        'native_script_name', 'latin_name_raw'
+    )),
     token_kind text NOT NULL CHECK (token_kind IN ('original', 'diacritic_folded')),
     generator_version integer NOT NULL CHECK (generator_version >= 1),
     token_ciphertext bytea NOT NULL,
     residency_region residency_region NOT NULL
-        DEFAULT own_declared_residency_region()
+        DEFAULT own_declared_residency_region(),
+    UNIQUE (person_id, source_table, source_outbox_entry_id, source_field, token_kind, generator_version)
 );
 
 CREATE INDEX name_index_entry_by_person ON name_index_entry (person_id);

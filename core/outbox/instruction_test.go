@@ -23,7 +23,7 @@ func TestApplySQLIsDeterministicAndKeyed(t *testing.T) {
 	for _, want := range []string{
 		"INSERT INTO outbox_probe_target (outbox_entry_id, content, live, note, weight)",
 		"VALUES ('" + entryID + "', 'hello', true, NULL, 2)",
-		"ON CONFLICT (outbox_entry_id) DO NOTHING;",
+		"ON CONFLICT DO NOTHING;",
 	} {
 		if !strings.Contains(first, want) {
 			t.Fatalf("rendered SQL missing %q:\n%s", want, first)

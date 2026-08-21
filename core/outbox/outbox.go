@@ -158,9 +158,28 @@ func Get(entryID string) (Entry, error) {
 
 // Apply applies one entry's instruction to the payload plane in one
 // payload transaction. Idempotent by the database, not by memory: the
-// INSERT carries ON CONFLICT (outbox_entry_id) DO NOTHING against the
-// target table's unique idempotency key, so applying the same entry any
-// number of times produces one payload row.
+// INSERT carries ON CONFLICT DO NOTHING against the target table's
+// unique idempotency key (outbox_entry_id, and a table's own logical
+// key if it declares one), so applying the same entry any number of
+// times produces one payload row.
+//
+// LOAD-BEARING for a consumer this package does not know about:
+// core/person's name model (person-identity/04) derives which
+// person_name row is current from asserted_at ordering alone
+// (person_name_effective's lead() window, migration 0011-names), and
+// asserted_at is that column's own DEFAULT now(), assigned at the
+// moment THIS function's INSERT commits. One entry, one transaction,
+// one INSERT is what guarantees two rows for the same person/use/
+// representation get two distinct, correctly-ordered timestamps. A
+// future change batching several entries into one transaction (a single
+// now() for the whole batch, per Postgres's per-transaction snapshot)
+// would make two names asserted in the same batch tie on asserted_at,
+// which the tiebreak on outbox_entry_id would then resolve by an
+// arbitrary UUID order instead of assertion order, silently corrupting
+// name currency for exactly the callers that batching would exist to
+// help. This is not enforced by a test in this package; it is recorded
+// here because the failure mode is invisible from here and only visible
+// from core/person's.
 func Apply(entry Entry, crashPoint string) error {
 	instruction, err := Parse(entry.Instruction)
 	if err != nil {
