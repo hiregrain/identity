@@ -11,7 +11,7 @@ evidence:
   - "test:make differential"
   - "test:make differential-red"
   - "test:make reference-test"
-  - "diff:PR #12 @ d524c6b"
+  - "diff:PR #12 @ dc58543"
 verified_by: null
 ---
 
@@ -76,7 +76,7 @@ number-formatting bug in each implementation in turn to confirm detection.
 - `test:make reference-test` runs `reference/conformance.test.ts`: the
   reference model against the values `contract/CONTRACT.md` states in
   words rather than against its own output.
-- `diff:PR #12 @ d524c6b`.
+- `diff:PR #12 @ dc58543`.
 
 The four ambiguities this reading surfaced are ruled in decision 082 and
 written into `contract/CONTRACT.md`. Three ratified the readings this
