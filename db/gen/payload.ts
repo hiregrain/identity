@@ -24,6 +24,36 @@ export interface DekRegistryRow {
   residency_region: string;
 }
 
+/** One row of payload.document_name. */
+export interface DocumentNameRow {
+  readonly [payloadPlane]: "payload";
+  outbox_entry_id: string;
+  person_id: string;
+  document_type: string;
+  issuing_country: string;
+  script_code: string;
+  source: string;
+  is_mononym: boolean;
+  possibly_truncated: boolean;
+  name_ciphertext: Uint8Array;
+  captured_at: string;
+  residency_region: string;
+}
+
+/** One row of payload.name_index_entry. */
+export interface NameIndexEntryRow {
+  readonly [payloadPlane]: "payload";
+  outbox_entry_id: string;
+  person_id: string;
+  source_table: string;
+  source_outbox_entry_id: string;
+  source_field: string;
+  token_kind: string;
+  generator_version: number;
+  token_ciphertext: Uint8Array;
+  residency_region: string;
+}
+
 /** One row of payload.person_contact_channel. */
 export interface PersonContactChannelRow {
   readonly [payloadPlane]: "payload";
@@ -38,6 +68,21 @@ export interface PersonContactChannelRow {
   velocity_observed: number;
   velocity_threshold: number;
   assurance: string;
+  residency_region: string;
+}
+
+/** One row of payload.person_name. */
+export interface PersonNameRow {
+  readonly [payloadPlane]: "payload";
+  outbox_entry_id: string;
+  person_id: string;
+  text_ciphertext: Uint8Array;
+  parts_ciphertext: Uint8Array | null;
+  use: string;
+  representation: string;
+  period_start: string | null;
+  period_end: string | null;
+  asserted_at: string;
   residency_region: string;
 }
 

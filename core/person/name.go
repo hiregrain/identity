@@ -1,0 +1,1029 @@
+// The name model (person-identity/04; decisions 013, 020; research/11,
+// cited in the task file as research/13, a stale number this package
+// does not correct on its own: the fence reserves research and plan
+// prose to human/agent authorship). FHIR HumanName is the adopted shape,
+// because it is temporal, multi-valued, and purpose-tagged, which is
+// what an append-only ledger needs: a name change is a new row, and the
+// prior row's effective end date is derived at read time from
+// asserted_at ordering within its own (person, use, representation)
+// group (person_name_effective, migration 0011-names), never written to
+// the prior row and never dependent on a lookup at write time.
+//
+// Three layers, never collapsed (decision 013):
+//
+//	person_name    worker-owned, structured, append-only, many rows per
+//	               person distinguished by use and, for CJK, by which
+//	               script they render in.
+//	document_name  immutable per verified document, in ICAO Doc 9303's
+//	               own primary/secondary identifier vocabulary, never
+//	               first/last name.
+//	name_index     derived, regenerable, never authoritative: candidates
+//	               for a later matching layer (person-identity/05) to
+//	               consume, never a decision this package makes.
+//
+// Every worker-supplied string is sealed under the person's own DEK
+// before it reaches the payload plane (migration 0011-names), the same
+// posture as person_record.display_name_ciphertext and
+// person_contact_channel.address_ciphertext. Bounds are explicit,
+// generous, and enforced here rather than by a column width, because a
+// ciphertext column cannot express a length bound (decision 020):
+// over-length input is rejected loudly, and nothing in this package
+// truncates.
+package person
+
+import (
+	"context"
+	"encoding/hex"
+	"encoding/json"
+	"fmt"
+	"regexp"
+	"strconv"
+	"strings"
+	"time"
+	"unicode/utf8"
+
+	"github.com/hiregrain/identity/core/outbox"
+	"github.com/hiregrain/identity/core/transport"
+)
+
+// Errors. Every one names the bound or rule a caller can fix, mirroring
+// person.go's posture: none carries the name content that failed.
+var (
+	ErrNameTextLength      = fmt.Errorf("name: text exceeds its stated bound")
+	ErrNamePartLength      = fmt.Errorf("name: a decomposed part exceeds its stated bound")
+	ErrTooManyGivenNames   = fmt.Errorf("name: given names exceed their stated bound")
+	ErrNameUse             = fmt.Errorf("name: use is outside the closed vocabulary")
+	ErrNameRepresentation  = fmt.Errorf("name: representation is outside the closed vocabulary")
+	ErrNameRelation        = fmt.Errorf("name: parts relation is outside the closed vocabulary")
+	ErrAssertedAtSet       = fmt.Errorf("name: asserted_at is a read-only, database-assigned value; backfilling one on Append is unsupported")
+	ErrNamePeriod          = fmt.Errorf("name: period end precedes period start")
+	ErrPartsNotInText      = fmt.Errorf("name: a decomposed part is absent from text")
+	ErrEmptyNameText       = fmt.Errorf("name: text is empty")
+	ErrDocumentFieldLength = fmt.Errorf("name: a document field exceeds its stated bound")
+	ErrMRZLineLength       = fmt.Errorf("name: an MRZ line exceeds its stated bound")
+	ErrMRZCharset          = fmt.Errorf("name: an MRZ line contains a character outside A-Z, 0-9, <")
+	ErrDocumentType        = fmt.Errorf("name: document type exceeds its stated bound")
+	ErrIssuingCountry      = fmt.Errorf("name: issuing country is not a lowercase ISO 3166-1 alpha-2 code")
+	ErrScriptCode          = fmt.Errorf("name: script code is not a 4-letter ISO 15924 code")
+	ErrDocumentSource      = fmt.Errorf("name: source is outside the closed vocabulary")
+)
+
+// Bounds, explicit and generous, with the reasoning decision 020
+// requires living at the schema site. "No length cap" was never an
+// implementable instruction; these numbers are the implementable form
+// of "well above any documented real-world name."
+const (
+	// MaxNameTextRunes: the same bound as person_record's display name
+	// (MaxDisplayNameRunes), for the same reason: documented real names
+	// run to a few hundred characters, and no genuine name meets 300.
+	MaxNameTextRunes = 300
+	// MaxNamePartRunes: one decomposed token, a family name or a single
+	// given/prefix/suffix entry. Shorter than the whole-text bound
+	// because a token is one component, not the rendered name, and 100
+	// runes is generous for any single documented component.
+	MaxNamePartRunes = 100
+	// MaxGivenNames: cultures with several simultaneous given names
+	// (Spanish, Arabic, some Southeast Asian naming) are documented; ten
+	// is generous headroom above the longest observed case.
+	MaxGivenNames = 10
+	// MaxDocumentFieldRunes: ICAO VIZ-derived free text (primary and
+	// secondary identifier, the native-script and Latin raw strings).
+	// Bounded above the MRZ's own 39-character name field, since the VIZ
+	// routinely carries more than the MRZ can hold.
+	MaxDocumentFieldRunes = 200
+	// MaxMRZLineLength: TD3 (passport) allocates 44 characters to a full
+	// MRZ line; TD1 (ID card) allocates 30. One bound at the larger
+	// covers both formats without guessing which one produced a line.
+	MaxMRZLineLength = 44
+)
+
+// Use is FHIR HumanName's closed vocabulary for why a name is held
+// (decision 013).
+type Use string
+
+const (
+	UseUsual     Use = "usual"
+	UseOfficial  Use = "official"
+	UseOld       Use = "old"
+	UseMaiden    Use = "maiden"
+	UseNickname  Use = "nickname"
+	UseAnonymous Use = "anonymous"
+	UseTemp      Use = "temp"
+)
+
+// Representation is the CJK mechanism: which of the ideographic,
+// romanized, or phonetic renderings this row carries. A person with a
+// CJK name holds one person_name row per representation, same use,
+// never one row trying to hold all three.
+type Representation string
+
+const (
+	RepresentationIdeographic Representation = "IDE"
+	RepresentationRomanized   Representation = "ABC"
+	RepresentationPhonetic    Representation = "SYL"
+)
+
+// Relation distinguishes a person's own lineage surname from one taken
+// through marriage. Part of Parts, the extension mechanism, never a core
+// column (the task's own rule for "own-name vs partner-name").
+type Relation string
+
+const (
+	RelationOwn     Relation = "own"
+	RelationPartner Relation = "partner"
+)
+
+// Parts is the optional decomposition of a name. family, given, prefix
+// and suffix are FHIR HumanName's own fields; fathers_family and
+// mothers_family are the one mechanism that covers both the
+// Spanish/Portuguese two-surname convention and the PhilSys maternal
+// middle name, which is why the task requires them to share it rather
+// than each getting a bespoke field. Marshaled as one JSON blob and
+// sealed as one ciphertext (migration 0011-names): the parts are an
+// extension of the name, not columns of their own.
+type Parts struct {
+	Family        string   `json:"family,omitempty"`
+	Given         []string `json:"given,omitempty"`
+	Prefix        []string `json:"prefix,omitempty"`
+	Suffix        []string `json:"suffix,omitempty"`
+	FathersFamily string   `json:"fathers_family,omitempty"`
+	MothersFamily string   `json:"mothers_family,omitempty"`
+	Relation      Relation `json:"relation,omitempty"`
+}
+
+// tokens returns every non-empty token in the parts, the set the
+// text-contains-every-part invariant checks.
+func (p *Parts) tokens() []string {
+	if p == nil {
+		return nil
+	}
+	out := make([]string, 0, 4+len(p.Given)+len(p.Prefix)+len(p.Suffix))
+	add := func(s string) {
+		if s != "" {
+			out = append(out, s)
+		}
+	}
+	add(p.Family)
+	add(p.FathersFamily)
+	add(p.MothersFamily)
+	for _, g := range p.Given {
+		add(g)
+	}
+	for _, pr := range p.Prefix {
+		add(pr)
+	}
+	for _, s := range p.Suffix {
+		add(s)
+	}
+	return out
+}
+
+func (p *Parts) validate() error {
+	if p == nil {
+		return nil
+	}
+	if len(p.Given) > MaxGivenNames {
+		return ErrTooManyGivenNames
+	}
+	for _, tok := range p.tokens() {
+		if utf8.RuneCountInString(tok) > MaxNamePartRunes {
+			return ErrNamePartLength
+		}
+	}
+	// Relation is a closed vocabulary sealed inside parts_ciphertext
+	// (JSON, migration 0011-names), so no database CHECK constraint can
+	// enforce it the way "use" and representation are enforced on the
+	// column itself; this switch is the whole of its enforcement. Empty
+	// is legal: most names carry no marriage-derived relation at all.
+	switch p.Relation {
+	case "", RelationOwn, RelationPartner:
+	default:
+		return ErrNameRelation
+	}
+	return nil
+}
+
+// Name is one person_name assertion (decision 013's worker-owned layer).
+// ID is the row's outbox_entry_id once read back; empty on a Name being
+// appended for the first time. PeriodEnd, once read back, is the
+// EFFECTIVE end date (person_name_effective, migration 0011-names): the
+// source's own stated end if it had one, else the asserted_at of the
+// next row in this row's own (person, use, representation) group
+// ordered by asserted_at, else nil when nothing later exists in its
+// group yet. This is a pure read-time derivation over asserted_at; the
+// underlying period_end column a caller's own write touched is never
+// itself updated, and no write-time lookup decides it either, so the
+// derivation is correct regardless of how many still-undrained appends
+// for the same group exist at read time.
+//
+// A non-nil PeriodEnd does not by itself mean the name is no longer
+// current: decision 091 rules FHIR's own window semantics, PeriodEnd
+// IS NULL OR PeriodEnd is after now, so a future-dated end (a
+// document's own stated expiry, say) still reads as current here until
+// that moment passes. CurrentNames applies exactly that predicate;
+// AllNames returns every row regardless.
+type Name struct {
+	ID             string
+	Text           string
+	Parts          *Parts
+	Use            Use
+	Representation Representation
+	PeriodStart    *time.Time
+	PeriodEnd      *time.Time
+	AssertedAt     time.Time
+}
+
+// validate enforces the bounds and the text-contains-every-part
+// invariant (the migration's own comment on person_name.text_ciphertext).
+// Rejection is loud; nothing here truncates or repairs silently
+// (decision 020).
+func (n Name) validate() error {
+	// AssertedAt is populated only on a read (queryNames); the column it
+	// comes from is DEFAULT now(), assigned by the database at INSERT
+	// time, and Append silently discarded a caller-supplied value here
+	// before this check existed. A non-zero AssertedAt on the way IN is
+	// refused rather than honored or dropped, since honoring it would be
+	// backfilling history no decision has ruled on, and dropping it
+	// silently is exactly what decision 020's reject-loudly posture
+	// exists to prevent, even for a field that never reaches the
+	// database.
+	if !n.AssertedAt.IsZero() {
+		return ErrAssertedAtSet
+	}
+	if n.Text == "" {
+		return ErrEmptyNameText
+	}
+	if utf8.RuneCountInString(n.Text) > MaxNameTextRunes {
+		return ErrNameTextLength
+	}
+	switch n.Use {
+	case UseUsual, UseOfficial, UseOld, UseMaiden, UseNickname, UseAnonymous, UseTemp:
+	default:
+		return ErrNameUse
+	}
+	switch n.Representation {
+	case RepresentationIdeographic, RepresentationRomanized, RepresentationPhonetic:
+	default:
+		return ErrNameRepresentation
+	}
+	if n.PeriodStart != nil && n.PeriodEnd != nil && n.PeriodEnd.Before(*n.PeriodStart) {
+		return ErrNamePeriod
+	}
+	if err := n.Parts.validate(); err != nil {
+		return err
+	}
+	for _, tok := range n.Parts.tokens() {
+		if !strings.Contains(n.Text, tok) {
+			return fmt.Errorf("%w: %q", ErrPartsNotInText, tok)
+		}
+	}
+	return nil
+}
+
+// DocumentName is one immutable capture from a verified document, in
+// ICAO Doc 9303's own vocabulary: primary_identifier / secondary_identifier,
+// never first/last name, because a mononym is the spec's normal path
+// and ICAO deliberately does not define what a surname is (per-issuer
+// partition). ID is the row's outbox_entry_id once read back.
+type DocumentName struct {
+	ID                  string
+	DocumentType        string
+	IssuingCountry      string // lowercase ISO 3166-1 alpha-2
+	ScriptCode          string // ISO 15924, e.g. "Latn", "Hani"
+	Source              string // MRZ | VIZ | BARCODE | SELF_ATTESTED
+	PrimaryIdentifier   string
+	SecondaryIdentifier string
+	IsMononym           bool
+	NativeScriptName    string
+	LatinNameRaw        string
+	MRZLine1            string
+	MRZLine2            string
+	PossiblyTruncated   bool
+	CapturedAt          time.Time
+}
+
+var (
+	countryCodeShape = regexp.MustCompile(`^[a-z]{2}$`)
+	scriptCodeShape  = regexp.MustCompile(`^[A-Z][a-z]{3}$`)
+	mrzCharset       = regexp.MustCompile(`^[A-Z0-9<]*$`)
+)
+
+func (d DocumentName) validate() error {
+	if len(d.DocumentType) == 0 || len(d.DocumentType) > 64 {
+		return ErrDocumentType
+	}
+	if !countryCodeShape.MatchString(d.IssuingCountry) {
+		return ErrIssuingCountry
+	}
+	if !scriptCodeShape.MatchString(d.ScriptCode) {
+		return ErrScriptCode
+	}
+	switch d.Source {
+	case "MRZ", "VIZ", "BARCODE", "SELF_ATTESTED":
+	default:
+		return ErrDocumentSource
+	}
+	for _, field := range []string{d.PrimaryIdentifier, d.SecondaryIdentifier, d.NativeScriptName, d.LatinNameRaw} {
+		if utf8.RuneCountInString(field) > MaxDocumentFieldRunes {
+			return ErrDocumentFieldLength
+		}
+	}
+	for _, line := range []string{d.MRZLine1, d.MRZLine2} {
+		if line == "" {
+			continue
+		}
+		if len(line) > MaxMRZLineLength {
+			return ErrMRZLineLength
+		}
+		if !mrzCharset.MatchString(line) {
+			return ErrMRZCharset
+		}
+	}
+	return nil
+}
+
+// MRZName is the result of splitting one MRZ name field into ICAO's
+// primary and secondary identifiers. IsMononym is the field's own
+// asserted state: only true when the field carries no "<<" separator at
+// all, ICAO's normal encoding for a single-identifier name. SeparatorPresent
+// distinguishes the shape that produced an empty Secondary from the one
+// that produced no Secondary in the first place: false means the field
+// had no "<<" anywhere (the canonical mononym encoding this task names);
+// true with an empty Secondary means the field DID carry the separator,
+// followed by nothing but pad (an issuer explicitly asserting an empty
+// secondary identifier, a different fact from "there was no separator").
+// document_name.is_mononym exists to record which state a row asserts
+// rather than infer it from a null secondary_identifier (the migration's
+// own reasoning); collapsing these two shapes into one IsMononym value
+// with no way to tell them apart would be exactly that inference, one
+// layer up. A caller that cares about the distinction reads
+// SeparatorPresent; one that only needs "is this a mononym for
+// rendering purposes" reads IsMononym, which is true in both shapes,
+// since both are, structurally, one identifier.
+type MRZName struct {
+	Primary          string
+	Secondary        string
+	IsMononym        bool
+	SeparatorPresent bool
+}
+
+// ParseMRZName implements ICAO Doc 9303's own separator, "<<", and only
+// that separator, for the primary/secondary boundary. This is the
+// mononym parsing trap the task names: three of six major IDV vendors
+// corrupt a mononym MRZ (no "<<" anywhere, e.g. "SATRIYA<SUDARPA")
+// because their parser treats every "<" as a splittable boundary and
+// assigns the whole field to a surname with an empty given name. Here, a
+// field with no "<<" is the mononym's normal path: the entire field
+// becomes the primary identifier, its internal "<" characters become
+// spaces (ICAO's own word-filler convention), and nothing is assigned
+// away from it.
+func ParseMRZName(field string) MRZName {
+	if i := strings.Index(field, "<<"); i >= 0 {
+		primary := mrzWords(field[:i])
+		secondary := mrzWords(field[i+2:])
+		return MRZName{
+			Primary: primary, Secondary: secondary,
+			IsMononym: secondary == "", SeparatorPresent: true,
+		}
+	}
+	return MRZName{Primary: mrzWords(field), IsMononym: true, SeparatorPresent: false}
+}
+
+// mrzWords strips one identifier's trailing pad and turns its internal
+// "<" filler into spaces, the two-word mononym case ("SATRIYA SUDARPA")
+// included.
+func mrzWords(s string) string {
+	return strings.ReplaceAll(strings.TrimRight(s, "<"), "<", " ")
+}
+
+// PossiblyTruncated implements the ICAO truncation signal exactly as
+// documented: ambiguous by design. An alphabetic character occupying the
+// last position of a full-width MRZ line MAY mean the name was cut to
+// fit the field, and is indistinguishable from a name that exactly fills
+// it. A line shorter than the field's own width cannot have been
+// truncated by that field. This function answers the question ICAO
+// leaves open by recording the honest "maybe" rather than picking a
+// side; core/person never treats the MRZ as authoritative over the VIZ
+// on the strength of this flag or its absence.
+func PossiblyTruncated(mrzLine string) bool {
+	if len(mrzLine) != MaxMRZLineLength {
+		return false
+	}
+	last := mrzLine[len(mrzLine)-1]
+	return last >= 'A' && last <= 'Z'
+}
+
+// diacriticFold maps common precomposed Latin diacritics to their base
+// letter. Hand-rolled rather than drawn from a Unicode normalization
+// library: this module holds no dependency, and the standard library
+// ships none. The table is deliberately not exhaustive; a rune it does
+// not know passes through unchanged, which is correct for a non-Latin
+// script (never phonetic-hash one, the task's own rule) rather than a
+// gap to fill in later.
+var diacriticFold = map[rune]rune{
+	'À': 'A', 'Á': 'A', 'Â': 'A', 'Ã': 'A', 'Ä': 'A', 'Å': 'A', 'Ą': 'A',
+	'à': 'a', 'á': 'a', 'â': 'a', 'ã': 'a', 'ä': 'a', 'å': 'a', 'ą': 'a',
+	'Ç': 'C', 'Ć': 'C', 'Č': 'C', 'ç': 'c', 'ć': 'c', 'č': 'c',
+	'È': 'E', 'É': 'E', 'Ê': 'E', 'Ë': 'E', 'Ę': 'E',
+	'è': 'e', 'é': 'e', 'ê': 'e', 'ë': 'e', 'ę': 'e',
+	'Ì': 'I', 'Í': 'I', 'Î': 'I', 'Ï': 'I',
+	'ì': 'i', 'í': 'i', 'î': 'i', 'ï': 'i',
+	'Ñ': 'N', 'Ń': 'N', 'ñ': 'n', 'ń': 'n',
+	'Ò': 'O', 'Ó': 'O', 'Ô': 'O', 'Õ': 'O', 'Ö': 'O', 'Ø': 'O',
+	'ò': 'o', 'ó': 'o', 'ô': 'o', 'õ': 'o', 'ö': 'o', 'ø': 'o',
+	'Ù': 'U', 'Ú': 'U', 'Û': 'U', 'Ü': 'U',
+	'ù': 'u', 'ú': 'u', 'û': 'u', 'ü': 'u',
+	'Ý': 'Y', 'ý': 'y', 'ÿ': 'y',
+	'Ł': 'L', 'ł': 'l', 'Ś': 'S', 'ś': 's', 'Š': 'S', 'š': 's',
+	'Ź': 'Z', 'ź': 'z', 'Ż': 'Z', 'ż': 'z', 'Ž': 'Z', 'ž': 'z',
+}
+
+// foldDiacritics returns text with every precomposed diacritic this
+// table knows folded to its base letter.
+func foldDiacritics(s string) string {
+	var b strings.Builder
+	b.Grow(len(s))
+	for _, r := range s {
+		if folded, ok := diacriticFold[r]; ok {
+			b.WriteRune(folded)
+		} else {
+			b.WriteRune(r)
+		}
+	}
+	return b.String()
+}
+
+// IndexGeneratorVersion is stamped on every name_index_entry row this
+// package writes, so a later change to GenerateIndexTokens is
+// reconstructable against rows a prior version produced.
+const IndexGeneratorVersion = 1
+
+// IndexToken is one candidate token GenerateIndexTokens derives from one
+// source string.
+type IndexToken struct {
+	Kind  string // "original" | "diacritic_folded"
+	Value string
+}
+
+// GenerateIndexTokens is the regenerable derivation decision 013
+// requires: the original token is stored ALONGSIDE any transliteration,
+// never replaced by one, and no phonetic hashing runs on any input,
+// Latin or otherwise. The same input always yields the same output,
+// which is what "dropping and regenerating name_index reproduces it
+// exactly" means as a property of this function rather than of any
+// database state.
+func GenerateIndexTokens(text string) []IndexToken {
+	text = strings.TrimSpace(text)
+	if text == "" {
+		return nil
+	}
+	tokens := []IndexToken{{Kind: "original", Value: text}}
+	if folded := foldDiacritics(text); folded != text {
+		tokens = append(tokens, IndexToken{Kind: "diacritic_folded", Value: folded})
+	}
+	return tokens
+}
+
+// DerivedToken is one index token traced back to the source row it came
+// from, the shape both DeriveIndexTokens (computed fresh from
+// person_name/document_name) and StoredIndexTokens (read back from
+// name_index_entry) return, so the two can be compared directly.
+// GeneratorVersion is IndexGeneratorVersion on a freshly derived token
+// and the persisted name_index_entry.generator_version on a stored one,
+// which is what lets a caller tell a row a prior generator version
+// produced apart from one the current version did.
+type DerivedToken struct {
+	SourceTable         string // "person_name" | "document_name"
+	SourceOutboxEntryID string
+	// SourceField names which field of the source row produced this
+	// token: "text" for person_name (its only field), or one of
+	// "primary_identifier" | "secondary_identifier" |
+	// "native_script_name" | "latin_name_raw" for document_name, which
+	// has four. It is part of name_index_entry's UNIQUE constraint
+	// (migration 0011-names) because a document row's four fields share
+	// one source_outbox_entry_id: without SourceField distinguishing
+	// them, two different fields producing the same token_kind would
+	// collide on the same idempotency key, and WriteIndex's ON CONFLICT
+	// DO NOTHING would silently keep only the first and drop the rest.
+	SourceField      string
+	Kind             string
+	Value            string
+	GeneratorVersion int
+}
+
+// Cipher seals and opens content under a person's own DEK. Satisfied by
+// *envelope.Envelope. Distinct from Sealer (Provision + Encrypt only,
+// person.go): the name model reads its own writes back, for current-name
+// rendering and index regeneration, which Signup never needs to do.
+type Cipher interface {
+	Encrypt(ctx context.Context, person string, plaintext []byte) ([]byte, error)
+	Decrypt(ctx context.Context, person string, ciphertext []byte) ([]byte, error)
+}
+
+// Names is the name model's service (person-identity/04).
+type Names struct {
+	cipher Cipher
+}
+
+// NewNames binds the seal path. Reached through core/transport for
+// every statement, same as Service.
+func NewNames(cipher Cipher) *Names { return &Names{cipher: cipher} }
+
+// Append writes one person_name assertion. It never mutates a prior row
+// and it never looks one up: it writes the new row with nothing but its
+// own content and lets the database assign asserted_at (DEFAULT now()).
+// End-dating is entirely person_name_effective's read-time derivation
+// (migration 0011-names): a prior row's effective period_end is the
+// asserted_at of the next row in its own (person, use, representation)
+// group, computed fresh on every read from whatever rows are actually in
+// person_name at that moment. This is deliberate: an earlier version of
+// this function resolved "the row to supersede" by querying
+// person_name_current before writing, which cannot see a row still
+// sitting in the spine outbox, so two ordinary sequential Append calls
+// with no drain between them both found nothing to supersede and both
+// wrote a pointer to nothing, leaving both rows current and neither
+// end-dated. Deriving purely from asserted_at ordering at read time has
+// no such window: it does not matter whether Append is called once,
+// twice with no drain between, or from two different processes, because
+// nothing is decided at write time for a later read to get wrong.
+//
+// A prior name is never deleted or edited, so it remains queryable for
+// matching (AllNames, which reads the effective view and carries every
+// row's derived period) while the query layer alone withholds it from
+// an employer-facing read (CurrentNames, decision 091's window predicate:
+// effective period_end IS NULL OR in the future).
+func (nm *Names) Append(ctx context.Context, personID string, n Name) error {
+	if err := ValidID(personID); err != nil {
+		return err
+	}
+	if err := n.validate(); err != nil {
+		return err
+	}
+	textCipher, err := nm.cipher.Encrypt(ctx, personID, []byte(n.Text))
+	if err != nil {
+		return fmt.Errorf("name: sealing text: %w", err)
+	}
+	row := map[string]any{
+		"person_id":        personID,
+		"text_ciphertext":  hexLiteral(textCipher),
+		"parts_ciphertext": nil,
+		"use":              string(n.Use),
+		"representation":   string(n.Representation),
+		"period_start":     nil,
+		"period_end":       nil,
+	}
+	if n.Parts != nil {
+		raw, err := json.Marshal(n.Parts)
+		if err != nil {
+			return fmt.Errorf("name: encoding parts: %w", err)
+		}
+		partsCipher, err := nm.cipher.Encrypt(ctx, personID, raw)
+		if err != nil {
+			return fmt.Errorf("name: sealing parts: %w", err)
+		}
+		row["parts_ciphertext"] = hexLiteral(partsCipher)
+	}
+	if n.PeriodStart != nil {
+		row["period_start"] = n.PeriodStart.UTC().Format(time.RFC3339Nano)
+	}
+	if n.PeriodEnd != nil {
+		row["period_end"] = n.PeriodEnd.UTC().Format(time.RFC3339Nano)
+	}
+	return enqueueRow(personID, "person_name", row, "")
+}
+
+// AppendDocumentName writes one immutable document capture. Both the MRZ
+// and the VIZ are retained verbatim: no vendor documents a precedence
+// rule between them, and core/person picks none.
+func (nm *Names) AppendDocumentName(ctx context.Context, personID string, d DocumentName) error {
+	if err := ValidID(personID); err != nil {
+		return err
+	}
+	if err := d.validate(); err != nil {
+		return err
+	}
+	fields := documentFields{
+		PrimaryIdentifier:   d.PrimaryIdentifier,
+		SecondaryIdentifier: d.SecondaryIdentifier,
+		NativeScriptName:    d.NativeScriptName,
+		LatinNameRaw:        d.LatinNameRaw,
+		MRZLine1:            d.MRZLine1,
+		MRZLine2:            d.MRZLine2,
+	}
+	raw, err := json.Marshal(fields)
+	if err != nil {
+		return fmt.Errorf("name: encoding document fields: %w", err)
+	}
+	sealed, err := nm.cipher.Encrypt(ctx, personID, raw)
+	if err != nil {
+		return fmt.Errorf("name: sealing document fields: %w", err)
+	}
+	row := map[string]any{
+		"person_id":          personID,
+		"document_type":      d.DocumentType,
+		"issuing_country":    d.IssuingCountry,
+		"script_code":        d.ScriptCode,
+		"source":             d.Source,
+		"is_mononym":         d.IsMononym,
+		"possibly_truncated": d.PossiblyTruncated,
+		"name_ciphertext":    hexLiteral(sealed),
+	}
+	return enqueueRow(personID, "document_name", row, "")
+}
+
+// documentFields is the sealed blob behind document_name.name_ciphertext.
+type documentFields struct {
+	PrimaryIdentifier   string `json:"primary_identifier"`
+	SecondaryIdentifier string `json:"secondary_identifier,omitempty"`
+	NativeScriptName    string `json:"native_script_name,omitempty"`
+	LatinNameRaw        string `json:"latin_name_raw,omitempty"`
+	MRZLine1            string `json:"mrz_line_1,omitempty"`
+	MRZLine2            string `json:"mrz_line_2,omitempty"`
+}
+
+// enqueueRow renders one outbox instruction for table/row and enqueues
+// it through core/outbox, the same idempotent spine-first path every
+// post-signup payload write in this repo uses. conflictConstraint is
+// almost always empty, which leaves core/outbox's default
+// ON CONFLICT (outbox_entry_id) DO NOTHING untouched; only WriteIndex
+// names one, for name_index_entry_dedup_key (migration 0011-names), and
+// every other caller in this file must leave it empty rather than widen
+// what a duplicate write does on its own table.
+func enqueueRow(personID, table string, row map[string]any, conflictConstraint string) error {
+	instruction := outbox.Instruction{Table: table, Row: row, ConflictConstraint: conflictConstraint}
+	raw, err := json.Marshal(instruction)
+	if err != nil {
+		return fmt.Errorf("name: encoding instruction: %w", err)
+	}
+	if _, err := outbox.Parse(raw); err != nil {
+		return err
+	}
+	entryID, err := NewID()
+	if err != nil {
+		return err
+	}
+	if err := outbox.Enqueue(entryID, raw, ""); err != nil {
+		return fmt.Errorf("name: enqueuing %s: %w", table, err)
+	}
+	return nil
+}
+
+const namesPlane = "payload"
+
+// timeLayout is the fixed shape every timestamp this file reads back is
+// rendered in (sqlTimestamp) and parsed against. RFC3339Nano's
+// "Z07:00" element matches a literal "Z" as well as a numeric offset,
+// and sqlTimestamp always emits the literal, so parsing here never
+// depends on psql's session timezone: the value is normalized to UTC
+// and rendered as fixed text before it ever leaves the database.
+const timeLayout = time.RFC3339Nano
+
+// sqlTimestamp renders a timestamptz column as UTC, fixed-format text
+// (timeLayout) inside a SELECT list. AT TIME ZONE 'UTC' converts to UTC
+// wall-clock time regardless of the session's timezone setting, and the
+// literal "Z" in the format string (rather than a numeric offset
+// to_char would otherwise need a timezone-aware type to produce) is
+// what makes the output config-independent: two different sessions,
+// under two different `timezone` settings, render byte-identical text
+// for the same instant.
+func sqlTimestamp(column string) string {
+	return `to_char(` + column + ` AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.US"Z"')`
+}
+
+// parseTimestamp parses one sqlTimestamp-rendered value. Every caller in
+// this file hard-errors on its failure (decision 020's reject-loudly
+// posture): a timestamp this package cannot parse is a defect to
+// surface, never a field to leave at its zero value.
+func parseTimestamp(raw string) (time.Time, error) {
+	t, err := time.Parse(timeLayout, raw)
+	if err != nil {
+		return time.Time{}, fmt.Errorf("name: timestamp %q does not match the expected layout: %w", raw, err)
+	}
+	return t, nil
+}
+
+// CurrentNames reads the employer-safe view: at most one row per
+// (person_id, use, representation) triple, whichever row's effective
+// period is still open (person_name_current, decision 091's predicate,
+// effective period_end IS NULL or later than now, over decision 092's
+// effective-end derivation). "At most one" holds because a superseded
+// row's effective end is the EARLIER of its own stated end and its
+// successor's asserted_at (LEAST, migration 0011-names): a row with a
+// successor is therefore never later than that successor's own
+// asserted_at, which has already happened, so only the terminal row in
+// a group (the one with no successor at all) can still be open. An
+// earlier version of this derivation let a row's own future-dated
+// period_end outlive its successor, so a superseded row with a
+// long-enough stated window stayed current alongside its replacement,
+// which is exactly the leak criterion 3 names. A prior name never
+// appears here, which is the query-layer withholding the task requires
+// (gender transition, marriage), enforced by which view this function
+// reads rather than by anything a caller must remember, and correct at
+// every point in time: a name's first assertion is current the instant
+// it drains and stays current for as long as nothing later in its group
+// has drained too, a stated future end has not yet passed, and it has
+// not itself expired.
+func (nm *Names) CurrentNames(ctx context.Context, personID string) ([]Name, error) {
+	return nm.queryNames(ctx, personID, "person_name_current")
+}
+
+// AllNames reads every asserted name, prior ones included, through
+// person_name_effective so each row's PeriodEnd carries its derived
+// value: nil for a row with nothing later in its (person, use,
+// representation) group, the next row's asserted_at otherwise. Matching
+// (person-identity/05) reads through here; an employer-facing surface
+// never should.
+func (nm *Names) AllNames(ctx context.Context, personID string) ([]Name, error) {
+	return nm.queryNames(ctx, personID, "person_name_effective")
+}
+
+// RenderFor is CurrentNames narrowed to one use and one representation:
+// the CJK case stated as a call, since a CJK person's ideographic,
+// romanized, and phonetic entries all sit in CurrentNames at once and a
+// caller renders one of them "per purpose" by naming which. Returns
+// false if no current row matches.
+func (nm *Names) RenderFor(ctx context.Context, personID string, use Use, representation Representation) (Name, bool, error) {
+	names, err := nm.CurrentNames(ctx, personID)
+	if err != nil {
+		return Name{}, false, err
+	}
+	for _, n := range names {
+		if n.Use == use && n.Representation == representation {
+			return n, true, nil
+		}
+	}
+	return Name{}, false, nil
+}
+
+func (nm *Names) queryNames(ctx context.Context, personID, table string) ([]Name, error) {
+	if err := ValidID(personID); err != nil {
+		return nil, err
+	}
+	lines, err := transport.Query(namesPlane, servingRole, fmt.Sprintf(`
+		SELECT outbox_entry_id, encode(text_ciphertext, 'hex'),
+		       coalesce(encode(parts_ciphertext, 'hex'), ''),
+		       "use", representation,
+		       coalesce(%s, ''), coalesce(%s, ''), %s
+		  FROM %s WHERE person_id = $1 ORDER BY asserted_at`,
+		sqlTimestamp("period_start"), sqlTimestamp("period_end"), sqlTimestamp("asserted_at"), table),
+		transport.String(personID))
+	if err != nil {
+		return nil, err
+	}
+	names := make([]Name, 0, len(lines))
+	for _, line := range lines {
+		f := transport.SplitRow(line, 8)
+		id := f[0]
+		text, err := nm.openHex(ctx, personID, f[1])
+		if err != nil {
+			return nil, err
+		}
+		var parts *Parts
+		if f[2] != "" {
+			raw, err := nm.openHex(ctx, personID, f[2])
+			if err != nil {
+				return nil, err
+			}
+			parts = &Parts{}
+			if err := json.Unmarshal(raw, parts); err != nil {
+				return nil, fmt.Errorf("name: decoding parts: %w", err)
+			}
+		}
+		n := Name{
+			ID:             id,
+			Text:           string(text),
+			Parts:          parts,
+			Use:            Use(f[3]),
+			Representation: Representation(f[4]),
+		}
+		if f[5] != "" {
+			t, err := parseTimestamp(f[5])
+			if err != nil {
+				return nil, fmt.Errorf("name: period_start: %w", err)
+			}
+			n.PeriodStart = &t
+		}
+		if f[6] != "" {
+			t, err := parseTimestamp(f[6])
+			if err != nil {
+				return nil, fmt.Errorf("name: period_end: %w", err)
+			}
+			n.PeriodEnd = &t
+		}
+		t, err := parseTimestamp(f[7])
+		if err != nil {
+			return nil, fmt.Errorf("name: asserted_at: %w", err)
+		}
+		n.AssertedAt = t
+		names = append(names, n)
+	}
+	return names, nil
+}
+
+// DocumentNames reads every document capture for a person, oldest first.
+func (nm *Names) DocumentNames(ctx context.Context, personID string) ([]DocumentName, error) {
+	if err := ValidID(personID); err != nil {
+		return nil, err
+	}
+	lines, err := transport.Query(namesPlane, servingRole, fmt.Sprintf(`
+		SELECT outbox_entry_id, document_type, issuing_country, script_code,
+		       source, is_mononym, possibly_truncated,
+		       encode(name_ciphertext, 'hex'), %s
+		  FROM document_name WHERE person_id = $1 ORDER BY captured_at`,
+		sqlTimestamp("captured_at")),
+		transport.String(personID))
+	if err != nil {
+		return nil, err
+	}
+	docs := make([]DocumentName, 0, len(lines))
+	for _, line := range lines {
+		f := transport.SplitRow(line, 9)
+		raw, err := nm.openHex(ctx, personID, f[7])
+		if err != nil {
+			return nil, err
+		}
+		var fields documentFields
+		if err := json.Unmarshal(raw, &fields); err != nil {
+			return nil, fmt.Errorf("name: decoding document fields: %w", err)
+		}
+		d := DocumentName{
+			ID:                  f[0],
+			DocumentType:        f[1],
+			IssuingCountry:      f[2],
+			ScriptCode:          f[3],
+			Source:              f[4],
+			IsMononym:           f[5] == "t",
+			PossiblyTruncated:   f[6] == "t",
+			PrimaryIdentifier:   fields.PrimaryIdentifier,
+			SecondaryIdentifier: fields.SecondaryIdentifier,
+			NativeScriptName:    fields.NativeScriptName,
+			LatinNameRaw:        fields.LatinNameRaw,
+			MRZLine1:            fields.MRZLine1,
+			MRZLine2:            fields.MRZLine2,
+		}
+		t, err := parseTimestamp(f[8])
+		if err != nil {
+			return nil, fmt.Errorf("name: captured_at: %w", err)
+		}
+		d.CapturedAt = t
+		docs = append(docs, d)
+	}
+	return docs, nil
+}
+
+// openHex decrypts a hex-encoded ciphertext column.
+func (nm *Names) openHex(ctx context.Context, personID, encoded string) ([]byte, error) {
+	raw, err := hex.DecodeString(encoded)
+	if err != nil {
+		return nil, fmt.Errorf("name: decoding stored ciphertext: %w", err)
+	}
+	opened, err := nm.cipher.Decrypt(ctx, personID, raw)
+	if err != nil {
+		return nil, fmt.Errorf("name: opening stored ciphertext: %w", err)
+	}
+	return opened, nil
+}
+
+// DeriveIndexTokens computes the index fresh from every source row,
+// prior ones included (AllNames, not CurrentNames): every
+// person_name.Text and every document_name identifier field (primary,
+// secondary, native-script, and Latin-raw), so a same-script match (a
+// CJK passport's native-script capture against another CJK document)
+// has a token to key on, not only the Latin-transliterated fields, and
+// so a superseded name stays matchable even though it is withheld from
+// CurrentNames. Calling this twice against unchanged source rows
+// returns the same set both times, which is the regeneration property
+// the task's mechanical criterion asks for.
+func (nm *Names) DeriveIndexTokens(ctx context.Context, personID string) ([]DerivedToken, error) {
+	names, err := nm.AllNames(ctx, personID)
+	if err != nil {
+		return nil, err
+	}
+	docs, err := nm.DocumentNames(ctx, personID)
+	if err != nil {
+		return nil, err
+	}
+	var out []DerivedToken
+	for _, n := range names {
+		for _, tok := range GenerateIndexTokens(n.Text) {
+			out = append(out, DerivedToken{
+				SourceTable: "person_name", SourceOutboxEntryID: n.ID, SourceField: "text",
+				Kind: tok.Kind, Value: tok.Value, GeneratorVersion: IndexGeneratorVersion,
+			})
+		}
+	}
+	// document_name's four identifier fields share one
+	// source_outbox_entry_id, so SourceField is what keeps each field's
+	// tokens a distinct row: without it, "NUÑEZ" (primary_identifier)
+	// and "MARÍA" (secondary_identifier) would both render as
+	// {document_name, this row's id, "original"}, the same idempotency
+	// key, and WriteIndex's ON CONFLICT DO NOTHING would keep only
+	// whichever landed first.
+	documentFields := []struct {
+		field string
+		value string
+	}{
+		{"primary_identifier", ""}, {"secondary_identifier", ""},
+		{"native_script_name", ""}, {"latin_name_raw", ""},
+	}
+	for _, d := range docs {
+		documentFields[0].value = d.PrimaryIdentifier
+		documentFields[1].value = d.SecondaryIdentifier
+		documentFields[2].value = d.NativeScriptName
+		documentFields[3].value = d.LatinNameRaw
+		for _, df := range documentFields {
+			for _, tok := range GenerateIndexTokens(df.value) {
+				out = append(out, DerivedToken{
+					SourceTable: "document_name", SourceOutboxEntryID: d.ID, SourceField: df.field,
+					Kind: tok.Kind, Value: tok.Value, GeneratorVersion: IndexGeneratorVersion,
+				})
+			}
+		}
+	}
+	return out, nil
+}
+
+// nameIndexDedupConstraint names name_index_entry_dedup_key (migration
+// 0011-names), the UNIQUE constraint on (person_id, source_table,
+// source_outbox_entry_id, source_field, token_kind, generator_version).
+// WriteIndex passes it as the outbox instruction's ConflictConstraint,
+// which is core/outbox's one documented per-table opt-in out of its
+// default ON CONFLICT (outbox_entry_id) DO NOTHING: a blanket,
+// unspecified target once got name_index_entry idempotency at the cost
+// of silently weakening person_record's own UNIQUE(person_id) the same
+// way, so this is named explicitly rather than left for core/outbox to
+// guess.
+const nameIndexDedupConstraint = "name_index_entry_dedup_key"
+
+// WriteIndex derives the index fresh (DeriveIndexTokens) and persists
+// every token as its own name_index_entry row, sealed under the
+// person's own key. Idempotent by the database: nameIndexDedupConstraint
+// is what core/outbox's apply path conflicts on for this table, so
+// calling WriteIndex twice against unchanged source rows leaves the
+// stored set unchanged rather than duplicating every token: a fresh
+// outbox_entry_id is generated per row on each call (the pattern every
+// append in this package uses), so outbox_entry_id itself cannot be the
+// idempotency key here. name_index_entry is append-only like every
+// other table this migration adds; nothing here deletes a prior
+// generation's rows, and a caller comparing GeneratorVersion is how a
+// future consumer tells old rows from new ones apart.
+func (nm *Names) WriteIndex(ctx context.Context, personID string) error {
+	tokens, err := nm.DeriveIndexTokens(ctx, personID)
+	if err != nil {
+		return err
+	}
+	for _, tok := range tokens {
+		sealed, err := nm.cipher.Encrypt(ctx, personID, []byte(tok.Value))
+		if err != nil {
+			return fmt.Errorf("name: sealing index token: %w", err)
+		}
+		row := map[string]any{
+			"person_id":              personID,
+			"source_table":           tok.SourceTable,
+			"source_outbox_entry_id": tok.SourceOutboxEntryID,
+			"source_field":           tok.SourceField,
+			"token_kind":             tok.Kind,
+			"generator_version":      float64(tok.GeneratorVersion),
+			"token_ciphertext":       hexLiteral(sealed),
+		}
+		if err := enqueueRow(personID, "name_index_entry", row, nameIndexDedupConstraint); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// StoredIndexTokens reads back every persisted name_index_entry row,
+// decrypted, in the same shape DeriveIndexTokens returns, so a caller
+// can prove the two agree: dropping and regenerating reproduces the
+// index exactly.
+func (nm *Names) StoredIndexTokens(ctx context.Context, personID string) ([]DerivedToken, error) {
+	if err := ValidID(personID); err != nil {
+		return nil, err
+	}
+	lines, err := transport.Query(namesPlane, servingRole, `
+		SELECT source_table, source_outbox_entry_id, source_field, token_kind,
+		       generator_version, encode(token_ciphertext, 'hex')
+		  FROM name_index_entry WHERE person_id = $1`,
+		transport.String(personID))
+	if err != nil {
+		return nil, err
+	}
+	out := make([]DerivedToken, 0, len(lines))
+	for _, line := range lines {
+		f := transport.SplitRow(line, 6)
+		version, err := strconv.Atoi(f[4])
+		if err != nil {
+			return nil, fmt.Errorf("name: generator_version %q is not an integer: %w", f[4], err)
+		}
+		value, err := nm.openHex(ctx, personID, f[5])
+		if err != nil {
+			return nil, err
+		}
+		out = append(out, DerivedToken{
+			SourceTable: f[0], SourceOutboxEntryID: f[1], SourceField: f[2], Kind: f[3],
+			GeneratorVersion: version, Value: string(value),
+		})
+	}
+	return out, nil
+}
