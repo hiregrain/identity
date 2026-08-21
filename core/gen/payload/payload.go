@@ -69,17 +69,16 @@ type PersonContactChannelRow struct {
 
 // PersonNameRow is one row of payload.person_name.
 type PersonNameRow struct {
-	OutboxEntryId           string
-	PersonId                string
-	TextCiphertext          []byte
-	PartsCiphertext         *[]byte
-	Use                     string
-	Representation          string
-	PeriodStart             *time.Time
-	PeriodEnd               *time.Time
-	SupersedesOutboxEntryId *string
-	AssertedAt              time.Time
-	ResidencyRegion         string
+	OutboxEntryId   string
+	PersonId        string
+	TextCiphertext  []byte
+	PartsCiphertext *[]byte
+	Use             string
+	Representation  string
+	PeriodStart     *time.Time
+	PeriodEnd       *time.Time
+	AssertedAt      time.Time
+	ResidencyRegion string
 }
 
 // PersonRecordRow is one row of payload.person_record.

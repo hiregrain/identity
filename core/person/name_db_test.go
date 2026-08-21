@@ -213,6 +213,21 @@ func tokenKey(t person.DerivedToken) string {
 // (AllNames) but is absent from the employer-facing render
 // (CurrentNames), which is the query-layer withholding the task
 // requires, not a delete and not an edit.
+//
+// The two Append calls below have NO drain between them, which is
+// exactly the sequence the second verification pass reproduced a
+// failure on: an earlier version of this package resolved "the row to
+// supersede" with a write-time query against person_name_current, and
+// that query cannot see a row still sitting in the spine outbox, so two
+// ordinary sequential calls both found nothing to supersede and both
+// wrote a pointer to nothing, leaving both rows current after the drain
+// that finally applied them. There is nothing concurrent about this
+// path: one goroutine, two calls, no drain between them, which the
+// public API never forbids. The fix (person_name_effective's
+// lead(asserted_at) OVER a (person, use, representation) partition) is a
+// pure read-time derivation with no write-time lookup to race, so this
+// test drives the exact sequence that broke the prior mechanism and
+// asserts the read-time one closes it.
 func TestNameChangeAppendsAndEndDatesWithoutMutation(t *testing.T) {
 	ctx := context.Background()
 	id, nm := freshPersonAndNames(t)
@@ -221,9 +236,6 @@ func TestNameChangeAppendsAndEndDatesWithoutMutation(t *testing.T) {
 		Text: "Jordan Smith", Use: person.UseOfficial, Representation: person.RepresentationRomanized,
 	}); err != nil {
 		t.Fatalf("append v1: %v", err)
-	}
-	if _, _, err := outbox.Drain(""); err != nil {
-		t.Fatalf("drain: %v", err)
 	}
 	if err := nm.Append(ctx, id, person.Name{
 		Text: "Jordan Rivera", Use: person.UseOfficial, Representation: person.RepresentationRomanized,
@@ -234,9 +246,12 @@ func TestNameChangeAppendsAndEndDatesWithoutMutation(t *testing.T) {
 		t.Fatalf("drain: %v", err)
 	}
 
+	// Exactly one row is current, and the prior name is absent from the
+	// employer-facing render, which is the pair of conjuncts that fell
+	// together on the write-time mechanism.
 	current, err := nm.CurrentNames(ctx, id)
 	if err != nil || len(current) != 1 || current[0].Text != "Jordan Rivera" {
-		t.Fatalf("current names: %+v, %v, want only the latest", current, err)
+		t.Fatalf("current names: %+v, %v, want exactly one row, the latest", current, err)
 	}
 	if current[0].PeriodEnd != nil {
 		t.Fatalf("the current name carries an effective period_end: %+v", current[0])
@@ -261,22 +276,16 @@ func TestNameChangeAppendsAndEndDatesWithoutMutation(t *testing.T) {
 		t.Fatalf("both names must remain queryable for matching: %+v", all)
 	}
 
-	// The end-dating conjunct: the appending row (v2) names the row it
-	// replaces, and the prior row's EFFECTIVE period_end (read through
-	// person_name_effective, which AllNames selects) is that append's
-	// asserted_at, not nil. v2 itself supersedes nothing before it and
-	// carries no effective end.
-	if latest.Supersedes != prior.ID {
-		t.Fatalf("the new row does not name the row it replaces: got %q, want %q", latest.Supersedes, prior.ID)
-	}
-	if prior.Supersedes != "" {
-		t.Fatalf("the prior row unexpectedly supersedes something: %q", prior.Supersedes)
-	}
+	// The end-dating conjunct: the prior row's EFFECTIVE period_end
+	// (read through person_name_effective, which AllNames selects) is
+	// the later row's own asserted_at, derived purely from ordering, not
+	// nil. The later row itself has nothing after it and carries no
+	// effective end.
 	if prior.PeriodEnd == nil {
 		t.Fatal("the prior name's effective period_end is nil: it was never end-dated")
 	}
 	if !prior.PeriodEnd.Equal(latest.AssertedAt) {
-		t.Fatalf("prior period_end %v does not match the superseding append's asserted_at %v",
+		t.Fatalf("prior period_end %v does not match the later row's asserted_at %v",
 			prior.PeriodEnd, latest.AssertedAt)
 	}
 	if latest.PeriodEnd != nil {
@@ -286,8 +295,8 @@ func TestNameChangeAppendsAndEndDatesWithoutMutation(t *testing.T) {
 	// The non-mutation conjunct, proven at the strongest level available:
 	// the prior row's OWN period_end column, read raw rather than through
 	// person_name_effective, is still NULL. Nothing wrote to that row;
-	// the end-date above is entirely a derivation from the new row's own
-	// supersedes_outbox_entry_id.
+	// the end-date above is entirely a derivation from asserted_at
+	// ordering across both rows, computed fresh on every read.
 	rawPeriodEnd := ownerSQL(t, "payload", `
 		SELECT coalesce(period_end::text, 'null') FROM person_name
 		 WHERE outbox_entry_id = $1`, transport.String(prior.ID))

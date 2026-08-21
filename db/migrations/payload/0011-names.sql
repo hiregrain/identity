@@ -41,19 +41,34 @@ $$;
 -- never mutated. "A name change appends and end-dates" (the task's
 -- criterion, its scope line "period (validity bounds; absent = current)",
 -- and its reference model, "a name change is a new entry plus an
--- end-date on the prior") is met without an UPDATE: the appending row
--- carries supersedes_outbox_entry_id, naming the row it replaces, and
--- THAT is what end-dates the prior row. The prior row's own period_end
--- column is never written to; its effective end date is derived, at read
--- time, from the row that supersedes it (person_name_effective below).
--- The append is the one and only write; end-dating is a consequence of
--- that write naming its predecessor, not a second write against it.
+-- end-date on the prior") is met without an UPDATE and without a
+-- write-time lookup: person_name_effective below derives every row's
+-- effective period_end purely from asserted_at ordering within its own
+-- (person_id, use, representation) partition, using lead(asserted_at)
+-- OVER that partition. The row with no later row in its partition is
+-- current (lead() returns NULL); every earlier row's effective
+-- period_end is the next row's asserted_at.
+--
+-- This replaced an earlier version of this migration that instead had
+-- the appending row name its predecessor in a supersedes_outbox_entry_id
+-- column, resolved by looking up "the row currently current" at Append
+-- time. That lookup queries the payload table, which cannot see a row
+-- still sitting in the spine outbox: two ordinary sequential Append
+-- calls with no drain between them both found no current row and both
+-- wrote a NULL pointer, leaving both rows current and neither end-dated,
+-- which is exactly the harm decision 013 put this withholding in place
+-- to prevent. Ordering by asserted_at needs no lookup at write time at
+-- all: once both rows are drained to this table (in whatever order),
+-- the window function ranks them against each other correctly no matter
+-- which was applied first, because it operates on asserted_at values
+-- already committed to person_name, not on a queried-at-write-time
+-- snapshot of "current".
 --
 -- period_start/period_end on a row are the source's OWN stated validity
 -- window when it has one (a document's own stated period); most
 -- ordinary worker-driven name changes carry neither, and the effective
--- end date still resolves correctly because it comes from
--- supersedes_outbox_entry_id, not from a column this row's own writer
+-- end date still resolves correctly because it comes from ordering
+-- among the person's own rows, not from a column this row's own writer
 -- filled in about itself.
 --
 -- text_ciphertext is the authoritative rendering and is always present:
@@ -86,58 +101,58 @@ CREATE TABLE person_name (
         CHECK (representation IN ('IDE', 'ABC', 'SYL')),
     period_start timestamptz,
     period_end timestamptz,
-    -- The end-dating mechanism: the row this one replaces, named by the
-    -- appending write itself. NULL for a name's first assertion (nothing
-    -- to supersede yet). UNIQUE so at most one row can claim to supersede
-    -- any given row, which is what keeps person_name_effective's join
-    -- below from fanning one row out into two; the CHECK rules out the
-    -- degenerate self-reference. core/person looks up the row currently
-    -- current for (person_id, use, representation) and names it here; it
-    -- never writes to that row.
-    supersedes_outbox_entry_id spine_object_id
-        REFERENCES person_name (outbox_entry_id),
     asserted_at timestamptz NOT NULL DEFAULT now(),
     residency_region residency_region NOT NULL
         DEFAULT own_declared_residency_region(),
-    CHECK (period_end IS NULL OR period_start IS NULL OR period_end >= period_start),
-    CHECK (supersedes_outbox_entry_id IS NULL OR supersedes_outbox_entry_id <> outbox_entry_id),
-    UNIQUE (supersedes_outbox_entry_id)
+    CHECK (period_end IS NULL OR period_start IS NULL OR period_end >= period_start)
 );
 
 CREATE INDEX person_name_by_person ON person_name (person_id);
 
 -- Every row's EFFECTIVE period_end: its own, if the source stated one,
--- else the asserted_at of whichever row names it in
--- supersedes_outbox_entry_id, else NULL (nothing has superseded it, so
--- it is current). This is the read-time derivation that end-dates a
--- prior row without a write ever touching it: the LEFT JOIN finds the
--- row (if any) that supersedes this one, and the table's own UNIQUE
--- constraint on supersedes_outbox_entry_id guarantees at most one match,
--- so the join cannot fan one row into two.
+-- else the asserted_at of the NEXT row in its own (person_id, use,
+-- representation) partition ordered by asserted_at, else NULL when
+-- there is no next row (this one is current). lead() is a pure
+-- read-time derivation over rows already committed to this table: it
+-- needs no lookup against any other write, so it end-dates correctly no
+-- matter what order two undrained appends land in, which a write-time
+-- lookup against "the row currently current" cannot do (that lookup
+-- can only see rows already applied to this table, so two Append calls
+-- issued before either is drained both find nothing to supersede).
+-- outbox_entry_id breaks a tie between two rows sharing one asserted_at
+-- exactly, which the column's own UNIQUE constraint (it is this table's
+-- primary key) makes a total order.
 CREATE VIEW person_name_effective AS
-SELECT n.outbox_entry_id, n.person_id, n.text_ciphertext, n.parts_ciphertext,
-       n."use", n.representation, n.supersedes_outbox_entry_id,
-       n.period_start, COALESCE(n.period_end, s.asserted_at) AS period_end,
-       n.asserted_at, n.residency_region
-  FROM person_name n
-  LEFT JOIN person_name s ON s.supersedes_outbox_entry_id = n.outbox_entry_id;
+SELECT outbox_entry_id, person_id, text_ciphertext, parts_ciphertext,
+       "use", representation, period_start,
+       COALESCE(period_end, lead(asserted_at) OVER (
+           PARTITION BY person_id, "use", representation
+           ORDER BY asserted_at, outbox_entry_id
+       )) AS period_end,
+       asserted_at, residency_region
+  FROM person_name;
 
 -- The query-layer rule: the CURRENT name per (person_id, use,
 -- representation) is whichever row's effective period_end is NULL, i.e.
--- nothing has superseded it. Representation is part of the key, not just
--- use, because a CJK person legitimately holds three simultaneously
--- current rows for one use (ideographic, romanized, phonetic); collapsing
--- on use alone would make two of the three vanish from every "current"
--- read the moment all three exist. This is what makes a prior name
--- "absent from an employer render" without deleting or mutating it: an
--- employer-facing read selects through this view, a matching read
--- selects person_name_effective (every row, prior ones included, each
--- carrying its own effective period), and the same rows answer both
--- questions.
+-- nothing later exists in its partition. Representation is part of the
+-- key, not just use, because a CJK person legitimately holds three
+-- simultaneously current rows for one use (ideographic, romanized,
+-- phonetic); collapsing on use alone would make two of the three vanish
+-- from every "current" read the moment all three exist. This is what
+-- makes a prior name "absent from an employer render" without deleting
+-- or mutating it: an employer-facing read selects through this view, a
+-- matching read selects person_name_effective (every row, prior ones
+-- included, each carrying its own effective period), and the same rows
+-- answer both questions at every point in time: before the second
+-- append of a change drains, the first row is current, correctly,
+-- because nothing later exists in the table yet; the instant the second
+-- append drains, lead() sees it and the first row's effective
+-- period_end flips from NULL to that append's asserted_at, with no
+-- write against the first row at all.
 CREATE VIEW person_name_current AS
 SELECT outbox_entry_id, person_id, text_ciphertext, parts_ciphertext,
-       "use", representation, supersedes_outbox_entry_id,
-       period_start, period_end, asserted_at, residency_region
+       "use", representation, period_start, period_end, asserted_at,
+       residency_region
   FROM person_name_effective
  WHERE period_end IS NULL;
 
