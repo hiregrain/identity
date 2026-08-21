@@ -20,9 +20,9 @@ DUMP_PAYLOAD := $(COMPOSE) exec -T payload pg_dump --schema-only --restrict-key=
 # argument and failed with the usage line.
 VECTORS ?= $(CURDIR)/contract/vectors
 
-.PHONY: check check-red check-red-db metadata install lint fmt-check go-check ts-check db-up db-reset migrate migrate-verify typegen typegen-check append-only spine-schema payload-residency scored-columns two-plane-split envelope-test cross-plane-constructs cross-plane-outbox person-test deletion-test db-down vectors vectors-check kernel-budget kernel-governance
+.PHONY: check check-red check-red-db metadata install lint fmt-check go-check ts-check db-up db-reset migrate migrate-verify typegen typegen-check append-only spine-schema payload-residency scored-columns two-plane-split envelope-test cross-plane-constructs cross-plane-outbox person-test keylog-test signing-test deletion-test db-down vectors vectors-check kernel-budget kernel-governance
 
-check: metadata install lint go-check db-up migrate-verify typegen-check append-only spine-schema payload-residency scored-columns two-plane-split envelope-test cross-plane-constructs cross-plane-outbox person-test deletion-test ts-check
+check: metadata install lint go-check signing-test db-up migrate-verify typegen-check append-only spine-schema payload-residency scored-columns two-plane-split envelope-test cross-plane-constructs cross-plane-outbox person-test keylog-test deletion-test ts-check
 	$(COMPOSE) down
 	@echo "check: green"
 
@@ -180,6 +180,26 @@ person-test:
 deletion-test:
 	cd core && GRAIN_KEY_PROVIDER=software go test -tags db -count=1 ./deletion/...
 
+# The key-event log against the live spine (trust-kernel/02): the
+# ledger's own stamp rather than a caller's, the append-only posture in
+# the database, and the compromise cut over rows that made a round trip
+# through it. Build tag db like the envelope suite; -count=1 because the
+# database is state the test cache cannot see. One provider run: nothing
+# this suite proves involves a signing key at all, and the provider swap
+# is proven both ways by `signing-test`.
+keylog-test:
+	cd core && go test -tags db -count=1 ./kernel/keylog/...
+
+# The signing-provider suite (trust-kernel/02): the conformance contract,
+# the config seam, and rotation staying invisible to callers. Once per
+# key provider, swapped by configuration alone (GRAIN_KEY_PROVIDER), which
+# is the acceptance clause "provider swap is config-only; suite green
+# under both". No database: custody is in memory under both in-repo
+# providers (decision 011).
+signing-test:
+	cd core && GRAIN_KEY_PROVIDER=software go test -count=1 ./kernel/operatorkey/...
+	cd core && GRAIN_KEY_PROVIDER=stub-kms go test -count=1 ./kernel/operatorkey/...
+
 db-down:
 	$(COMPOSE) down
 
@@ -319,6 +339,9 @@ check-red:
 	! node checks/kernel-governance.mjs hiregrain/identity test/fixtures/redpath/kernel-governance/no-codeowners
 	! node checks/kernel-governance.mjs hiregrain/identity test/fixtures/redpath/kernel-governance/nothing
 	node checks/kernel-governance.mjs hiregrain/identity test/fixtures/greenpath/kernel-governance/in-force
+	@echo "red path 21: signing primitives reached outside the kernel fail the signing-seam check, and a verify-only package passes (no database)"
+	! node checks/signing-seam.mjs test/fixtures/redpath/signing
+	node checks/signing-seam.mjs test/fixtures/greenpath/signing
 	@echo "check-red: all red paths fail as required"
 
 # Database-dependent red path: a schema edit without regenerated types

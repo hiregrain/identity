@@ -37,6 +37,18 @@
       "migration": "0001-migration-infrastructure"
     },
     {
+      "table": "key_event",
+      "column": "key_id",
+      "type": "text",
+      "migration": "0006-key-event-log"
+    },
+    {
+      "table": "key_event",
+      "column": "event",
+      "type": "text",
+      "migration": "0006-key-event-log"
+    },
+    {
       "table": "person_lifecycle_transition",
       "column": "state",
       "type": "text",

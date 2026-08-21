@@ -36,6 +36,9 @@ const METADATA = [
   "deletion-copy",
   "unslop",
   "transport-seam",
+  // The kernel's exclusive hold on the signing primitive
+  // (trust-kernel/02, decision 019). File-only, no database.
+  "signing-seam",
   // The frozen core's line budget (trust-kernel/01, decision 019).
   // File-only, so it runs before any database with the rest of this group.
   "kernel-budget",

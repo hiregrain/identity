@@ -33,6 +33,16 @@ export interface DeletionJournalRow {
   recorded_at: string;
 }
 
+/** One row of spine.key_event. */
+export interface KeyEventRow {
+  readonly [spinePlane]: "spine";
+  party_id: string;
+  key_id: string;
+  event: string;
+  effective_at: string;
+  ledger_ts: string;
+}
+
 /** One row of spine.person. */
 export interface PersonRow {
   readonly [spinePlane]: "spine";
