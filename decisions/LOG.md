@@ -4682,3 +4682,23 @@ asserting them. Until then the check asserts what is true.
 
 Direct pushes of binding prose to `main` continue unaffected; neither
 rule in force touches a normal push.
+
+## 088 — The Bezier imprint supersedes the polyline; the pinch is the load anchor (2026-08-21)
+
+Founder ruling on app-shell/00's figure raise. Decision 040 stress-tested
+a 24,352-vertex polyline; `imprint.py` has since moved to a Bezier fit
+that draws the same record in 5,852 commands, so 040's worst case no
+longer describes anything the app renders. The spike anchored load to
+what a 2x pinch costs instead: 720 CSS px at dpr 3 on the densest
+reference record, 23,585 path commands across 89 threads, within 3% of
+040's number, and carried it through the full scribe and a pinch on an
+iPhone 17 Pro simulator without a crash.
+
+**Ruled: the supersession is recorded as tested.** The 2x-pinch figure
+is the load reference going forward. **The payload size is an open
+concern, named rather than accepted silently:** the Bezier encoding
+carries 984 KB where 040's polyline carried 364 KB, because a cubic
+holds six coordinates to a vertex's two. That is bandwidth on the
+record-fetch path, not render load; whether the wire format stays
+cubic, compresses, or ships polyline-with-render-side-fit is undecided
+and belongs to whichever task first serves the figure over a network.
