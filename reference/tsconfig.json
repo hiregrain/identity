@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "noEmit": true,
+    "noUncheckedIndexedAccess": true,
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "allowImportingTsExtensions": true,
+    "rewriteRelativeImportExtensions": true,
+    "target": "es2023",
+    "lib": ["es2023"],
+    "types": ["node"]
+  },
+  "include": ["*.ts", "harness/*.ts"]
+}

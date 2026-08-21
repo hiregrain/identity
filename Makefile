@@ -12,9 +12,9 @@ PSQL_PAYLOAD := $(COMPOSE) exec -T payload psql -v ON_ERROR_STOP=1 -U identity -
 DUMP_SPINE := $(COMPOSE) exec -T spine pg_dump --schema-only --restrict-key=dump -U identity spine
 DUMP_PAYLOAD := $(COMPOSE) exec -T payload pg_dump --schema-only --restrict-key=dump -U identity payload
 
-.PHONY: check check-red check-red-db metadata install lint fmt-check go-check ts-check db-up db-reset migrate migrate-verify typegen typegen-check append-only spine-schema payload-residency scored-columns two-plane-split envelope-test cross-plane-constructs cross-plane-outbox deletion-test db-down
+.PHONY: check check-red check-red-db metadata install lint fmt-check go-check ts-check db-up db-reset migrate migrate-verify typegen typegen-check append-only spine-schema payload-residency scored-columns two-plane-split envelope-test cross-plane-constructs cross-plane-outbox deletion-test reference-test differential differential-red db-down
 
-check: metadata install lint go-check db-up migrate-verify typegen-check append-only spine-schema payload-residency scored-columns two-plane-split envelope-test cross-plane-constructs cross-plane-outbox deletion-test ts-check
+check: metadata install lint go-check reference-test db-up migrate-verify typegen-check append-only spine-schema payload-residency scored-columns two-plane-split envelope-test cross-plane-constructs cross-plane-outbox deletion-test ts-check
 	$(COMPOSE) down
 	@echo "check: green"
 
@@ -32,7 +32,7 @@ fmt-check:
 	if [ -n "$$unformatted" ]; then echo "gofmt needed on:"; echo "$$unformatted"; exit 1; fi
 
 lint: fmt-check
-	pnpm exec prettier --check "checks/**/*.mjs" "db/**/*.mjs" "db/**/*.ts" "db/*.json" "test/*.mjs" "eslint.config.mjs" "surfaces/**/*.{ts,tsx,js,json}" --no-error-on-unmatched-pattern
+	pnpm exec prettier --check "checks/**/*.mjs" "db/**/*.mjs" "db/**/*.ts" "db/*.json" "test/*.mjs" "eslint.config.mjs" "reference/**/*.ts" "reference/*.json" "surfaces/**/*.{ts,tsx,js,json}" --no-error-on-unmatched-pattern
 	pnpm exec eslint .
 
 go-check:
@@ -46,6 +46,7 @@ go-check:
 ts-check:
 	node checks/workspace-scripts.mjs
 	pnpm exec tsc -p db/tsconfig.json
+	pnpm exec tsc -p reference/tsconfig.json
 	pnpm -r run typecheck
 	pnpm -r run test
 
@@ -160,6 +161,35 @@ cross-plane-outbox:
 deletion-test:
 	cd core && GRAIN_KEY_PROVIDER=software go test -tags db -count=1 ./deletion/...
 
+# The reference model against the values contract/CONTRACT.md states in
+# words (trust-kernel/06). No database, no kernel: it is the half of the
+# reference's correctness that does not depend on anything else existing.
+reference-test:
+	node reference/conformance.test.ts
+
+# The differential run (trust-kernel/06, layer criterion 7): the kernel
+# and the independently-authored reference model over the committed
+# corpus plus fresh randomized input, compared byte for byte.
+#
+# NOT in `check` yet, and it cannot be: there is no kernel to differ
+# from until trust-kernel/01 lands. Wiring this into `check` is the last
+# step of trust-kernel/06 and is blocked on that task, which is recorded
+# as a raise on the task file rather than left for someone to discover.
+# KERNEL_ADAPTER is the command that speaks the protocol documented at
+# the top of reference/adapter.ts.
+KERNEL_ADAPTER ?=
+DIFFERENTIAL_FRESH ?= 20000
+differential:
+	@if [ -z "$(KERNEL_ADAPTER)" ]; then \
+		echo "differential: set KERNEL_ADAPTER to the kernel's adapter command"; \
+		echo "  e.g. make differential KERNEL_ADAPTER=./core/bin/kernel-adapter"; \
+		exit 1; \
+	fi
+	node reference/harness/differential.ts \
+		--impl reference="node reference/adapter.ts" \
+		--impl kernel="$(KERNEL_ADAPTER)" \
+		--fresh $(DIFFERENTIAL_FRESH)
+
 db-down:
 	$(COMPOSE) down
 
@@ -226,7 +256,39 @@ check-red:
 	! node checks/deletion-copy.mjs test/fixtures/redpath/deletion-copy/copy.md test/fixtures/redpath/deletion-copy/policy.json
 	@echo "red path 14: an em dash, a spaced en dash, curly quotes, a heading emoji, a JSON-escaped em dash, and both tell words each fail the unslop check (no database)"
 	! node checks/unslop.mjs test/fixtures/redpath/unslop
+	@echo "red path 15: the differential harness catches a deliberately planted contract misreading, and reports zero divergence when there is none (no database)"
+	$(MAKE) differential-red
 	@echo "check-red: all red paths fail as required"
+
+# The harness's own proof (trust-kernel/06 acceptance criterion 2). A
+# harness that has never been shown to fail is indistinguishable from one
+# that cannot, and this is the target that tells them apart. Each mutant
+# is the reference model with exactly one contract rule misread; the
+# reference is the control. Runs the full corpus plus a fixed fresh seed,
+# so the run is reproducible and a mutant that stops being caught is a
+# hard failure rather than a flake.
+#
+# The green line at the end matters as much as the red ones: it proves
+# the harness is capable of reporting agreement, so the failures above
+# are not an unconditional exit 1.
+DIFFERENTIAL_MUTANTS := key-order-utf8 key-order-locale number-format-fixed number-format-negative-zero normalize-nfc
+differential-red:
+	@for bug in $(DIFFERENTIAL_MUTANTS); do \
+		echo "differential-red: planting $$bug"; \
+		if node reference/harness/differential.ts \
+			--impl reference="node reference/adapter.ts" \
+			--impl mutant="node reference/harness/mutant.ts --bug $$bug" \
+			--fresh 500 --seed 7 > /dev/null 2>&1; then \
+			echo "FAIL differential-red: the harness did not catch $$bug"; \
+			exit 1; \
+		fi; \
+	done
+	@echo "differential-red: the control run must be green, or the failures above prove nothing"
+	node reference/harness/differential.ts \
+		--impl reference="node reference/adapter.ts" \
+		--impl control="node reference/adapter.ts" \
+		--fresh 500 --seed 7
+	@echo "differential-red: every planted misreading was caught"
 
 # Database-dependent red path: a schema edit without regenerated types
 # must fail typegen --check. Needs migrated databases (make db-up +
