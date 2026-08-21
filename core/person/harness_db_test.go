@@ -13,7 +13,6 @@ package person_test
 // privilege than the append-only posture allows.
 
 import (
-	"os"
 	"strings"
 	"testing"
 
@@ -60,10 +59,7 @@ func payloadDump(t *testing.T) string {
 // default software), exactly as core/envelope's suite does it.
 func newService(t *testing.T) (*person.Service, *envelope.Envelope) {
 	t.Helper()
-	name := os.Getenv("GRAIN_KEY_PROVIDER")
-	if name == "" {
-		name = keys.NameSoftware
-	}
+	name, _ := keys.ConfiguredProviderName()
 	p, err := keys.FromConfig(name)
 	if err != nil {
 		t.Fatalf("provider config: %v", err)

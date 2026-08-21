@@ -33,6 +33,7 @@ package keylog
 import (
 	"context"
 	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/hiregrain/identity/core/kernel"
@@ -47,10 +48,35 @@ const (
 	servingRole = "identity_app"
 )
 
-// ledgerTSLayout is the timestamp format psql renders and parses. The
-// offset is explicit, so a row read back carries the instant it was
-// written rather than the reader's local reading of it.
-const ledgerTSLayout = "2006-01-02 15:04:05.999999-07"
+// Timestamps cross this seam as microseconds since the epoch, never as
+// rendered text. psql renders a timestamptz in the session's TimeZone,
+// and a session on a zone with a sub-hour offset (Asia/Kolkata is
+// +05:30) renders an offset no fixed hour-only layout can parse, so a
+// layout-based reader fails ledger-wide on a setting nothing in this
+// repo controls. core/outbox already crosses the same seam with
+// extract(epoch) for this reason. Microseconds rather than seconds
+// because Postgres stores timestamptz to the microsecond and the
+// compromise cut is a strict comparison: truncating to the second would
+// move records across it.
+
+// ledgerTSExpr renders one timestamptz column as an integer count of
+// microseconds since the epoch, which has one spelling in every session.
+// The column name is never caller-supplied: the two call sites below
+// pass literals.
+func ledgerTSExpr(column string) string {
+	return "(extract(epoch FROM " + column + ") * 1000000)::bigint"
+}
+
+// parseLedgerTS reads one such value. Any unparsable field is an error
+// and never a zero time: a zero time would silently read as "no event
+// recorded", which for a compromise report is the permissive answer.
+func parseLedgerTS(field, what string) (time.Time, error) {
+	micros, err := strconv.ParseInt(field, 10, 64)
+	if err != nil {
+		return time.Time{}, fmt.Errorf("keylog: %s %q is not an epoch microsecond count: %w", what, field, err)
+	}
+	return time.UnixMicro(micros).UTC(), nil
+}
 
 // Append records one key event. effectiveAt is the reporting party's
 // declared moment and is stored as given, backdated or not; the ledger
@@ -76,15 +102,22 @@ func Append(_ context.Context, partyID, keyID string, event kernel.KeyEventKind,
 	return nil
 }
 
-// EventsForKey reads one key's events, which is the slice SignatureValid
-// folds over. Ordered by the ledger's own stamp so a reader looking at
-// the rows sees the order the rule computes with, though the rule's
-// answer does not depend on the order they arrive in.
-func EventsForKey(_ context.Context, keyID string) ([]kernel.KeyEvent, error) {
+// Events reads one key's events, which is the slice SignatureValid folds
+// over. A key is (partyID, keyID) and the predicate names both: the
+// identifier alone is public and shared by nobody's consent, so a query
+// on it alone returns rows another party wrote about a key it does not
+// own. See SignatureValid's comment for what that would let anyone do.
+//
+// Ordered by the ledger's own stamp so a reader looking at the rows sees
+// the order the rule computes with, though the rule's answer does not
+// depend on the order they arrive in.
+func Events(_ context.Context, partyID, keyID string) ([]kernel.KeyEvent, error) {
 	lines, err := transport.Query(spinePlane, servingRole,
-		"SELECT party_id, key_id, event, effective_at, ledger_ts"+
-			" FROM key_event WHERE key_id = $1 ORDER BY ledger_ts, event",
-		transport.String(keyID))
+		"SELECT party_id, key_id, event, "+
+			ledgerTSExpr("effective_at")+", "+ledgerTSExpr("ledger_ts")+
+			" FROM key_event WHERE party_id = $1 AND key_id = $2"+
+			" ORDER BY ledger_ts, event",
+		transport.String(partyID), transport.String(keyID))
 	if err != nil {
 		return nil, fmt.Errorf("keylog: reading events for key %s: %w", keyID, err)
 	}
@@ -102,26 +135,27 @@ func EventsForKey(_ context.Context, keyID string) ([]kernel.KeyEvent, error) {
 // SignatureValid answers the rule for one record against the log as it
 // stands now. It is the composition callers want, and it is deliberately
 // thin: every judgment lives in core/kernel, and this reads rows.
-func SignatureValid(ctx context.Context, keyID string, recordLedgerTS time.Time) (bool, error) {
-	events, err := EventsForKey(ctx, keyID)
+func SignatureValid(ctx context.Context, partyID, keyID string, recordLedgerTS time.Time) (bool, error) {
+	events, err := Events(ctx, partyID, keyID)
 	if err != nil {
 		return false, err
 	}
-	return kernel.SignatureValid(events, keyID, recordLedgerTS), nil
+	return kernel.SignatureValid(events, partyID, keyID, recordLedgerTS), nil
 }
 
 func parseRow(line string) (kernel.KeyEvent, error) {
-	fields := transport.SplitRow(line, 5)
-	if len(fields) != 5 {
-		return kernel.KeyEvent{}, fmt.Errorf("keylog: key_event row has %d fields, want 5", len(fields))
+	const columns = 5
+	fields := transport.SplitRow(line, columns)
+	if len(fields) != columns {
+		return kernel.KeyEvent{}, fmt.Errorf("keylog: key_event row has %d fields, want %d", len(fields), columns)
 	}
-	effectiveAt, err := time.Parse(ledgerTSLayout, fields[3])
+	effectiveAt, err := parseLedgerTS(fields[3], "effective_at")
 	if err != nil {
-		return kernel.KeyEvent{}, fmt.Errorf("keylog: effective_at %q: %w", fields[3], err)
+		return kernel.KeyEvent{}, err
 	}
-	ledgerTS, err := time.Parse(ledgerTSLayout, fields[4])
+	ledgerTS, err := parseLedgerTS(fields[4], "ledger_ts")
 	if err != nil {
-		return kernel.KeyEvent{}, fmt.Errorf("keylog: ledger_ts %q: %w", fields[4], err)
+		return kernel.KeyEvent{}, err
 	}
 	return kernel.KeyEvent{
 		PartyID:     fields[0],

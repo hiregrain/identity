@@ -2,15 +2,14 @@ package operatorkey_test
 
 // The signing-provider suite (trust-kernel/02). Every test below that
 // needs one provider takes the CONFIGURED provider, chosen by
-// GRAIN_KEY_PROVIDER alone and defaulting to software, exactly as
-// core/person's harness does it. `make signing-test` runs this file once
+// keys.ConfiguredProviderName alone, the one reader every call site in
+// the repo shares. `make signing-test` runs this file once
 // per provider with that variable as the only difference between the two
 // runs, which is the acceptance clause "provider swap is config-only;
 // suite green under both". A test that named a provider itself would
 // make the variable decorative.
 
 import (
-	"os"
 	"strings"
 	"testing"
 
@@ -125,14 +124,27 @@ func TestAProviderSignsImmediatelyAfterConstruction(t *testing.T) {
 	}
 }
 
+// The provider the environment asked for is the provider the suite ran
+// against. Without this, `make signing-test`'s two runs prove nothing
+// they could not prove with the variable deleted: a CI change dropping
+// it would leave both runs on the software default with stub-kms
+// silently untested, and every test above would still pass.
+func TestTheSuiteRanAgainstTheConfiguredProvider(t *testing.T) {
+	name, set := keys.ConfiguredProviderName()
+	if !set {
+		t.Skipf("%s is unset, so this run is the software default and there is nothing to hold to", keys.ProviderEnvVar)
+	}
+	if got := configured(t).Name(); got != name {
+		t.Fatalf("%s asked for %q and the suite ran against %q", keys.ProviderEnvVar, name, got)
+	}
+}
+
 // configured builds the provider the environment names, the one place
-// this file reads the configuration.
+// this file reads the configuration, through the single reader every
+// other call site in the repo uses.
 func configured(t *testing.T) operatorkey.Provider {
 	t.Helper()
-	name := os.Getenv("GRAIN_KEY_PROVIDER")
-	if name == "" {
-		name = keys.NameSoftware
-	}
+	name, _ := keys.ConfiguredProviderName()
 	return named(t, name)
 }
 

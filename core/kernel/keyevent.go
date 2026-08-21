@@ -75,27 +75,50 @@ func ValidKeyEventKind(kind KeyEventKind) bool {
 	return false
 }
 
-// SignatureValid applies the rule to one record: keyID signed something
-// the ledger stamped at recordLedgerTS, and events is the key-event log.
+// SignatureValid applies the rule to one record: the key (partyID,
+// keyID) signed something the ledger stamped at recordLedgerTS, and
+// events is the key-event log.
 //
-// Events carrying another key's identifier are ignored, so a caller may
-// pass the whole log or one key's slice and get the same answer. Where
-// one kind appears more than once for the key, the earliest is the one
-// that counts: the log's primary key admits each kind once per party, so
-// a repeat can only come from two parties claiming one identifier, and
-// the strictest reading is the safe direction to fail in.
+// A key is identified by its party AND its identifier, never by the
+// identifier alone. The identifier is public: decision 019 puts it
+// inside every signed payload, and the log is public by destiny. If the
+// fold ignored the party, anyone could append a revocation or a
+// compromise report for somebody else's key under their own party id,
+// take no primary-key conflict doing it, and permanently retire a key
+// they do not own with no undo. Scoping the fold is what makes the log
+// append-only in the sense that matters: a party may write about its own
+// keys and nobody else's. (Enforcing that at the database, so a row
+// naming a key the party does not own cannot be written at all, needs
+// the party table and the key-ownership column that land with
+// party-registry. Until then the fold is the enforcement, and it is
+// enough, because a row nothing reads changes nothing.)
+//
+// Events for any other party or key are ignored, so a caller may pass
+// the whole log or one key's slice and get the same answer.
+//
+// Duplicates of one kind cannot come from the log itself: its primary
+// key is (party_id, key_id, event). They can only come from a caller
+// that concatenated two reads, so each branch folds in the direction
+// that cannot widen validity, and the three directions are not the same:
+//
+//   - Registered takes the LATEST. An earlier registration would widen
+//     the window backwards, which is the permissive direction.
+//   - Rotated and revoked take the EARLIEST, since a later close would
+//     widen the window forwards.
+//   - Compromised takes the EARLIEST, since a later report would leave
+//     more records standing.
 //
 // A key with no Registered event is never valid: nothing in the log says
 // it was ever in service.
-func SignatureValid(events []KeyEvent, keyID string, recordLedgerTS time.Time) bool {
+func SignatureValid(events []KeyEvent, partyID, keyID string, recordLedgerTS time.Time) bool {
 	var registered, closed, compromised time.Time
 	for _, event := range events {
-		if event.KeyID != keyID {
+		if event.PartyID != partyID || event.KeyID != keyID {
 			continue
 		}
 		switch event.Event {
 		case KeyRegistered:
-			registered = earliest(registered, event.LedgerTS)
+			registered = latest(registered, event.LedgerTS)
 		case KeyRotated, KeyRevoked:
 			closed = earliest(closed, event.LedgerTS)
 		case KeyCompromised:
@@ -124,6 +147,15 @@ func SignatureValid(events []KeyEvent, keyID string, recordLedgerTS time.Time) b
 // "none recorded yet" rather than as the beginning of time.
 func earliest(current, candidate time.Time) time.Time {
 	if current.IsZero() || candidate.Before(current) {
+		return candidate
+	}
+	return current
+}
+
+// latest keeps the later of two instants, with the same reading of the
+// zero time.
+func latest(current, candidate time.Time) time.Time {
+	if current.IsZero() || candidate.After(current) {
 		return candidate
 	}
 	return current

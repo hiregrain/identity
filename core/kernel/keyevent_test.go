@@ -23,29 +23,32 @@ func hour(h int) time.Time {
 	return time.Date(2026, 8, 21, h, 0, 0, 0, time.UTC)
 }
 
-const theKey = "the-key"
+const (
+	theParty = "the-party"
+	theKey   = "the-key"
+)
 
 func registration() KeyEvent {
-	return KeyEvent{PartyID: "party", KeyID: theKey, Event: KeyRegistered, EffectiveAt: registeredAt, LedgerTS: registeredAt}
+	return KeyEvent{PartyID: theParty, KeyID: theKey, Event: KeyRegistered, EffectiveAt: registeredAt, LedgerTS: registeredAt}
 }
 
 func TestSignatureValidAcrossTheRuleBoundaries(t *testing.T) {
 	compromise := KeyEvent{
-		PartyID:     "party",
+		PartyID:     theParty,
 		KeyID:       theKey,
 		Event:       KeyCompromised,
 		EffectiveAt: compromisedAt,
 		LedgerTS:    compromisedAt,
 	}
 	revocation := KeyEvent{
-		PartyID:     "party",
+		PartyID:     theParty,
 		KeyID:       theKey,
 		Event:       KeyRevoked,
 		EffectiveAt: revokedAt,
 		LedgerTS:    revokedAt,
 	}
 	rotation := KeyEvent{
-		PartyID:     "party",
+		PartyID:     theParty,
 		KeyID:       theKey,
 		Event:       KeyRotated,
 		EffectiveAt: revokedAt,
@@ -83,16 +86,22 @@ func TestSignatureValidAcrossTheRuleBoundaries(t *testing.T) {
 		// The conjuncts are independent: a compromise report arriving
 		// after the key was already rotated out cuts nothing further,
 		// and the window still governs.
-		{"compromise reported after the key was already rotated out", []KeyEvent{registration(), rotation, {PartyID: "party", KeyID: theKey, Event: KeyCompromised, EffectiveAt: hour(20), LedgerTS: hour(20)}}, hour(15), true},
+		{"compromise reported after the key was already rotated out", []KeyEvent{registration(), rotation, {PartyID: theParty, KeyID: theKey, Event: KeyCompromised, EffectiveAt: hour(20), LedgerTS: hour(20)}}, hour(15), true},
 
 		// Another key's events never move this key's answer.
-		{"another key's compromise report", []KeyEvent{registration(), {PartyID: "party", KeyID: "another-key", Event: KeyCompromised, EffectiveAt: compromisedAt, LedgerTS: compromisedAt}}, hour(15), true},
-		{"another key's registration is not this key's", []KeyEvent{{PartyID: "party", KeyID: "another-key", Event: KeyRegistered, EffectiveAt: registeredAt, LedgerTS: registeredAt}}, hour(12), false},
+		{"another key's compromise report", []KeyEvent{registration(), {PartyID: theParty, KeyID: "another-key", Event: KeyCompromised, EffectiveAt: compromisedAt, LedgerTS: compromisedAt}}, hour(15), true},
+		{"another key's registration is not this key's", []KeyEvent{{PartyID: theParty, KeyID: "another-key", Event: KeyRegistered, EffectiveAt: registeredAt, LedgerTS: registeredAt}}, hour(12), false},
+
+		// Another PARTY's events never move this key's answer either.
+		// The identifier is public, so this is the case a stranger can
+		// actually write rows for.
+		{"another party's compromise report for this identifier", []KeyEvent{registration(), {PartyID: "another-party", KeyID: theKey, Event: KeyCompromised, EffectiveAt: compromisedAt, LedgerTS: compromisedAt}}, hour(15), true},
+		{"another party's registration of this identifier", []KeyEvent{{PartyID: "another-party", KeyID: theKey, Event: KeyRegistered, EffectiveAt: registeredAt, LedgerTS: registeredAt}}, hour(12), false},
 	}
 
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
-			if got := SignatureValid(c.events, theKey, c.record); got != c.want {
+			if got := SignatureValid(c.events, theParty, theKey, c.record); got != c.want {
 				t.Fatalf("SignatureValid = %v, want %v", got, c.want)
 			}
 		})
@@ -106,7 +115,7 @@ func TestSignatureValidAcrossTheRuleBoundaries(t *testing.T) {
 func TestABackdatedCompromiseClaimInvalidatesNothing(t *testing.T) {
 	reportedAt := hour(20)
 	backdated := KeyEvent{
-		PartyID:     "party",
+		PartyID:     theParty,
 		KeyID:       theKey,
 		Event:       KeyCompromised,
 		EffectiveAt: hour(9), // before the key was even registered
@@ -115,12 +124,12 @@ func TestABackdatedCompromiseClaimInvalidatesNothing(t *testing.T) {
 	events := []KeyEvent{registration(), backdated}
 
 	for _, stamped := range []time.Time{registeredAt, hour(12), hour(19), reportedAt.Add(-time.Nanosecond)} {
-		if !SignatureValid(events, theKey, stamped) {
+		if !SignatureValid(events, theParty, theKey, stamped) {
 			t.Fatalf("a record stamped %v was invalidated by a compromise report the ledger only received at %v", stamped, reportedAt)
 		}
 	}
 	for _, stamped := range []time.Time{reportedAt, hour(21)} {
-		if SignatureValid(events, theKey, stamped) {
+		if SignatureValid(events, theParty, theKey, stamped) {
 			t.Fatalf("a record stamped %v survived a compromise report the ledger received at %v", stamped, reportedAt)
 		}
 	}
@@ -130,33 +139,79 @@ func TestABackdatedCompromiseClaimInvalidatesNothing(t *testing.T) {
 // over the events, not a walk of a sorted list, so a caller reading rows
 // in any order gets one answer.
 func TestTheRuleIsIndependentOfEventOrder(t *testing.T) {
-	compromise := KeyEvent{PartyID: "party", KeyID: theKey, Event: KeyCompromised, EffectiveAt: compromisedAt, LedgerTS: compromisedAt}
-	revocation := KeyEvent{PartyID: "party", KeyID: theKey, Event: KeyRevoked, EffectiveAt: revokedAt, LedgerTS: revokedAt}
+	compromise := KeyEvent{PartyID: theParty, KeyID: theKey, Event: KeyCompromised, EffectiveAt: compromisedAt, LedgerTS: compromisedAt}
+	revocation := KeyEvent{PartyID: theParty, KeyID: theKey, Event: KeyRevoked, EffectiveAt: revokedAt, LedgerTS: revokedAt}
 
 	forward := []KeyEvent{registration(), compromise, revocation}
 	backward := []KeyEvent{revocation, compromise, registration()}
 
 	for h := 8; h <= 20; h++ {
-		if SignatureValid(forward, theKey, hour(h)) != SignatureValid(backward, theKey, hour(h)) {
+		if SignatureValid(forward, theParty, theKey, hour(h)) != SignatureValid(backward, theParty, theKey, hour(h)) {
 			t.Fatalf("the rule disagreed with itself at hour %d when the events were reordered", h)
 		}
 	}
 }
 
-// Where a kind appears twice for one key, the earliest is the one that
-// counts. The log's primary key admits each kind once per party, so this
-// can only arise from two parties claiming one identifier, and failing
-// strict is the safe direction.
-func TestARepeatedEventKindTakesTheEarliest(t *testing.T) {
+// A stranger cannot retire somebody else's key. The key identifier is
+// public (decision 019 puts it inside every signed payload), so nothing
+// stops another party writing a revocation and a compromise report
+// naming it under their own party id. The fold ignores every one of
+// them, and the owner's key is untouched.
+func TestAnotherPartyCannotRetireThisPartysKey(t *testing.T) {
+	const stranger = "the-stranger"
 	events := []KeyEvent{
 		registration(),
-		{PartyID: "party-a", KeyID: theKey, Event: KeyCompromised, EffectiveAt: hour(18), LedgerTS: hour(18)},
-		{PartyID: "party-b", KeyID: theKey, Event: KeyCompromised, EffectiveAt: hour(12), LedgerTS: hour(12)},
+		{PartyID: stranger, KeyID: theKey, Event: KeyRevoked, EffectiveAt: hour(11), LedgerTS: hour(11)},
+		{PartyID: stranger, KeyID: theKey, Event: KeyCompromised, EffectiveAt: hour(11), LedgerTS: hour(11)},
+		{PartyID: stranger, KeyID: theKey, Event: KeyRotated, EffectiveAt: hour(11), LedgerTS: hour(11)},
 	}
-	if SignatureValid(events, theKey, hour(13)) {
+	for h := 10; h <= 23; h++ {
+		if !SignatureValid(events, theParty, theKey, hour(h)) {
+			t.Fatalf("a stranger's events retired this party's key at hour %d", h)
+		}
+	}
+	// The stranger's own rows still say nothing about a key the stranger
+	// never registered.
+	if SignatureValid(events, stranger, theKey, hour(12)) {
+		t.Fatal("the stranger's own unregistered key produced a valid signature")
+	}
+}
+
+// Duplicates of one kind cannot come from the log, whose primary key is
+// (party_id, key_id, event); they can only come from a caller that
+// concatenated two reads. Each branch folds in the direction that cannot
+// widen validity, and those directions are not the same: registration
+// takes the latest, closes and compromise reports take the earliest.
+func TestDuplicateEventsFoldInTheDirectionThatCannotWidenValidity(t *testing.T) {
+	twoRegistrations := []KeyEvent{
+		{PartyID: theParty, KeyID: theKey, Event: KeyRegistered, EffectiveAt: hour(10), LedgerTS: hour(10)},
+		{PartyID: theParty, KeyID: theKey, Event: KeyRegistered, EffectiveAt: hour(14), LedgerTS: hour(14)},
+	}
+	if SignatureValid(twoRegistrations, theParty, theKey, hour(12)) {
+		t.Fatal("the earlier registration won, widening the window backwards")
+	}
+	if !SignatureValid(twoRegistrations, theParty, theKey, hour(14)) {
+		t.Fatal("the later registration did not open the window")
+	}
+
+	twoCloses := []KeyEvent{
+		registration(),
+		{PartyID: theParty, KeyID: theKey, Event: KeyRevoked, EffectiveAt: hour(14), LedgerTS: hour(14)},
+		{PartyID: theParty, KeyID: theKey, Event: KeyRotated, EffectiveAt: hour(18), LedgerTS: hour(18)},
+	}
+	if SignatureValid(twoCloses, theParty, theKey, hour(16)) {
+		t.Fatal("the later close won, widening the window forwards")
+	}
+
+	twoReports := []KeyEvent{
+		registration(),
+		{PartyID: theParty, KeyID: theKey, Event: KeyCompromised, EffectiveAt: hour(18), LedgerTS: hour(18)},
+		{PartyID: theParty, KeyID: theKey, Event: KeyCompromised, EffectiveAt: hour(12), LedgerTS: hour(12)},
+	}
+	if SignatureValid(twoReports, theParty, theKey, hour(13)) {
 		t.Fatal("the later compromise report won over the earlier one")
 	}
-	if !SignatureValid(events, theKey, hour(11)) {
+	if !SignatureValid(twoReports, theParty, theKey, hour(11)) {
 		t.Fatal("a record before both reports was invalidated")
 	}
 }

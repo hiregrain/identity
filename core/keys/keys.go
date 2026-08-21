@@ -24,6 +24,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"os"
 )
 
 // Provider wraps and unwraps data-encryption keys under a per-scope
@@ -61,6 +62,35 @@ const (
 	NameSoftware = "software"
 	NameStubKMS  = "stub-kms"
 )
+
+// ProviderEnvVar is the one environment variable that selects a key
+// provider. One ruling (decision 011) governs key custody, so one
+// variable governs both key families: the DEK providers here and the
+// ledger signing providers in core/kernel/operatorkey. A deployment that
+// wrapped DEKs in a KMS and signed with a software key is unspellable.
+const ProviderEnvVar = "GRAIN_KEY_PROVIDER"
+
+// ConfiguredProviderName reads that variable, falling back to the
+// software provider, which is the local and CI default decision 011
+// names. It reports whether the variable was actually set, because a
+// test proving a provider swap has to be able to tell "the environment
+// asked for software" from "the environment asked for nothing": a CI
+// change that dropped the variable would otherwise leave both runs of a
+// two-provider suite on software with the second provider silently
+// untested.
+//
+// This exists because the getenv-else-software block had been hand
+// copied to five call sites (core/deletion, core/envelope's and
+// core/deletion's db tests, core/person's harness, and
+// core/kernel/operatorkey's suite), which is four chances for the
+// default to drift from this one.
+func ConfiguredProviderName() (name string, set bool) {
+	name = os.Getenv(ProviderEnvVar)
+	if name == "" {
+		return NameSoftware, false
+	}
+	return name, true
+}
 
 // FromConfig returns the provider a configuration value names. This is
 // the one place a provider name is interpreted, the config seam of

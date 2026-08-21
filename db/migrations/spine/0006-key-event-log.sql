@@ -89,10 +89,13 @@ CREATE TABLE key_event (
     PRIMARY KEY (party_id, key_id, event)
 );
 
--- The rule walks one key's events, so the read is by key. Reading by
--- party is the operator-console and registry shape and gets its index
--- when a layer needs one.
-CREATE INDEX key_event_by_key ON key_event (key_id, ledger_ts);
+-- The rule walks one key's events, and a key is (party_id, key_id),
+-- never the identifier alone: the identifier is public, so a read on it
+-- alone returns rows another party wrote about a key it does not own.
+-- The index leads with the pair the read predicates on. The primary key
+-- already covers that pair; this adds the ledger_ts ordering the read
+-- asks for.
+CREATE INDEX key_event_by_key ON key_event (party_id, key_id, ledger_ts);
 
 -- ledger_ts is the ledger's stamp, and this is what makes that a
 -- property of the database rather than of the writing code's manners.

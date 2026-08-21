@@ -20,9 +20,9 @@ DUMP_PAYLOAD := $(COMPOSE) exec -T payload pg_dump --schema-only --restrict-key=
 # argument and failed with the usage line.
 VECTORS ?= $(CURDIR)/contract/vectors
 
-.PHONY: check check-red check-red-db metadata install lint fmt-check go-check ts-check db-up db-reset migrate migrate-verify typegen typegen-check append-only spine-schema payload-residency scored-columns two-plane-split envelope-test cross-plane-constructs cross-plane-outbox person-test keylog-test signing-test deletion-test db-down vectors vectors-check kernel-budget kernel-governance
+.PHONY: check check-red check-red-db metadata install lint fmt-check go-check ts-check db-up db-reset migrate migrate-verify typegen typegen-check append-only spine-schema payload-residency scored-columns ledger-stamp-grant two-plane-split envelope-test cross-plane-constructs cross-plane-outbox person-test keylog-test signing-test deletion-test db-down vectors vectors-check kernel-budget kernel-governance
 
-check: metadata install lint go-check signing-test db-up migrate-verify typegen-check append-only spine-schema payload-residency scored-columns two-plane-split envelope-test cross-plane-constructs cross-plane-outbox person-test keylog-test deletion-test ts-check
+check: metadata install lint go-check signing-test db-up migrate-verify typegen-check append-only spine-schema payload-residency scored-columns ledger-stamp-grant two-plane-split envelope-test cross-plane-constructs cross-plane-outbox person-test keylog-test deletion-test ts-check
 	$(COMPOSE) down
 	@echo "check: green"
 
@@ -123,6 +123,14 @@ payload-residency:
 # licensed use).
 scored-columns:
 	node checks/scored-columns.mjs
+
+# The ledger stamp held out of the serving role's reach
+# (trust-kernel/02): identity_app's INSERT on key_event is column-scoped
+# and excludes ledger_ts, so a blanket "GRANT INSERT ON ALL TABLES" in a
+# later migration fails a check rather than silently reopening
+# backdating.
+ledger-stamp-grant:
+	node checks/ledger-stamp-grant.mjs
 
 # The physical-split proof (foundation/04): distinct clusters, no
 # spanning transaction, a role catalog per plane.
@@ -393,6 +401,17 @@ check-red-db:
 	! node checks/scored-columns.mjs
 	echo "DROP TABLE planted_judgment;" | $(PSQL_PAYLOAD) -f -
 	node checks/scored-columns.mjs
+	@echo "red path db 11: the blanket grant 0002's header tells later migrations to repeat reopens INSERT on ledger_ts and fails the ledger-stamp check"
+	node checks/ledger-stamp-grant.mjs
+	echo "GRANT INSERT ON ALL TABLES IN SCHEMA public TO identity_app;" | $(PSQL_SPINE) -f -
+	! node checks/ledger-stamp-grant.mjs
+	echo "REVOKE INSERT ON key_event FROM identity_app; GRANT INSERT (party_id, key_id, event, effective_at) ON key_event TO identity_app;" | $(PSQL_SPINE) -f -
+	node checks/ledger-stamp-grant.mjs
+	@echo "red path db 11b: revoking a writable column's INSERT also fails it, so the check is not one-sided"
+	echo "REVOKE INSERT (effective_at) ON key_event FROM identity_app;" | $(PSQL_SPINE) -f -
+	! node checks/ledger-stamp-grant.mjs
+	echo "GRANT INSERT (effective_at) ON key_event TO identity_app;" | $(PSQL_SPINE) -f -
+	node checks/ledger-stamp-grant.mjs
 	@echo "green path db: the runner's --schema group and bare form both work while the databases are up, and the bare run prints the frontier exactly once"
 	node checks/run.mjs --schema
 	node checks/run.mjs > /tmp/run-bare.out

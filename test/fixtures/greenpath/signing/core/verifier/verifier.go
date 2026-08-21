@@ -6,9 +6,20 @@
 // for nothing. Nothing builds this.
 package verifier
 
-import "crypto/ed25519"
+import (
+	ed "crypto/ed25519"
+)
 
-func verify(public ed25519.PublicKey, message, signature []byte) bool {
-	return len(public) == ed25519.PublicKeySize &&
-		ed25519.Verify(public, message, signature)
+func verify(public ed.PublicKey, message, signature []byte) bool {
+	return len(public) == ed.PublicKeySize &&
+		ed.Verify(public, message, signature)
 }
+
+// A method named Sign, called on a value rather than on the package.
+// The lint binds the qualifier from the import, so `s.Sign(` is not a
+// call to the primitive and this file must stay green.
+type signerHandle struct{}
+
+func (s signerHandle) Sign(message []byte) ([]byte, error) { return message, nil }
+
+func delegate(s signerHandle, message []byte) ([]byte, error) { return s.Sign(message) }

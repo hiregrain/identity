@@ -50,7 +50,14 @@ const METADATA = [
   // this is for.
   "vector-freshness",
 ];
-const SCHEMA = ["spine-schema", "payload-residency", "scored-columns"];
+const SCHEMA = [
+  "spine-schema",
+  "payload-residency",
+  "scored-columns",
+  // The ledger stamp held out of the serving role's reach
+  // (trust-kernel/02). Live grants, so it belongs in this group.
+  "ledger-stamp-grant",
+];
 
 const flag = process.argv[2];
 let groups;

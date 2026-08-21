@@ -12,12 +12,19 @@
 // its own header bytes, and none of the contract's rules.
 //
 // This is a lexical lint over every Go file in the repo, walked from the
-// repo root. What it catches: a call to ed25519.Sign, ed25519.GenerateKey,
-// or ed25519.NewKeyFromSeed. What it cannot catch: a signature produced
-// through crypto.Signer held behind an interface, or a third-party
-// library. That gap is accepted the way checks/transport-seam.mjs and
-// checks/serving-credentials.mjs accept theirs: a loud, early failure on
-// the ordinary case, not the only enforcement layer.
+// repo root. It reads each file's import of crypto/ed25519, binds
+// whatever qualifier that import established (the package name, an
+// alias, or nothing at all for a dot import), and flags a call to Sign,
+// GenerateKey, or NewKeyFromSeed through it. Matching the import rather
+// than the literal text `ed25519.` is what closes the two-line evasion a
+// code-review finding found in the first version, and it is the shape
+// checks/transport-seam.mjs already uses.
+//
+// What it cannot catch: a signature produced through crypto.Signer held
+// behind an interface, or a third-party library. That gap is accepted
+// the way checks/transport-seam.mjs and checks/serving-credentials.mjs
+// accept theirs: a loud, early failure on the ordinary case, not the
+// only enforcement layer.
 //
 // Importing "crypto/ed25519" is not itself a violation. Verification
 // needs the package, every resolver holds an ed25519.PublicKey, and a
@@ -68,17 +75,71 @@ const EXEMPT_PATHS = new Set([
 // encountered as a descendant of the scan root.
 const EXEMPT_NAMES = new Set([".git", "node_modules", "test"]);
 
-const PATTERNS = [
-  { pattern: /ed25519\.Sign\s*\(/g, what: "ed25519.Sign call" },
-  {
-    pattern: /ed25519\.GenerateKey\s*\(/g,
-    what: "ed25519.GenerateKey call",
-  },
-  {
-    pattern: /ed25519\.NewKeyFromSeed\s*\(/g,
-    what: "ed25519.NewKeyFromSeed call",
-  },
-];
+// The signing primitives, by the name they carry inside crypto/ed25519.
+// The qualifier they are reached through is whatever the file's import
+// bound, which is why it is computed per file rather than written here.
+const PRIMITIVES = ["Sign", "GenerateKey", "NewKeyFromSeed"];
+
+const ED25519_PATH = "crypto/ed25519";
+
+// One import spec: an optional binding (an alias, `.`, or `_`) followed
+// by a quoted path. Matches inside a parenthesised import block and in
+// the single-line `import "path"` form alike, which is why the block is
+// not parsed as a block.
+//
+// The lookahead is load-bearing: without it the keyword in
+// `import "crypto/ed25519"` is itself read as the binding, the check
+// then looks for `import.Sign(`, and the plain form scans green. That is
+// the same hole in a second costume and it is the reason this pattern
+// has its own test below.
+const IMPORT_SPEC = /(?:^|[(\s])(?:(?!import\b)([.\w]+)\s+)?"([^"]+)"/gm;
+
+// bindingsFor returns the qualifiers this file can reach the ed25519
+// primitives through, given what it imported.
+//
+// The prior version of this check matched the literal text
+// `ed25519.Sign(`, which a code-review finding showed was two lines of
+// evasion wide: `import ed "crypto/ed25519"` then `ed.Sign(...)` scanned
+// green, and a dot import scanned green with no qualifier at all.
+// checks/transport-seam.mjs closes the analogous hole by matching the
+// import path, and this now does the same. The import is what a Go file
+// cannot avoid writing.
+//
+//   "crypto/ed25519"      binds the package name, ed25519
+//   ed "crypto/ed25519"   binds the alias
+//   _ "crypto/ed25519"    binds nothing and nothing is callable, so it
+//                         is not a violation and not a hole either
+//
+// A DOT import is handled separately and is refused outright rather than
+// given a binding: it makes Sign, GenerateKey and NewKeyFromSeed
+// reachable with no qualifier at all, so telling them apart from an
+// ordinary method named Sign means guessing at Go's scope rules with a
+// regular expression. There is no legitimate reason to dot-import
+// crypto/ed25519, so the import itself is the finding. That is a rule
+// with no false negatives instead of a guess with both kinds of error.
+const DOT_IMPORT = ".";
+
+function bindingsFor(content) {
+  const bindings = [];
+  IMPORT_SPEC.lastIndex = 0;
+  let match;
+  while ((match = IMPORT_SPEC.exec(content)) !== null) {
+    const [, binding, path] = match;
+    if (path !== ED25519_PATH) continue;
+    if (binding === undefined) bindings.push("ed25519");
+    else if (binding !== "_") bindings.push(binding);
+  }
+  return bindings;
+}
+
+// patternsFor turns one binding into the call shapes it makes reachable.
+function patternsFor(binding) {
+  if (binding === DOT_IMPORT) return [];
+  return PRIMITIVES.map((name) => ({
+    pattern: new RegExp(String.raw`\b${binding}\.${name}\s*\(`, "g"),
+    what: `${binding}.${name} call`,
+  }));
+}
 
 let filesScanned = 0;
 let violations = 0;
@@ -112,7 +173,15 @@ function walk(dir) {
     if (!entry.isFile() || !entry.name.endsWith(".go")) continue;
     filesScanned += 1;
     const content = readFileSync(path, "utf8");
-    for (const { pattern, what } of PATTERNS) {
+    const bindings = bindingsFor(content);
+    if (bindings.includes(DOT_IMPORT)) {
+      console.error(
+        `signing-seam: ${path}: dot import of ${ED25519_PATH}, which makes ` +
+          `${PRIMITIVES.join(", ")} reachable with no qualifier`,
+      );
+      violations += 1;
+    }
+    for (const { pattern, what } of bindings.flatMap(patternsFor)) {
       pattern.lastIndex = 0;
       let match;
       while ((match = pattern.exec(content)) !== null) {
