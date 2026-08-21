@@ -12,6 +12,7 @@ evidence:
   - "test:make check @ 9944b3e and make check-red-db @ a15253c (green locally, run under a no-ports compose override)"
   - "log:github.com/hiregrain/identity/actions/runs/32501436217 (every stage green at a15253c)"
   - "diff:PR #14 @ a15253cb792edc3854dfa1872bbd1fdf7abdf616"
+  - "diff:PR #14 @ 53dc9ec36766201aa3986346b64a59a8f41b0148 (code-review rework: transport seam, payload renumbered 0036)"
 verified_by: null
 ---
 
