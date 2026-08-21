@@ -1051,14 +1051,15 @@ function docTypeBody(){
    document rather than decorating a surface. Grain's chrome, vendor named. */
 function captureBody(){
   return '<div><h1 class="t-head" style="margin:0">Photograph the document</h1>' +
-    '<p class="t-body" style="margin:8px 0 0;color:var(--secondary);text-wrap:pretty">Fit the whole document inside the corners. Flat, and no glare on the photograph.</p>' +
-    '<div class="capture"><span class="creg" style="top:0;left:0;border-top-width:2px;border-left-width:2px"></span>' +
-    '<span class="creg" style="top:0;right:0;border-top-width:2px;border-right-width:2px"></span>' +
-    '<span class="creg" style="bottom:0;left:0;border-bottom-width:2px;border-left-width:2px"></span>' +
-    '<span class="creg" style="bottom:0;right:0;border-bottom-width:2px;border-right-width:2px"></span></div>' +
-    '<div style="display:flex;justify-content:center;padding-top:22px">' +
-    '<button class="shutter press" aria-label="Take the photograph"></button></div>' +
-    '<p class="t-meta" style="margin:22px 0 0;color:var(--secondary);text-wrap:pretty">The capture happens inside Grain. Persona checks the document and is told nothing about your work.</p></div>';
+    '<p class="t-body" style="margin:8px 0 0;color:var(--secondary);text-wrap:pretty">The next screen is Persona\'s, not Grain\'s. We are telling you before it opens rather than after.</p>' +
+    '<div style="margin-top:24px">' + rows([
+      ['Persona takes the photograph','Their camera, their screen. Grain never sees the image.'],
+      ['They check the document','And send Grain the result, nothing else.'],
+      ['You come straight back here','However it goes.']
+    ]) + '</div>' +
+    '<div style="margin-top:26px"><button class="btn-primary press">Open Persona</button>' +
+    '<div style="text-align:center;padding-top:6px"><button class="btn-tertiary press">Not now</button></div></div>' +
+    '<p class="t-meta" style="margin:22px 0 0;color:var(--secondary);text-wrap:pretty">Neither vendor lets an app host their capture step, so Grain does not pretend to. Being handed to a stranger mid-flow is what the warning above is for.</p></div>';
 }
 
 /* A10. §9's loading arc: one lobe period of the figure's own wave, carrying no
@@ -1380,12 +1381,12 @@ function idCheckingBody(){
 }
 function idResultBody(){
   return msg({title:'The document checked out',
-    body:'Your record now says an identity document was checked, and the date. It says nothing more than that.',
-    rows:[['What a reader sees','Identity document checked, January 2025.'],
-          ['What a reader does not see','The document, the photographs, or the country.'],
-          ['What it does not say','That your work is verified. Nothing here touches your work.']],
+    body:'You can see that a document was checked, and when. This is yours to read and it is not sent to anyone.',
+    rows:[['What you can see','That a document was checked, and when.'],
+          ['What a party receives','Nothing. This never appears in anything sent to an employer.'],
+          ['What is kept','The result. Not the document, not the photographs.']],
     cta:'Back to your record',
-    foot:'Grain never prints that a person is verified, because a person is not a claim that can be true.'});
+    foot:'Grain never prints that a person is verified, because a person is not a claim that can be true, and it does not send a partner a chip that would say so.'});
 }
 function idLivenessBody(){
   return msg({title:'One photograph of you',
