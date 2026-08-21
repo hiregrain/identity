@@ -51,8 +51,8 @@ unretrofittable.
   not just subject and party.
 - Full-chain verification (used by the production auditor later): walks a
   stream, reports first divergence position.
-- Subject-keyed layout honoring the hot-range warning (UUIDv7 bucketing
-  decision documented at the schema site, per decision-50-style
+- Subject-keyed layout with random UUIDv4 ids (decision 075; layout
+  rationale documented at the schema site, per decision-50-style
   at-the-site rule).
 
 ## Acceptance

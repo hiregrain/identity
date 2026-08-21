@@ -20,8 +20,8 @@ an opaque permanent `ledger_person_id` out.
 
 ## Scope
 
-- `0010-person-core` (spine): `person` with opaque UUIDv7 id (hot-range-safe
-  layout, rationale documented at the schema site), `created_at`,
+- `0010-person-core` (spine): `person` with opaque random UUIDv4 id
+  (decision 075; rationale documented at the schema site), `created_at`,
   lifecycle state as write-once + transition rows (never an editable
   column, Dispatch's proven correction), tombstone marker.
 - Payload-side person row: contact channels with verified-at and
