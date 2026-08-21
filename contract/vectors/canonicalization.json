@@ -1,0 +1,86 @@
+{
+  "contract": "contract/CONTRACT.md rules 1 and 2",
+  "generator": "core/cmd/vectors",
+  "cases": [
+    {
+      "name": "empty object",
+      "input": "{}",
+      "canonical": "{}"
+    },
+    {
+      "name": "empty array",
+      "input": "[]",
+      "canonical": "[]"
+    },
+    {
+      "name": "top level string",
+      "input": "\"grain\"",
+      "canonical": "\"grain\""
+    },
+    {
+      "name": "top level number",
+      "input": "1.0",
+      "canonical": "1"
+    },
+    {
+      "name": "top level true",
+      "input": "true",
+      "canonical": "true"
+    },
+    {
+      "name": "top level null",
+      "input": "null",
+      "canonical": "null"
+    },
+    {
+      "name": "member order in the basic multilingual plane",
+      "input": "{\"é\":1,\"a\":2,\"Z\":3,\"A\":4}",
+      "canonical": "{\"A\":4,\"Z\":3,\"a\":2,\"é\":1}"
+    },
+    {
+      "name": "member order across the supplementary planes",
+      "input": "{\"�\":1,\"𐀀\":2}",
+      "canonical": "{\"𐀀\":2,\"�\":1}"
+    },
+    {
+      "name": "precomposed and decomposed spellings stay distinct members",
+      "input": "{\"å\":1,\"å\":2}",
+      "canonical": "{\"å\":2,\"å\":1}"
+    },
+    {
+      "name": "numbers follow ecmascript placement",
+      "input": "{\"negativeZero\":-0,\"integerFromDecimal\":1.0,\"maxSafeInteger\":9007199254740991,\"exponentThresholdHigh\":1e21,\"belowExponentThresholdHigh\":1e20,\"exponentThresholdLow\":1e-7,\"aboveExponentThresholdLow\":1e-6,\"plainDecimal\":0.000001,\"negativeSmall\":-1.5e-9,\"manyDigits\":333333333333333333333,\"fraction\":1.5,\"hundred\":100}",
+      "canonical": "{\"aboveExponentThresholdLow\":0.000001,\"belowExponentThresholdHigh\":100000000000000000000,\"exponentThresholdHigh\":1e+21,\"exponentThresholdLow\":1e-7,\"fraction\":1.5,\"hundred\":100,\"integerFromDecimal\":1,\"manyDigits\":333333333333333300000,\"maxSafeInteger\":9007199254740991,\"negativeSmall\":-1.5e-9,\"negativeZero\":0,\"plainDecimal\":0.000001}"
+    },
+    {
+      "name": "escapes are only the ones the contract allows",
+      "input": "{\"s\":\"\\\"\\\\\\/\\b\\f\\n\\r\\t\\u0000\\u001f\\u007f/\"}",
+      "canonical": "{\"s\":\"\\\"\\\\/\\b\\f\\n\\r\\t\\u0000\\u001f/\"}"
+    },
+    {
+      "name": "nested structures",
+      "input": "{\"b\":[{\"d\":1,\"c\":[true,null]},[]],\"a\":{\"z\":{},\"y\":[]}}",
+      "canonical": "{\"a\":{\"y\":[],\"z\":{}},\"b\":[{\"c\":[true,null],\"d\":1},[]]}"
+    },
+    {
+      "name": "rejected: duplicate member name",
+      "input": "{\"a\":1,\"a\":2}",
+      "rejected": true
+    },
+    {
+      "name": "rejected: bytes after the document",
+      "input": "{\"a\":1} {\"b\":2}",
+      "rejected": true
+    },
+    {
+      "name": "rejected: truncated document",
+      "input": "{\"a\":",
+      "rejected": true
+    },
+    {
+      "name": "rejected: not json at all",
+      "input": "grain",
+      "rejected": true
+    }
+  ]
+}

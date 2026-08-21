@@ -1,0 +1,91 @@
+{
+  "contract": "contract/CONTRACT.md rules 3 and 4",
+  "generator": "core/cmd/vectors",
+  "protectedHeader": "{\"alg\":\"EdDSA\"}",
+  "keyIdField": "kid",
+  "falseVerdict": "{\"valid\":false}",
+  "keys": [
+    {
+      "id": "fixture-key-1",
+      "privateHex": "49a7bc34bdd505630009d48ec2652f60606912ae54945e10629c7a5f1165e95f",
+      "publicHex": "bde984c612f5392a40ab3b9ba1c73c50a62abd941099c89d1473aad2ecb74d33"
+    },
+    {
+      "id": "fixture-key-2",
+      "privateHex": "ee85aaa2c965d9475250a9e1a44409f79a2e3ee315e6f06cc178333b8993b739",
+      "publicHex": "702ca4c864157bf3ed242f7dfe8961f0f905af3895da175f1faa4a3d5ba9a6a4"
+    }
+  ],
+  "sign": [
+    {
+      "name": "minimal payload",
+      "signerKeyId": "fixture-key-1",
+      "payload": "{\"subject\":\"person-1\"}",
+      "signedPayload": "{\"kid\":\"fixture-key-1\",\"subject\":\"person-1\"}",
+      "compact": "eyJhbGciOiJFZERTQSJ9.eyJraWQiOiJmaXh0dXJlLWtleS0xIiwic3ViamVjdCI6InBlcnNvbi0xIn0.Af1BF2Ai9gVflEbh6w_7XDaCuvXdyq0trv_Kt6FVq6ye8lMpguzAxL1_ri61aisCkf9Gx-H4m36O2WOO0a1JDA"
+    },
+    {
+      "name": "payload with nested members and numbers",
+      "signerKeyId": "fixture-key-1",
+      "payload": "{\"subject\":\"person-1\",\"issued_at\":\"2026-08-21T00:00:00Z\",\"measures\":[1,2.5],\"nested\":{\"b\":1,\"a\":2}}",
+      "signedPayload": "{\"issued_at\":\"2026-08-21T00:00:00Z\",\"kid\":\"fixture-key-1\",\"measures\":[1,2.5],\"nested\":{\"a\":2,\"b\":1},\"subject\":\"person-1\"}",
+      "compact": "eyJhbGciOiJFZERTQSJ9.eyJpc3N1ZWRfYXQiOiIyMDI2LTA4LTIxVDAwOjAwOjAwWiIsImtpZCI6ImZpeHR1cmUta2V5LTEiLCJtZWFzdXJlcyI6WzEsMi41XSwibmVzdGVkIjp7ImEiOjIsImIiOjF9LCJzdWJqZWN0IjoicGVyc29uLTEifQ.v9q58RVNs27-seo7vJuzTIeW1-B7YG-XWW_DvHPCL-0NpP5XiEBW3hCvfIRaYjEHQ_rSav6GG3ofblPALwvADw"
+    },
+    {
+      "name": "minimal payload under the second key",
+      "signerKeyId": "fixture-key-2",
+      "payload": "{\"subject\":\"person-1\"}",
+      "signedPayload": "{\"kid\":\"fixture-key-2\",\"subject\":\"person-1\"}",
+      "compact": "eyJhbGciOiJFZERTQSJ9.eyJraWQiOiJmaXh0dXJlLWtleS0yIiwic3ViamVjdCI6InBlcnNvbi0xIn0.UAsRN8DnqaIykFTZwrNqUu1h6Vq2Zakh_zPj8DPX5Xgpn0uQxO3BIeIs64CuEzHQ-0Gpd3oMJ6I6CPgQWf-HDA"
+    }
+  ],
+  "verify": [
+    {
+      "name": "genuine signature",
+      "compact": "eyJhbGciOiJFZERTQSJ9.eyJraWQiOiJmaXh0dXJlLWtleS0xIiwic3ViamVjdCI6InBlcnNvbi0xIn0.Af1BF2Ai9gVflEbh6w_7XDaCuvXdyq0trv_Kt6FVq6ye8lMpguzAxL1_ri61aisCkf9Gx-H4m36O2WOO0a1JDA",
+      "valid": true,
+      "keyId": "fixture-key-1"
+    },
+    {
+      "name": "genuine signature under the second key",
+      "compact": "eyJhbGciOiJFZERTQSJ9.eyJraWQiOiJmaXh0dXJlLWtleS0yIiwic3ViamVjdCI6InBlcnNvbi0xIn0.UAsRN8DnqaIykFTZwrNqUu1h6Vq2Zakh_zPj8DPX5Xgpn0uQxO3BIeIs64CuEzHQ-0Gpd3oMJ6I6CPgQWf-HDA",
+      "valid": true,
+      "keyId": "fixture-key-2"
+    },
+    {
+      "name": "payload key identifier swapped for the other key",
+      "compact": "eyJhbGciOiJFZERTQSJ9.eyJraWQiOiJmaXh0dXJlLWtleS0yIiwic3ViamVjdCI6InBlcnNvbi0xIn0.Af1BF2Ai9gVflEbh6w_7XDaCuvXdyq0trv_Kt6FVq6ye8lMpguzAxL1_ri61aisCkf9Gx-H4m36O2WOO0a1JDA",
+      "valid": false
+    },
+    {
+      "name": "payload key identifier names a key nobody holds",
+      "compact": "eyJhbGciOiJFZERTQSJ9.eyJraWQiOiJmaXh0dXJlLWtleS1hYnNlbnQiLCJzdWJqZWN0IjoicGVyc29uLTEifQ.Af1BF2Ai9gVflEbh6w_7XDaCuvXdyq0trv_Kt6FVq6ye8lMpguzAxL1_ri61aisCkf9Gx-H4m36O2WOO0a1JDA",
+      "valid": false
+    },
+    {
+      "name": "payload content altered under an untouched key identifier",
+      "compact": "eyJhbGciOiJFZERTQSJ9.eyJraWQiOiJmaXh0dXJlLWtleS0xIiwic3ViamVjdCI6InBlcnNvbi0yIn0.Af1BF2Ai9gVflEbh6w_7XDaCuvXdyq0trv_Kt6FVq6ye8lMpguzAxL1_ri61aisCkf9Gx-H4m36O2WOO0a1JDA",
+      "valid": false
+    },
+    {
+      "name": "signature byte flipped",
+      "compact": "eyJhbGciOiJFZERTQSJ9.eyJraWQiOiJmaXh0dXJlLWtleS0xIiwic3ViamVjdCI6InBlcnNvbi0xIn0.AP1BF2Ai9gVflEbh6w_7XDaCuvXdyq0trv_Kt6FVq6ye8lMpguzAxL1_ri61aisCkf9Gx-H4m36O2WOO0a1JDA",
+      "valid": false
+    },
+    {
+      "name": "protected header carries a key identifier member",
+      "compact": "eyJhbGciOiJFZERTQSIsImtpZCI6ImZpeHR1cmUta2V5LTEifQ.eyJraWQiOiJmaXh0dXJlLWtleS0xIiwic3ViamVjdCI6InBlcnNvbi0xIn0.Af1BF2Ai9gVflEbh6w_7XDaCuvXdyq0trv_Kt6FVq6ye8lMpguzAxL1_ri61aisCkf9Gx-H4m36O2WOO0a1JDA",
+      "valid": false
+    },
+    {
+      "name": "protected header names another algorithm",
+      "compact": "eyJhbGciOiJub25lIn0.eyJraWQiOiJmaXh0dXJlLWtleS0xIiwic3ViamVjdCI6InBlcnNvbi0xIn0.Af1BF2Ai9gVflEbh6w_7XDaCuvXdyq0trv_Kt6FVq6ye8lMpguzAxL1_ri61aisCkf9Gx-H4m36O2WOO0a1JDA",
+      "valid": false
+    },
+    {
+      "name": "segment missing",
+      "compact": "eyJhbGciOiJFZERTQSJ9.eyJraWQiOiJmaXh0dXJlLWtleS0xIiwic3ViamVjdCI6InBlcnNvbi0xIn0",
+      "valid": false
+    }
+  ]
+}
