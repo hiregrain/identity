@@ -48,15 +48,15 @@ cleanup; `contract/CONTRACT.md` preserves the normative rules).
   CI from day one.
 - Kernel governance seed: CODEOWNERS on `core/kernel/`, **plus the host
   branch-protection rule that actually enforces two approvals**.
+  CODEOWNERS alone requests reviewers, it does not require them, and a
+  synthetic PR in local CI cannot prove a rule that lives in the repo
+  host's settings. The acceptance below checks the host policy, not just
+  the file.
 - A kernel-side adapter speaking `reference/`'s differential harness
   protocol, so `make differential KERNEL_ADAPTER=...` runs the kernel
   against the reference model (founder ruling 2026-08-21, resolving the
   trust-kernel/06 raise: the adapter belongs to the task that owns the
   kernel, not to the harness).
-  CODEOWNERS alone requests reviewers, it does not require them, and a
-  synthetic PR in local CI cannot prove a rule that lives in the repo
-  host's settings. The acceptance below checks the host policy, not just
-  the file.
 - **Line-budget check (<3k) scoped to the frozen core only** (decision
   019): canonicalization, sign/verify, chain append/verify, tree
   construction and proofs. Schedulers, publishers, reconciliation, and
