@@ -33,6 +33,7 @@ binds:
   - design/12-platform-seam.md
   - design/ledger-design-0.1.md#7.1
   - design/ledger-design-0.1.md#8.1
+gated_criteria: [4]
 evidence: []
 verified_by: null
 ---
@@ -134,8 +135,21 @@ permits hosting the capture step inside the host app's chrome, so F3 is Grain's
 own screen handing off, with the vendor named on it. A drawn viewfinder inside
 Grain's frame overstates what the integration allows.
 
-Task files are authored when the dark palette is drawn and the split question
-below is answered.
+**The split, answered.** `plans/ORDER.md` guides four to eight tasks and this
+layer could not fit it as one. It splits into nine, by flow rather than by
+register section, with the shared vocabulary first: the record and the imprint
+carry the ledger row, the provenance marks, the plate, the figure and §7's
+depth, and every later task inherits them. That ordering is deliberate. In the
+prototype the expensive errors were all shared-decision errors, and each would
+have multiplied across the register had the surfaces been built first.
+
+Task 09 holds the two surfaces that are blocked rather than undrawn, so
+criterion 5's remainder has a declared home instead of quietly failing.
+
+**What task authoring did not wait for.** The dark palette is still decided and
+undrawn, but its criteria live in `app-shell` criterion 3, which checks the
+numbers rather than the drawing. Nothing in this layer's criteria depends on it,
+so authoring proceeded.
 
 ## Design venue, and the mockup gate
 
@@ -200,25 +214,30 @@ Acceptance:
    slow connection. Dispute is not in this list because decision 035 §B5
    removed the in-app dispute flow, see criterion 1's narrowing.
 4. **Trust-bearing flows serve from the ledger's own origin.** No vertical
-   chrome, no theming beyond light/dark (per the invariant-chrome ruling
-   pending in the decisions log).
+   chrome, no theming beyond light/dark. **Declared gated.** This criterion
+   cites an invariant-chrome ruling as "pending in the decisions log", and no
+   such entry exists. A criterion that cites an artifact this repo does not
+   contain is a decision gate wearing one (`CLAUDE.md`), so it is declared in
+   `gated_criteria` rather than assigned to a task that could not grade it.
+   It discharges when the ruling is recorded.
 5. **Every surface exists and carries all five of its states.** Every surface
    in `design/08-app-inventory.md` §1 exists and carries all five states
    named in its §2: loading, empty, error with a retry, offline, permission
    denied. A surface missing a state is not done. A state may be a shell
    renderer the surface declares rather than a separately drawn screen, which
    is how `design/13` carries them.
+6. **No screen claims more than the record supports.** Checked against
+   `design/07` §5: provenance is legible in words on the worker's own rows,
+   a chapter's removability is described accurately, no ordinal renders a
+   person on a scale, and the ceremony cannot produce corroboration from a
+   single attestation.
 7. **Every control sits on the correct side of the seam.**
    `design/12-platform-seam.md`'s table is the check: a control is Grain's only
    where the platform's version fails a target decision 046 already binds.
    Two do, and a third is a defect: the chassis forces butt terminals over
    `.icon`'s square ones, so §8's icon rule is contradicted on every screen
    that predates `design/13`.
+
 8. **Every surface renders on both platforms and at 200% type.** Both, for
    each surface, with the imprint taking decision 044's small-tier behaviour
    rather than scaling past the display.
-6. **No screen claims more than the record supports.** Checked against
-   `design/07` §5: provenance is legible in words on the worker's own rows,
-   a chapter's removability is described accurately, no ordinal renders a
-   person on a scale, and the ceremony cannot produce corroboration from a
-   single attestation.
