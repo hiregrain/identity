@@ -3890,3 +3890,73 @@ titles and on countable facts, and a successor `model/record-schema.md` needs
 founder ratification; the last ratified version stays in force until then.
 Decision 022's input set gains title by name. `design/10`, `design/13` and
 `design/14` gain the fields.
+
+## 075 — Person ids are random UUIDv4; the v7 plan wording is superseded (2026-08-21)
+
+Founder ruling on the raise from person-identity/01. Two in-repo sources
+answered the id scheme incompatibly: the shipped foundation/04
+justification block on `spine_object_id` ("ids must be random (UUIDv4 by
+convention)", because a time-ordered id leaks enrollment order and
+volume), and the person-identity plans, which required an "opaque UUIDv7
+id (hot-range-safe layout)", with trust-kernel/03 assuming UUIDv7
+bucketing. Hash-prefixing answers the performance objection only; the v7
+timestamp stays readable in the value, so the leak survives it. Both
+schemes type as `uuid`, so no check would have caught a quiet choice, and
+the scheme is not retrofittable once ids circulate.
+
+The ruling: random UUIDv4 plus a `created_at` column, accepting the loss
+of insert locality. This confirms the shipped foundation/04 checklist as
+it stands; no migration or allow-list amendment is needed. The UUIDv7
+wording in `plans/person-identity/LAYER.md`, task `person-identity/01`,
+and trust-kernel/03's bucketing assumption is superseded and amended to
+cite this entry. The hot-range warning stays documented at the schema
+site as the reason locality was given up, never as a license to
+reintroduce ordering.
+
+## 076 — The desk lists the chapters; the wordmark is the way home (2026-08-21)
+
+Two founder rulings from the web-app drawing. Both were raised as divergences
+rather than taken quietly, because each reinterprets something already written.
+
+**Decision 074's two open questions are answered as drafted.** Title enters
+decision 022's input set by name rather than staying folded inside "seniority
+and described responsibility", so nothing has to rediscover what those words are
+partly made of. And the refusal 074 keeps is the right line: title is compared
+within a chapter, where a promotion sequence is attested by the party that
+employed the worker, and never ranked across parties. That is the same shape as
+022's ruling that party quality scores are "incomparable by construction".
+
+**The record repeats its chapter list on a desk, and not on a phone.**
+`design/13-platform-screens` records that the record does not list its chapters
+under the figure, because a worker read the same five employers three times on
+one screen. That count was a 390px count: the figure, the rows, and the
+outstanding-verification prompts stacked in one column. On a desk the list
+appears once, in the record column, beside a figure that carries no names, and
+the prompts are below the fold rather than beside it. The rule is therefore
+**scoped to the single-column case** rather than withdrawn, and it binds
+unchanged on mobile web and on both native platforms.
+
+What this buys is the reason it was raised at all. Moving the figure into a
+second column left the record column holding a name and two prompts, which is
+the emptiness a desk makes visible and a phone hides. The list is the content
+that fills the width, and it carries the provenance marks, which a column of
+chapter names could not.
+
+**The wordmark is a home control on every pushed screen.** From inside a pushed
+surface the record and the account were reachable only by walking the entire
+back chain, one level per tap, with nothing on screen saying how far it went.
+`design/12`'s seam table is amended on one row: a pushed bar carries the
+wordmark, a divider, then back with the previous screen's title. Decision 048 is
+untouched, because this is not navigation between destinations and it is not a
+bar of its own; it is one control in a bar that already exists.
+
+The browser makes the case sharper and it is why this surfaced there. A phone
+hands back an edge gesture; a browser hands back nothing in the page, so a web
+app that does not draw a way home does not have one.
+
+**Two consequences, stated rather than left to be found.** The wordmark appears
+in the native bar only at depth, because on the record it would point at the
+screen the worker is already on. That leaves `design/12`'s standing question of
+whether the lockup belongs in the bar at all untouched and still open; this
+ruling covers the pushed bar only. And on the web the wordmark is in the
+masthead at every depth, because the web masthead already carries it.
