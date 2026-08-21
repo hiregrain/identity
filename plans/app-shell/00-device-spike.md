@@ -14,7 +14,7 @@ evidence:
     "diff:PR #17 @ 661414f",
     "test:surfaces/app-shell/test/stack.test.mjs",
     "test:surfaces/app-shell/test/fixture.test.mjs",
-    "log:log/2026-08-21-app-shell-00-ios-build.md",
+    "log:log/2026-08-21-app-shell-00-build-proof.md",
   ]
 verified_by: null
 ---
@@ -112,21 +112,23 @@ result cannot be produced by reading the code.
   Native 0.86.2, React 19.2.3, expo-router 57.0.15 and Skia 2.6.2, plus that
   each is declared as an exact pin. Runs in `make check`'s ts-check stage
   through `pnpm -r run test`.
-- Criterion 4, build, iOS: `log/2026-08-21-app-shell-00-ios-build.md` records
-  the prebuild, the pod install, the `xcodebuild` invocation that exits 0, and
-  the launched product rendering the figure and surviving a pinch. It also
-  records the two environment conditions the build has, a space-free path and a
-  UTF-8 locale, both of which are defects in the toolchain rather than in the
-  harness.
-- Criterion 4, build, Android: **not discharged.** The machine carries no
-  Android toolchain and no JDK 17. Raised rather than resolved quietly.
+- Criterion 4, build, both platforms:
+  `log/2026-08-21-app-shell-00-build-proof.md` records the prebuilds, the pod
+  install, the `xcodebuild` invocation that exits 0, the launched iOS product
+  rendering the figure and surviving a pinch, and `./gradlew assembleDebug` and
+  `assembleRelease` both printing `BUILD SUCCESSFUL` with `librnskia.so` present
+  for every ABI. It also records the three environment conditions the builds
+  have: a space-free path, a UTF-8 locale, and `babel-preset-expo` declared
+  rather than inherited. All three are toolchain defects rather than defects in
+  the harness.
 - Criterion 5: **not discharged.** Decision 085 puts the findings in
   `design/09` §6 as their own `docs(design):` commit on `main`, so they are not
   in this diff, and recording a spike as run before its Android and handset
   halves have been run would be a false record.
 - Criterion 6: **not discharged.** It is attested by the founder running the
   build on his own handsets. `surfaces/app-shell/README.md` states what he is
-  asked to do and what a clean run does and does not prove.
+  asked to do, which artifact to install on each handset, and what a clean run
+  does and does not prove.
 - The fixture the renderer is loaded with is checked by
   `surfaces/app-shell/test/fixture.test.mjs`: 89 threads, 23,585 path commands,
   counted out of the committed bytes rather than trusted from the declaration,

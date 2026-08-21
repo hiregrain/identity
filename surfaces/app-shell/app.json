@@ -12,8 +12,7 @@
       "supportsTablet": false
     },
     "android": {
-      "package": "com.hiregrain.appshell",
-      "edgeToEdgeEnabled": true
+      "package": "com.hiregrain.appshell"
     },
     "web": {
       "bundler": "metro",

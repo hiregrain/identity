@@ -49,15 +49,30 @@ and it is the state a pinch has to survive.
     pnpm --filter @grain/app-shell run ios
     pnpm --filter @grain/app-shell run android
 
-On a real handset, `npx expo run:ios --device` and `npx expo run:android
---device` from this directory.
+Gradle needs JDK 17. The machine default here is Temurin 25 and React Native
+0.86 does not accept it, so export `JAVA_HOME=/opt/homebrew/opt/openjdk@17`
+along with `ANDROID_HOME`.
+
+**On the Pixel, install the release APK, not the debug one.** A debug APK
+embeds no JavaScript bundle and expects a Metro server, so it cannot start on
+its own. `./gradlew assembleRelease` embeds the bundle, and Expo's template
+signs the release variant with the debug keystore, so it sideloads and runs
+with no Metro and no signing setup:
+
+    cd android && ./gradlew assembleRelease
+    adb install -r app/build/outputs/apk/release/app-release.apk
+
+**On the iPhone, build to the device.** `npx expo run:ios --device` from this
+directory. Xcode asks for a signing team the first time; a personal Apple ID
+is enough. A simulator build cannot be installed on a handset.
 
 **Paths with spaces break the iOS build.** Expo SDK 57's EXConstants pod emits
 a build phase whose script path is over-escaped, so `/bin/sh` splits it on the
 space and the build fails with `bash: /Users/you/Programming: No such file or
 directory`. It is a packaging defect in the pod, not in this harness, and it
 fails after the pods install so it reads as a compile failure. Build from a
-checkout whose path has no spaces until it is fixed upstream.
+checkout whose path has no spaces until it is fixed upstream. `pod install`
+also wants `LANG=en_US.UTF-8`.
 
 ## What the founder is asked to do, and what a clean run proves
 

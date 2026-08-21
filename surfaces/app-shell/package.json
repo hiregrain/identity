@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@shopify/react-native-skia": "2.6.2",
+    "babel-preset-expo": "57.0.7",
     "expo": "57.0.15",
     "expo-router": "57.0.15",
     "expo-splash-screen": "57.0.7",
