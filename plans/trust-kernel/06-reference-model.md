@@ -11,7 +11,7 @@ evidence:
   - "test:make differential"
   - "test:make differential-red"
   - "test:make reference-test"
-  - "diff:PR #12 @ dc58543"
+  - "diff:PR #12 @ 0a82956"
 verified_by: null
 ---
 
@@ -72,11 +72,15 @@ number-formatting bug in each implementation in turn to confirm detection.
   `reference/harness/mutant.ts` in turn, **against the reference and
   against the kernel**, and fails if the harness misses any of them, then
   requires the unplanted reference-against-kernel control to be green.
-  In `make check-red` as red path 21.
+  In `make check-red` as red path 21. A leg counts as caught only on
+  the harness's divergence exit code plus a reported divergence, and the
+  mutant list is derived from `mutant.ts --list`, so neither deleting the
+  mutant adapter nor renaming a bug leaves the red path passing while it
+  tests less than it claims.
 - `test:make reference-test` runs `reference/conformance.test.ts`: the
   reference model against the values `contract/CONTRACT.md` states in
   words rather than against its own output.
-- `diff:PR #12 @ dc58543`.
+- `diff:PR #12 @ 0a82956`.
 
 The four ambiguities this reading surfaced are ruled in decision 082 and
 written into `contract/CONTRACT.md`. Three ratified the readings this
