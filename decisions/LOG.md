@@ -4392,3 +4392,116 @@ that a contract change never rides an implementation diff. The reference
 model (PR #12) moves from preserve-and-escape to refusal; the kernel and
 TS runner (PR #15) already refuse, so `make differential` is expected
 green once both land.
+
+## 083 — Operator sign-in ruled: a third account kind, its own authentication, and verification on every act that appends (2026-08-21)
+
+Founder grilling, held because the console's every screen assumed an operator
+identity that nothing anywhere specified. `security-infra` §4 covers worker and
+party authentication and has no section for internal staff; no decision, layer or
+task covered it either.
+
+**Operators are a third kind of account, in their own schema.** `operator_users`,
+modelled on `party_users` and inheriting its invariant whole: no foreign key to a
+person, no shared identifier, and no database role holding SELECT on both it and
+the person tables, enforced by the declared-incompatible-pair lint from
+foundation/03 rather than by intent. A staff flag on a person record was refused
+outright, because a person is a subject of the record and entry 007 admits no
+third entity type. Reusing `party_users` was refused for a subtler reason: being a
+principal of the Grain party means administering Grain's keys, and adjudicating a
+merge is a different power that would have ridden in on the same account.
+
+**Own authentication, and no external identity provider on the console path.** If
+a third-party tenant mints operator sessions then compromising that tenant is
+compromising merge authority and party activation, which is the reasoning D4 used
+to refuse holding partner keys, pointed inward at ourselves. `security-infra` §4.4
+already prescribes named individual accounts with no shared logins for the *party*
+console, and operators must not sit below the bar of the partners they vet. Where
+convenience matters, the split is single sign-on for reading and console
+authentication for anything that appends.
+
+**Passkeys, synced ones permitted, with user verification required on every act
+that appends an event.** The closed set: approving a merge, activating a party,
+granting or revoking a capability, and recording a signed slip.
+
+The first draft of this ruling said hardware-bound WebAuthn, carried over from
+§4.4's party bar without asking whether the party threat model transfers. It does
+not. What the rule protects is that a person was present at the moment of the act,
+which user verification delivers and a security key does not improve; an
+unattended unlocked laptop cannot produce a verified assertion either way.
+Refusing synced credentials would buy resistance to credential export and to a
+compromised sync account, and would cost far more: losing a laptop becomes a
+recovery event, and §4.3 already establishes that recovery rather than login is
+the attack surface worth designing around. That reasoning was written for workers
+and applies unchanged here.
+
+**This narrows decision 077's recorded limitation without closing it.** 077 said
+two approvals produce one signature from one organisational key with two names as
+payload attributes, unfalsifiable to an outsider. A verified assertion per
+approval moves "two operators approved" from a value anyone with database access
+could write to an artefact requiring two people at two authenticators. It is still
+not a registry-grade signature and 077's per-operator-keys hardening stands as the
+answer if an outsider ever contests a merge.
+
+**Reads ride the session, including the escalation to a full record.** Opening
+queues, opening cases and reading the evidence extract need no step-up, and
+neither does opening both records in full. **The consequence is recorded rather
+than buried:** a worker asking who has read their record can be told an operator
+opened it, and that operator will not have had to prove they were present when it
+happened. The alternative was argued and the founder ruled for the session.
+
+**Creating an operator is a two-admin governance event, appended and anchored.**
+Not because it stops a determined insider, which `security-infra` §3.5 is right
+that nothing at this company size does, but because a one-person path to minting a
+second operator makes `person-identity/06`'s mechanical criterion *false* rather
+than merely unenforced. A rule a check asserts may not have a documented bypass
+one screen away.
+
+**Bootstrap is an infrastructure act, outside the console, and it is anchored.**
+At genesis whoever holds deploy access can create any account regardless of what
+the console permits, so gating the first admins behind a console screen adds a
+screen and no security. Seeding the first admins is therefore an ordinary
+out-of-band act whose only requirement is that it lands in the chained and
+anchored governing-event stream, so the unavoidable bypass leaves the same
+indelible evidence everything else does. A one-time setup path inside the console
+was refused as the same thing wearing a screen, with a permanently open door if
+the close ever failed.
+
+**One person may hold both admin and operator.** Separate accounts per role were
+refused: a switch performed many times a day becomes muscle memory and stops being
+a moment of thought, which buys the appearance of separation rather than the
+substance. Separate people were refused as unaffordable at this size, and a rule
+violated in its first week is worse than no rule. What binds instead is the
+per-case rule from 077: an admin who acted on a case may not be an approving
+operator on that same case, and the two approvals on a merge must be distinct
+natural persons.
+
+**Recusal is self-declared, and unenforceable by construction.** The unlinkability
+invariant above means the ledger cannot tell whether an operator is also a worker,
+knows a subject, or once worked for a party. Enforcement would require the linkage
+entry 007 forbids. So an operator declares a recusal, the declaration is an
+appended event, and the trade is recorded as knowingly made: a declaration that
+leaves a record is worth something later, and a policy with no artifact is worth
+nothing.
+
+**Sessions end on idle.** An idle timeout measured in hours rather than days;
+every session listed and individually revocable, as `person-identity/02` already
+does for workers; any admin may revoke any session immediately; every
+authentication event appended. Offboarding revokes sessions first, before
+anything else, because the erasure pattern below governs the record and not a live
+browser tab.
+
+**Departure takes `party-registry/04`'s pattern unchanged**, by reference rather
+than reinvented. An operator is a natural person with erasure rights whose
+adjudications must stay attributable forever, which is the identical tension that
+task already resolved: actions carry an opaque `actor_id` that outlives the
+principal record, erasure removes the principal row and its identifying columns,
+and the audit keeps every row and the fact that one actor did these things.
+**Revoking an operator is not retroactive.** Approvals they gave stand, for the
+same reason suspending a party never reaches back into what it already signed.
+Departure is a lifecycle event, not a finding.
+
+**What this does not settle.** No task file exists for any of it;
+`operator-console` is still `draft`, and this ruling is what its authentication
+task will be written against when the layer goes `ready`. Anomaly alerting on
+operator sessions, which §4.4 prescribes for parties, is not ruled here either
+way.
