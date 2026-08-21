@@ -7,12 +7,12 @@ status: done
 depends_on: [foundation/01, foundation/02]
 binds: [contract/CONTRACT.md, decisions/LOG.md#012, decisions/LOG.md#019]
 evidence:
-  - "test:make check green at b87a7fb40c4eb9be9c1ff180ee227fdb57e89e6e; make check-red red paths 16 to 20; make kernel-governance exits 0 against the live host"
+  - "test:make check green at 6c78d826d9712f7bcfe7671a81e643128dbc11da; make check-red red paths 16 to 20; make kernel-governance exits 0 against the live host"
   - "test:differential run against reference at origin/task/trust-kernel-06, 18075 of 20096 requests byte-identical, every divergence a lone surrogate (ambiguity A3, raised)"
   - "log:log/2026-08-21-trust-kernel-01-verification.md"
-  - "diff:PR #15 @ b87a7fb40c4eb9be9c1ff180ee227fdb57e89e6e"
-  - "review:log/2026-08-21-trust-kernel-01-reverification.md"
-verified_by: clean-context-verifier@2026-08-21
+  - "diff:PR #15 @ 6c78d826d9712f7bcfe7671a81e643128dbc11da"
+  - "review:log/2026-08-21-trust-kernel-01-head-reverification.md"
+verified_by: head-reverifier@2026-08-21
 ---
 
 # Canonicalization and JWS core
