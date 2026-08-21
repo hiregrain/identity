@@ -5,7 +5,7 @@ layer: person-identity
 satisfies: []
 status: in_progress
 depends_on: [foundation/04, foundation/07]
-migrations: [0010-person-core]
+migrations: [0010-person-core, 0036-person-record-and-channels]
 binds: [decisions/LOG.md#013, decisions/LOG.md#017]
 evidence: []
 verified_by: null
