@@ -3,8 +3,9 @@
 // does not correct on its own: the fence reserves research and plan
 // prose to human/agent authorship). FHIR HumanName is the adopted shape,
 // because it is temporal, multi-valued, and purpose-tagged, which is
-// what an append-only ledger needs: a name change is a new row plus a
-// later row superseding it in read order, never a mutation.
+// what an append-only ledger needs: a name change is a new row that
+// names the row it replaces (supersedes_outbox_entry_id), which is what
+// end-dates the prior row without a write ever touching it.
 //
 // Three layers, never collapsed (decision 013):
 //
@@ -189,13 +190,22 @@ func (p *Parts) validate() error {
 
 // Name is one person_name assertion (decision 013's worker-owned layer).
 // ID is the row's outbox_entry_id once read back; empty on a Name being
-// appended for the first time.
+// appended for the first time. Supersedes is the outbox_entry_id of the
+// row this one replaced, empty for a name's first assertion; Append
+// computes it, a caller never sets it. PeriodEnd, once read back, is the
+// EFFECTIVE end date (person_name_effective, migration 0011-names): the
+// source's own stated end if it had one, else derived from whichever row
+// supersedes this one, else nil (this name is current). The underlying
+// column a caller's own write touched is never itself updated; a row
+// with a non-nil PeriodEnd here was end-dated by a later append, not by
+// a write against it.
 type Name struct {
 	ID             string
 	Text           string
 	Parts          *Parts
 	Use            Use
 	Representation Representation
+	Supersedes     string
 	PeriodStart    *time.Time
 	PeriodEnd      *time.Time
 	AssertedAt     time.Time
@@ -299,11 +309,28 @@ func (d DocumentName) validate() error {
 }
 
 // MRZName is the result of splitting one MRZ name field into ICAO's
-// primary and secondary identifiers.
+// primary and secondary identifiers. IsMononym is the field's own
+// asserted state: only true when the field carries no "<<" separator at
+// all, ICAO's normal encoding for a single-identifier name. SeparatorPresent
+// distinguishes the shape that produced an empty Secondary from the one
+// that produced no Secondary in the first place: false means the field
+// had no "<<" anywhere (the canonical mononym encoding this task names);
+// true with an empty Secondary means the field DID carry the separator,
+// followed by nothing but pad (an issuer explicitly asserting an empty
+// secondary identifier, a different fact from "there was no separator").
+// document_name.is_mononym exists to record which state a row asserts
+// rather than infer it from a null secondary_identifier (the migration's
+// own reasoning); collapsing these two shapes into one IsMononym value
+// with no way to tell them apart would be exactly that inference, one
+// layer up. A caller that cares about the distinction reads
+// SeparatorPresent; one that only needs "is this a mononym for
+// rendering purposes" reads IsMononym, which is true in both shapes,
+// since both are, structurally, one identifier.
 type MRZName struct {
-	Primary   string
-	Secondary string
-	IsMononym bool
+	Primary          string
+	Secondary        string
+	IsMononym        bool
+	SeparatorPresent bool
 }
 
 // ParseMRZName implements ICAO Doc 9303's own separator, "<<", and only
@@ -320,9 +347,12 @@ func ParseMRZName(field string) MRZName {
 	if i := strings.Index(field, "<<"); i >= 0 {
 		primary := mrzWords(field[:i])
 		secondary := mrzWords(field[i+2:])
-		return MRZName{Primary: primary, Secondary: secondary, IsMononym: secondary == ""}
+		return MRZName{
+			Primary: primary, Secondary: secondary,
+			IsMononym: secondary == "", SeparatorPresent: true,
+		}
 	}
-	return MRZName{Primary: mrzWords(field), IsMononym: true}
+	return MRZName{Primary: mrzWords(field), IsMononym: true, SeparatorPresent: false}
 }
 
 // mrzWords strips one identifier's trailing pad and turns its internal
@@ -450,12 +480,27 @@ type Names struct {
 func NewNames(cipher Cipher) *Names { return &Names{cipher: cipher} }
 
 // Append writes one person_name assertion. It never mutates a prior row:
-// the current name for (person, use) is whichever row was asserted most
-// recently, read through person_name_current (migration 0011-names),
-// exactly as person_lifecycle_transition's latest row is the person's
-// current lifecycle state. A prior name is never deleted or edited, so
-// it remains queryable for matching (AllNames) while the query layer
-// alone withholds it from an employer-facing read (CurrentNames).
+// before sealing anything, it looks up whichever row is currently
+// current for (personID, n.Use, n.Representation) and, if one exists,
+// names it in the new row's own supersedes_outbox_entry_id. That single
+// column, on the row being appended, is the entire end-dating mechanism
+// (migration 0011-names, person_name_effective): the prior row's own
+// columns are never touched, and its effective period_end derives, at
+// read time, from the new row naming it rather than from anything
+// written to it. A prior name is never deleted or edited, so it remains
+// queryable for matching (AllNames, which reads the effective view and
+// carries every row's derived period) while the query layer alone
+// withholds it from an employer-facing read (CurrentNames, effective
+// period_end IS NULL).
+//
+// The lookup and the append are not one transaction (core/outbox has no
+// read-then-write primitive; every write is its own spine transaction),
+// so two concurrent Appends for the same (person, use, representation)
+// can both read "no current row yet" and both write with
+// supersedes_outbox_entry_id NULL. The table's UNIQUE constraint on that
+// column stops a row from being claimed as superseded twice, not from
+// this race; the ordinary single-writer path this repo's other append-only
+// tables assume is what's being followed here too.
 func (nm *Names) Append(ctx context.Context, personID string, n Name) error {
 	if err := ValidID(personID); err != nil {
 		return err
@@ -463,18 +508,26 @@ func (nm *Names) Append(ctx context.Context, personID string, n Name) error {
 	if err := n.validate(); err != nil {
 		return err
 	}
+	supersedes, err := nm.currentEntryID(ctx, personID, n.Use, n.Representation)
+	if err != nil {
+		return fmt.Errorf("name: looking up the name to supersede: %w", err)
+	}
 	textCipher, err := nm.cipher.Encrypt(ctx, personID, []byte(n.Text))
 	if err != nil {
 		return fmt.Errorf("name: sealing text: %w", err)
 	}
 	row := map[string]any{
-		"person_id":        personID,
-		"text_ciphertext":  hexLiteral(textCipher),
-		"parts_ciphertext": nil,
-		"use":              string(n.Use),
-		"representation":   string(n.Representation),
-		"period_start":     nil,
-		"period_end":       nil,
+		"person_id":                  personID,
+		"text_ciphertext":            hexLiteral(textCipher),
+		"parts_ciphertext":           nil,
+		"use":                        string(n.Use),
+		"representation":             string(n.Representation),
+		"supersedes_outbox_entry_id": nil,
+		"period_start":               nil,
+		"period_end":                 nil,
+	}
+	if supersedes != "" {
+		row["supersedes_outbox_entry_id"] = supersedes
 	}
 	if n.Parts != nil {
 		raw, err := json.Marshal(n.Parts)
@@ -494,6 +547,24 @@ func (nm *Names) Append(ctx context.Context, personID string, n Name) error {
 		row["period_end"] = n.PeriodEnd.UTC().Format(time.RFC3339Nano)
 	}
 	return enqueueRow(personID, "person_name", row)
+}
+
+// currentEntryID returns the outbox_entry_id of whichever person_name
+// row is currently current for (use, representation), or "" if this is
+// the name's first assertion. This is Append's read half of end-dating:
+// whatever it returns becomes the new row's supersedes_outbox_entry_id.
+func (nm *Names) currentEntryID(ctx context.Context, personID string, use Use, representation Representation) (string, error) {
+	lines, err := transport.Query(namesPlane, servingRole, `
+		SELECT outbox_entry_id FROM person_name_current
+		 WHERE person_id = $1 AND "use" = $2 AND representation = $3`,
+		transport.String(personID), transport.String(string(use)), transport.String(string(representation)))
+	if err != nil {
+		return "", err
+	}
+	if len(lines) == 0 {
+		return "", nil
+	}
+	return lines[0], nil
 }
 
 // AppendDocumentName writes one immutable document capture. Both the MRZ
@@ -569,20 +640,23 @@ func enqueueRow(personID, table string, row map[string]any) error {
 
 const namesPlane = "payload"
 
-// CurrentNames reads the employer-safe view: one row per (use,
-// representation) pair, whichever was asserted most recently. A prior
-// name never appears here, which is the query-layer withholding the
-// task requires (gender transition, marriage), enforced by which view
-// this function reads rather than by anything a caller must remember.
+// CurrentNames reads the employer-safe view: one row per (person_id,
+// use, representation) triple, whichever row nothing has superseded
+// (person_name_current, effective period_end IS NULL). A prior name
+// never appears here, which is the query-layer withholding the task
+// requires (gender transition, marriage), enforced by which view this
+// function reads rather than by anything a caller must remember.
 func (nm *Names) CurrentNames(ctx context.Context, personID string) ([]Name, error) {
 	return nm.queryNames(ctx, personID, "person_name_current")
 }
 
-// AllNames reads every asserted name, prior ones included. Matching
-// (person-identity/05) reads through here; an employer-facing surface
-// never should.
+// AllNames reads every asserted name, prior ones included, through
+// person_name_effective so each row's PeriodEnd carries its derived
+// value: nil for a row nothing supersedes, the superseding row's
+// asserted_at otherwise. Matching (person-identity/05) reads through
+// here; an employer-facing surface never should.
 func (nm *Names) AllNames(ctx context.Context, personID string) ([]Name, error) {
-	return nm.queryNames(ctx, personID, "person_name")
+	return nm.queryNames(ctx, personID, "person_name_effective")
 }
 
 // RenderFor is CurrentNames narrowed to one use and one representation:
@@ -610,7 +684,7 @@ func (nm *Names) queryNames(ctx context.Context, personID, table string) ([]Name
 	lines, err := transport.Query(namesPlane, servingRole, fmt.Sprintf(`
 		SELECT outbox_entry_id, encode(text_ciphertext, 'hex'),
 		       coalesce(encode(parts_ciphertext, 'hex'), ''),
-		       "use", representation,
+		       "use", representation, coalesce(supersedes_outbox_entry_id::text, ''),
 		       coalesce(period_start::text, ''), coalesce(period_end::text, ''),
 		       asserted_at
 		  FROM %s WHERE person_id = $1 ORDER BY asserted_at`, table),
@@ -620,7 +694,7 @@ func (nm *Names) queryNames(ctx context.Context, personID, table string) ([]Name
 	}
 	names := make([]Name, 0, len(lines))
 	for _, line := range lines {
-		f := transport.SplitRow(line, 8)
+		f := transport.SplitRow(line, 9)
 		id := f[0]
 		text, err := nm.openHex(ctx, personID, f[1])
 		if err != nil {
@@ -643,20 +717,21 @@ func (nm *Names) queryNames(ctx context.Context, personID, table string) ([]Name
 			Parts:          parts,
 			Use:            Use(f[3]),
 			Representation: Representation(f[4]),
-		}
-		if f[5] != "" {
-			t, err := time.Parse("2006-01-02 15:04:05.999999-07", f[5])
-			if err == nil {
-				n.PeriodStart = &t
-			}
+			Supersedes:     f[5],
 		}
 		if f[6] != "" {
 			t, err := time.Parse("2006-01-02 15:04:05.999999-07", f[6])
 			if err == nil {
+				n.PeriodStart = &t
+			}
+		}
+		if f[7] != "" {
+			t, err := time.Parse("2006-01-02 15:04:05.999999-07", f[7])
+			if err == nil {
 				n.PeriodEnd = &t
 			}
 		}
-		if t, err := time.Parse("2006-01-02 15:04:05.999999-07", f[7]); err == nil {
+		if t, err := time.Parse("2006-01-02 15:04:05.999999-07", f[8]); err == nil {
 			n.AssertedAt = t
 		}
 		names = append(names, n)
@@ -726,10 +801,13 @@ func (nm *Names) openHex(ctx context.Context, personID, encoded string) ([]byte,
 }
 
 // DeriveIndexTokens computes the index fresh from every current source
-// row: every person_name.Text and every document_name identifier field.
-// Calling this twice against unchanged source rows returns the same set
-// both times, which is the regeneration property the task's mechanical
-// criterion asks for.
+// row: every person_name.Text and every document_name identifier field
+// (primary, secondary, native-script, and Latin-raw), so a same-script
+// match (a CJK passport's native-script capture against another CJK
+// document) has a token to key on, not only the Latin-transliterated
+// fields. Calling this twice against unchanged source rows returns the
+// same set both times, which is the regeneration property the task's
+// mechanical criterion asks for.
 func (nm *Names) DeriveIndexTokens(ctx context.Context, personID string) ([]DerivedToken, error) {
 	names, err := nm.AllNames(ctx, personID)
 	if err != nil {
@@ -749,7 +827,7 @@ func (nm *Names) DeriveIndexTokens(ctx context.Context, personID string) ([]Deri
 		}
 	}
 	for _, d := range docs {
-		for _, field := range []string{d.PrimaryIdentifier, d.SecondaryIdentifier, d.LatinNameRaw} {
+		for _, field := range []string{d.PrimaryIdentifier, d.SecondaryIdentifier, d.NativeScriptName, d.LatinNameRaw} {
 			for _, tok := range GenerateIndexTokens(field) {
 				out = append(out, DerivedToken{
 					SourceTable: "document_name", SourceOutboxEntryID: d.ID,

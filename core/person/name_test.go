@@ -19,6 +19,9 @@ func TestMononymMRZWithNoDoubleFillerIsNotSplit(t *testing.T) {
 	if !got.IsMononym {
 		t.Fatal("a field with no << was not recognized as a mononym")
 	}
+	if got.SeparatorPresent {
+		t.Fatal("a field with no << reported SeparatorPresent")
+	}
 	if got.Secondary != "" {
 		t.Fatalf("a mononym acquired a non-empty secondary identifier: %q", got.Secondary)
 	}
@@ -33,6 +36,9 @@ func TestSingleWordMononymMRZ(t *testing.T) {
 	if !got.IsMononym || got.Primary != "BUDI" || got.Secondary != "" {
 		t.Fatalf("got %+v", got)
 	}
+	if got.SeparatorPresent {
+		t.Fatal("a field with no << reported SeparatorPresent")
+	}
 }
 
 // The ordinary two-identifier case: "<<" is the boundary, and each
@@ -41,6 +47,9 @@ func TestOrdinaryMRZNameSplitsOnDoubleFiller(t *testing.T) {
 	got := ParseMRZName("GARCIA<LOPEZ<<MARIA<DEL<CARMEN")
 	if got.IsMononym {
 		t.Fatal("a two-identifier name was reported as a mononym")
+	}
+	if !got.SeparatorPresent {
+		t.Fatal("a field carrying << reported no separator")
 	}
 	if got.Primary != "GARCIA LOPEZ" {
 		t.Fatalf("primary: got %q", got.Primary)
@@ -51,11 +60,19 @@ func TestOrdinaryMRZNameSplitsOnDoubleFiller(t *testing.T) {
 }
 
 // A secondary identifier that is present but empty after the boundary
-// (an issuer's own way of encoding a mononym) is still a mononym.
+// (an issuer's own way of encoding a mononym) is still a mononym, but a
+// DIFFERENTLY SHAPED one from a field carrying no separator at all
+// (TestMononymMRZWithNoDoubleFillerIsNotSplit): SeparatorPresent is what
+// tells the two apart, so a caller that cares is not left inferring the
+// distinction from an empty Secondary, exactly the collapse
+// document_name.is_mononym exists to avoid one layer up.
 func TestMRZWithExplicitEmptySecondaryIsAMononym(t *testing.T) {
 	got := ParseMRZName("BUDI<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
 	if !got.IsMononym || got.Secondary != "" || got.Primary != "BUDI" {
 		t.Fatalf("got %+v", got)
+	}
+	if !got.SeparatorPresent {
+		t.Fatal("a field carrying << reported no separator, indistinguishable from SATRIYA<SUDARPA's shape")
 	}
 }
 

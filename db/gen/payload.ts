@@ -81,6 +81,7 @@ export interface PersonNameRow {
   representation: string;
   period_start: string | null;
   period_end: string | null;
+  supersedes_outbox_entry_id: string | null;
   asserted_at: string;
   residency_region: string;
 }

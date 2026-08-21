@@ -1,7 +1,9 @@
 //go:build db
 
 // The name model's acceptance suite (person-identity/04). Run by
-// `make name-test` against both live planes: signup provisions the
+// `make person-test` against both live planes (there is no separate
+// name-test target; person-test's own Makefile comment says why): signup
+// provisions the
 // person and their key (person-identity/01), and every scenario here
 // drives Names against the real payload plane through core/envelope and
 // core/outbox, exactly like person_db_test.go does for signup.
@@ -144,6 +146,7 @@ func TestNameIndexRegenerationReproducesExactly(t *testing.T) {
 	if err := nm.AppendDocumentName(ctx, id, person.DocumentName{
 		DocumentType: "passport", IssuingCountry: "es", ScriptCode: "Latn", Source: "VIZ",
 		PrimaryIdentifier: "NUÑEZ", SecondaryIdentifier: "MARÍA",
+		NativeScriptName: "Núñez Martínez",
 	}); err != nil {
 		t.Fatalf("append document: %v", err)
 	}
@@ -154,6 +157,15 @@ func TestNameIndexRegenerationReproducesExactly(t *testing.T) {
 	before, err := nm.DeriveIndexTokens(ctx, id)
 	if err != nil {
 		t.Fatalf("derive before write: %v", err)
+	}
+	nativeScriptIndexed := false
+	for _, tok := range before {
+		if tok.Kind == "original" && tok.Value == "Núñez Martínez" {
+			nativeScriptIndexed = true
+		}
+	}
+	if !nativeScriptIndexed {
+		t.Fatalf("native_script_name did not produce an index token: %+v", before)
 	}
 	if err := nm.WriteIndex(ctx, id); err != nil {
 		t.Fatalf("write index: %v", err)
@@ -213,8 +225,6 @@ func TestNameChangeAppendsAndEndDatesWithoutMutation(t *testing.T) {
 	if _, _, err := outbox.Drain(""); err != nil {
 		t.Fatalf("drain: %v", err)
 	}
-	// asserted_at ordering must be unambiguous between the two rows.
-	time.Sleep(10 * time.Millisecond)
 	if err := nm.Append(ctx, id, person.Name{
 		Text: "Jordan Rivera", Use: person.UseOfficial, Representation: person.RepresentationRomanized,
 	}); err != nil {
@@ -228,21 +238,65 @@ func TestNameChangeAppendsAndEndDatesWithoutMutation(t *testing.T) {
 	if err != nil || len(current) != 1 || current[0].Text != "Jordan Rivera" {
 		t.Fatalf("current names: %+v, %v, want only the latest", current, err)
 	}
+	if current[0].PeriodEnd != nil {
+		t.Fatalf("the current name carries an effective period_end: %+v", current[0])
+	}
 
 	all, err := nm.AllNames(ctx, id)
 	if err != nil || len(all) != 2 {
 		t.Fatalf("all names: %+v, %v, want both rows still present", all, err)
 	}
-	texts := map[string]bool{}
+	var prior, latest person.Name
 	for _, n := range all {
-		texts[n.Text] = true
+		switch n.Text {
+		case "Jordan Smith":
+			prior = n
+		case "Jordan Rivera":
+			latest = n
+		default:
+			t.Fatalf("unexpected row: %+v", n)
+		}
 	}
-	if !texts["Jordan Smith"] || !texts["Jordan Rivera"] {
+	if prior.ID == "" || latest.ID == "" {
 		t.Fatalf("both names must remain queryable for matching: %+v", all)
 	}
 
-	// No row was mutated: the table holds exactly two rows for this
-	// person, one per append, never one row edited in place.
+	// The end-dating conjunct: the appending row (v2) names the row it
+	// replaces, and the prior row's EFFECTIVE period_end (read through
+	// person_name_effective, which AllNames selects) is that append's
+	// asserted_at, not nil. v2 itself supersedes nothing before it and
+	// carries no effective end.
+	if latest.Supersedes != prior.ID {
+		t.Fatalf("the new row does not name the row it replaces: got %q, want %q", latest.Supersedes, prior.ID)
+	}
+	if prior.Supersedes != "" {
+		t.Fatalf("the prior row unexpectedly supersedes something: %q", prior.Supersedes)
+	}
+	if prior.PeriodEnd == nil {
+		t.Fatal("the prior name's effective period_end is nil: it was never end-dated")
+	}
+	if !prior.PeriodEnd.Equal(latest.AssertedAt) {
+		t.Fatalf("prior period_end %v does not match the superseding append's asserted_at %v",
+			prior.PeriodEnd, latest.AssertedAt)
+	}
+	if latest.PeriodEnd != nil {
+		t.Fatalf("the latest name carries an effective period_end: %v", latest.PeriodEnd)
+	}
+
+	// The non-mutation conjunct, proven at the strongest level available:
+	// the prior row's OWN period_end column, read raw rather than through
+	// person_name_effective, is still NULL. Nothing wrote to that row;
+	// the end-date above is entirely a derivation from the new row's own
+	// supersedes_outbox_entry_id.
+	rawPeriodEnd := ownerSQL(t, "payload", `
+		SELECT coalesce(period_end::text, 'null') FROM person_name
+		 WHERE outbox_entry_id = $1`, transport.String(prior.ID))
+	if rawPeriodEnd != "null" {
+		t.Fatalf("the prior row's own period_end column was written to: %s", rawPeriodEnd)
+	}
+
+	// The table holds exactly two rows for this person, one per append,
+	// never one row edited in place.
 	count := ownerSQL(t, "payload", `
 		SELECT count(*) FROM person_name WHERE person_id = $1`,
 		transport.String(id))

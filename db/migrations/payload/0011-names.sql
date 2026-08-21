@@ -39,16 +39,22 @@ $$;
 -- person_name: append-only name assertions (decision 013's three-layer
 -- model, layer one and its FHIR HumanName shape). One row per assertion,
 -- never mutated. "A name change appends and end-dates" (the task's
--- criterion) is met without an UPDATE, by the same idiom migration
--- 0010-person-core already uses for lifecycle: the CURRENT name for a
--- (person_id, use, representation) triple is the latest row, read
--- through the view below,
--- exactly as person_tombstoned reads the latest lifecycle transition.
--- period_start/period_end hold a validity window ONLY when the source
--- of the name states one explicitly (a document's own stated period);
--- an ordinary worker-driven name change carries neither, and "current"
--- still resolves correctly because it comes from insertion order, not
--- from a column a later write would have to touch.
+-- criterion, its scope line "period (validity bounds; absent = current)",
+-- and its reference model, "a name change is a new entry plus an
+-- end-date on the prior") is met without an UPDATE: the appending row
+-- carries supersedes_outbox_entry_id, naming the row it replaces, and
+-- THAT is what end-dates the prior row. The prior row's own period_end
+-- column is never written to; its effective end date is derived, at read
+-- time, from the row that supersedes it (person_name_effective below).
+-- The append is the one and only write; end-dating is a consequence of
+-- that write naming its predecessor, not a second write against it.
+--
+-- period_start/period_end on a row are the source's OWN stated validity
+-- window when it has one (a document's own stated period); most
+-- ordinary worker-driven name changes carry neither, and the effective
+-- end date still resolves correctly because it comes from
+-- supersedes_outbox_entry_id, not from a column this row's own writer
+-- filled in about itself.
 --
 -- text_ciphertext is the authoritative rendering and is always present:
 -- unlike person_record.display_name_ciphertext (optional, worker may
@@ -80,31 +86,60 @@ CREATE TABLE person_name (
         CHECK (representation IN ('IDE', 'ABC', 'SYL')),
     period_start timestamptz,
     period_end timestamptz,
+    -- The end-dating mechanism: the row this one replaces, named by the
+    -- appending write itself. NULL for a name's first assertion (nothing
+    -- to supersede yet). UNIQUE so at most one row can claim to supersede
+    -- any given row, which is what keeps person_name_effective's join
+    -- below from fanning one row out into two; the CHECK rules out the
+    -- degenerate self-reference. core/person looks up the row currently
+    -- current for (person_id, use, representation) and names it here; it
+    -- never writes to that row.
+    supersedes_outbox_entry_id spine_object_id
+        REFERENCES person_name (outbox_entry_id),
     asserted_at timestamptz NOT NULL DEFAULT now(),
     residency_region residency_region NOT NULL
         DEFAULT own_declared_residency_region(),
-    CHECK (period_end IS NULL OR period_start IS NULL OR period_end >= period_start)
+    CHECK (period_end IS NULL OR period_start IS NULL OR period_end >= period_start),
+    CHECK (supersedes_outbox_entry_id IS NULL OR supersedes_outbox_entry_id <> outbox_entry_id),
+    UNIQUE (supersedes_outbox_entry_id)
 );
 
 CREATE INDEX person_name_by_person ON person_name (person_id);
 
--- The query-layer rule, as a view rather than a column: the CURRENT name
--- per (person_id, use, representation) is the most recently asserted
--- row. Representation is part of the key, not just use, because a CJK
--- person legitimately holds three simultaneously current rows for one
--- use (ideographic, romanized, phonetic); collapsing on use alone would
--- make two of the three vanish from every "current" read the moment all
--- three exist. This is what makes a prior name "absent from an employer
--- render" without deleting or mutating it: an employer-facing read
--- selects through this view, a matching read selects the base table
--- directly, and the same rows answer both questions.
+-- Every row's EFFECTIVE period_end: its own, if the source stated one,
+-- else the asserted_at of whichever row names it in
+-- supersedes_outbox_entry_id, else NULL (nothing has superseded it, so
+-- it is current). This is the read-time derivation that end-dates a
+-- prior row without a write ever touching it: the LEFT JOIN finds the
+-- row (if any) that supersedes this one, and the table's own UNIQUE
+-- constraint on supersedes_outbox_entry_id guarantees at most one match,
+-- so the join cannot fan one row into two.
+CREATE VIEW person_name_effective AS
+SELECT n.outbox_entry_id, n.person_id, n.text_ciphertext, n.parts_ciphertext,
+       n."use", n.representation, n.supersedes_outbox_entry_id,
+       n.period_start, COALESCE(n.period_end, s.asserted_at) AS period_end,
+       n.asserted_at, n.residency_region
+  FROM person_name n
+  LEFT JOIN person_name s ON s.supersedes_outbox_entry_id = n.outbox_entry_id;
+
+-- The query-layer rule: the CURRENT name per (person_id, use,
+-- representation) is whichever row's effective period_end is NULL, i.e.
+-- nothing has superseded it. Representation is part of the key, not just
+-- use, because a CJK person legitimately holds three simultaneously
+-- current rows for one use (ideographic, romanized, phonetic); collapsing
+-- on use alone would make two of the three vanish from every "current"
+-- read the moment all three exist. This is what makes a prior name
+-- "absent from an employer render" without deleting or mutating it: an
+-- employer-facing read selects through this view, a matching read
+-- selects person_name_effective (every row, prior ones included, each
+-- carrying its own effective period), and the same rows answer both
+-- questions.
 CREATE VIEW person_name_current AS
-SELECT DISTINCT ON (person_id, "use", representation)
-       outbox_entry_id, person_id, text_ciphertext, parts_ciphertext,
-       "use", representation, period_start, period_end, asserted_at,
-       residency_region
-  FROM person_name
- ORDER BY person_id, "use", representation, asserted_at DESC, outbox_entry_id DESC;
+SELECT outbox_entry_id, person_id, text_ciphertext, parts_ciphertext,
+       "use", representation, supersedes_outbox_entry_id,
+       period_start, period_end, asserted_at, residency_region
+  FROM person_name_effective
+ WHERE period_end IS NULL;
 
 -- document_name: one row per verified document, immutable, in ICAO
 -- Doc 9303's own vocabulary (primary/secondary identifier, never
@@ -168,10 +203,14 @@ CREATE INDEX document_name_by_person ON document_name (person_id);
 -- here only proves the derivation is deterministic and regenerable.
 --
 -- token_kind is the closed, honest set this task actually implements:
--- 'original' (the name as asserted, NFC-normalized) and
--- 'diacritic_folded' (the same token with combining marks stripped,
--- kept ALONGSIDE the original, never replacing it, per the task's own
--- rule). No phonetic hashing of non-Latin input, per the same rule.
+-- 'original' (the name as asserted, whitespace-trimmed; no Unicode
+-- normalization runs, since this module holds no dependency and the
+-- standard library ships none, so a decomposed and a precomposed
+-- encoding of the same visible name are two different original tokens
+-- today) and 'diacritic_folded' (the same token with precomposed
+-- diacritics the fold table knows mapped to their base letter, kept
+-- ALONGSIDE the original, never replacing it, per the task's own rule).
+-- No phonetic hashing of non-Latin input, per the same rule.
 CREATE TABLE name_index_entry (
     outbox_entry_id spine_object_id PRIMARY KEY,
     person_id spine_object_id NOT NULL,
