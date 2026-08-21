@@ -11,12 +11,15 @@
 // under ordinary review, so the expensive discipline stays concentrated
 // where a subtle bug is unrecoverable.
 //
-// Decision 019 also puts this directory under a two-human review rule.
-// That rule is NOT in force: it needs a branch-protection rule on the
-// repository host requiring two approving reviews with code-owner review,
-// and no such rule exists yet. checks/kernel-governance.mjs asserts it by
-// querying the host and fails until it does, which is why this paragraph
-// says "not in force" rather than describing the rule as if it were.
+// Decision 019 also put this directory under a two-human review rule, and
+// decision 087 superseded that rule's enforcement without touching its
+// intent: every pull request here is authored under the founder's own
+// account and the host forbids approving your own, so required approvals
+// were unsatisfiable by the only human in the repository. Kernel review is
+// carried by the loop's gates now, clean-context verification, code review,
+// and the founder's read at merge. What the host enforces, and what
+// checks/kernel-governance.mjs asserts by querying it, is a ruleset
+// blocking force pushes and branch deletion on the default branch.
 //
 // The normative rules this package implements are contract/CONTRACT.md,
 // preserved from the T1 spike (decision 012). The golden vectors under

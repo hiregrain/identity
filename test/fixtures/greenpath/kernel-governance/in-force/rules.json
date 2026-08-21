@@ -1,0 +1,14 @@
+[
+  {
+    "type": "deletion",
+    "ruleset_source_type": "Repository",
+    "ruleset_source": "hiregrain/identity",
+    "ruleset_id": 21162777
+  },
+  {
+    "type": "non_fast_forward",
+    "ruleset_source_type": "Repository",
+    "ruleset_source": "hiregrain/identity",
+    "ruleset_id": 21162777
+  }
+]

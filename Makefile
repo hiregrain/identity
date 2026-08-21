@@ -207,16 +207,18 @@ vectors-check:
 kernel-budget:
 	node checks/kernel-budget.mjs
 
-# The two-approval rule on the frozen core (trust-kernel/01, decision
-# 019). This is the local entry point; the enforcement is CI's
+# The host policy on the frozen core (trust-kernel/01, decision 087):
+# force pushes and branch deletion blocked on main, CODEOWNERS present on
+# the kernel paths. This is the local entry point; the enforcement is CI's
 # kernel-governance job, which is in the all-green fan-in and therefore
 # blocks a merge. It is not part of `check` because every other target in
 # this file runs against local containers with no credentials, and a host
 # query here would fail for any developer who has not authenticated.
 #
-# It exits 1 today, which is the criterion working: no rule exists on the
-# host and creating one is a repository-admin act (the raise recorded on
-# plans/trust-kernel/01 and in the verification record).
+# Decision 087 superseded 019's two-approval rule rather than its intent:
+# every pull request here is authored under the founder's own account and
+# the host forbids self-approval, so a required-approval rule was
+# unsatisfiable. The dormant code and its trigger are in the check.
 kernel-governance:
 	node checks/kernel-governance.mjs
 
@@ -311,12 +313,12 @@ check-red:
 	! node checks/vector-freshness.mjs "$$dir" && \
 	rm -rf "$$dir" && \
 	echo "flagged: both runners passed the edited file and the freshness check did not"
-	@echo "red path 20: a host rule short of two approvals with code-owner review fails the governance check, and either host mechanism satisfies it (no database)"
-	! node checks/kernel-governance.mjs hiregrain/identity test/fixtures/redpath/kernel-governance/one-approval
-	! node checks/kernel-governance.mjs hiregrain/identity test/fixtures/redpath/kernel-governance/no-code-owner
+	@echo "red path 20: each piece of decision 087's policy going missing fails the governance check on its own line, and the policy in force passes (no database)"
+	! node checks/kernel-governance.mjs hiregrain/identity test/fixtures/redpath/kernel-governance/no-force-push-rule
+	! node checks/kernel-governance.mjs hiregrain/identity test/fixtures/redpath/kernel-governance/no-deletion-rule
+	! node checks/kernel-governance.mjs hiregrain/identity test/fixtures/redpath/kernel-governance/no-codeowners
 	! node checks/kernel-governance.mjs hiregrain/identity test/fixtures/redpath/kernel-governance/nothing
-	node checks/kernel-governance.mjs hiregrain/identity test/fixtures/greenpath/kernel-governance/ruleset
-	node checks/kernel-governance.mjs hiregrain/identity test/fixtures/greenpath/kernel-governance/classic
+	node checks/kernel-governance.mjs hiregrain/identity test/fixtures/greenpath/kernel-governance/in-force
 	@echo "check-red: all red paths fail as required"
 
 # Database-dependent red path: a schema edit without regenerated types

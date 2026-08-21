@@ -1,44 +1,43 @@
-// checks/kernel-governance.mjs asserts that two approving reviews are
-// actually required on the frozen core (trust-kernel/01, decision 019).
+// checks/kernel-governance.mjs asserts the host policy that actually
+// protects the frozen core (trust-kernel/01, decision 087).
 //
-// The point of this check is the distinction decision 019 drew: CODEOWNERS
-// REQUESTS reviewers, a host rule REQUIRES them. A repo with a CODEOWNERS
-// entry and no host rule looks governed and is not, and a synthetic pull
-// request in local CI cannot tell the difference. So this check does two
-// separate things and reports them separately:
+// What 087 ruled, and why this check changed shape. Decision 019 gave the
+// frozen core two-human review and trust-kernel/01 made that a
+// host-enforced required-approval rule. The loop then established the fact
+// on the ground: every pull request here is authored under the founder's
+// own account, and the host forbids approving your own pull request, so a
+// required-approval rule of any count is unsatisfiable by the only human in
+// the repository. A rule bypassed on every merge enforces nothing and
+// claims otherwise, which is worse than its absence.
 //
-//   1. The file half. .github/CODEOWNERS covers core/kernel/ with an owner.
-//   2. The host half. The host is asked what actually protects the default
-//      branch, and the answer must require at least two approving reviews
-//      and code-owner review.
+// So the check asserts what is true and is enforced:
 //
-// The host has two mechanisms and either one governs, so either one passes:
+//   1. The host blocks force pushes on the default branch. This is the rule
+//      with teeth: the decisions log is append-only and every verification
+//      record cites SHAs, so a rewritten default branch is the one git
+//      operation that silently invalidates the repository's own evidence.
+//   2. The host blocks deletion of the default branch.
+//   3. .github/CODEOWNERS carries the kernel paths, as the reviewer-request
+//      seed. It requests reviewers and does not require them, which is why
+//      it is checked separately from the host and never instead of it.
 //
-//   * A repository ruleset, the host's current mechanism. Read through
-//     `repos/{owner}/{repo}/rules/branches/{branch}`, which returns the
-//     rules in force on that branch from every ruleset targeting it,
-//     repository and organization alike. It answers for a token with
-//     ordinary read access, which is why this check can run in CI.
-//   * Classic branch protection, the older mechanism. Read through
-//     `repos/{owner}/{repo}/branches/{branch}/protection`, which needs
-//     repository-admin credentials and 404s without them. A 404 is
-//     therefore ambiguous between absent and unreadable, and is reported as
-//     one input rather than as the answer.
+// Kernel review itself is enforced by the loop's gates now: clean-context
+// verification, a code review pass, and the founder's read at merge. That
+// is decision 019's intent carried by the process that runs rather than by
+// a setting that would be theatre.
 //
-// Wired into CI as its own job (.github/workflows/ci.yml) and into the
-// all-green fan-in, so it blocks a merge. It is deliberately not in
-// `make check`, whose whole pipeline runs against local containers with no
-// credentials; a host query there would fail for every developer who has
-// not authenticated. `make kernel-governance` is the local entry point.
+// Each missing piece is reported on its own line. An aggregate "not
+// governed" tells a reader nothing about which half to go fix.
 //
 // Usage: node checks/kernel-governance.mjs [owner/repo] [canned-answer-dir]
 //
-// The second argument replaces the host query with canned answers on disk
-// (repo.json, rules.json, protection.json; a missing file models an answer
-// the host refuses). It is how `make check-red` proves both verdicts fire,
-// including the governed one, which no real query can demonstrate while
-// the rule does not exist. Same convention as checks/spine-schema.mjs,
-// which takes fixture paths positionally for the same reason.
+// The second argument replaces both halves with canned answers on disk
+// (repo.json, rules.json, and a CODEOWNERS stand-in; a missing file models
+// an answer that is not there). It is how `make check-red` proves every
+// verdict fires, including the governed one, and it is the only way to
+// exercise the missing-CODEOWNERS branch without deleting the real file.
+// Same convention as checks/spine-schema.mjs, which takes fixture paths
+// positionally for the same reason.
 //
 // Needs the gh CLI, authenticated with read access, unless canned answers
 // are given. No database.
@@ -50,23 +49,39 @@ import { join } from "node:path";
 const REPOSITORY = process.argv[2] ?? "hiregrain/identity";
 const CANNED = process.argv[3];
 const CODEOWNERS = ".github/CODEOWNERS";
-const GOVERNED_PATH = "/core/kernel/";
-const REQUIRED_APPROVALS = 2;
+const GOVERNED_PATHS = ["/core/kernel/", "/core/cmd/vectors/", "/contract/"];
+
+// The rule types decision 087 put in force, named as the host names them.
+const REQUIRED_RULES = [
+  ["non_fast_forward", "force pushes are not blocked"],
+  ["deletion", "the branch can be deleted"],
+];
 
 const failures = [];
 
 // 1. The file half.
-const codeowners = readFileSync(CODEOWNERS, "utf8");
-const entry = codeowners
-  .split("\n")
-  .map((line) => line.replace(/#.*$/, "").trim())
-  .find((line) => line.startsWith(`${GOVERNED_PATH} `));
-if (entry === undefined) {
-  failures.push(`${CODEOWNERS}: no entry covers ${GOVERNED_PATH}`);
-} else if (!/@[\w-]/.test(entry)) {
-  failures.push(`${CODEOWNERS}: the ${GOVERNED_PATH} entry names no owner`);
+const codeownersPath =
+  CANNED === undefined ? CODEOWNERS : join(CANNED, "CODEOWNERS");
+if (!existsSync(codeownersPath)) {
+  failures.push(
+    `${codeownersPath}: absent, so no reviewer is requested at all`,
+  );
 } else {
-  console.log(`kernel-governance: ${CODEOWNERS} covers ${GOVERNED_PATH}`);
+  const owned = readFileSync(codeownersPath, "utf8")
+    .split("\n")
+    .map((line) => line.replace(/#.*$/, "").trim())
+    .filter((line) => line !== "" && /@[\w-]/.test(line))
+    .map((line) => line.split(/\s+/)[0]);
+
+  const uncovered = GOVERNED_PATHS.filter((path) => !owned.includes(path));
+  for (const path of uncovered) {
+    failures.push(`${codeownersPath}: no entry with an owner covers ${path}`);
+  }
+  if (uncovered.length === 0) {
+    console.log(
+      `kernel-governance: ${codeownersPath} covers ${GOVERNED_PATHS.join(", ")}`,
+    );
+  }
 }
 
 // 2. The host half.
@@ -79,22 +94,34 @@ if (branch.error !== undefined) {
   failures.push(`host: cannot read ${REPOSITORY}: ${branch.error}`);
 } else {
   const target = `${REPOSITORY}@${branch.value}`;
-  const ruleset = rulesetVerdict(REPOSITORY, branch.value);
-  const classic = classicVerdict(REPOSITORY, branch.value);
-  const governed = ruleset.governed
-    ? ruleset
-    : classic.governed
-      ? classic
-      : null;
+  const rules = hostAnswer("rules", [
+    `repos/${REPOSITORY}/rules/branches/${encodeURIComponent(branch.value)}`,
+  ]);
 
-  if (governed !== null) {
-    console.log(`kernel-governance: ${target} is governed. ${governed.reason}`);
-  } else {
+  if (rules.error !== undefined) {
     failures.push(
-      `host: ${target} does not require ${REQUIRED_APPROVALS} approving reviews with code-owner review. ` +
-        `ruleset: ${ruleset.reason}; classic protection: ${classic.reason}. ` +
-        `The frozen core is ungoverned until such a rule exists, and creating it is a repository-admin act.`,
+      `host: cannot read the rules in force on ${target}: ${rules.error}`,
     );
+  } else if (!Array.isArray(rules.value)) {
+    failures.push(`host: ${target} returned no rule list`);
+  } else {
+    const inForce = new Set(
+      rules.value
+        .map((rule) => rule?.type)
+        .filter((type) => type !== undefined),
+    );
+    const missing = REQUIRED_RULES.filter(([type]) => !inForce.has(type));
+    for (const [type, what] of missing) {
+      failures.push(
+        `host: ${target} has no ${type} rule in force, so ${what}. ` +
+          `Decision 087 requires it; ${rules.value.length} rule(s) are in force.`,
+      );
+    }
+    if (missing.length === 0) {
+      console.log(
+        `kernel-governance: ${target} blocks force pushes and branch deletion (${inForce.size} rule type(s) in force)`,
+      );
+    }
   }
 }
 
@@ -102,80 +129,57 @@ if (failures.length > 0) {
   for (const failure of failures) console.error(`FAIL ${failure}`);
   process.exit(1);
 }
-console.log("kernel-governance: the frozen core is governed by a host rule");
+console.log(
+  "kernel-governance: the host enforces decision 087's policy on the frozen core",
+);
 
-// rulesetVerdict reads the rules in force on the branch. The endpoint
-// returns one entry per rule from every ruleset that targets the branch,
-// so the two requirements can arrive from two different rulesets and both
-// still be in force; they are looked for independently for that reason.
-function rulesetVerdict(repository, branch) {
-  const rules = hostAnswer("rules", [
-    `repos/${repository}/rules/branches/${encodeURIComponent(branch)}`,
-  ]);
-  if (rules.error !== undefined) {
-    return { governed: false, reason: `not readable (${rules.error})` };
-  }
-  if (!Array.isArray(rules.value)) {
-    return { governed: false, reason: "the host returned no rule list" };
-  }
-
-  const pullRequestRules = rules.value.filter(
+// approvalVerdict is decision 087's dormant trigger, kept rather than
+// deleted. 087 superseded 019's ENFORCEMENT and not its intent, and it
+// wrote the condition for the reversal down: the day a second maintainer
+// holds write access, required approvals return to the host settings and
+// this check asserts them again. Deleting the code would mean rediscovering
+// which host fields carry the answer, and both mechanisms have to be read
+// because either can carry the rule.
+//
+// It is not called. A required-approval rule today is unsatisfiable by the
+// only human here, since the host forbids approving your own pull request,
+// so asserting one would fail every run for a reason no pull request can
+// fix. To revive: call it alongside the REQUIRED_RULES loop above.
+export function approvalVerdict(rules, protection, requiredApprovals = 2) {
+  const pullRequestRules = (Array.isArray(rules) ? rules : []).filter(
     (rule) => rule?.type === "pull_request",
   );
-  if (pullRequestRules.length === 0) {
-    return {
-      governed: false,
-      reason: `no pull_request rule in force (${rules.value.length} rule(s) on the branch)`,
-    };
-  }
-
-  const approvals = Math.max(
-    ...pullRequestRules.map(
-      (rule) => rule.parameters?.required_approving_review_count ?? 0,
+  const fromRuleset = {
+    approvals: Math.max(
+      0,
+      ...pullRequestRules.map(
+        (rule) => rule.parameters?.required_approving_review_count ?? 0,
+      ),
     ),
-  );
-  const codeOwners = pullRequestRules.some(
-    (rule) => rule.parameters?.require_code_owner_review === true,
-  );
-  return verdict(approvals, codeOwners, "a ruleset");
-}
+    codeOwners: pullRequestRules.some(
+      (rule) => rule.parameters?.require_code_owner_review === true,
+    ),
+  };
+  const reviews = protection?.required_pull_request_reviews;
+  const fromClassic = {
+    approvals: reviews?.required_approving_review_count ?? 0,
+    codeOwners: reviews?.require_code_owner_reviews === true,
+  };
 
-function classicVerdict(repository, branch) {
-  const protection = hostAnswer("protection", [
-    `repos/${repository}/branches/${encodeURIComponent(branch)}/protection`,
-  ]);
-  if (protection.error !== undefined) {
-    // Ambiguous on its own: absent, or present and unreadable by a
-    // non-admin token. Said as what it is rather than resolved.
-    return {
-      governed: false,
-      reason: `absent, or unreadable without repository-admin credentials (${protection.error})`,
-    };
-  }
-  const reviews = protection.value?.required_pull_request_reviews;
-  return verdict(
-    reviews?.required_approving_review_count ?? 0,
-    reviews?.require_code_owner_reviews === true,
-    "classic branch protection",
-  );
-}
-
-function verdict(approvals, codeOwners, mechanism) {
-  if (approvals < REQUIRED_APPROVALS) {
-    return {
-      governed: false,
-      reason: `${mechanism} requires ${approvals} approving review(s)`,
-    };
-  }
-  if (!codeOwners) {
-    return {
-      governed: false,
-      reason: `${mechanism} requires ${approvals} approving reviews but not code-owner review, so ${CODEOWNERS} only requests one`,
-    };
+  for (const [mechanism, verdict] of [
+    ["a ruleset", fromRuleset],
+    ["classic branch protection", fromClassic],
+  ]) {
+    if (verdict.approvals >= requiredApprovals && verdict.codeOwners) {
+      return {
+        governed: true,
+        reason: `${mechanism} requires ${verdict.approvals} approving reviews including a code owner`,
+      };
+    }
   }
   return {
-    governed: true,
-    reason: `${mechanism} requires ${approvals} approving reviews including a code owner`,
+    governed: false,
+    reason: `no mechanism requires ${requiredApprovals} approving reviews with code-owner review`,
   };
 }
 

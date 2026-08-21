@@ -40,14 +40,14 @@ jobs:
           node-version: 24
       - run: make metadata
 
-  # The two-approval rule on the frozen core (trust-kernel/01, decision
-  # 019). Its own job, and in the all-green fan-in below, so it blocks a
-  # merge. CODEOWNERS requests reviewers and a host rule requires them, and
-  # only a query to the host can tell which is in force, which is why this
-  # cannot be a file check. The rules-in-force endpoint answers for an
-  # ordinary read token, so GITHUB_TOKEN is enough.
+  # The host policy on the frozen core (trust-kernel/01, decision 087):
+  # force pushes and branch deletion blocked on main. Its own job, and in
+  # the all-green fan-in below, so it blocks a merge. Only a query to the
+  # host can say what is actually in force, which is why this cannot be a
+  # file check; the rules-in-force endpoint answers for an ordinary read
+  # token, so GITHUB_TOKEN is enough.
   kernel-governance:
-    name: two approvals required on the frozen core
+    name: host rules in force on the frozen core
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
