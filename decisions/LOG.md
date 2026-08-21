@@ -4617,3 +4617,34 @@ of the client app, entering the pnpm workspace rather than a throwaway.
 **Spike findings land on `main`** as their own `docs(design):` commit in
 design/09 §6, never inside the implementation diff; the PR carries only
 the harness code.
+
+## 086 — Step-up leaves person-identity; it returns with the verification layer (2026-08-21)
+
+Founder ruling on person-identity/02's raise. The task's step-up
+criterion required a code session on a document-verified account to be
+refused sensitive operations, and decision 071 rules that
+document-verified accounts cannot exist in first-product: every account
+derives channel, so the criterion was unreachable code wearing a test.
+Decision 071 corrected the same premise in person-identity/03's scope
+and did not reach 02's, or 03's first acceptance criterion. This entry
+finishes the job.
+
+**Step-up is cut from person-identity/02 and the downgrade-proof
+criterion from person-identity/03.** Both return with the verification
+layer, whose task 04 owns the assurance ladder; the sensitive-set
+definition and decision 020's comparison rule are unchanged and wait
+there. 02 keeps what is real now: OTP login and passkeys as equal paths
+(decision 013), sessions and revocation, enumeration resistance, rate
+limiting, and append-only auth events, including the assertion that a
+code session is never blocked from routine operations.
+
+**How a session derives its own assurance is deferred with it.** The
+founder chose against method-based session assurance (code below
+passkey) because it demotes the code path, which decision 013 forbids.
+The derivation question lands in verification/04's lap alongside the
+ladder it grades against.
+
+**Migrations bookkeeping, same entry.** Tasks 02 and 03 carry no
+migrations claim; auth needs schema on both planes. Claims are amended
+on main after the files land, the foundation/08 precedent now applied
+three times.
