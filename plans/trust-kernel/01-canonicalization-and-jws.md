@@ -7,10 +7,10 @@ status: in_progress
 depends_on: [foundation/01, foundation/02]
 binds: [contract/CONTRACT.md, decisions/LOG.md#012, decisions/LOG.md#019]
 evidence:
-  - "test:make check green at 87c799bf70d656be5d6c495b0bf03ac7a8baa164; make check-red red paths 16 to 20"
+  - "test:make check green at b87a7fb40c4eb9be9c1ff180ee227fdb57e89e6e; make check-red red paths 16 to 20; make kernel-governance exits 0 against the live host"
   - "test:differential run against reference at origin/task/trust-kernel-06, 18075 of 20096 requests byte-identical, every divergence a lone surrogate (ambiguity A3, raised)"
   - "log:log/2026-08-21-trust-kernel-01-verification.md"
-  - "diff:PR #15 @ 87c799bf70d656be5d6c495b0bf03ac7a8baa164"
+  - "diff:PR #15 @ b87a7fb40c4eb9be9c1ff180ee227fdb57e89e6e"
 verified_by: null
 ---
 
