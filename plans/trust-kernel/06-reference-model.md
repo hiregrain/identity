@@ -7,7 +7,10 @@ status: in_progress
 depends_on: [foundation/01]
 migrations: []
 binds: [contract/CONTRACT.md, decisions/LOG.md#019]
-evidence: []
+evidence:
+  - "test:make reference-test"
+  - "test:make differential-red"
+  - "diff:PR #12 @ 7eeb746"
 verified_by: null
 ---
 
@@ -54,3 +57,22 @@ read the kernel, that must agree with it byte for byte.
 Verifier confirms from the task's dispatch record that the reference author
 had no kernel access, runs the harness on fresh random input, and plants one
 number-formatting bug in each implementation in turn to confirm detection.
+
+## Evidence
+
+- `test:make reference-test` runs `reference/conformance.test.ts`: the
+  reference model against the values `contract/CONTRACT.md` states in
+  words rather than against its own output.
+- `test:make differential-red` plants each contract misreading in
+  `reference/harness/mutant.ts` in turn and fails if the harness misses
+  one, then requires an unplanted control run to be green. Wired into
+  `make check-red` as red path 15.
+- `diff:PR #12 @ 7eeb746`.
+
+The two mechanical criteria compare **two** implementations, and only the
+reference exists at this branch's base: `core/kernel/` is unwritten and
+`trust-kernel/01` is `in_progress`. `make differential` is defined,
+takes `KERNEL_ADAPTER`, and is deliberately outside `check` until there
+is a kernel to differ from. The kernel side of both criteria, and the
+four ambiguities recorded in `reference/README.md`, are open raises; the
+task stays `in_progress`.
