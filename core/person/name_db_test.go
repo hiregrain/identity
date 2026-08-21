@@ -11,6 +11,7 @@ package person_test
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"sort"
 	"testing"
@@ -528,14 +529,94 @@ func TestNoOverlapInversion(t *testing.T) {
 	}
 }
 
+// TestSupersededRowWithAFutureStatedEndIsNotCurrent is decision 092
+// closing the case decision 091 did not reach, the exact shape the
+// fourth verification pass failed on. A row carries its own stated
+// period_end far in the future (a document's stated expiry, say), and
+// is then superseded by an ordinary replacement with no stated period
+// of its own. Under COALESCE(period_end, lead(...)), the stored future
+// end always won over the lead-derived one, so the superseded row
+// stayed "current" under decision 091's window predicate right
+// alongside its replacement: two rows current for one key, and the one
+// the criterion names as the thing to withhold (the prior name in a
+// gender transition or marriage) is the one still rendered. LEAST
+// closes it: a superseded row's effective end is the earlier of its own
+// stated end and its successor's asserted_at, so being superseded ends
+// it even when its own window would have run longer.
+func TestSupersededRowWithAFutureStatedEndIsNotCurrent(t *testing.T) {
+	ctx := context.Background()
+	id, nm := freshPersonAndNames(t)
+
+	farFuture := time.Now().UTC().AddDate(1, 0, 0)
+	if err := nm.Append(ctx, id, person.Name{
+		Text: "Deadname Here", Use: person.UseOfficial, Representation: person.RepresentationRomanized,
+		PeriodEnd: &farFuture,
+	}); err != nil {
+		t.Fatalf("append the row with a future stated end: %v", err)
+	}
+	if err := nm.Append(ctx, id, person.Name{
+		Text: "Chosen Name", Use: person.UseOfficial, Representation: person.RepresentationRomanized,
+	}); err != nil {
+		t.Fatalf("append the replacement: %v", err)
+	}
+	if _, _, err := outbox.Drain(""); err != nil {
+		t.Fatalf("drain: %v", err)
+	}
+
+	current, err := nm.CurrentNames(ctx, id)
+	if err != nil {
+		t.Fatalf("current names: %v", err)
+	}
+	if len(current) != 1 || current[0].Text != "Chosen Name" {
+		t.Fatalf("current names: %+v, want exactly one row, the replacement; "+
+			"the prior name with a future stated end must not leak into the employer render", current)
+	}
+
+	all, err := nm.AllNames(ctx, id)
+	if err != nil || len(all) != 2 {
+		t.Fatalf("all names: %+v, %v, want both rows still present", all, err)
+	}
+	var prior person.Name
+	for _, n := range all {
+		if n.Text == "Deadname Here" {
+			prior = n
+		}
+	}
+	if prior.ID == "" {
+		t.Fatalf("the prior name must remain queryable for matching: %+v", all)
+	}
+	if prior.PeriodEnd == nil || !prior.PeriodEnd.Before(farFuture) {
+		t.Fatalf("the prior row's effective period_end: got %v, want the successor's asserted_at "+
+			"(earlier than its own far-future stated end %v)", prior.PeriodEnd, farFuture)
+	}
+
+	// Non-mutation: the row's OWN period_end column, read raw rather
+	// than through person_name_effective, still holds the far-future
+	// value the caller wrote. Being end-dated by a successor is entirely
+	// a read-time derivation; nothing was written to this row a second
+	// time.
+	rawPeriodEnd := ownerSQL(t, "payload", `
+		SELECT period_end::text FROM person_name WHERE outbox_entry_id = $1`,
+		transport.String(prior.ID))
+	wantRaw := farFuture.Format("2006-01-02 15:04:05")
+	if rawPeriodEnd[:len(wantRaw)] != wantRaw {
+		t.Fatalf("the prior row's own period_end column: got %q, want it to start with %q (unmutated)",
+			rawPeriodEnd, wantRaw)
+	}
+}
+
 // TestWriteIndexTwiceLeavesTheStoredSetUnchanged is code review finding
 // 3 on person-identity/04's third verification pass: WriteIndex
 // generates a fresh outbox_entry_id per row on every call, so
 // outbox_entry_id alone cannot dedupe a second call's rows against the
-// first's. name_index_entry's own UNIQUE constraint on (person_id,
-// source_table, source_outbox_entry_id, token_kind, generator_version)
-// is the real idempotency key, caught by core/outbox's unspecified-
-// target ON CONFLICT DO NOTHING.
+// first's. name_index_entry's own UNIQUE constraint,
+// name_index_entry_dedup_key, on (person_id, source_table,
+// source_outbox_entry_id, source_field, token_kind, generator_version)
+// is the real idempotency key, named explicitly as this table's
+// ConflictConstraint (core/outbox) rather than caught by a blanket,
+// unspecified ON CONFLICT DO NOTHING, which once weakened a different
+// table's own unique constraint the same way (person-identity/04's
+// fourth verification pass).
 func TestWriteIndexTwiceLeavesTheStoredSetUnchanged(t *testing.T) {
 	ctx := context.Background()
 	id, nm := freshPersonAndNames(t)
@@ -585,5 +666,64 @@ func TestWriteIndexTwiceLeavesTheStoredSetUnchanged(t *testing.T) {
 		transport.String(id))
 	if count != fmt.Sprint(len(first)) {
 		t.Fatalf("name_index_entry row count: got %s, want %d (a second WriteIndex must not duplicate rows)", count, len(first))
+	}
+}
+
+// TestDuplicatePersonRecordStillErrorsThroughTheApplyPath proves item 2
+// of person-identity/04's fourth verification pass fixed a real
+// regression this task's own earlier fix introduced. core/outbox's
+// apply path once defaulted to an unspecified ON CONFLICT DO NOTHING to
+// give name_index_entry its idempotency, and an unspecified target
+// catches a conflict on ANY unique constraint a table has, not only the
+// one that needed it: person_record's own UNIQUE(person_id) (migration
+// 0036-person-record-and-channels) silently absorbed a second
+// person_record for an already-signed-up person, applying with no row
+// written and no error, where it used to raise. The fix narrows the
+// default back to ON CONFLICT (outbox_entry_id) DO NOTHING and gives
+// name_index_entry a named, per-table opt-in instead
+// (nameIndexDedupConstraint). This drives person_record through the
+// ordinary, unnamed default path a second time and asserts the
+// duplicate still fails to apply.
+func TestDuplicatePersonRecordStillErrorsThroughTheApplyPath(t *testing.T) {
+	id, _ := freshPersonAndNames(t)
+
+	if _, _, err := outbox.Drain(""); err != nil {
+		t.Fatalf("drain the original signup: %v", err)
+	}
+	before := ownerSQL(t, "payload",
+		`SELECT count(*) FROM person_record WHERE person_id = $1`, transport.String(id))
+	if before != "1" {
+		t.Fatalf("person_record row count before the duplicate: got %s, want 1", before)
+	}
+
+	duplicate := outbox.Instruction{
+		Table: "person_record",
+		Row:   map[string]any{"person_id": id},
+	}
+	raw, err := json.Marshal(duplicate)
+	if err != nil {
+		t.Fatalf("encoding the duplicate instruction: %v", err)
+	}
+	entryID, err := person.NewID()
+	if err != nil {
+		t.Fatalf("entry id: %v", err)
+	}
+	if err := outbox.Enqueue(entryID, raw, ""); err != nil {
+		t.Fatalf("enqueue the duplicate: %v", err)
+	}
+
+	applied, failed, err := outbox.Drain("")
+	if err != nil {
+		t.Fatalf("drain: %v", err)
+	}
+	if applied != 0 || failed != 1 {
+		t.Fatalf("drain result: applied=%d failed=%d, want applied=0 failed=1 "+
+			"(a duplicate person_id must fail to apply, not silently no-op)", applied, failed)
+	}
+
+	after := ownerSQL(t, "payload",
+		`SELECT count(*) FROM person_record WHERE person_id = $1`, transport.String(id))
+	if after != "1" {
+		t.Fatalf("person_record row count after the duplicate: got %s, want 1 (still just the original)", after)
 	}
 }

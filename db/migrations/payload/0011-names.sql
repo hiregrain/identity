@@ -109,23 +109,38 @@ CREATE TABLE person_name (
 
 CREATE INDEX person_name_by_person ON person_name (person_id);
 
--- Every row's EFFECTIVE period_end: its own, if the source stated one,
--- else the asserted_at of the NEXT row in its own (person_id, use,
--- representation) partition ordered by asserted_at, else NULL when
--- there is no next row (this one is current). lead() is a pure
--- read-time derivation over rows already committed to this table: it
--- needs no lookup against any other write, so it end-dates correctly no
--- matter what order two undrained appends land in, which a write-time
--- lookup against "the row currently current" cannot do (that lookup
--- can only see rows already applied to this table, so two Append calls
--- issued before either is drained both find nothing to supersede).
--- outbox_entry_id breaks a tie between two rows sharing one asserted_at
--- exactly, which the column's own UNIQUE constraint (it is this table's
--- primary key) makes a total order.
+-- Every row's EFFECTIVE period_end: the EARLIER of its own stated end
+-- and the asserted_at of the NEXT row in its own (person_id, use,
+-- representation) partition ordered by asserted_at, NULL only when
+-- neither exists (decision 092, completing 091 on the case it did not
+-- reach). LEAST() is what makes this null-tolerant on both sides
+-- without a CASE: Postgres's LEAST/GREATEST ignore NULL arguments and
+-- return NULL only when every argument is NULL, so a row with no
+-- successor keeps its stated end, a row with no stated end takes the
+-- successor's asserted_at, and a row with both takes whichever is
+-- earlier. An earlier version of this view used COALESCE(period_end,
+-- lead(...)), which let a stated end that outlived its successor win
+-- outright: a row superseded by a later append but carrying its own
+-- future-dated period_end stayed "current" under decision 091's window
+-- predicate even though something had already replaced it, which is
+-- exactly the harm criterion 3 names (the prior name in a gender
+-- transition or marriage staying visible). A superseded name now ends
+-- when it is superseded, even if its own stated window ran longer; a
+-- name never superseded still honors its own stated window.
+--
+-- lead() is a pure read-time derivation over rows already committed to
+-- this table: it needs no lookup against any other write, so it
+-- end-dates correctly no matter what order two undrained appends land
+-- in, which a write-time lookup against "the row currently current"
+-- cannot do (that lookup can only see rows already applied to this
+-- table, so two Append calls issued before either is drained both find
+-- nothing to supersede). outbox_entry_id breaks a tie between two rows
+-- sharing one asserted_at exactly, which the column's own UNIQUE
+-- constraint (it is this table's primary key) makes a total order.
 CREATE VIEW person_name_effective AS
 SELECT outbox_entry_id, person_id, text_ciphertext, parts_ciphertext,
        "use", representation, period_start,
-       COALESCE(period_end, lead(asserted_at) OVER (
+       LEAST(period_end, lead(asserted_at) OVER (
            PARTITION BY person_id, "use", representation
            ORDER BY asserted_at, outbox_entry_id
        )) AS period_end,
@@ -250,25 +265,41 @@ CREATE INDEX document_name_by_person ON document_name (person_id);
 -- same document row. person_name has one field (text) and always
 -- carries 'text' here.
 --
--- The UNIQUE constraint below is WriteIndex's idempotency key. It is not
--- outbox_entry_id: a re-run of WriteIndex generates a fresh
--- outbox_entry_id per row (core/person, NewID per instruction, the same
--- pattern every append in this package uses), so outbox_entry_id alone
--- cannot tell a second WriteIndex call's rows from the first's. The
--- logical key a token actually occupies is which source and field
--- produced it, which kind of token it is, and which generator version
--- produced it; token_ciphertext is deliberately excluded, since sealing
--- is non-deterministic (a fresh nonce per call, core/envelope) and two
--- seals of the identical plaintext are never byte-equal, so it could
--- never participate in a conflict target anyway. core/outbox's apply
--- path issues INSERT ... ON CONFLICT DO NOTHING with no target named
--- (core/outbox/instruction.go), which is what lets this constraint's
--- violation silently no-op exactly like outbox_entry_id's does. Without
--- source_field in this constraint, two different fields of one document
--- producing the same token_kind would collide on the same key, and the
--- second field's token would be silently dropped rather than stored,
--- which is exactly the defect an earlier version of this migration
--- shipped with.
+-- name_index_entry_dedup_key, named explicitly rather than left to
+-- Postgres's auto-generated (and truncated) default, is WriteIndex's
+-- idempotency key. It is not outbox_entry_id: a re-run of WriteIndex
+-- generates a fresh outbox_entry_id per row (core/person, NewID per
+-- instruction, the same pattern every append in this package uses), so
+-- outbox_entry_id alone cannot tell a second WriteIndex call's rows from
+-- the first's. The logical key a token actually occupies is which
+-- source and field produced it, which kind of token it is, and which
+-- generator version produced it; token_ciphertext is deliberately
+-- excluded, since sealing is non-deterministic (a fresh nonce per call,
+-- core/envelope) and two seals of the identical plaintext are never
+-- byte-equal, so it could never participate in a conflict target anyway.
+--
+-- core/person's enqueueRow names this constraint explicitly in the
+-- outbox instruction (core/outbox's Instruction.ConflictConstraint), so
+-- the apply path issues INSERT ... ON CONFLICT ON CONSTRAINT
+-- name_index_entry_dedup_key DO NOTHING for this table specifically. It
+-- also catches a genuine crash-and-retry of the SAME outbox entry: a
+-- retry re-derives and re-seals the identical token, so it carries the
+-- identical logical key even though token_ciphertext differs (a fresh
+-- nonce), and the named constraint still conflicts. Every OTHER table
+-- keeps the original, narrower ON CONFLICT (outbox_entry_id) DO NOTHING
+-- (core/outbox/instruction.go's default): a version of this migration
+-- once had core/outbox default to an unnamed, blanket ON CONFLICT DO
+-- NOTHING to get this table its idempotency, and that silently weakened
+-- person_record's UNIQUE(person_id) the same way, letting a duplicate
+-- person_id instruction drain with no row and no error where it used to
+-- raise. Naming this table's own constraint, rather than widening
+-- everyone else's, is what keeps that door shut.
+--
+-- Without source_field in this constraint, two different fields of one
+-- document producing the same token_kind would collide on the same key,
+-- and the second field's token would be silently dropped rather than
+-- stored, which is exactly the defect an earlier version of this
+-- migration shipped with.
 CREATE TABLE name_index_entry (
     outbox_entry_id spine_object_id PRIMARY KEY,
     person_id spine_object_id NOT NULL,
@@ -283,7 +314,8 @@ CREATE TABLE name_index_entry (
     token_ciphertext bytea NOT NULL,
     residency_region residency_region NOT NULL
         DEFAULT own_declared_residency_region(),
-    UNIQUE (person_id, source_table, source_outbox_entry_id, source_field, token_kind, generator_version)
+    CONSTRAINT name_index_entry_dedup_key
+        UNIQUE (person_id, source_table, source_outbox_entry_id, source_field, token_kind, generator_version)
 );
 
 CREATE INDEX name_index_entry_by_person ON name_index_entry (person_id);

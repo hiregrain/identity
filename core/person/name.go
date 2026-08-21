@@ -589,7 +589,7 @@ func (nm *Names) Append(ctx context.Context, personID string, n Name) error {
 	if n.PeriodEnd != nil {
 		row["period_end"] = n.PeriodEnd.UTC().Format(time.RFC3339Nano)
 	}
-	return enqueueRow(personID, "person_name", row)
+	return enqueueRow(personID, "person_name", row, "")
 }
 
 // AppendDocumentName writes one immutable document capture. Both the MRZ
@@ -628,7 +628,7 @@ func (nm *Names) AppendDocumentName(ctx context.Context, personID string, d Docu
 		"possibly_truncated": d.PossiblyTruncated,
 		"name_ciphertext":    hexLiteral(sealed),
 	}
-	return enqueueRow(personID, "document_name", row)
+	return enqueueRow(personID, "document_name", row, "")
 }
 
 // documentFields is the sealed blob behind document_name.name_ciphertext.
@@ -643,9 +643,14 @@ type documentFields struct {
 
 // enqueueRow renders one outbox instruction for table/row and enqueues
 // it through core/outbox, the same idempotent spine-first path every
-// post-signup payload write in this repo uses.
-func enqueueRow(personID, table string, row map[string]any) error {
-	instruction := outbox.Instruction{Table: table, Row: row}
+// post-signup payload write in this repo uses. conflictConstraint is
+// almost always empty, which leaves core/outbox's default
+// ON CONFLICT (outbox_entry_id) DO NOTHING untouched; only WriteIndex
+// names one, for name_index_entry_dedup_key (migration 0011-names), and
+// every other caller in this file must leave it empty rather than widen
+// what a duplicate write does on its own table.
+func enqueueRow(personID, table string, row map[string]any, conflictConstraint string) error {
+	instruction := outbox.Instruction{Table: table, Row: row, ConflictConstraint: conflictConstraint}
 	raw, err := json.Marshal(instruction)
 	if err != nil {
 		return fmt.Errorf("name: encoding instruction: %w", err)
@@ -697,16 +702,27 @@ func parseTimestamp(raw string) (time.Time, error) {
 	return t, nil
 }
 
-// CurrentNames reads the employer-safe view: one row per (person_id,
-// use, representation) triple, whichever row's effective period is
-// still open (person_name_current, decision 091: effective period_end
-// IS NULL or later than now). A prior name never appears here, which is
-// the query-layer withholding the task requires (gender transition,
-// marriage), enforced by which view this function reads rather than by
-// anything a caller must remember, and correct at every point in time:
-// a name's first assertion is current the instant it drains and stays
-// current for as long as nothing later in its group has drained too, a
-// stated future end has not yet passed, and it has not itself expired.
+// CurrentNames reads the employer-safe view: at most one row per
+// (person_id, use, representation) triple, whichever row's effective
+// period is still open (person_name_current, decision 091's predicate,
+// effective period_end IS NULL or later than now, over decision 092's
+// effective-end derivation). "At most one" holds because a superseded
+// row's effective end is the EARLIER of its own stated end and its
+// successor's asserted_at (LEAST, migration 0011-names): a row with a
+// successor is therefore never later than that successor's own
+// asserted_at, which has already happened, so only the terminal row in
+// a group (the one with no successor at all) can still be open. An
+// earlier version of this derivation let a row's own future-dated
+// period_end outlive its successor, so a superseded row with a
+// long-enough stated window stayed current alongside its replacement,
+// which is exactly the leak criterion 3 names. A prior name never
+// appears here, which is the query-layer withholding the task requires
+// (gender transition, marriage), enforced by which view this function
+// reads rather than by anything a caller must remember, and correct at
+// every point in time: a name's first assertion is current the instant
+// it drains and stays current for as long as nothing later in its group
+// has drained too, a stated future end has not yet passed, and it has
+// not itself expired.
 func (nm *Names) CurrentNames(ctx context.Context, personID string) ([]Name, error) {
 	return nm.queryNames(ctx, personID, "person_name_current")
 }
@@ -868,14 +884,16 @@ func (nm *Names) openHex(ctx context.Context, personID, encoded string) ([]byte,
 	return opened, nil
 }
 
-// DeriveIndexTokens computes the index fresh from every current source
-// row: every person_name.Text and every document_name identifier field
-// (primary, secondary, native-script, and Latin-raw), so a same-script
-// match (a CJK passport's native-script capture against another CJK
-// document) has a token to key on, not only the Latin-transliterated
-// fields. Calling this twice against unchanged source rows returns the
-// same set both times, which is the regeneration property the task's
-// mechanical criterion asks for.
+// DeriveIndexTokens computes the index fresh from every source row,
+// prior ones included (AllNames, not CurrentNames): every
+// person_name.Text and every document_name identifier field (primary,
+// secondary, native-script, and Latin-raw), so a same-script match (a
+// CJK passport's native-script capture against another CJK document)
+// has a token to key on, not only the Latin-transliterated fields, and
+// so a superseded name stays matchable even though it is withheld from
+// CurrentNames. Calling this twice against unchanged source rows
+// returns the same set both times, which is the regeneration property
+// the task's mechanical criterion asks for.
 func (nm *Names) DeriveIndexTokens(ctx context.Context, personID string) ([]DerivedToken, error) {
 	names, err := nm.AllNames(ctx, personID)
 	if err != nil {
@@ -925,12 +943,22 @@ func (nm *Names) DeriveIndexTokens(ctx context.Context, personID string) ([]Deri
 	return out, nil
 }
 
+// nameIndexDedupConstraint names name_index_entry_dedup_key (migration
+// 0011-names), the UNIQUE constraint on (person_id, source_table,
+// source_outbox_entry_id, source_field, token_kind, generator_version).
+// WriteIndex passes it as the outbox instruction's ConflictConstraint,
+// which is core/outbox's one documented per-table opt-in out of its
+// default ON CONFLICT (outbox_entry_id) DO NOTHING: a blanket,
+// unspecified target once got name_index_entry idempotency at the cost
+// of silently weakening person_record's own UNIQUE(person_id) the same
+// way, so this is named explicitly rather than left for core/outbox to
+// guess.
+const nameIndexDedupConstraint = "name_index_entry_dedup_key"
+
 // WriteIndex derives the index fresh (DeriveIndexTokens) and persists
 // every token as its own name_index_entry row, sealed under the
-// person's own key. Idempotent by the database: name_index_entry's own
-// UNIQUE constraint on (person_id, source_table, source_outbox_entry_id,
-// token_kind, generator_version), migration 0011-names, is what
-// core/outbox's unspecified-target ON CONFLICT DO NOTHING catches, so
+// person's own key. Idempotent by the database: nameIndexDedupConstraint
+// is what core/outbox's apply path conflicts on for this table, so
 // calling WriteIndex twice against unchanged source rows leaves the
 // stored set unchanged rather than duplicating every token: a fresh
 // outbox_entry_id is generated per row on each call (the pattern every
@@ -958,7 +986,7 @@ func (nm *Names) WriteIndex(ctx context.Context, personID string) error {
 			"generator_version":      float64(tok.GeneratorVersion),
 			"token_ciphertext":       hexLiteral(sealed),
 		}
-		if err := enqueueRow(personID, "name_index_entry", row); err != nil {
+		if err := enqueueRow(personID, "name_index_entry", row, nameIndexDedupConstraint); err != nil {
 			return err
 		}
 	}

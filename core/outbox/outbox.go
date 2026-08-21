@@ -158,10 +158,16 @@ func Get(entryID string) (Entry, error) {
 
 // Apply applies one entry's instruction to the payload plane in one
 // payload transaction. Idempotent by the database, not by memory: the
-// INSERT carries ON CONFLICT DO NOTHING against the target table's
-// unique idempotency key (outbox_entry_id, and a table's own logical
-// key if it declares one), so applying the same entry any number of
-// times produces one payload row.
+// INSERT carries ON CONFLICT (outbox_entry_id) DO NOTHING by default, or
+// ON CONFLICT ON CONSTRAINT <name> DO NOTHING against a table's own
+// declared logical key when its instruction names one
+// (Instruction.ConflictConstraint), so applying the same entry any
+// number of times produces one payload row. The default target is
+// deliberately narrow, pinned to outbox_entry_id rather than left
+// unspecified: an unspecified target catches a conflict on ANY unique
+// constraint the table has, which once silently swallowed a duplicate
+// person_id on person_record (migration 0036) where the write path
+// relies on that duplicate raising.
 //
 // LOAD-BEARING for a consumer this package does not know about:
 // core/person's name model (person-identity/04) derives which
