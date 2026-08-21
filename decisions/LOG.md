@@ -4775,3 +4775,34 @@ no stated end takes the successor's). A superseded name ends when it is
 superseded even if its own stated window ran longer; a name never
 superseded honours its stated window. This preserves every case 091
 fixed and closes the overlap.
+
+## 093 — Three executive-loop rulings: a types dependency, a criterion owner, an auth-plane confirmation (2026-08-21)
+
+Founder rulings batched from the executive loop.
+
+**`@types/node` is accepted as a types-only devDependency of the
+reference model.** The TypeScript reference (trust-kernel/06) cannot
+typecheck against `node:crypto` without it; it carries no runtime code
+and lives in `reference/`'s own devDependencies. This is the session's
+second dependency after `go-webauthn` (decision 089), and like that one
+it is licensed by name here so the next addition still needs its own
+entry.
+
+**Layer criterion 7's second clause gets its owner.** The criterion has
+two clauses, the reference-kernel agreement and "each checkpoint's
+predecessor link verifies". Only trust-kernel/06 declared `satisfies:
+[7]`, covering the first; checkpoints are trust-kernel/04's domain, so
+04's `satisfies` gains 7 for the predecessor-link clause. Both tasks now
+satisfy criterion 7, one clause each, and the layer cannot close until
+both land.
+
+**All authentication schema on the payload plane is confirmed correct.**
+person-identity/02 placed every auth datum (credentials, sessions,
+revocations, one-time codes, attempts, events, the address-lookup index)
+on payload. Decision 086's "auth needs schema on both planes" is read as
+describing the person-identity auth area, whose spine half is already
+`0010-person-core` from task 01, not as requiring a task-02 spine
+migration. Auth material and an address-derived re-identification handle
+must die with the person under the purge role; the spine is append-only
+and never deleted, tombstoned persons included (decision 014), so none
+of it may live there. Recorded so the plane split is not re-litigated.
