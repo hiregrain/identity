@@ -22,12 +22,14 @@ export interface CanonicalRules {
   formatNumber(value: number): string;
   compareKeys(a: string, b: string): number;
   normalizeString(value: string): string;
+  illFormed(value: string): string;
 }
 
 export const CONTRACT_RULES: CanonicalRules = {
   formatNumber: ecmascriptNumberToString,
   compareKeys: compareCodeUnits,
   normalizeString: (value) => value,
+  illFormed: refuse,
 };
 
 const encoder = new TextEncoder();
@@ -64,7 +66,7 @@ function serialize(value: JsonValue, rules: CanonicalRules): string {
       }
       return rules.formatNumber(value);
     case "string":
-      return quote(rules.normalizeString(value));
+      return quote(rules.normalizeString(admit(value, rules)));
     case "object":
       break;
     default:
@@ -76,7 +78,7 @@ function serialize(value: JsonValue, rules: CanonicalRules): string {
   const keys = Object.keys(value).sort(rules.compareKeys);
   const members = keys.map(
     (key) =>
-      `${quote(rules.normalizeString(key))}:${serialize(assertDefined(value[key]), rules)}`,
+      `${quote(rules.normalizeString(admit(key, rules)))}:${serialize(assertDefined(value[key]), rules)}`,
   );
   return `{${members.join(",")}}`;
 }
@@ -84,6 +86,56 @@ function serialize(value: JsonValue, rules: CanonicalRules): string {
 function assertDefined(value: JsonValue | undefined): JsonValue {
   if (value === undefined) throw new TypeError("undefined is not a JSON value");
   return value;
+}
+
+/**
+ * Rule 1: input must be well-formed Unicode, and a document containing
+ * an unpaired surrogate is refused (decision 082). Keys are checked on
+ * the same footing as values: a key is a string, and rule 1 draws no
+ * distinction.
+ *
+ * The check runs before `normalizeString`, so what is judged is the
+ * input as it arrived rather than a rule's view of it.
+ */
+function admit(value: string, rules: CanonicalRules): string {
+  return value.isWellFormed() ? value : rules.illFormed(value);
+}
+
+/**
+ * The contract reading of an ill-formed string. It refuses rather than
+ * returning anything, because both alternatives were tried and both are
+ * now known-wrong: Go's silent U+FFFD substitution returned bytes that
+ * were not the input's and called it success, and this model's own
+ * earlier preserve-and-escape reading required a hand-written JSON
+ * string decoder inside the frozen core. Decision 082 settled it, on the
+ * evidence of 2021 divergences in the first differential run.
+ */
+function refuse(value: string): never {
+  throw new RangeError(
+    `not well-formed Unicode: unpaired surrogate at code unit ${firstUnpairedSurrogate(value)}`,
+  );
+}
+
+/**
+ * The offending index, for the error message only. Written out rather
+ * than reusing `isWellFormed` per character, because each half of a
+ * legitimate surrogate pair is ill-formed on its own and that spelling
+ * would report the first pair rather than the first unpaired one.
+ */
+function firstUnpairedSurrogate(value: string): number {
+  for (let index = 0; index < value.length; index += 1) {
+    const unit = value.charCodeAt(index);
+    if (unit >= 0xd800 && unit <= 0xdbff) {
+      const next = value.charCodeAt(index + 1);
+      if (next >= 0xdc00 && next <= 0xdfff) {
+        index += 1;
+        continue;
+      }
+      return index;
+    }
+    if (unit >= 0xdc00 && unit <= 0xdfff) return index;
+  }
+  return -1;
 }
 
 /**
@@ -120,10 +172,10 @@ export function ecmascriptNumberToString(value: number): string {
 // lowercase hex for the rest of C0, every other code point literal, and
 // no escaping of `/`, DEL, U+2028 or U+2029. `JSON.stringify` of a lone
 // string is that operation, so the reference invokes it for the same
-// reason it invokes `String` for numbers. Well-formed `JSON.stringify`
-// escapes a lone surrogate as `\udXXX`; the contract does not rule on
-// lone surrogates (ambiguity A3 in reference/README.md), and this is the
-// behaviour taken pending a normative addition.
+// reason it invokes `String` for numbers.
+//
+// Its lone-surrogate escaping is unreachable: `admit` has already
+// refused any ill-formed string by the time this runs (decision 082).
 function quote(value: string): string {
   return JSON.stringify(value);
 }

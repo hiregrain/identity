@@ -48,7 +48,7 @@ harness.
 ```
 make reference-test        # the conformance assertions
 make differential-red      # every planted bug is caught
-make differential          # the kernel against the reference (needs KERNEL_ADAPTER)
+make differential KERNEL_ADAPTER=./core/cmd/kernel-adapter   # the real run
 ```
 
 A divergence prints the request, both outputs as hex and as text, and
@@ -56,23 +56,26 @@ the seed. Re-run with that `--seed` and `--fresh` to reproduce exactly,
 then move the offending request into `corpus/` before fixing anything,
 so the fix is proven and stays proven.
 
-## Ambiguities this reading surfaced
+## Ambiguities this reading surfaced, and how they were ruled
 
-The contract is the referee, so where it is silent, the silence is the
-finding. Each of these is a candidate normative addition to
-`contract/CONTRACT.md`; the T1 spike produced seven such resolutions by
-the same mechanism. **None of them is resolved yet.** A contract change
-is binding prose and goes to `main` as its own `docs(contract):` commit,
-never inside an implementation diff, so this table records the readings
-taken here and what they would cost to change.
+The contract is the referee, so where it was silent, the silence was the
+finding. All four are now **ruled in decision 082** and written into
+`contract/CONTRACT.md`. The T1 spike produced seven such resolutions by
+the same mechanism; this is that mechanism running a second time, and the
+table stays because the reasoning is worth more than the outcome.
 
-| # | What the contract does not say | The reading taken here | If ruled otherwise |
+| # | What the contract did not say | Ruled (decision 082) | Where this model enforces it |
 |---|---|---|---|
-| A1 | The **true** verdict's shape. Rule 3 fixes the false verdict at exactly `{"valid":false}` and is silent on the true one | Exactly `{"valid":true}`, the only shape that invents nothing | Every implementation changes one return value; no signature or vector moves |
-| A2 | Whether a **non-canonical base64url** segment may verify. Rule 3 fixes byte-exactness on the header and is silent on the segments carrying it | Rejected: a segment must survive a decode and re-encode round trip | Admitting padded or otherwise slack segments means one envelope has several spellings, which is what rule 3's posture on the header exists to prevent |
-| A3 | **Lone surrogates** in strings. Rule 1 pins JCS with no normalization, and JCS assumes well-formed Unicode | Well-formed `JSON.stringify` behaviour: a lone surrogate escapes to `\udXXX` | A non-JS kernel that rejects lone surrogates outright would diverge on rule 1's own terrain; the harness will find it |
-| A4 | Whether a verification failure may say **why** | It may not. Rule 3's "no extra fields" is read as covering the reason as well | Distinguishable failure reasons are a side channel on the signature check, so this one wants a security argument, not a preference |
+| A1 | The **true** verdict's shape. Rule 3 fixed the false verdict at exactly `{"valid":false}` and was silent on the true one | Exactly `{"valid":true}`, the only shape that invents nothing. This model's reading ratified | `TRUE_VERDICT` in `jws.ts` |
+| A2 | Whether a **non-canonical base64url** segment may verify | Strict: a segment must be the canonical spelling of its bytes, surviving a decode and re-encode round trip, padding and slack final-character bits alike. This model's reading ratified, and the first differential run caught Go lenient about slack bits | `decodeBase64url` in `jws.ts` |
+| A3 | **Lone surrogates** in strings. Rule 1 pinned JCS, and JCS assumes well-formed Unicode | **Refused**: a document containing an unpaired surrogate is refused, never altered and never escaped. **This model's preserve-and-escape reading was superseded**, along with the kernel's prior U+FFFD substitution, which returned bytes that were not the input's and called it success | `admit` and `refuse` in `canonical.ts` |
+| A4 | Whether a verification failure may say **why** | It may not. "No extra fields" covers the reason: a failure reason is a side channel on the signature check. This model's reading ratified | `FALSE_VERDICT` in `jws.ts` |
 
-`-0` on the wire is not on this list because it is not a contract
+Both losing readings of A3 are kept as mutants, `surrogate-escape` and
+`surrogate-substitute`, so `make differential-red` proves the harness
+still catches the behaviour the ruling removed. A ruling that leaves no
+test behind is one the next implementation gets to relitigate.
+
+`-0` on the wire was never on this list, because it was not a contract
 ambiguity: rule 2 is explicit, and the harness's own encoder was what
 destroyed it. See `encodeJson` in `adapter.ts`.

@@ -202,6 +202,81 @@ equal(
   "rule 3: an equivalent payload with different bytes does not verify",
 );
 
+// Rule 1, decision 082: a document containing an unpaired surrogate is
+// refused, never altered and never escaped. The refusal is what is
+// asserted, and so is the absence of the two behaviours ruled against:
+// substituted output and escaped output would both be a returned value.
+const HIGH = "\ud800";
+const LOW = "\udfff";
+for (const [what, value] of [
+  ["a lone high surrogate", HIGH],
+  ["a lone low surrogate", LOW],
+  ["a surrogate inside a longer string", `a${HIGH}b`],
+  ["two highs in a row", `${HIGH}${HIGH}`],
+  ["a reversed pair", `${LOW}${HIGH}`],
+  ["a surrogate in a key", { [HIGH]: 1 }],
+  ["a surrogate nested in an array", { ok: [HIGH] }],
+  ["a surrogate several levels down", { a: { b: [1, { c: LOW }] } }],
+] as [string, Parameters<typeof canonicalizeToString>[0]][]) {
+  refuses(() => canonicalizeToString(value), `rule 1 refuses ${what}`);
+}
+refuses(
+  () => signEnvelope({ kid: "operator-1", bad: HIGH }, seed),
+  "rule 1's refusal reaches signing, which canonicalizes first",
+);
+
+// The other half: refusal must not have become refuse-everything. A
+// well-formed pair spelling the same code points is accepted, and its
+// output is the character, not an escape.
+equal(
+  canonicalizeToString("\ud83d\ude00"),
+  '"\ud83d\ude00"',
+  "a well-formed surrogate pair is accepted and emitted literally",
+);
+equal(
+  canonicalizeToString({ "\udbff\udfff": 1 }),
+  '{"\udbff\udfff":1}',
+  "so is the last code point, whose halves are both surrogates",
+);
+
+// Rule 3, decision 082: every base64url segment must be the canonical
+// spelling of its bytes, padding and slack final-character bits alike.
+for (const [what, bad] of [
+  ["padding on the header", `${header}=.${payload}.${signature}`],
+  ["padding on the payload", `${header}.${payload}=.${signature}`],
+  ["padding on the signature", `${header}.${payload}.${signature}=`],
+] as [string, string][]) {
+  equal(
+    JSON.stringify(verifyEnvelope(bad, publicHex)),
+    '{"valid":false}',
+    `rule 3 rejects ${what}`,
+  );
+}
+{
+  // A 64-byte signature is 86 base64url characters, and the last one
+  // carries four slack bits. A spelling that sets them decodes to the
+  // same bytes and is still not the canonical spelling.
+  const alphabet =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+  const bytes = Buffer.from(signature, "base64url");
+  const slack = [...alphabet]
+    .map((character) => `${signature.slice(0, -1)}${character}`)
+    .find(
+      (candidate) =>
+        candidate !== signature &&
+        Buffer.from(candidate, "base64url").equals(bytes),
+    ) as string;
+  assert(
+    slack !== undefined && Buffer.from(slack, "base64url").length === 64,
+    "a slack-bit spelling of the signature exists and decodes to the same 64 bytes",
+  );
+  equal(
+    JSON.stringify(verifyEnvelope(`${header}.${payload}.${slack}`, publicHex)),
+    '{"valid":false}',
+    "rule 3 rejects a signature segment whose final character has slack bits set",
+  );
+}
+
 // A generator guard, not a contract rule. The NFC and NFD entries in
 // EDGE_STRINGS are indistinguishable on screen, so an editor or a tool
 // that normalizes the file would collapse them and silently delete the
@@ -219,6 +294,21 @@ function equal(actual: unknown, expected: unknown, what: string): void {
     Object.is(actual, expected),
     `${what}\n    expected ${JSON.stringify(expected)}\n    actual   ${JSON.stringify(actual)}`,
   );
+}
+
+/** Asserts that a call refuses, which under decision 082 means throwing. */
+function refuses(call: () => unknown, what: string): void {
+  let returned: unknown;
+  try {
+    returned = call();
+  } catch {
+    assertions += 1;
+    return;
+  }
+  console.error(
+    `FAIL ${what}\n    it returned ${JSON.stringify(returned)} instead of refusing`,
+  );
+  process.exit(1);
 }
 
 function assert(condition: boolean, what: string): void {

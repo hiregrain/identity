@@ -58,6 +58,25 @@ const BUGS: Record<string, () => CanonicalRules> = {
     normalizeString: (value) => value.normalize("NFC"),
   }),
 
+  // Rule 1: "a document containing an unpaired surrogate is refused,
+  // never altered and never escaped" (decision 082). This is the
+  // kernel's prior behaviour, Go's silent U+FFFD substitution, which
+  // returns bytes that are not the input's and calls it success.
+  "surrogate-substitute": () => ({
+    ...CONTRACT_RULES,
+    illFormed: (value) => value.toWellFormed(),
+  }),
+
+  // Rule 1, the other historical misreading: this model's own
+  // preserve-and-escape reading before decision 082 ruled against it,
+  // where an ill-formed string is carried through and JSON.stringify
+  // escapes the surrogate as \udXXX. It was the losing side of the 2021
+  // divergences the first differential run found.
+  "surrogate-escape": () => ({
+    ...CONTRACT_RULES,
+    illFormed: (value) => value,
+  }),
+
   // Rule 2's sort, kept in code-unit order but applied to the wrong
   // thing: a locale collation, which agrees with the contract on ASCII.
   "key-order-locale": () => ({

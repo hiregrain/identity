@@ -160,11 +160,21 @@ export function randomRequest(random: () => number): Request {
     // compared too. The reference builds it; if the reference's signing
     // is itself wrong, both implementations still have to agree on the
     // verdict, so this construction cannot mask a divergence.
-    return {
-      op: "verify",
-      envelope: signEnvelope(randomValue(random), seedHex),
-      publicKeyHex: publicHexFromSeedHex(seedHex),
-    };
+    //
+    // Signing refuses an ill-formed payload since decision 082, and this
+    // draw is about the verify path rather than about rule 1, so a
+    // refused draw falls through to a near miss instead of failing the
+    // generator. Rule 1's refusal is exercised by the `canonicalize` and
+    // `sign` draws above, where both sides must refuse alike.
+    try {
+      return {
+        op: "verify",
+        envelope: signEnvelope(randomValue(random), seedHex),
+        publicKeyHex: publicHexFromSeedHex(seedHex),
+      };
+    } catch {
+      // falls through
+    }
   }
   return {
     op: "verify",

@@ -171,18 +171,18 @@ reference-test:
 # and the independently-authored reference model over the committed
 # corpus plus fresh randomized input, compared byte for byte.
 #
-# NOT in `check` yet, and it cannot be: there is no kernel to differ
-# from until trust-kernel/01 lands. Wiring this into `check` is the last
-# step of trust-kernel/06 and is blocked on that task, which is recorded
-# as a raise on the task file rather than left for someone to discover.
-# KERNEL_ADAPTER is the command that speaks the protocol documented at
-# the top of reference/adapter.ts.
+# NOT in `check` yet, and it cannot be: the kernel adapter lands with
+# trust-kernel/01 (PR #15, at core/cmd/kernel-adapter), which is not on
+# main. Wiring this into `check` is the last step of trust-kernel/06 and
+# is blocked on that merge, recorded as a raise on the task file rather
+# than left for someone to discover. KERNEL_ADAPTER is the command that
+# speaks the protocol documented at the top of reference/adapter.ts.
 KERNEL_ADAPTER ?=
 DIFFERENTIAL_FRESH ?= 20000
 differential:
 	@if [ -z "$(KERNEL_ADAPTER)" ]; then \
 		echo "differential: set KERNEL_ADAPTER to the kernel's adapter command"; \
-		echo "  e.g. make differential KERNEL_ADAPTER=./core/bin/kernel-adapter"; \
+		echo "  e.g. make differential KERNEL_ADAPTER=./core/cmd/kernel-adapter"; \
 		exit 1; \
 	fi
 	node reference/harness/differential.ts \
@@ -273,7 +273,7 @@ check-red:
 # The green line at the end matters as much as the red ones: it proves
 # the harness is capable of reporting agreement, so the failures above
 # are not an unconditional exit 1.
-DIFFERENTIAL_MUTANTS := key-order-utf8 key-order-locale number-format-fixed number-format-negative-zero normalize-nfc
+DIFFERENTIAL_MUTANTS := key-order-utf8 key-order-locale number-format-fixed number-format-negative-zero normalize-nfc surrogate-substitute surrogate-escape
 differential-red:
 	@for bug in $(DIFFERENTIAL_MUTANTS); do \
 		echo "differential-red: planting $$bug"; \

@@ -7,8 +7,8 @@
     "moduleResolution": "nodenext",
     "allowImportingTsExtensions": true,
     "rewriteRelativeImportExtensions": true,
-    "target": "es2023",
-    "lib": ["es2023"],
+    "target": "es2024",
+    "lib": ["es2024"],
     "types": ["node"]
   },
   "include": ["*.ts", "harness/*.ts"]
