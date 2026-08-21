@@ -121,6 +121,11 @@ jobs:
       # either plane stores a capability, tier, trajectory, reliability,
       # trust, or weighting judgment about a person.
       - run: make scored-columns
+      # The ledger stamp held out of the serving role's reach
+      # (trust-kernel/02): identity_app's INSERT on key_event is
+      # column-scoped and excludes ledger_ts, so a later blanket grant
+      # fails here rather than silently reopening backdating.
+      - run: make ledger-stamp-grant
       # The physical-split proof (foundation/04): distinct clusters, no
       # spanning transaction, a role catalog per plane.
       - run: make two-plane-split
@@ -142,6 +147,10 @@ jobs:
         with:
           go-version-file: core/go.mod
       - run: make go-check
+      # The signing-provider suite (trust-kernel/02), once per key
+      # provider, swapped by configuration only. No database: custody is
+      # in memory under both in-repo providers (decision 011).
+      - run: make signing-test
 
   # `make ts-check` carries the TypeScript half of the golden-vector check
   # (trust-kernel/01): contract/runner is a workspace package, so
@@ -235,6 +244,11 @@ jobs:
       - run: make db-up
       - run: make migrate
       - run: make person-test
+      # The key-event log against the live spine (trust-kernel/02): the
+      # ledger's own stamp, the append-only posture in the database, and
+      # the compromise cut over rows read back. Spine-only, and it needs
+      # the same Go plus live database pairing this job already carries.
+      - run: make keylog-test
       - run: make db-down
 
   # The deletion-mechanics acceptance suite (foundation/08). Boots its

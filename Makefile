@@ -20,9 +20,9 @@ DUMP_PAYLOAD := $(COMPOSE) exec -T payload pg_dump --schema-only --restrict-key=
 # argument and failed with the usage line.
 VECTORS ?= $(CURDIR)/contract/vectors
 
-.PHONY: check check-red check-red-db metadata install lint fmt-check go-check ts-check db-up db-reset migrate migrate-verify typegen typegen-check append-only spine-schema payload-residency scored-columns two-plane-split envelope-test cross-plane-constructs cross-plane-outbox person-test deletion-test db-down vectors vectors-check kernel-budget kernel-governance
+.PHONY: check check-red check-red-db metadata install lint fmt-check go-check ts-check db-up db-reset migrate migrate-verify typegen typegen-check append-only spine-schema payload-residency scored-columns ledger-stamp-grant two-plane-split envelope-test cross-plane-constructs cross-plane-outbox person-test keylog-test signing-test deletion-test db-down vectors vectors-check kernel-budget kernel-governance
 
-check: metadata install lint go-check db-up migrate-verify typegen-check append-only spine-schema payload-residency scored-columns two-plane-split envelope-test cross-plane-constructs cross-plane-outbox person-test deletion-test ts-check
+check: metadata install lint go-check signing-test db-up migrate-verify typegen-check append-only spine-schema payload-residency scored-columns ledger-stamp-grant two-plane-split envelope-test cross-plane-constructs cross-plane-outbox person-test keylog-test deletion-test ts-check
 	$(COMPOSE) down
 	@echo "check: green"
 
@@ -124,6 +124,14 @@ payload-residency:
 scored-columns:
 	node checks/scored-columns.mjs
 
+# The ledger stamp held out of the serving role's reach
+# (trust-kernel/02): identity_app's INSERT on key_event is column-scoped
+# and excludes ledger_ts, so a blanket "GRANT INSERT ON ALL TABLES" in a
+# later migration fails a check rather than silently reopening
+# backdating.
+ledger-stamp-grant:
+	node checks/ledger-stamp-grant.mjs
+
 # The physical-split proof (foundation/04): distinct clusters, no
 # spanning transaction, a role catalog per plane.
 two-plane-split:
@@ -179,6 +187,26 @@ person-test:
 # path, which is why this target runs last in the database stage.
 deletion-test:
 	cd core && GRAIN_KEY_PROVIDER=software go test -tags db -count=1 ./deletion/...
+
+# The key-event log against the live spine (trust-kernel/02): the
+# ledger's own stamp rather than a caller's, the append-only posture in
+# the database, and the compromise cut over rows that made a round trip
+# through it. Build tag db like the envelope suite; -count=1 because the
+# database is state the test cache cannot see. One provider run: nothing
+# this suite proves involves a signing key at all, and the provider swap
+# is proven both ways by `signing-test`.
+keylog-test:
+	cd core && go test -tags db -count=1 ./kernel/keylog/...
+
+# The signing-provider suite (trust-kernel/02): the conformance contract,
+# the config seam, and rotation staying invisible to callers. Once per
+# key provider, swapped by configuration alone (GRAIN_KEY_PROVIDER), which
+# is the acceptance clause "provider swap is config-only; suite green
+# under both". No database: custody is in memory under both in-repo
+# providers (decision 011).
+signing-test:
+	cd core && GRAIN_KEY_PROVIDER=software go test -count=1 ./kernel/operatorkey/...
+	cd core && GRAIN_KEY_PROVIDER=stub-kms go test -count=1 ./kernel/operatorkey/...
 
 db-down:
 	$(COMPOSE) down
@@ -319,6 +347,9 @@ check-red:
 	! node checks/kernel-governance.mjs hiregrain/identity test/fixtures/redpath/kernel-governance/no-codeowners
 	! node checks/kernel-governance.mjs hiregrain/identity test/fixtures/redpath/kernel-governance/nothing
 	node checks/kernel-governance.mjs hiregrain/identity test/fixtures/greenpath/kernel-governance/in-force
+	@echo "red path 21: signing primitives reached outside the kernel fail the signing-seam check, and a verify-only package passes (no database)"
+	! node checks/signing-seam.mjs test/fixtures/redpath/signing
+	node checks/signing-seam.mjs test/fixtures/greenpath/signing
 	@echo "check-red: all red paths fail as required"
 
 # Database-dependent red path: a schema edit without regenerated types
@@ -370,6 +401,17 @@ check-red-db:
 	! node checks/scored-columns.mjs
 	echo "DROP TABLE planted_judgment;" | $(PSQL_PAYLOAD) -f -
 	node checks/scored-columns.mjs
+	@echo "red path db 11: the blanket grant 0002's header tells later migrations to repeat reopens INSERT on ledger_ts and fails the ledger-stamp check"
+	node checks/ledger-stamp-grant.mjs
+	echo "GRANT INSERT ON ALL TABLES IN SCHEMA public TO identity_app;" | $(PSQL_SPINE) -f -
+	! node checks/ledger-stamp-grant.mjs
+	echo "REVOKE INSERT ON key_event FROM identity_app; GRANT INSERT (party_id, key_id, event, effective_at) ON key_event TO identity_app;" | $(PSQL_SPINE) -f -
+	node checks/ledger-stamp-grant.mjs
+	@echo "red path db 11b: revoking a writable column's INSERT also fails it, so the check is not one-sided"
+	echo "REVOKE INSERT (effective_at) ON key_event FROM identity_app;" | $(PSQL_SPINE) -f -
+	! node checks/ledger-stamp-grant.mjs
+	echo "GRANT INSERT (effective_at) ON key_event TO identity_app;" | $(PSQL_SPINE) -f -
+	node checks/ledger-stamp-grant.mjs
 	@echo "green path db: the runner's --schema group and bare form both work while the databases are up, and the bare run prints the frontier exactly once"
 	node checks/run.mjs --schema
 	node checks/run.mjs > /tmp/run-bare.out

@@ -44,7 +44,6 @@ import (
 	"context"
 	"crypto/rand"
 	"fmt"
-	"os"
 	"regexp"
 	"strings"
 
@@ -222,10 +221,7 @@ func openRestores() ([]string, error) {
 // interface, wired at composition (decision 065): envelope's own
 // package stays transport-free.
 func NewEnvelope() (*envelope.Envelope, error) {
-	name := os.Getenv("GRAIN_KEY_PROVIDER")
-	if name == "" {
-		name = keys.NameSoftware
-	}
+	name, _ := keys.ConfiguredProviderName()
 	provider, err := keys.FromConfig(name)
 	if err != nil {
 		return nil, fmt.Errorf("deletion: key provider: %w", err)
