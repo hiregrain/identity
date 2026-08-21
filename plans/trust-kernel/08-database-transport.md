@@ -24,7 +24,7 @@ evidence:
     "test:node checks/transport-seam.mjs test/fixtures/redpath/transport -- both exec.Command and exec.CommandContext caught (code-review finding 1)",
     "test:cd core && go test ./transport/... -run TestEnvelopeRowsRejectsMultiColumnRows -v -- multi-column guard (code-review finding 2) passes",
     "test:cd core && go test ./transport/... -run TestNumericsRoundTripTyped -v -- Float covers whole numbers now that Int is removed (code-review finding 5)",
-    "diff:PR #13 @ PLACEHOLDER_MERGE_SHA",
+    "diff:PR #13 @ beee7b01e15416c64d6d438c9d39885cc1b1a766",
   ]
 verified_by: clean-context-verifier@2026-08-21
 ---
