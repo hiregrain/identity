@@ -3,7 +3,7 @@ id: trust-kernel/06
 type: task
 layer: trust-kernel
 satisfies: [7]
-status: in_progress
+status: done
 depends_on: [foundation/01]
 migrations: []
 binds: [contract/CONTRACT.md, decisions/LOG.md#019]
@@ -11,8 +11,10 @@ evidence:
   - "test:make differential"
   - "test:make differential-red"
   - "test:make reference-test"
+  - "review:log/2026-08-21-trust-kernel-06-verification.md"
+  - "diff:PR #12 @ dc58543"
   - "diff:PR #12 @ 0a82956"
-verified_by: null
+verified_by: clean-context-verifier@2026-08-21
 ---
 
 # Independent reference model and differential harness
@@ -80,7 +82,11 @@ number-formatting bug in each implementation in turn to confirm detection.
 - `test:make reference-test` runs `reference/conformance.test.ts`: the
   reference model against the values `contract/CONTRACT.md` states in
   words rather than against its own output.
-- `diff:PR #12 @ 0a82956`.
+- `review:log/2026-08-21-trust-kernel-06-verification.md`, the
+  clean-context verification, which passed at `dc58543`.
+- `diff:PR #12 @ dc58543`, the head that verification read, and
+  `diff:PR #12 @ 0a82956`, the code-review fixes to the harness's own
+  integrity that landed after it. The second awaits re-verification.
 
 The four ambiguities this reading surfaced are ruled in decision 082 and
 written into `contract/CONTRACT.md`. Three ratified the readings this
