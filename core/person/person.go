@@ -149,7 +149,8 @@ type RiskSignals struct {
 
 // Channel is one contact channel with proof of control already in hand.
 // VerifiedAt is not optional: an unverified channel has no row to sit in
-// (migration 0010-person-core), so "verified control of one channel"
+// (migration 0036-person-record-and-channels), so "verified control of
+// one channel"
 // is enforced by the schema rather than promised by a comment. What
 // produces the proof, one-time codes and their rate limits, is
 // person-identity/02's.
@@ -232,8 +233,10 @@ func NewID() (string, error) {
 //	A channel carries ph-sim-registered exactly when it is a mobile line
 //	in the Philippines; every other channel carries channel-control.
 //
-// The database refuses the elevated marker on anything else (migration
-// 0010-person-core), so a bug here cannot promote an account.
+// The database refuses the elevated marker on anything else, including
+// a mobile line whose country is unknown (the null-safe CHECK in
+// migration 0036-person-record-and-channels), so a bug here cannot
+// promote an account.
 func Assurance(kind ChannelKind, r RiskSignals) string {
 	if kind == KindPhone && r.LineType == LineMobile && r.Country == "ph" {
 		return AssurancePHSIMRegistered

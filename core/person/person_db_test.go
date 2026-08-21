@@ -276,16 +276,27 @@ func TestAssuranceFollowsTheLine(t *testing.T) {
 	}
 
 	// The marker is unreachable on a line that does not qualify, whatever
-	// a write site believes.
-	if _, err := roleSQL("payload", "identity", `
-		INSERT INTO person_contact_channel
-		  (outbox_entry_id, person_id, channel_kind, address_ciphertext,
-		   verified_at, line_type, line_country, carrier_reputation,
-		   velocity_observed, velocity_threshold, assurance)
-		VALUES (gen_random_uuid(), gen_random_uuid(), 'phone', $1,
-		        now(), 'mobile', 'us', 'clear', 0, 5, 'ph-sim-registered')`,
-		transport.Bytea([]byte{0})); err == nil {
-		t.Fatal("the channel table accepted the elevated marker on a US mobile")
+	// a write site believes. The unknown-country case is here because it
+	// is the one that got through: a CHECK admits NULL, so comparing a
+	// nullable country with = made the rule neither true nor false and
+	// the row landed carrying the marker.
+	for _, country := range []struct {
+		name  string
+		value transport.Arg
+	}{
+		{"a US mobile", transport.String("us")},
+		{"a mobile of unknown country", transport.Null},
+	} {
+		if _, err := roleSQL("payload", "identity", `
+			INSERT INTO person_contact_channel
+			  (outbox_entry_id, person_id, channel_kind, address_ciphertext,
+			   verified_at, line_type, line_country, carrier_reputation,
+			   velocity_observed, velocity_threshold, assurance)
+			VALUES (gen_random_uuid(), gen_random_uuid(), 'phone', $1,
+			        now(), 'mobile', $2, 'clear', 0, 5, 'ph-sim-registered')`,
+			transport.Bytea([]byte{0}), country.value); err == nil {
+			t.Fatalf("the channel table accepted the elevated marker on %s", country.name)
+		}
 	}
 }
 

@@ -126,9 +126,17 @@ CREATE TABLE person_contact_channel (
     -- describes it: a Philippine mobile line. The database refuses the
     -- marker on anything else, so a write-site bug cannot quietly
     -- promote an account.
+    --
+    -- IS NOT DISTINCT FROM, not =, because line_country is nullable and
+    -- a CHECK admits NULL. With `line_country = 'ph'` a mobile line of
+    -- unknown country made the whole disjunction NULL, which is neither
+    -- true nor false, and the row went in carrying the marker. The
+    -- re-verification landed exactly that row. The null-safe comparison
+    -- returns false there, so an unknown country is refused rather than
+    -- waved through.
     CHECK (
         assurance = 'channel-control'
-        OR (line_type = 'mobile' AND line_country = 'ph')
+        OR (line_type = 'mobile' AND line_country IS NOT DISTINCT FROM 'ph')
     )
 );
 
