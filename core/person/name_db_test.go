@@ -711,6 +711,19 @@ func TestDuplicatePersonRecordStillErrorsThroughTheApplyPath(t *testing.T) {
 	if err := outbox.Enqueue(entryID, raw, ""); err != nil {
 		t.Fatalf("enqueue the duplicate: %v", err)
 	}
+	// This entry is designed to fail on apply forever, so it stays
+	// pending and every later outbox.Drain("") in this package (Drain
+	// drains globally) would re-attempt it and could fail an unrelated
+	// test on the duplicate person_id constraint. Delete it as the table
+	// owner once this test is done, whatever the outcome below. The
+	// attempt row goes first: it REFERENCES cross_plane_outbox with no ON
+	// DELETE CASCADE (migration 0020-cross-plane-outbox).
+	t.Cleanup(func() {
+		ownerSQL(t, "spine",
+			`DELETE FROM cross_plane_outbox_attempts WHERE entry_id = $1`, transport.String(entryID))
+		ownerSQL(t, "spine",
+			`DELETE FROM cross_plane_outbox WHERE entry_id = $1`, transport.String(entryID))
+	})
 
 	applied, failed, err := outbox.Drain("")
 	if err != nil {
