@@ -20,9 +20,9 @@ DUMP_PAYLOAD := $(COMPOSE) exec -T payload pg_dump --schema-only --restrict-key=
 # argument and failed with the usage line.
 VECTORS ?= $(CURDIR)/contract/vectors
 
-.PHONY: check check-red check-red-db metadata install lint fmt-check go-check ts-check db-up db-reset migrate migrate-verify typegen typegen-check append-only spine-schema payload-residency scored-columns ledger-stamp-grant two-plane-split envelope-test cross-plane-constructs cross-plane-outbox person-test keylog-test signing-test deletion-test reference-test differential differential-red db-down vectors vectors-check kernel-budget kernel-governance
+.PHONY: check check-red check-red-db metadata install lint fmt-check go-check ts-check db-up db-reset migrate migrate-verify typegen typegen-check append-only spine-schema payload-residency scored-columns ledger-stamp-grant two-plane-split envelope-test cross-plane-constructs cross-plane-outbox person-test auth-test keylog-test signing-test deletion-test reference-test differential differential-red db-down vectors vectors-check kernel-budget kernel-governance
 
-check: metadata install lint go-check signing-test reference-test differential db-up migrate-verify typegen-check append-only spine-schema payload-residency scored-columns ledger-stamp-grant two-plane-split envelope-test cross-plane-constructs cross-plane-outbox person-test keylog-test deletion-test ts-check
+check: metadata install lint go-check signing-test reference-test differential db-up migrate-verify typegen-check append-only spine-schema payload-residency scored-columns ledger-stamp-grant two-plane-split envelope-test cross-plane-constructs cross-plane-outbox person-test auth-test keylog-test deletion-test ts-check
 	$(COMPOSE) down
 	@echo "check: green"
 
@@ -173,8 +173,28 @@ cross-plane-outbox:
 # suite proves depends on which key provider seals the content, and the
 # swap is proven both ways by `envelope-test`. Runs before deletion-test,
 # which recreates the payload container mid-run.
+#
+# The authentication suite below is a second, much longer target under
+# the same package path (core/person/auth); running it twice inside one
+# `check` would cost minutes for nothing, which is why person-test stays
+# scoped to `./person` rather than `./person/...`.
 person-test:
-	cd core && GRAIN_KEY_PROVIDER=software go test -tags db -count=1 ./person/...
+	cd core && GRAIN_KEY_PROVIDER=software go test -tags db -count=1 ./person
+
+# The authentication and sessions acceptance suite (person-identity/02):
+# both login paths driven end to end, sessions issued and revoked, the
+# enumeration probes, and the rate limit and lockout. Build tag db and
+# -count=1 for the same reasons as person-test above. One provider run:
+# nothing this suite proves depends on which provider holds the keys, and
+# the swap is proven both ways by `envelope-test`.
+#
+# It is slow, and the reason is in the criteria rather than in the code:
+# the enumeration criterion is a timing assertion, so every code call in
+# the suite sits on CodeUniformFloor by construction, and every statement
+# is a container round trip. Runs after person-test, since it signs up through it, and
+# before deletion-test, which recreates the payload container mid-run.
+auth-test:
+	cd core && GRAIN_KEY_PROVIDER=software go test -tags db -count=1 -timeout 30m ./person/auth
 
 # The deletion-mechanics acceptance suite (foundation/08): a real
 # pg_dump backup taken pre-deletion, restored (db/backup.mjs and

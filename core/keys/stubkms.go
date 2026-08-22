@@ -69,6 +69,19 @@ func (s *StubKMS) Unwrap(ctx context.Context, scope string, wrapped []byte) ([]b
 	return gcmOpen(kek, scope, wrapped[len(stubKMSHeader):])
 }
 
+// Mac implements Provider. Context is honored before any cryptography,
+// the remote-call shape the rest of this stub keeps.
+func (s *StubKMS) Mac(ctx context.Context, scope string, message []byte) ([]byte, error) {
+	if err := ctx.Err(); err != nil {
+		return nil, err
+	}
+	kek, err := s.scopeKEK(scope, true)
+	if err != nil {
+		return nil, err
+	}
+	return scopeMac(kek, scope, message), nil
+}
+
 // Destroy implements Provider. Immediate and irreversible, the stub
 // models the post-schedule state a real KMS reaches, not the pending
 // window, because the conformance contract is about the end state.
