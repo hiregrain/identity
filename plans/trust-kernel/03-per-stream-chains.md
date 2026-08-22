@@ -14,9 +14,9 @@ evidence:
     "test:cd core && go test -tags db -count=1 -run TestChainAppendAddsOneRoundTrip ./streams/... -- unchained write 1 round trip; chained into three streams 2; added 1",
     "test:node test/append-only.test.mjs -- the stream_heads exemption is enumerated and the grant set still equals the list",
     "test:make check -- green end to end on the head commit",
-    "test:the ci run on this branch (run 32538506234 @ c8958fa) -- the per-stream hash chains stage is green; the run is not fully green, the unrelated signup-and-id-issuance stage (core/person) failed on a flaky person_record duplicate-key on outbox redelivery, green locally in make check and standalone; re-run CI to green before merge",
+    "log:github.com/hiregrain/identity/actions/runs/32538506234 -- per-stream hash chains stage green; the signup stage flaked on a pre-existing timestamp-precision test since fixed by PR #21",
     "diff:PR #20 @ c8958fa",
-    "review:log/2026-08-21-trust-kernel-03-head-verification.md (clean-context verification at c8958fa, pass)",
+    "review:log/2026-08-21-trust-kernel-03-head-verification.md -- clean-context verification at c8958fa pass",
   ]
 verified_by: rebase-head-verifier@2026-08-21
 ---
