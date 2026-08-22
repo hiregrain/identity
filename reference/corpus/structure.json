@@ -1,0 +1,13 @@
+[
+  {"op":"canonicalize","value":null},
+  {"op":"canonicalize","value":true},
+  {"op":"canonicalize","value":false},
+  {"op":"canonicalize","value":""},
+  {"op":"canonicalize","value":[]},
+  {"op":"canonicalize","value":{}},
+  {"op":"canonicalize","value":[[],{},[[]],[{}]]},
+  {"op":"canonicalize","value":{"a":{},"b":[],"c":null}},
+  {"op":"canonicalize","value":{"a":{"b":{"c":{"d":[1,2,{"e":null}]}}}}},
+  {"op":"canonicalize","value":[null,true,false,0,"",[],{}]},
+  {"op":"canonicalize","value":{"0":8,"z":1,"a":2,"m":3,"A":4,"Z":5,"_":6,"-":7}}
+]
