@@ -263,6 +263,19 @@ type stubSealer struct {
 
 func (s *stubSealer) Provision(context.Context, string) error { return nil }
 
+// stubMacer stands in for the key provider behind the channel lookup
+// index, deterministic and keyless, so the instruction shape can be
+// asserted with no key provider. Nothing here proves anything about the
+// index's cryptography; keys.Mac's own conformance suite does that.
+type stubMacer struct{}
+
+func (stubMacer) Mac(_ context.Context, scope string, message []byte) ([]byte, error) {
+	return append([]byte("mac:"+scope+":"), message...), nil
+}
+
+// stubIndex is the index every no-database test in this file uses.
+func stubIndex() *ChannelIndex { return NewChannelIndex(stubMacer{}) }
+
 func (s *stubSealer) Encrypt(_ context.Context, _ string, plaintext []byte) ([]byte, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -279,7 +292,7 @@ func (s *stubSealer) Encrypt(_ context.Context, _ string, plaintext []byte) ([]b
 // instruction carrying it is refused by core/outbox.
 func TestInstructionsForAnEmailAloneSignup(t *testing.T) {
 	sealer := &stubSealer{}
-	svc := New(sealer)
+	svc := New(sealer, stubIndex())
 	req := Request{Email: Channel{Address: "worker@example.test", VerifiedAt: time.Now()}}
 	if err := req.prepare(); err != nil {
 		t.Fatalf("prepare: %v", err)
@@ -327,7 +340,7 @@ func TestInstructionsForAnEmailAloneSignup(t *testing.T) {
 // failure in any concurrent seal aborts before anything is issued.
 func TestInstructionsSealEveryValueAndAbortTogether(t *testing.T) {
 	sealer := &stubSealer{}
-	svc := New(sealer)
+	svc := New(sealer, stubIndex())
 	req := Request{
 		Email:       Channel{Address: "worker@example.test", VerifiedAt: time.Now()},
 		Phone:       &Channel{Address: "+639171234567", VerifiedAt: time.Now()},
@@ -353,7 +366,7 @@ func TestInstructionsSealEveryValueAndAbortTogether(t *testing.T) {
 	}
 
 	failing := &stubSealer{fail: true}
-	if _, err := New(failing).instructions(context.Background(), id, req); err == nil {
+	if _, err := New(failing, stubIndex()).instructions(context.Background(), id, req); err == nil {
 		t.Fatal("a failed seal did not abort before issuance")
 	}
 }

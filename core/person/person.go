@@ -24,6 +24,12 @@
 // the person is deleted. That is migration 0020's write-site rule, and
 // this package is its first real caller.
 //
+// One thing here is not sealed, and it is deliberate: every channel row
+// carries the keyed lookup value of its address (channelindex.go,
+// decision 089), because a sealed address cannot be searched and
+// one-time-code login is a search. The reasoning, and the cost, are on
+// ChannelIndex.
+//
 // The minimum to hold an identity is one verified contact channel. No
 // name, no date of birth, nothing else (decision 013). Request is shaped
 // so that is visible in the type: everything except the email channel is
@@ -191,11 +197,19 @@ type Sealer interface {
 // Service issues identities.
 type Service struct {
 	sealer Sealer
+	index  *ChannelIndex
 }
 
-// New binds the seal path. The spine is reached through core/transport,
-// which no caller injects.
-func New(sealer Sealer) *Service { return &Service{sealer: sealer} }
+// New binds the seal path and the channel lookup index. The spine is
+// reached through core/transport, which no caller injects.
+//
+// The index is not optional. A channel row carries its lookup value in a
+// NOT NULL column (migration 0037), because a channel nobody can find is
+// a channel its owner cannot log in with, and decision 013 forbids the
+// code path being the weaker one.
+func New(sealer Sealer, index *ChannelIndex) *Service {
+	return &Service{sealer: sealer, index: index}
+}
 
 var (
 	uuidShape    = regexp.MustCompile(`^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$`)
@@ -445,21 +459,26 @@ func (s *Service) instructions(ctx context.Context, id string, req Request) ([]o
 	}
 	instructions := []outbox.Instruction{{Table: "person_record", Row: record}}
 	for i, channel := range channels {
+		lookup, err := s.index.Lookup(ctx, channel.Kind, channel.Address)
+		if err != nil {
+			return nil, err
+		}
 		instructions = append(instructions, outbox.Instruction{
 			Table: "person_contact_channel",
-			Row:   channelRow(id, channel, results[i+1].value),
+			Row:   channelRow(id, channel, results[i+1].value, lookup),
 		})
 	}
 	return instructions, nil
 }
 
 // channelRow renders one channel as an outbox row around its sealed
-// address.
-func channelRow(id string, c Channel, addressCiphertext string) map[string]any {
+// address and that address's lookup value (decision 089).
+func channelRow(id string, c Channel, addressCiphertext string, lookup []byte) map[string]any {
 	row := map[string]any{
 		"person_id":          id,
 		"channel_kind":       string(c.Kind),
 		"address_ciphertext": addressCiphertext,
+		"address_lookup":     hexLiteral(lookup),
 		"verified_at":        c.VerifiedAt.UTC().Format(time.RFC3339Nano),
 		"line_type":          c.Risk.LineType,
 		"line_country":       nil,

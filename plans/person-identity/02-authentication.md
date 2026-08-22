@@ -3,12 +3,18 @@ id: person-identity/02
 type: task
 layer: person-identity
 satisfies: []
-status: in_progress
+status: done
 depends_on: [person-identity/01]
 migrations: [0037-authentication-and-sessions]
 binds: [decisions/LOG.md#013, decisions/LOG.md#020, decisions/LOG.md#089]
-evidence: []
-verified_by: null
+evidence:
+  - "test:make auth-test @ 1ab5887 (core/person/auth acceptance suite, both planes live)"
+  - "test:make check, make check-red and make check-red-db @ 1ab5887 (green locally under a no-ports compose override)"
+  - "log:github.com/hiregrain/identity/actions/runs/32529483382 (every stage green at 1ab5887, including the authentication and sessions job)"
+  - "diff:PR #19 @ 1ab58875f52f67f4f745456a12bb1e2bd26df578"
+  - "review:log/2026-08-21-person-identity-02-verification.md (clean-context verification, pass at 0a8d68b)"
+  - "review:log/2026-08-21-person-identity-02-post-fix-verification.md (post-fix re-verification, pass at 6eb0994)"
+verified_by: clean-context-verifier@2026-08-21
 ---
 
 # Authentication and sessions
@@ -53,3 +59,25 @@ by device class.
 Verifier authenticates via both paths, confirms routine operations stay
 unblocked from a code session, revokes a session mid-flight, and runs the
 enumeration probes.
+
+## Evidence
+
+Written by the implementing session, which may rewrite `status`,
+`evidence` and `verified_by` and nothing else.
+
+- `test:make auth-test` runs the acceptance suite for this task
+  (`core/person/auth`) against both live planes. Each criterion's own
+  test: `TestAuthBothPathsReachTheSameIdentity` and
+  `TestAuthRevokedSessionFailsItsNextRequest` for the first,
+  `TestAuthCodeEndpointsResistEnumeration` for the second,
+  `TestAuthLoginWithoutAPasskeyCompletesEndToEnd` for the third, and
+  `TestAuthCodeSessionIsNeverBlocked` with
+  `TestNothingBranchesOnHowASessionWasAuthenticated` for the fourth.
+- `test:make check`, `make check-red` and `make check-red-db` are the
+  standing pipeline at the head, a precondition rather than evidence for
+  any single criterion.
+- `log:` the CI run at the head, where the `authentication and sessions`
+  job this task adds to the graph runs.
+- `diff:` the pull request and the head SHA it carries.
+- `review:` the clean-context verification record in `log/`, written by
+  the verifier and not by this session.
