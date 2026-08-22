@@ -278,6 +278,27 @@ jobs:
       - run: make keylog-test
       - run: make db-down
 
+  # The per-stream chain acceptance suite (trust-kernel/03). Boots its
+  # own Postgres pair. It drives the spine alone, but it needs Go and a
+  # migrated spine, which db-migrate's toolchain does not carry.
+  # `needs: [db-migrate]` is ordering only, as above.
+  streams:
+    name: per-stream hash chains
+    needs: [db-migrate]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5.6.0
+        with:
+          go-version-file: core/go.mod
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 24
+      - run: make db-up
+      - run: make migrate
+      - run: make streams-test
+      - run: make db-down
+
   # The authentication and sessions acceptance suite (person-identity/02).
   # Its own Postgres pair, and its own job rather than a step inside the
   # signup one: it is the slowest suite in the graph, because the
@@ -345,6 +366,7 @@ jobs:
         envelope,
         outbox,
         person,
+        streams,
         auth,
         deletion,
       ]

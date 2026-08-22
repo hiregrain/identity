@@ -34,6 +34,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"sync/atomic"
 )
 
 // Arg is a typed SQL argument the renderer turns into a literal. This
@@ -370,12 +371,27 @@ func hexShape(s string) ([]byte, bool) {
 	return b, true
 }
 
+// roundTrips counts psql invocations for the process's lifetime. It
+// exists so a round-trip claim can be measured rather than asserted:
+// trust-kernel/03's criterion that a chain append adds at most one
+// round trip to a write path is checked by reading this counter either
+// side of the write (core/streams' acceptance suite). Every Query and
+// every Tx crosses psql below, so the count is the whole of a write
+// path's traffic and not a sample. Dump is the one invocation outside
+// it, a harness read no write path makes.
+var roundTrips atomic.Int64
+
+// RoundTrips is the number of psql invocations this process has made so
+// far.
+func RoundTrips() int64 { return roundTrips.Load() }
+
 // psql runs one psql invocation inside the plane's compose container as
 // role, returning stdout. ON_ERROR_STOP makes any SQL error a non-zero
 // exit. This, dump, and script are the only places in the repo that
 // shell out to docker or psql (checks/transport-seam.mjs enforces the
 // exclusivity).
 func psql(plane, role string, args []string, stdin string) (string, error) {
+	roundTrips.Add(1)
 	base := []string{
 		"compose", "exec", "-T", plane,
 		"psql", "-v", "ON_ERROR_STOP=1", "-U", role, "-d", plane,

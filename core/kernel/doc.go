@@ -1,8 +1,11 @@
 // Package kernel is the frozen core (trust-kernel, decision 019): the
 // primitives that touch signatures, chains, and checkpoints.
-// trust-kernel/01 lands the first two, canonical serialization and the
-// Ed25519 JWS envelope; chain append/verify and tree construction land in
-// trust-kernel/03 and /04.
+// trust-kernel/01 lands canonical serialization and the Ed25519 JWS
+// envelope, trust-kernel/03 the chain link and its verification
+// (chain.go); tree construction lands in trust-kernel/04. Where a
+// chain's links are stored, how its head is kept and how a merge
+// resolves several chains into one history are core/streams, outside
+// this directory and under ordinary review.
 //
 // Everything in this package directory is under the line budget, enforced
 // by checks/kernel-budget.mjs, which counts this directory's non-test files

@@ -64,8 +64,24 @@ const APP = "identity_app"; // the serving role (migration 0002)
 // (migration 0002's header). Ruled but not yet landed. They arrive with
 // their own migration sites and get entries here in the same PR:
 //   * party_users erasure (decision 016, party-registry)
-//   * stream_heads rebuildable projection (trust-kernel/03, decision 019)
 const EXEMPTIONS = [
+  // The stream head projection (trust-kernel/03, decision 019): the
+  // current head of each chain, licensed by name to the serving role in
+  // 0007-stream-heads. UPDATE alone, because an append moves a head
+  // forward with INSERT ... ON CONFLICT DO UPDATE in the same
+  // transaction as the link it records. No DELETE: a rebuild clears the
+  // table and recomputes it from stream_link, and a rebuild runs as the
+  // table owner. Decision 017 dropped the blanket derived/cache clause,
+  // so this is a named table, a named role and a named privilege, never
+  // a category.
+  {
+    plane: "spine",
+    schema: "public",
+    table: "stream_heads",
+    grantee: "identity_app",
+    privilege: "UPDATE",
+    decision: "decisions/LOG.md#019 (trust-kernel/03)",
+  },
   // The payload purge role (foundation/08, decision 017): the ONLY role
   // holding DELETE on any payload table, licensed per table by name in
   // 0022-purge-role-and-restore-gate, which also narrows the grant with

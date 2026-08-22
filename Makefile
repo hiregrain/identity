@@ -20,9 +20,9 @@ DUMP_PAYLOAD := $(COMPOSE) exec -T payload pg_dump --schema-only --restrict-key=
 # argument and failed with the usage line.
 VECTORS ?= $(CURDIR)/contract/vectors
 
-.PHONY: check check-red check-red-db metadata install lint fmt-check go-check ts-check db-up db-reset migrate migrate-verify typegen typegen-check append-only spine-schema payload-residency scored-columns ledger-stamp-grant two-plane-split envelope-test cross-plane-constructs cross-plane-outbox person-test auth-test keylog-test signing-test deletion-test reference-test differential differential-red db-down vectors vectors-check kernel-budget kernel-governance
+.PHONY: check check-red check-red-db metadata install lint fmt-check go-check ts-check db-up db-reset migrate migrate-verify typegen typegen-check append-only spine-schema payload-residency scored-columns ledger-stamp-grant two-plane-split envelope-test cross-plane-constructs cross-plane-outbox person-test auth-test keylog-test signing-test streams-test deletion-test reference-test differential differential-red db-down vectors vectors-check kernel-budget kernel-governance
 
-check: metadata install lint go-check signing-test reference-test differential db-up migrate-verify typegen-check append-only spine-schema payload-residency scored-columns ledger-stamp-grant two-plane-split envelope-test cross-plane-constructs cross-plane-outbox person-test auth-test keylog-test deletion-test ts-check
+check: metadata install lint go-check signing-test reference-test differential db-up migrate-verify typegen-check append-only spine-schema payload-residency scored-columns ledger-stamp-grant two-plane-split envelope-test cross-plane-constructs cross-plane-outbox person-test auth-test keylog-test streams-test deletion-test ts-check
 	$(COMPOSE) down
 	@echo "check: green"
 
@@ -195,6 +195,17 @@ person-test:
 # before deletion-test, which recreates the payload container mid-run.
 auth-test:
 	cd core && GRAIN_KEY_PROVIDER=software go test -tags db -count=1 -timeout 30m ./person/auth
+
+# The per-stream chain acceptance suite (trust-kernel/03): the chain
+# append and walk against the live spine, a mutated historical record in
+# every stream type, a merge and unmerge diffed for chain membership,
+# and the head projection dropped and rebuilt. Build tag db like the
+# envelope suite; -count=1 because the database is state the test cache
+# cannot see. Spine only, and no key provider: nothing a chain proves
+# depends on which provider seals content. Runs before deletion-test,
+# which recreates the payload container mid-run.
+streams-test:
+	cd core && go test -tags db -count=1 ./streams/...
 
 # The deletion-mechanics acceptance suite (foundation/08): a real
 # pg_dump backup taken pre-deletion, restored (db/backup.mjs and

@@ -65,3 +65,25 @@ export interface SchemaMigrationsRow {
   name: string;
   applied_at: string;
 }
+
+/** One row of spine.stream_heads. */
+export interface StreamHeadsRow {
+  readonly [spinePlane]: "spine";
+  stream_type: string;
+  stream_key: string;
+  link_position: number;
+  head_hash: Uint8Array;
+  updated_at: string;
+}
+
+/** One row of spine.stream_link. */
+export interface StreamLinkRow {
+  readonly [spinePlane]: "spine";
+  stream_type: string;
+  stream_key: string;
+  link_position: number;
+  record_id: string;
+  prev_hash: Uint8Array;
+  link_hash: Uint8Array;
+  recorded_at: string;
+}

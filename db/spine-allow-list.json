@@ -49,6 +49,30 @@
       "migration": "0006-key-event-log"
     },
     {
+      "table": "stream_link",
+      "column": "stream_type",
+      "type": "text",
+      "migration": "0007-stream-heads"
+    },
+    {
+      "table": "stream_link",
+      "column": "link_position",
+      "type": "integer",
+      "migration": "0007-stream-heads"
+    },
+    {
+      "table": "stream_heads",
+      "column": "stream_type",
+      "type": "text",
+      "migration": "0007-stream-heads"
+    },
+    {
+      "table": "stream_heads",
+      "column": "link_position",
+      "type": "integer",
+      "migration": "0007-stream-heads"
+    },
+    {
       "table": "person_lifecycle_transition",
       "column": "state",
       "type": "text",

@@ -60,3 +60,23 @@ type SchemaMigrationsRow struct {
 	Name      string
 	AppliedAt time.Time
 }
+
+// StreamHeadsRow is one row of spine.stream_heads.
+type StreamHeadsRow struct {
+	StreamType   string
+	StreamKey    string
+	LinkPosition int32
+	HeadHash     []byte
+	UpdatedAt    time.Time
+}
+
+// StreamLinkRow is one row of spine.stream_link.
+type StreamLinkRow struct {
+	StreamType   string
+	StreamKey    string
+	LinkPosition int32
+	RecordId     string
+	PrevHash     []byte
+	LinkHash     []byte
+	RecordedAt   time.Time
+}
