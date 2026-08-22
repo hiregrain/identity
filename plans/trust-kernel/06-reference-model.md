@@ -3,12 +3,17 @@ id: trust-kernel/06
 type: task
 layer: trust-kernel
 satisfies: [7]
-status: in_progress
+status: done
 depends_on: [foundation/01]
 migrations: []
 binds: [contract/CONTRACT.md, decisions/LOG.md#019]
-evidence: []
-verified_by: null
+evidence:
+  - "test:make differential"
+  - "test:make differential-red"
+  - "test:make reference-test"
+  - "review:log/2026-08-21-trust-kernel-06-reverification.md"
+  - "diff:PR #12 @ 97871a1"
+verified_by: clean-context-reverifier@2026-08-21
 ---
 
 # Independent reference model and differential harness
@@ -54,3 +59,40 @@ read the kernel, that must agree with it byte for byte.
 Verifier confirms from the task's dispatch record that the reference author
 had no kernel access, runs the harness on fresh random input, and plants one
 number-formatting bug in each implementation in turn to confirm detection.
+
+## Evidence
+
+- `test:make differential` runs the kernel (`core/cmd/kernel-adapter`,
+  landed with `trust-kernel/01`) and this model over the committed
+  corpus plus 20000 freshly generated requests, comparing response bytes.
+  **Zero divergence over 20108 requests**, reproduced at four further
+  independent seeds. In `make check`; the whole run costs about nine
+  seconds, so the layer's hardest criterion sits in the standing gate
+  rather than in a runbook.
+- `test:make differential-red` plants each contract misreading in
+  `reference/harness/mutant.ts` in turn, **against the reference and
+  against the kernel**, and fails if the harness misses any of them, then
+  requires the unplanted reference-against-kernel control to be green.
+  In `make check-red` as red path 21. A leg counts as caught only on
+  the harness's divergence exit code plus a reported divergence, and the
+  mutant list is derived from `mutant.ts --list`, so neither deleting the
+  mutant adapter nor renaming a bug leaves the red path passing while it
+  tests less than it claims.
+- `test:make reference-test` runs `reference/conformance.test.ts`: the
+  reference model against the values `contract/CONTRACT.md` states in
+  words rather than against its own output.
+- `review:log/2026-08-21-trust-kernel-06-verification.md`, the
+  clean-context verification, which passed at `dc58543`.
+- `diff:PR #12 @ dc58543`, the head that verification read, and
+  `diff:PR #12 @ 0a82956`, the code-review fixes to the harness's own
+  integrity that landed after it. The second awaits re-verification.
+
+The four ambiguities this reading surfaced are ruled in decision 082 and
+written into `contract/CONTRACT.md`. Three ratified the readings this
+model had taken; A3 superseded its preserve-and-escape reading with
+refusal, and the model now refuses. Both superseded readings are kept as
+mutants, so the ruling leaves a test behind rather than a sentence.
+
+No open raise remains. The earlier one, that the mechanical criteria
+compare two implementations and only the reference existed, is closed by
+`trust-kernel/01` merging.

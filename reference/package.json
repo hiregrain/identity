@@ -1,0 +1,6 @@
+{
+  "name": "@grain/reference",
+  "private": true,
+  "type": "module",
+  "description": "Independent reference model and differential harness (trust-kernel/06). Not a workspace package: pnpm-workspace.yaml globs contract/* and surfaces/*, neither of which reaches here, and this file exists so node reads the .ts sources as ES modules."
+}
