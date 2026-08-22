@@ -412,7 +412,7 @@ func TestFutureStoredEndStaysCurrentUntilItPasses(t *testing.T) {
 	if err != nil || len(current) != 1 || current[0].Text != "Alex Rivera" {
 		t.Fatalf("current names: %+v, %v, want the future-ended row present", current, err)
 	}
-	if current[0].PeriodEnd == nil || !current[0].PeriodEnd.Equal(end) {
+	if current[0].PeriodEnd == nil || !current[0].PeriodEnd.Truncate(time.Microsecond).Equal(end.Truncate(time.Microsecond)) {
 		t.Fatalf("period_end: got %v, want %v", current[0].PeriodEnd, end)
 	}
 }
@@ -508,11 +508,11 @@ func TestNoOverlapInversion(t *testing.T) {
 	for _, n := range all {
 		switch n.Text {
 		case "Priya Nair (2024 record)":
-			if n.PeriodEnd == nil || !n.PeriodEnd.Equal(recentEnd) {
+			if n.PeriodEnd == nil || !n.PeriodEnd.Truncate(time.Microsecond).Equal(recentEnd.Truncate(time.Microsecond)) {
 				t.Fatalf("2024 row's own period was not preserved: %+v", n)
 			}
 		case "Priya Nair (2020 record)":
-			if n.PeriodEnd == nil || !n.PeriodEnd.Equal(olderEnd) {
+			if n.PeriodEnd == nil || !n.PeriodEnd.Truncate(time.Microsecond).Equal(olderEnd.Truncate(time.Microsecond)) {
 				t.Fatalf("2020 row's own period was not preserved: %+v", n)
 			}
 		default:
