@@ -396,8 +396,13 @@ func TestFutureStoredEndStaysCurrentUntilItPasses(t *testing.T) {
 	ctx := context.Background()
 	id, nm := freshPersonAndNames(t)
 
-	start := time.Now().UTC().Add(-time.Hour)
-	end := time.Now().UTC().Add(time.Hour)
+	// Truncated to microseconds at definition so the stored timestamptz
+	// (microsecond resolution, rounds half-up on store) holds the value
+	// exactly and every round-trip comparison matches. Truncating at
+	// comparison instead is wrong: Go's Truncate floors while Postgres
+	// rounds, so a sub-microsecond tail of >=500ns leaves the two apart.
+	start := time.Now().UTC().Add(-time.Hour).Truncate(time.Microsecond)
+	end := time.Now().UTC().Add(time.Hour).Truncate(time.Microsecond)
 	if err := nm.Append(ctx, id, person.Name{
 		Text: "Alex Rivera", Use: person.UseTemp, Representation: person.RepresentationRomanized,
 		PeriodStart: &start, PeriodEnd: &end,
@@ -431,8 +436,8 @@ func TestPastEndBesideALiveRowLeavesExactlyOneCurrent(t *testing.T) {
 	ctx := context.Background()
 	id, nm := freshPersonAndNames(t)
 
-	longAgoStart := time.Now().UTC().Add(-48 * time.Hour)
-	longAgoEnd := time.Now().UTC().Add(-24 * time.Hour)
+	longAgoStart := time.Now().UTC().Add(-48 * time.Hour).Truncate(time.Microsecond)
+	longAgoEnd := time.Now().UTC().Add(-24 * time.Hour).Truncate(time.Microsecond)
 	if err := nm.Append(ctx, id, person.Name{
 		Text: "Sam Okafor (temp)", Use: person.UseTemp, Representation: person.RepresentationRomanized,
 		PeriodStart: &longAgoStart, PeriodEnd: &longAgoEnd,
@@ -547,7 +552,7 @@ func TestSupersededRowWithAFutureStatedEndIsNotCurrent(t *testing.T) {
 	ctx := context.Background()
 	id, nm := freshPersonAndNames(t)
 
-	farFuture := time.Now().UTC().AddDate(1, 0, 0)
+	farFuture := time.Now().UTC().AddDate(1, 0, 0).Truncate(time.Microsecond)
 	if err := nm.Append(ctx, id, person.Name{
 		Text: "Deadname Here", Use: person.UseOfficial, Representation: person.RepresentationRomanized,
 		PeriodEnd: &farFuture,
