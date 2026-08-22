@@ -273,7 +273,7 @@ func TestOnePartyCannotRetireAnotherPartysKey(t *testing.T) {
 	owner, stranger := newParty(t), newParty(t)
 	key := newKeyID(t)
 
-	registered := time.Now().UTC().Add(-6 * time.Hour)
+	registered := time.Now().UTC().Add(-6 * time.Hour).Truncate(time.Microsecond)
 	plantEvent(t, owner, key, kernel.KeyRegistered, registered, registered)
 
 	// The stranger writes every retiring event it can, naming the
