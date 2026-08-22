@@ -412,7 +412,7 @@ func TestFutureStoredEndStaysCurrentUntilItPasses(t *testing.T) {
 	if err != nil || len(current) != 1 || current[0].Text != "Alex Rivera" {
 		t.Fatalf("current names: %+v, %v, want the future-ended row present", current, err)
 	}
-	if current[0].PeriodEnd == nil || !current[0].PeriodEnd.Equal(end) {
+	if current[0].PeriodEnd == nil || !current[0].PeriodEnd.Truncate(time.Microsecond).Equal(end.Truncate(time.Microsecond)) {
 		t.Fatalf("period_end: got %v, want %v", current[0].PeriodEnd, end)
 	}
 }
@@ -508,11 +508,11 @@ func TestNoOverlapInversion(t *testing.T) {
 	for _, n := range all {
 		switch n.Text {
 		case "Priya Nair (2024 record)":
-			if n.PeriodEnd == nil || !n.PeriodEnd.Equal(recentEnd) {
+			if n.PeriodEnd == nil || !n.PeriodEnd.Truncate(time.Microsecond).Equal(recentEnd.Truncate(time.Microsecond)) {
 				t.Fatalf("2024 row's own period was not preserved: %+v", n)
 			}
 		case "Priya Nair (2020 record)":
-			if n.PeriodEnd == nil || !n.PeriodEnd.Equal(olderEnd) {
+			if n.PeriodEnd == nil || !n.PeriodEnd.Truncate(time.Microsecond).Equal(olderEnd.Truncate(time.Microsecond)) {
 				t.Fatalf("2020 row's own period was not preserved: %+v", n)
 			}
 		default:
@@ -711,6 +711,19 @@ func TestDuplicatePersonRecordStillErrorsThroughTheApplyPath(t *testing.T) {
 	if err := outbox.Enqueue(entryID, raw, ""); err != nil {
 		t.Fatalf("enqueue the duplicate: %v", err)
 	}
+	// This entry is designed to fail on apply forever, so it stays
+	// pending and every later outbox.Drain("") in this package (Drain
+	// drains globally) would re-attempt it and could fail an unrelated
+	// test on the duplicate person_id constraint. Delete it as the table
+	// owner once this test is done, whatever the outcome below. The
+	// attempt row goes first: it REFERENCES cross_plane_outbox with no ON
+	// DELETE CASCADE (migration 0020-cross-plane-outbox).
+	t.Cleanup(func() {
+		ownerSQL(t, "spine",
+			`DELETE FROM cross_plane_outbox_attempts WHERE entry_id = $1`, transport.String(entryID))
+		ownerSQL(t, "spine",
+			`DELETE FROM cross_plane_outbox WHERE entry_id = $1`, transport.String(entryID))
+	})
 
 	applied, failed, err := outbox.Drain("")
 	if err != nil {

@@ -4806,3 +4806,24 @@ migration. Auth material and an address-derived re-identification handle
 must die with the person under the purge role; the spine is append-only
 and never deleted, tombstoned persons included (decision 014), so none
 of it may live there. Recorded so the plane split is not re-litigated.
+
+## 094 — The chain-link preimage byte order is pinned in the contract (2026-08-21)
+
+Founder ruling on trust-kernel/03's raise, taken before trust-kernel/06
+merges so the window to catch a cross-implementation divergence for free
+is not spent. Contract rule 5 named the hash-chain ingredients (SHA-256,
+genesis prev, the 0x02 tag, canonicalize-before-hash) but never fixed the
+order they enter the preimage; chain.go used `0x02 || prev ||
+canonical(record)` as a reading of rules 5+7, and no chain golden vectors
+exist yet to force agreement.
+
+**Ruled: the preimage is exactly `0x02 || prev || canonical(record)` in
+that order**, now written into rule 5. The order is the strongly
+preferred reading and the one already implemented: the domain tag leads
+because rule 7 requires the tag to distinguish a chain-link preimage from
+a Merkle preimage; the fixed-width 32-byte prev precedes the
+variable-width record so the boundary is unambiguous without a length
+prefix; the record is last because rule 5 canonicalizes it before
+hashing. trust-kernel/06's reference model and any future chain golden
+vectors are now written against a sentence, not an inference. No code
+changes: chain.go already matches.

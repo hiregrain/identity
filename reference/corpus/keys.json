@@ -1,0 +1,15 @@
+[
+  {"op":"publicKey","seedHex":"9d61b19deffd5a60ba844af492ec2cc44449c5697b326919703bac031cae7f60"},
+  {"op":"publicKey","seedHex":"4ccd089b28ff96da9db6c346ec114e0f5b8a319f35aba624da8cf6ed4fb8a6fb"},
+  {"op":"publicKey","seedHex":"0000000000000000000000000000000000000000000000000000000000000000"},
+  {"op":"publicKey","seedHex":"ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"},
+  {"op":"publicKey","seedHex":"FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"},
+  {"op":"publicKey","seedHex":"000000000000000000000000000000000000000000000000000000000000000"},
+  {"op":"publicKey","seedHex":"000000000000000000000000000000000000000000000000000000000000000000"},
+  {"op":"publicKey","seedHex":""},
+  {"op":"publicKey","seedHex":"zz00000000000000000000000000000000000000000000000000000000000000"},
+  {"op":"sign","payload":{"kid":"operator-1","n":1e+21},"seedHex":"9d61b19deffd5a60ba844af492ec2cc44449c5697b326919703bac031cae7f60"},
+  {"op":"sign","payload":{},"seedHex":"0000000000000000000000000000000000000000000000000000000000000000"},
+  {"op":"sign","payload":["\u00e9","e\u0301"],"seedHex":"ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"},
+  {"op":"sign","payload":-0,"seedHex":"0000000000000000000000000000000000000000000000000000000000000000"}
+]

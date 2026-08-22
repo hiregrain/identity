@@ -36,8 +36,11 @@ language must match it byte-for-byte.
    32-byte raw hex (RFC 8032 conventions), not PEM/JWK.
 5. **Hash chain**: SHA-256; genesis prev = 32 zero bytes; records are
    JCS-canonicalized before hashing; domain tag `0x02` on chain links;
-   length-mismatch verification reports `firstBadIndex = min(len)`;
-   empty-chain head = 64 hex zeros.
+   the link preimage is exactly `0x02 || prev || canonical(record)` in
+   that order (decision 094: tag first per rule 7, the fixed-width prev
+   before the variable-width record, the record last because it is
+   canonicalized before hashing); length-mismatch verification reports
+   `firstBadIndex = min(len)`; empty-chain head = 64 hex zeros.
 6. **Merkle**: leaf tag `0x00`, internal-node tag `0x01`; odd node at any
    level is PROMOTED unchanged (no duplication); promoted levels
    contribute no proof entry; proof entries name the sibling's side
